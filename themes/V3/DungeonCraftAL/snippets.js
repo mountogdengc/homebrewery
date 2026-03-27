@@ -182,6 +182,49 @@ export default [
 					}}\n`
 			},
 			{
+				name : 'Boxed Text (Read-Aloud)',
+				icon : 'fas fa-comment-alt',
+				gen  : dedent`\n{{BoxedText
+					Read-aloud text the DM reads to players. Describe the scene using vivid, sensory language.
+					}}\n`
+			},
+			{
+				name : 'Sidebar Heading',
+				icon : 'fas fa-sticky-note',
+				gen  : dedent`\n{{SidebarHeading
+					Sidebar Title
+					}}\n`
+			},
+			{
+				name : 'Sidebar Body',
+				icon : 'fas fa-align-left',
+				gen  : dedent`\n{{SidebarBody
+					Sidebar body text goes here.
+					}}\n`
+			},
+			{
+				name : 'Sidebar Bulleted',
+				icon : 'fas fa-list-ul',
+				gen  : dedent`\n{{SidebarBulleted
+					- Sidebar bullet item
+					- Another item
+					}}\n`
+			},
+			{
+				name : 'Table Title',
+				icon : 'fas fa-table',
+				gen  : dedent`\n{{TableTitle
+					Table Name
+					}}\n`
+			},
+			{
+				name : 'Page Footer',
+				icon : 'fas fa-shoe-prints',
+				gen  : dedent`\n{{PageFooter
+					Footer content pinned to the bottom of the page.
+					}}\n`
+			},
+			{
 				name : 'Credit / Legal',
 				icon : 'fas fa-copyright',
 				gen  : dedent`\n{{CreditLegal
@@ -209,6 +252,38 @@ export default [
 				name : 'Wide Monster Stat Block (2024)',
 				icon : 'fas fa-dragon',
 				gen  : MonsterBlock2024Gen.monster('monster,frame,wide'),
+			},
+		]
+	},
+	{
+		groupName : 'License',
+		icon      : 'fas fa-copyright',
+		view      : 'text',
+		snippets  : [
+			{
+				name : 'Wizards of the Coast AL Legal',
+				icon : 'fab fa-wizards-of-the-coast',
+				gen  : function(){
+					const year = new Date().getFullYear();
+					return dedent`
+						{{legal
+						DUNGEONS & DRAGONS, D&D, Wizards of the Coast, Forgotten Realms, the dragon ampersand, Player's Handbook, Monster Manual, Dungeon Master's Guide, D&D Adventurers League, all other Wizards of the Coast product names, and their respective logos are trademarks of Wizards of the Coast in the USA and other countries. All characters and their distinctive likenesses are property of Wizards of the Coast. This material is protected under the copyright laws of the United States of America. Any reproduction or unauthorized use of the materials contained herein is prohibited without the express written permission of Wizards of the Coast.
+						:
+						©${year} Wizards of the Coast LLC, PO Box 707, Renton, WA 98057-0707, USA.
+						}}
+						\n`;
+				},
+			},
+			{
+				name : 'Not for Resale Footer',
+				icon : 'fas fa-ban',
+				gen  : dedent`
+					{{footnote
+					Not for resale. Permission granted to print or photocopy this document for personal use only.
+
+					FR-DC-XXX-XX Adventure Name (v1.0)
+					}}
+					\n`
 			},
 		]
 	},
