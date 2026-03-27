@@ -7,6 +7,8 @@
 
 (function () {
 
+  var HB_URL = '{{HB_URL}}';
+
   var root = document.querySelector('.mon-stat-block-2024');
   if (!root) {
     alert('No 2024 stat block found on this page.\nMake sure you are on a D&D Beyond monster page.');
@@ -273,13 +275,27 @@
     legendary: legendary, mythic: mythic, lair: lair
   };
 
-  var json = JSON.stringify(sb, null, 2);
+  // Try POST first, fall back to clipboard
+  showBanner('Importing ' + name + '...', '#1565c0');
 
-  navigator.clipboard.writeText(json).then(function () {
-    showBanner('\u2713 ' + name + ' copied! Go to Homebrewery \u2192 Library \u2192 Paste Import');
+  fetch(HB_URL + '/api/statblock', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(sb)
+  }).then(function (res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }).then(function (saved) {
+    showBanner('\u2713 ' + name + ' imported! Open your Homebrewery library to see it.');
   }).catch(function () {
-    // Fallback: prompt with the JSON
-    prompt('Copy this JSON and paste it into Homebrewery:', json);
+    // POST failed (CORS, not logged in, etc.) — fall back to clipboard
+    var json = JSON.stringify(sb, null, 2);
+    navigator.clipboard.writeText(json).then(function () {
+      showBanner('\u2713 ' + name + ' copied to clipboard. Go to Library \u2192 Paste Import.', '#f57c00');
+    }).catch(function () {
+      prompt('Copy this JSON and paste it into Homebrewery:', json);
+    });
   });
 
 })();

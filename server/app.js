@@ -558,9 +558,14 @@ export default async function createApp(vite) {
 	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
 	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 
-	//Serve bookmarklet script
+	//Serve bookmarklet script with injected base URL
 	app.get('/statblock-bookmarklet.js', (req, res)=>{
-		res.sendFile('bookmarklet-ddb.js', { root: `${process.cwd()}/client/homebrew/pages/statblockImportPage`, headers: { 'Content-Type': 'application/javascript' } });
+		const filePath = `${process.cwd()}/client/homebrew/pages/statblockImportPage/bookmarklet-ddb.js`;
+		const baseUrl = `${req.protocol}://${req.get('host')}`;
+		let script = fs.readFileSync(filePath, 'utf-8');
+		script = script.replace('{{HB_URL}}', baseUrl);
+		res.set('Content-Type', 'application/javascript');
+		res.send(script);
 	});
 
 	//Stat Block Import (D&D Beyond bookmarklet installer)
