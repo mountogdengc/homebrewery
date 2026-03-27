@@ -113,13 +113,15 @@ function renderTraits(items) {
 		const nameHtml = displayName
 			? `<em><strong>${esc(displayName)}${displayName.endsWith('.') ? '' : '.'}</strong></em> `
 			: '';
+		const SPELL_HDR = '(?:At Will|Cantrips?(?:\\s*\\([^)]*\\))?|\\d+\\/Day(?: Each)?|\\d+(?:st|nd|rd|th)[- ][Ll]evel\\s*\\([^)]*\\)|\\d+\\/Short|Innate)';
+		const spellRe1 = new RegExp('(<br>)\\s*(' + SPELL_HDR + '\\s*:)', 'gi');
+		const spellRe2 = new RegExp('(</p><p class="sb-trait">)\\s*(' + SPELL_HDR + '\\s*:)', 'gi');
 		const descHtml = esc(desc)
 			.replace(/\n\n+/g, '</p><p class="sb-trait">')
 			.replace(/\n/g, '<br>')
-			// Bold spell frequency headers and indent spell-line paragraphs
-			.replace(/(<br>)((?:At Will|Cantrips?(?:\s*\([^)]*\))?|\d+\/Day(?: Each)?|\d+(?:st|nd|rd|th)[- ][Ll]evel\s*\([^)]*\)|\d+\/Short|Innate)\s*:)/gi, '$1<strong>$2</strong>')
-			.replace(/(<\/p><p class="sb-trait">)((?:At Will|Cantrips?(?:\s*\([^)]*\))?|\d+\/Day(?: Each)?|\d+(?:st|nd|rd|th)[- ][Ll]evel\s*\([^)]*\)|\d+\/Short|Innate)\s*:)/gi, '</p><p class="sb-trait sb-spell-line"><strong>$2</strong>')
-			.replace(/^((?:At Will|Cantrips?(?:\s*\([^)]*\))?|\d+\/Day(?: Each)?|\d+(?:st|nd|rd|th)[- ][Ll]evel\s*\([^)]*\)|\d+\/Short|Innate)\s*:)/gi, '<strong>$1</strong>');
+			// Convert spell headers from <br> to indented paragraphs, and bold them
+			.replace(spellRe1, '</p><p class="sb-trait sb-spell-line"><strong>$2</strong>')
+			.replace(spellRe2, '</p><p class="sb-trait sb-spell-line"><strong>$2</strong>');
 		return `<p class="sb-trait">${nameHtml}${descHtml}</p>`;
 	}).join('');
 }
