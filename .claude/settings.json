@@ -19,7 +19,17 @@
       "Bash(curl -s http://localhost:8000/api/statblock/render/ZPyq_K40dRJO)",
       "Bash(node --input-type=module -e \":*)",
       "Bash(curl -s http://localhost:8000/api/statblock/ZPyq_K40dRJO)",
-      "Bash(curl -s http://localhost:8000/api/statblock-render/ZPyq_K40dRJO -v)"
+      "Bash(curl -s http://localhost:8000/api/statblock-render/ZPyq_K40dRJO -v)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\" http://localhost:8000/statblock/import)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/statblock/library)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/vault)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/statblock/new)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/statblock/importer)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/statblock/importddb)",
+      "Bash(curl -s http://localhost:8000/statblock-bookmarklet.js)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.dndbeyond.com)"
     ]
   }
 }

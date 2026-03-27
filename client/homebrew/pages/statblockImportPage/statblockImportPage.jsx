@@ -1,15 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import Nav            from '@navbar/nav.jsx';
 import Navbar         from '@navbar/navbar.jsx';
 import AccountNavItem from '@navbar/account.navitem.jsx';
 
-import loaderSrc from './bookmarklet-loader.js?raw';
+import fullSrc from './bookmarklet-ddb.js?raw';
 
 const StatblockImportPage = ()=>{
+	const [copied, setCopied] = useState(false);
+
 	const bookmarkletHref = useMemo(()=>{
 		const baseUrl = window.location.origin;
-		const code = loaderSrc.replace('{{HB_URL}}', baseUrl);
+		const code = fullSrc.replace("'{{HB_URL}}'", "'" + baseUrl + "'");
 		return 'javascript:' + encodeURIComponent(code);
 	}, []);
 
@@ -48,33 +50,37 @@ const StatblockImportPage = ()=>{
 					</h2>
 
 					<p style={{ color: '#aaa', lineHeight: 1.6, marginBottom: '16px' }}>
-						Drag this button to your browser's bookmarks bar:
+						Click the button below to copy the bookmarklet code, then create a new bookmark and paste it as the URL:
 					</p>
 
 					<div style={{ textAlign: 'center', marginBottom: '30px' }}>
-						<a
-							href={bookmarkletHref}
-							onClick={(e)=>{ e.preventDefault(); alert('Drag this button to your bookmarks bar. Do not click it.'); }}
-							onDragStart={(e)=>{ e.dataTransfer.setData('text/uri-list', bookmarkletHref); e.dataTransfer.setData('text/plain', 'Import to Homebrewery'); }}
+						<button
+							onClick={()=>{
+								navigator.clipboard.writeText(bookmarkletHref).then(()=>{
+									setCopied(true);
+									setTimeout(()=>setCopied(false), 3000);
+								});
+							}}
 							style={{
 								display: 'inline-block',
-								background: '#8B1A1A',
+								background: copied ? '#2e7d32' : '#8B1A1A',
 								color: '#fff',
 								padding: '12px 24px',
 								borderRadius: '6px',
 								fontSize: '16px',
 								fontWeight: 'bold',
-								textDecoration: 'none',
-								cursor: 'grab',
-								boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+								border: 'none',
+								cursor: 'pointer',
+								boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+								transition: 'background 0.2s'
 							}}
 						>
-							Import to Homebrewery
-						</a>
+							{copied ? 'Copied!' : 'Copy Bookmarklet Code'}
+						</button>
 					</div>
 
 					<p style={{ color: '#666', fontSize: '12px', textAlign: 'center', marginBottom: '30px' }}>
-						Drag the button above to your bookmarks bar. Do not click it here.
+						After copying, create a new bookmark in your browser, name it "Import to Homebrewery", and paste the code as the URL.
 					</p>
 
 					<h2 style={{ color: '#f5e6c8', fontSize: '20px', marginBottom: '12px' }}>
