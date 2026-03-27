@@ -2,49 +2,27 @@
 
 /* ── Statblock Preview Styles (2024 format) ──────────────────────────── */
 
-.statblock-embed,
-.statblock {
-	// Hard reset to prevent any theme bleed
-	all: initial !important;
-	display: block !important;
-	font-family: 'Times New Roman', Times, serif !important;
-	font-size: 13.5px !important;
-	line-height: 1.4 !important;
-	color: #1a1a1a !important;
-	background-color: #f9f0df !important;
-	padding: 10px 16px 14px !important;
-	box-sizing: border-box !important;
-	border: 1px solid #c9a96e !important;
-	box-shadow: 2px 3px 10px rgba(0,0,0,0.30) !important;
-	position: relative !important;
-	margin: 10px 0 !important;
-	break-inside: avoid !important;
+// Theme-proofing for stat block embeds inside .page
+// Override only the specific properties that themes set which break stat blocks
+.page .statblock-embed,
+.page .statblock {
+	// Container overrides
 	column-span: none !important;
 	-webkit-column-span: none !important;
 	text-indent: 0 !important;
+	break-inside: avoid;
+	margin: 10px 0;
 
-	// Reset ALL children
-	* {
-		all: revert !important;
-		text-indent: 0 !important;
-		column-span: none !important;
-		-webkit-column-span: none !important;
-	}
-
-	strong, b { font-weight: bold !important; }
-	em, i { font-style: italic !important; }
-
+	// Prevent theme p styles
 	p {
-		display: block !important;
+		text-indent: 0 !important;
 		margin: 0 !important;
 		padding: 0 !important;
-		text-indent: 0 !important;
 		font-family: 'Times New Roman', Times, serif !important;
 		font-size: 13.5px !important;
 		line-height: 1.35 !important;
 		color: #1a1a1a !important;
 		&::first-letter {
-			all: unset !important;
 			float: none !important;
 			font-size: inherit !important;
 			font-family: inherit !important;
@@ -52,53 +30,43 @@
 			line-height: inherit !important;
 			margin: 0 !important;
 			padding: 0 !important;
+			color: inherit !important;
 		}
+		& + p { text-indent: 0 !important; }
 	}
 
+	// Prevent theme heading styles
 	h1, h2, h3, h4, h5, h6 {
-		all: unset !important;
-		display: block !important;
 		column-span: none !important;
 		-webkit-column-span: none !important;
-		text-transform: none !important;
-		font-variant: normal !important;
-		letter-spacing: normal !important;
 		border: none !important;
 		border-bottom: none !important;
-		padding: 0 !important;
-		margin: 0 !important;
 		text-indent: 0 !important;
+		font-variant: normal !important;
 		&::before, &::after { content: none !important; display: none !important; }
 	}
 
+	// Prevent theme table styles
 	table {
-		all: unset !important;
-		display: table !important;
 		border-image: none !important;
-		border-collapse: collapse !important;
-		border: none !important;
 		width: auto !important;
-		background: transparent !important;
-		margin: 0 !important;
 	}
-	thead { display: table-header-group !important; }
-	tbody { display: table-row-group !important; }
 	tr {
-		display: table-row !important;
 		background: transparent !important;
 	}
 	th, td {
-		display: table-cell !important;
 		border: none !important;
 		background: transparent !important;
-		padding: 1px 3px !important;
 	}
 
+	// Prevent theme div styles
 	div {
 		text-indent: 0 !important;
-		padding: 0 !important;
-		margin: 0 !important;
 	}
+
+	// Ensure bold/italic work
+	strong, b { font-weight: bold !important; }
+	em, i { font-style: italic !important; }
 }
 
 .statblock--wide   { width: 100%; max-width: 760px; }
