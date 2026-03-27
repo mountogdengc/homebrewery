@@ -81,8 +81,19 @@ const StatblockEditorPage = (props)=>{
 		return ()=>document.removeEventListener('keydown', handleKeyDown);
 	}, [save]);
 
+	const [copied, setCopied] = useState(false);
+
 	const toggleLayout = ()=>{
 		setLayout((l)=>l === 'narrow' ? 'wide' : 'narrow');
+	};
+
+	const copyEmbed = ()=>{
+		if(!shareId) return;
+		const code = `{{statblock:${shareId}}}`;
+		navigator.clipboard.writeText(code).then(()=>{
+			setCopied(true);
+			setTimeout(()=>setCopied(false), 2000);
+		});
 	};
 
 	return (
@@ -109,6 +120,15 @@ const StatblockEditorPage = (props)=>{
 					>
 						{layout === 'narrow' ? 'Wide' : 'Narrow'}
 					</Nav.item>
+
+					{shareId && (
+						<Nav.item
+							icon={copied ? 'fas fa-check' : 'fas fa-code'}
+							onClick={copyEmbed}
+						>
+							{copied ? 'Copied!' : 'Copy Embed'}
+						</Nav.item>
+					)}
 
 					{error && <Nav.item color="red">{error}</Nav.item>}
 

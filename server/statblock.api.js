@@ -199,4 +199,43 @@ router.get('/api/statblocks/batch', asyncHandler(async (req, res)=>{
 	res.status(200).send(result);
 }));
 
+// Bulk import stat blocks from JSON array
+router.post('/api/statblocks/import', asyncHandler(async (req, res)=>{
+	if(!requireAuth(req, res)) return;
+
+	const items = req.body;
+	if(!Array.isArray(items) || items.length === 0) {
+		return res.status(400).send({ error: 'Request body must be a non-empty array of stat blocks' });
+	}
+
+	if(items.length > 200) {
+		return res.status(400).send({ error: 'Maximum 200 stat blocks per import' });
+	}
+
+	const results = [];
+	for (const item of items) {
+		delete item._id;
+		delete item.__v;
+		delete item.editId;
+		delete item.shareId;
+		delete item.id;
+		delete item.createdAt;
+		delete item.updatedAt;
+
+		item.authors = [req.account.username];
+
+		const sb = new StatblockModel(item);
+		sb.editId  = nanoid(12);
+		sb.shareId = nanoid(12);
+
+		const saved = await sb.save().catch((err)=>{
+			console.error('Import error:', err);
+			return null;
+		});
+		if(saved) results.push(sanitize(saved.toObject()));
+	}
+
+	res.status(200).send({ imported: results.length, statblocks: results });
+}));
+
 export default router;

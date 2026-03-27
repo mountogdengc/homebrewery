@@ -360,6 +360,17 @@ export default async function createApp(vite) {
 			return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
 		});
 
+		// Fetch stat blocks for this user
+		try {
+			const { model: StatblockModel } = await import('./statblock.model.js');
+			const sbFields = ['name', 'size', 'type', 'subtype', 'cr', 'tags', 'shareId', 'editId',
+				'authors', 'system', 'createdAt', 'updatedAt', 'views'];
+			req.userStatblocks = await StatblockModel.getByUser(req.params.username, ownAccount, sbFields);
+		} catch (err) {
+			console.error('Error fetching user stat blocks:', err);
+			req.userStatblocks = [];
+		}
+
 		return next();
 	});
 
@@ -554,6 +565,18 @@ export default async function createApp(vite) {
 		return next();
 	});
 
+	//Stat Block Share - View
+	app.get('/statblock/share/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: StatblockModel } = await import('./statblock.model.js');
+		const sb = await StatblockModel.get({ shareId: req.params.id });
+		req.statblock = sb.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : req.statblock.name || 'Stat Block',
+			description : `${req.statblock.size} ${req.statblock.type}, CR ${req.statblock.cr}`
+		};
+		return next();
+	}));
+
 	//Stat Block Editor - New
 	app.get('/statblock/new', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
@@ -612,9 +635,10 @@ export default async function createApp(vite) {
 			googleBrews : req.googleBrews,
 			account     : req.account,
 			config      : configuration,
-			ogMeta      : req.ogMeta,
-			userThemes  : req.userThemes,
-			statblock   : req.statblock
+			ogMeta         : req.ogMeta,
+			userThemes     : req.userThemes,
+			statblock      : req.statblock,
+			userStatblocks : req.userStatblocks
 		};
 
 		const ogTags = [];

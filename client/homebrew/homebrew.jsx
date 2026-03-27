@@ -15,6 +15,7 @@ import VaultPage   from './pages/vaultPage/vaultPage.jsx';
 import AccountPage from './pages/accountPage/accountPage.jsx';
 import StatblockEditorPage from './pages/statblockEditorPage/statblockEditorPage.jsx';
 import StatblockLibraryPage from './pages/statblockLibraryPage/statblockLibraryPage.jsx';
+import StatblockSharePage from './pages/statblockSharePage/statblockSharePage.jsx';
 import LandingPage from './pages/landingPage/landingPage.jsx';
 
 const WithRoute = ({ el: Element, ...rest })=>{
@@ -74,12 +75,13 @@ const Homebrew = (props)=>{
 				<Routes>
 					<Route path='/statblock/new' element={<WithRoute el={StatblockEditorPage} />} />
 					<Route path='/statblock/edit/:id' element={<WithRoute el={StatblockEditorPage} statblock={props.statblock} />} />
+					<Route path='/statblock/share/:id' element={<WithRoute el={StatblockSharePage} statblock={props.statblock} />} />
 					<Route path='/statblock/library' element={<WithRoute el={StatblockLibraryPage} />} />
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
 					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
-					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} />} />
+					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} userStatblocks={props.userStatblocks} />} />
 					<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
 					<Route path='/changelog' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
 					<Route path='/faq' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
