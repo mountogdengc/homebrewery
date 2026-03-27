@@ -2,7 +2,7 @@
 import brewRendererStylesUrl from './brewRenderer.less?url';
 import headerNavStylesUrl from './headerNav/headerNav.less?url';
 import './brewRenderer.less';
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import _ from 'lodash';
 
 import MarkdownLegacy from '@shared/markdownLegacy.js';
@@ -338,15 +338,14 @@ const BrewRenderer = (props)=>{
 
 	// Stat block embed rendering — fetch data and inject HTML into placeholders
 	const statblockCache = useRef({});
-	useEffect(()=>{
-		if(!state.isMounted) return;
+
+	const processStatblockEmbeds = useCallback(()=>{
 		const iframeDoc = document.getElementById('BrewRenderer')?.contentDocument;
 		if(!iframeDoc) return;
 
 		const embeds = iframeDoc.querySelectorAll('.statblock-embed:not([data-loaded])');
 		if(embeds.length === 0) return;
 
-		// Collect unique IDs to fetch
 		const idsToFetch = [];
 		embeds.forEach((el)=>{
 			const id = el.getAttribute('data-statblock-id');
@@ -379,6 +378,27 @@ const BrewRenderer = (props)=>{
 		} else {
 			fillEmbeds();
 		}
+	}, []);
+
+	// Run on render and watch for new embeds via MutationObserver
+	useEffect(()=>{
+		if(!state.isMounted) return;
+
+		const timer = setTimeout(processStatblockEmbeds, 200);
+
+		// Watch iframe for new statblock-embed elements
+		const iframeDoc = document.getElementById('BrewRenderer')?.contentDocument;
+		if(!iframeDoc) return ()=>clearTimeout(timer);
+
+		const observer = new MutationObserver(()=>{
+			setTimeout(processStatblockEmbeds, 100);
+		});
+		observer.observe(iframeDoc.body, { childList: true, subtree: true });
+
+		return ()=>{
+			clearTimeout(timer);
+			observer.disconnect();
+		};
 	}, [renderedPages, state.isMounted]);
 
 	return (
