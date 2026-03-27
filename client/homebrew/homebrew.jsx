@@ -17,6 +17,7 @@ import StatblockEditorPage from './pages/statblockEditorPage/statblockEditorPage
 import StatblockLibraryPage from './pages/statblockLibraryPage/statblockLibraryPage.jsx';
 import StatblockSharePage from './pages/statblockSharePage/statblockSharePage.jsx';
 import LandingPage from './pages/landingPage/landingPage.jsx';
+import StatblockImportPage from './pages/statblockImportPage/statblockImportPage.jsx';
 
 const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
@@ -77,6 +78,7 @@ const Homebrew = (props)=>{
 					<Route path='/statblock/edit/:id' element={<WithRoute el={StatblockEditorPage} statblock={props.statblock} />} />
 					<Route path='/statblock/share/:id' element={<WithRoute el={StatblockSharePage} statblock={props.statblock} />} />
 					<Route path='/statblock/library' element={<WithRoute el={StatblockLibraryPage} />} />
+					<Route path='/statblock/import' element={<WithRoute el={StatblockImportPage} />} />
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
 					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />

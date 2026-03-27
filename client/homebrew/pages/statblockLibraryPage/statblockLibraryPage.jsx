@@ -83,7 +83,12 @@ const StatblockLibraryPage = ()=>{
 			<div className="libraryContent">
 				<div className="libraryHeader">
 					<h1>Your Stat Blocks <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
-					<a href="/statblock/new" className="newButton">+ New Stat Block</a>
+					<div style={{ display: 'flex', gap: '10px' }}>
+						<a href="/statblock/import" className="newButton" style={{ background: '#1565c0' }}>
+							<i className="fas fa-download" /> D&D Beyond Import
+						</a>
+						<a href="/statblock/new" className="newButton">+ New Stat Block</a>
+					</div>
 				</div>
 
 				<div className="filterBar">

@@ -75,6 +75,8 @@ export default async function createApp(vite) {
 				'https://www.naturalcrit.com',
 				'https://naturalcrit-stage.herokuapp.com',
 				'https://homebrewery-stage.herokuapp.com',
+				'https://www.dndbeyond.com',
+				'https://dndbeyond.com',
 			];
 
 			const localNetworkRegex = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+):\d+$/;
@@ -555,6 +557,15 @@ export default async function createApp(vite) {
 	// Add Static Local Paths
 	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
 	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
+
+	//Stat Block Import (D&D Beyond bookmarklet installer)
+	app.get('/statblock/import', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'D&D Beyond Importer',
+			description : 'Import monster stat blocks from D&D Beyond'
+		};
+		return next();
+	});
 
 	//Stat Block Library
 	app.get('/statblock/library', (req, res, next)=>{
