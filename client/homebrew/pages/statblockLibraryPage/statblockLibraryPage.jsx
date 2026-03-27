@@ -15,6 +15,9 @@ const StatblockLibraryPage = ()=>{
 	const [search, setSearch] = useState('');
 	const [typeFilter, setTypeFilter] = useState('');
 	const [loading, setLoading] = useState(true);
+	const [importStatus, setImportStatus] = useState(null);
+	const [showImportBox, setShowImportBox] = useState(false);
+	const [importText, setImportText] = useState('');
 
 	const fetchStatblocks = useCallback(async ()=>{
 		setLoading(true);
@@ -51,6 +54,37 @@ const StatblockLibraryPage = ()=>{
 		}
 	};
 
+	const handleImportSubmit = async ()=>{
+		if(!importText.trim()) return;
+		let data;
+		try {
+			data = JSON.parse(importText);
+		} catch (e) {
+			setImportStatus('Invalid JSON');
+			setTimeout(()=>setImportStatus(null), 3000);
+			return;
+		}
+		const items = Array.isArray(data) ? data : [data];
+		let imported = 0;
+		for (const item of items) {
+			delete item.editId;
+			delete item.shareId;
+			delete item.id;
+			delete item._id;
+			try {
+				await request.post('/api/statblock').send(item);
+				imported++;
+			} catch (err) {
+				console.error('Import failed for', item.name, err);
+			}
+		}
+		setImportStatus(`Imported ${imported} stat block${imported !== 1 ? 's' : ''}`);
+		setTimeout(()=>setImportStatus(null), 3000);
+		setImportText('');
+		setShowImportBox(false);
+		fetchStatblocks();
+	};
+
 	const handleDuplicate = async (e, shareId)=>{
 		e.stopPropagation();
 		try {
@@ -83,9 +117,14 @@ const StatblockLibraryPage = ()=>{
 			<div className="libraryContent">
 				<div className="libraryHeader">
 					<h1>Your Stat Blocks <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
-					<div style={{ display: 'flex', gap: '10px' }}>
+					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+						{importStatus && <span style={{ color: '#4caf50', fontSize: '13px' }}>{importStatus}</span>}
+						<button className="newButton" style={{ background: '#2e7d32', border: 'none', cursor: 'pointer' }}
+							onClick={()=>setShowImportBox(!showImportBox)}>
+							<i className="fas fa-paste" /> Paste Import
+						</button>
 						<a href="/statblock/import" className="newButton" style={{ background: '#1565c0' }}>
-							<i className="fas fa-download" /> D&D Beyond Import
+							<i className="fas fa-download" /> D&D Beyond
 						</a>
 						<a href="/statblock/new" className="newButton">+ New Stat Block</a>
 					</div>
@@ -103,6 +142,37 @@ const StatblockLibraryPage = ()=>{
 						{CREATURE_TYPES.map((t)=><option key={t} value={t}>{t}</option>)}
 					</select>
 				</div>
+
+				{showImportBox && (
+					<div style={{
+						background: '#252538', border: '1px solid #3a3a54', borderRadius: '6px',
+						padding: '12px', marginBottom: '16px'
+					}}>
+						<p style={{ color: '#aaa', fontSize: '13px', margin: '0 0 8px' }}>
+							Paste JSON from the D&D Beyond bookmarklet or any stat block JSON:
+						</p>
+						<textarea
+							value={importText}
+							onChange={(e)=>setImportText(e.target.value)}
+							placeholder='Paste stat block JSON here...'
+							style={{
+								width: '100%', minHeight: '100px', background: '#1e1e2e',
+								border: '1px solid #3a3a54', borderRadius: '4px', color: '#e0e0f0',
+								padding: '8px', fontFamily: 'monospace', fontSize: '12px', resize: 'vertical'
+							}}
+						/>
+						<div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+							<button className="newButton" style={{ background: '#2e7d32', border: 'none', cursor: 'pointer' }}
+								onClick={handleImportSubmit}>
+								Import
+							</button>
+							<button className="newButton" style={{ background: '#3a3a54', border: 'none', cursor: 'pointer' }}
+								onClick={()=>{ setShowImportBox(false); setImportText(''); }}>
+								Cancel
+							</button>
+						</div>
+					</div>
+				)}
 
 				{loading ? (
 					<div className="emptyState"><i className="fas fa-spinner fa-spin" /> Loading...</div>

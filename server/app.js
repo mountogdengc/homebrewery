@@ -558,6 +558,11 @@ export default async function createApp(vite) {
 	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
 	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 
+	//Serve bookmarklet script
+	app.get('/statblock-bookmarklet.js', (req, res)=>{
+		res.sendFile('bookmarklet-ddb.js', { root: `${process.cwd()}/client/homebrew/pages/statblockImportPage`, headers: { 'Content-Type': 'application/javascript' } });
+	});
+
 	//Stat Block Import (D&D Beyond bookmarklet installer)
 	app.get('/statblock/import', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,

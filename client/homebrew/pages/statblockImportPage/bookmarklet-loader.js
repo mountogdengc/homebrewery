@@ -1,0 +1,1 @@
+void(document.head.appendChild(document.createElement('script')).src='{{HB_URL}}/statblock-bookmarklet.js?'+Date.now())

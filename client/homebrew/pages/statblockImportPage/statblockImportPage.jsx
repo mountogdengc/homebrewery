@@ -4,12 +4,12 @@ import Nav            from '@navbar/nav.jsx';
 import Navbar         from '@navbar/navbar.jsx';
 import AccountNavItem from '@navbar/account.navitem.jsx';
 
-import bookmarkletSrc from './bookmarklet-ddb.js?raw';
+import loaderSrc from './bookmarklet-loader.js?raw';
 
 const StatblockImportPage = ()=>{
 	const bookmarkletHref = useMemo(()=>{
 		const baseUrl = window.location.origin;
-		const code = bookmarkletSrc.replace('{{HB_URL}}', baseUrl);
+		const code = loaderSrc.replace('{{HB_URL}}', baseUrl);
 		return 'javascript:' + encodeURIComponent(code);
 	}, []);
 
@@ -54,7 +54,8 @@ const StatblockImportPage = ()=>{
 					<div style={{ textAlign: 'center', marginBottom: '30px' }}>
 						<a
 							href={bookmarkletHref}
-							onClick={(e)=>e.preventDefault()}
+							onClick={(e)=>{ e.preventDefault(); alert('Drag this button to your bookmarks bar. Do not click it.'); }}
+							onDragStart={(e)=>{ e.dataTransfer.setData('text/uri-list', bookmarkletHref); e.dataTransfer.setData('text/plain', 'Import to Homebrewery'); }}
 							style={{
 								display: 'inline-block',
 								background: '#8B1A1A',
@@ -81,10 +82,10 @@ const StatblockImportPage = ()=>{
 					</h2>
 
 					<ol style={{ color: '#aaa', lineHeight: 1.8, paddingLeft: '20px' }}>
-						<li>Make sure you are <strong style={{ color: '#f5e6c8' }}>logged in</strong> to the Homebrewery</li>
 						<li>Go to any monster page on <strong style={{ color: '#f5e6c8' }}>D&D Beyond</strong> (2024 format)</li>
 						<li>Click the <strong style={{ color: '#f5e6c8' }}>"Import to Homebrewery"</strong> bookmark</li>
-						<li>A green banner confirms the import. The stat block appears in your <a href="/statblock/library" style={{ color: '#8B1A1A' }}>library</a></li>
+						<li>A green banner confirms the stat block was <strong style={{ color: '#f5e6c8' }}>copied to your clipboard</strong></li>
+						<li>Go to your <a href="/statblock/library" style={{ color: '#8B1A1A' }}>Stat Block Library</a> and click <strong style={{ color: '#f5e6c8' }}>"Paste Import"</strong></li>
 					</ol>
 
 					<h2 style={{ color: '#f5e6c8', fontSize: '20px', margin: '30px 0 12px' }}>
