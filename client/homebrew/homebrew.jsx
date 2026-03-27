@@ -15,6 +15,7 @@ import VaultPage   from './pages/vaultPage/vaultPage.jsx';
 import AccountPage from './pages/accountPage/accountPage.jsx';
 import StatblockEditorPage from './pages/statblockEditorPage/statblockEditorPage.jsx';
 import StatblockLibraryPage from './pages/statblockLibraryPage/statblockLibraryPage.jsx';
+import LandingPage from './pages/landingPage/landingPage.jsx';
 
 const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
@@ -84,10 +85,11 @@ const Homebrew = (props)=>{
 					<Route path='/faq' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
 					<Route path='/migrate' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
 					<Route path='/account' element={<WithRoute el={AccountPage} brew={brew} accountDetails={brew.accountDetails} />} />
+					<Route path='/brew' element={<WithRoute el={HomePage} brew={brew} />} />
 					<Route path='/legacy' element={<WithRoute el={HomePage} brew={brew} />} />
 					<Route path='/error' element={<WithRoute el={ErrorPage} brew={brew} />} />
-					<Route path='/' element={<WithRoute el={HomePage} brew={brew} />} />
-					<Route path='/*' element={<WithRoute el={HomePage} brew={brew} />} />
+					<Route path='/' element={<WithRoute el={LandingPage} />} />
+					<Route path='/*' element={<WithRoute el={LandingPage} />} />
 				</Routes>
 			</div>
 		</Router>

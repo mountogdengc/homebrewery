@@ -139,8 +139,17 @@ export default async function createApp(vite) {
 		return res.sendFile(`robots.txt`, { root: process.cwd() });
 	});
 
-	//Home page
+	//Landing page
 	app.get('/', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'The Homebrewery Toolkit',
+			description : 'Create authentic-looking homebrew content for tabletop RPGs'
+		};
+		return next();
+	});
+
+	//Brew demo page (was the old home page)
+	app.get('/brew', (req, res, next)=>{
 		req.brew = {
 			text     : welcomeText,
 			renderer : 'V3',
@@ -148,8 +157,8 @@ export default async function createApp(vite) {
 		},
 
 		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Homepage',
-			description : 'Homepage'
+			title       : 'Brew Editor Demo',
+			description : 'Try the Homebrewery Brew Editor'
 		};
 
 		splitTextStyleAndMetadata(req.brew);
