@@ -4,40 +4,100 @@
 
 .statblock-embed,
 .statblock {
-	// Reset all inherited theme styles
-	all: initial;
-	display: block;
-	font-family: 'Times New Roman', Times, serif;
-	font-size: 13.5px;
-	line-height: 1.4;
-	color: #1a1a1a;
-	background-color: #f9f0df;
-	padding: 10px 16px 14px;
-	box-sizing: border-box;
-	border: 1px solid #c9a96e;
-	box-shadow: 2px 3px 10px rgba(0,0,0,0.30);
-	position: relative;
-	margin: 10px 0;
-	break-inside: avoid;
+	// Hard reset to prevent any theme bleed
+	all: initial !important;
+	display: block !important;
+	font-family: 'Times New Roman', Times, serif !important;
+	font-size: 13.5px !important;
+	line-height: 1.4 !important;
+	color: #1a1a1a !important;
+	background-color: #f9f0df !important;
+	padding: 10px 16px 14px !important;
+	box-sizing: border-box !important;
+	border: 1px solid #c9a96e !important;
+	box-shadow: 2px 3px 10px rgba(0,0,0,0.30) !important;
+	position: relative !important;
+	margin: 10px 0 !important;
+	break-inside: avoid !important;
+	column-span: none !important;
+	-webkit-column-span: none !important;
+	text-indent: 0 !important;
 
-	* { all: revert; }
-	strong, b { font-weight: bold !important; }
-	em, i { font-style: italic !important; }
-	p { display: block; margin: 0; &::first-letter { all: unset !important; float: none !important; font-size: inherit !important; } }
-	h1, h2, h3, h4, h5, h6 {
+	// Reset ALL children
+	* {
+		all: revert !important;
+		text-indent: 0 !important;
 		column-span: none !important;
 		-webkit-column-span: none !important;
-		text-transform: none;
-		font-variant: normal;
-		letter-spacing: normal;
-		border: none;
-		padding: 0;
-		margin: 0;
-		&::before, &::after { content: none !important; }
 	}
+
+	strong, b { font-weight: bold !important; }
+	em, i { font-style: italic !important; }
+
+	p {
+		display: block !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		text-indent: 0 !important;
+		font-family: 'Times New Roman', Times, serif !important;
+		font-size: 13.5px !important;
+		line-height: 1.35 !important;
+		color: #1a1a1a !important;
+		&::first-letter {
+			all: unset !important;
+			float: none !important;
+			font-size: inherit !important;
+			font-family: inherit !important;
+			font-weight: inherit !important;
+			line-height: inherit !important;
+			margin: 0 !important;
+			padding: 0 !important;
+		}
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		all: unset !important;
+		display: block !important;
+		column-span: none !important;
+		-webkit-column-span: none !important;
+		text-transform: none !important;
+		font-variant: normal !important;
+		letter-spacing: normal !important;
+		border: none !important;
+		border-bottom: none !important;
+		padding: 0 !important;
+		margin: 0 !important;
+		text-indent: 0 !important;
+		&::before, &::after { content: none !important; display: none !important; }
+	}
+
 	table {
+		all: unset !important;
+		display: table !important;
 		border-image: none !important;
-		border-collapse: collapse;
+		border-collapse: collapse !important;
+		border: none !important;
+		width: auto !important;
+		background: transparent !important;
+		margin: 0 !important;
+	}
+	thead { display: table-header-group !important; }
+	tbody { display: table-row-group !important; }
+	tr {
+		display: table-row !important;
+		background: transparent !important;
+	}
+	th, td {
+		display: table-cell !important;
+		border: none !important;
+		background: transparent !important;
+		padding: 1px 3px !important;
+	}
+
+	div {
+		text-indent: 0 !important;
+		padding: 0 !important;
+		margin: 0 !important;
 	}
 }
 
