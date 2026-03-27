@@ -498,7 +498,8 @@ const Markdown = {
 		rawBrewText = rawBrewText.replace(/\{\{statblock:([a-zA-Z0-9_-]+)(?:\|(\w+))?\}\}/g,
 			(match, id, layout)=>{
 				const mode = layout === 'wide' ? 'wide' : 'narrow';
-				return `<div class="statblock-embed" data-statblock-id="${id}" data-statblock-layout="${mode}"></div>`;
+				const wideClass = mode === 'wide' ? ' statblock-embed--wide' : '';
+				return `<div class="statblock-embed${wideClass}" data-statblock-id="${id}" data-statblock-layout="${mode}"></div>`;
 			});
 
 		const opts = Marked.defaults;
