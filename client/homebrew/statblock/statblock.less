@@ -65,12 +65,37 @@
 		text-indent: 0 !important;
 	}
 
+	// Preserve stat block internal flex layouts
+	.sb-wide-cols {
+		display: flex !important;
+		gap: 16px !important;
+		align-items: flex-start !important;
+	}
+	.sb-wide-left {
+		flex: 0 0 44% !important;
+		min-width: 0 !important;
+	}
+	.sb-wide-right {
+		flex: 1 !important;
+		min-width: 0 !important;
+	}
+	.sb-ability-block {
+		display: flex !important;
+		align-items: stretch !important;
+	}
+	.sb-ability-table {
+		flex: 1 !important;
+	}
+	.sb-ability-divider {
+		flex-shrink: 0 !important;
+	}
+
 	// Ensure bold/italic work
 	strong, b { font-weight: bold !important; }
 	em, i { font-style: italic !important; }
 }
 
-.statblock--wide   { width: 100%; max-width: 760px; }
+.statblock--wide   { width: 100%; max-width: 760px; column-span: all; -webkit-column-span: all; }
 .statblock--narrow { width: 100%; max-width: 400px; }
 
 .sb-header { margin-bottom: 2px; }
