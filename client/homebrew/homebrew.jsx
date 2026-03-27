@@ -14,6 +14,7 @@ import ErrorPage   from './pages/errorPage/errorPage.jsx';
 import VaultPage   from './pages/vaultPage/vaultPage.jsx';
 import AccountPage from './pages/accountPage/accountPage.jsx';
 import StatblockEditorPage from './pages/statblockEditorPage/statblockEditorPage.jsx';
+import StatblockLibraryPage from './pages/statblockLibraryPage/statblockLibraryPage.jsx';
 
 const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
@@ -72,6 +73,7 @@ const Homebrew = (props)=>{
 				<Routes>
 					<Route path='/statblock/new' element={<WithRoute el={StatblockEditorPage} />} />
 					<Route path='/statblock/edit/:id' element={<WithRoute el={StatblockEditorPage} statblock={props.statblock} />} />
+					<Route path='/statblock/library' element={<WithRoute el={StatblockLibraryPage} />} />
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
 					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />

@@ -536,6 +536,15 @@ export default async function createApp(vite) {
 	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
 	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 
+	//Stat Block Library
+	app.get('/statblock/library', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Stat Block Library',
+			description : 'Browse and manage your monster stat blocks'
+		};
+		return next();
+	});
+
 	//Stat Block Editor - New
 	app.get('/statblock/new', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,

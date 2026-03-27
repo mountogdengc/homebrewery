@@ -93,6 +93,12 @@ const StatblockEditorPage = (props)=>{
 					<Nav.item className="statblockTitle" color="purple">
 						{statblock.name || 'New Stat Block'}
 					</Nav.item>
+					<Nav.item
+						icon="fas fa-th-list"
+						onClick={()=>{ window.location.href = '/statblock/library'; }}
+					>
+						Library
+					</Nav.item>
 				</Nav.section>
 
 				<Nav.section>
