@@ -87,10 +87,16 @@
 	.sb-ability-block {
 		display: flex !important;
 		align-items: stretch !important;
+		width: 100% !important;
+		max-width: 100% !important;
+		overflow: hidden !important;
+		table { width: auto !important; min-width: 0 !important; }
 	}
 	.sb-ability-table {
 		flex: 1 !important;
-		table-layout: fixed !important;
+		table-layout: auto !important;
+		width: 0 !important;
+		min-width: 0 !important;
 	}
 	.sb-ability-divider {
 		flex-shrink: 0 !important;
