@@ -19,6 +19,8 @@ import { printCurrentBrew } from '@shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import safeHTML from './safeHTML.js';
+import statblockStylesUrl from '../statblock/statblock.less?url';
+import { render as renderStatblock } from '@shared/statblock/renderer.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
@@ -33,6 +35,7 @@ const INITIAL_CONTENT = dedent`
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
 	<link href="${headerNavStylesUrl}" rel="stylesheet" />
+	<link href="${statblockStylesUrl}" rel="stylesheet" />
 	<base target=_blank>
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
@@ -332,6 +335,51 @@ const BrewRenderer = (props)=>{
 
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
 	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
+
+	// Stat block embed rendering — fetch data and inject HTML into placeholders
+	const statblockCache = useRef({});
+	useEffect(()=>{
+		if(!state.isMounted) return;
+		const iframeDoc = document.getElementById('BrewRenderer')?.contentDocument;
+		if(!iframeDoc) return;
+
+		const embeds = iframeDoc.querySelectorAll('.statblock-embed:not([data-loaded])');
+		if(embeds.length === 0) return;
+
+		// Collect unique IDs to fetch
+		const idsToFetch = [];
+		embeds.forEach((el)=>{
+			const id = el.getAttribute('data-statblock-id');
+			if(id && !statblockCache.current[id]) idsToFetch.push(id);
+		});
+
+		const fillEmbeds = ()=>{
+			embeds.forEach((el)=>{
+				const id = el.getAttribute('data-statblock-id');
+				const layout = el.getAttribute('data-statblock-layout') || 'narrow';
+				const sb = statblockCache.current[id];
+				if(sb) {
+					el.innerHTML = renderStatblock(sb, layout);
+					el.setAttribute('data-loaded', 'true');
+				} else {
+					el.innerHTML = `<div style="color:#999;padding:8px;font-style:italic;">Stat block not found: ${id}</div>`;
+					el.setAttribute('data-loaded', 'true');
+				}
+			});
+		};
+
+		if(idsToFetch.length > 0) {
+			fetch(`/api/statblocks/batch?ids=${idsToFetch.join(',')}`)
+				.then((res)=>res.json())
+				.then((data)=>{
+					Object.assign(statblockCache.current, data);
+					fillEmbeds();
+				})
+				.catch(()=>fillEmbeds());
+		} else {
+			fillEmbeds();
+		}
+	}, [renderedPages, state.isMounted]);
 
 	return (
 		<>

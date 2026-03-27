@@ -256,6 +256,23 @@ export default [
 		]
 	},
 	{
+		groupName : 'Embed',
+		icon      : 'fas fa-puzzle-piece',
+		view      : 'text',
+		snippets  : [
+			{
+				name : 'Embed Stat Block',
+				icon : 'fas fa-dragon',
+				gen  : '{{statblock:SHARE_ID_HERE}}\n'
+			},
+			{
+				name : 'Embed Stat Block (Wide)',
+				icon : 'fas fa-dragon',
+				gen  : '{{statblock:SHARE_ID_HERE|wide}}\n'
+			},
+		]
+	},
+	{
 		groupName : 'License',
 		icon      : 'fas fa-copyright',
 		view      : 'text',
