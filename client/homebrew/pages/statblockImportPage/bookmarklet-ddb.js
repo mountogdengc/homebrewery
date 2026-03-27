@@ -232,7 +232,11 @@
     c.querySelectorAll('a, [data-dicenotation]').forEach(function (n) {
       n.parentNode.replaceChild(document.createTextNode(n.textContent), n);
     });
-    var fullText = c.textContent.replace(/\s+/g, ' ').trim();
+    // Preserve <br> as newlines before extracting text
+    c.querySelectorAll('br').forEach(function (br) {
+      br.parentNode.replaceChild(document.createTextNode('\n'), br);
+    });
+    var fullText = c.textContent.replace(/[ \t]+/g, ' ').trim();
     var strongEl = c.querySelector('strong, b, em strong, strong em, i strong, strong i, i b, b i');
     if (!strongEl) return null;
     var nameRaw = strongEl.textContent.replace(/\s+/g, ' ').trim().replace(/\.$/, '');
