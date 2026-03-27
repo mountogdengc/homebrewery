@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(js|json\\)$\")",
+      "Bash(node -e \":*)",
+      "Bash(npm run:*)",
+      "Bash(npx vite:*)",
+      "Bash(npm start:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(NODE_ENV=local node server.js)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/new)",
+      "Bash(NODE_ENV=local node -e \":*)",
+      "Bash(curl -I http://localhost:8000)",
+      "Bash(echo $NODE_ENV)",
+      "Bash(NODE_ENV=local node -e \"console.log\\(''NODE_ENV:'', process.env.NODE_ENV\\)\")",
+      "Read(//d/Done/**)"
+    ]
+  }
+}
