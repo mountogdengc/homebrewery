@@ -29,7 +29,8 @@
       "Bash(curl -s http://localhost:8000/statblock-bookmarklet.js)",
       "WebSearch",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:www.dndbeyond.com)"
+      "WebFetch(domain:www.dndbeyond.com)",
+      "Bash(curl -s http://localhost:8000/api/statblock/ttenrw_QpAqr)"
     ]
   }
 }
