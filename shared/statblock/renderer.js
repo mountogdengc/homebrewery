@@ -117,7 +117,8 @@ function renderTraits(items) {
 			.replace(/\n\n+/g, '</p><p class="sb-trait">')
 			.replace(/\n/g, '<br>')
 			// Bold spell frequency headers: "At Will:", "Cantrips (at will):", "1/Day Each:", "3rd Level (2 slots):", etc.
-			.replace(/((?:At Will|Cantrips?(?:\s*\([^)]*\))?|\d+\/Day(?: Each)?|\d+(?:st|nd|rd|th)[- ]Level[^:]*|\d+\/Short|Innate)\s*:)/gi, '<strong>$1</strong>');
+			// Only match at start of line (after <br>) or start of text to avoid false positives
+			.replace(/((?:^|<br>)\s*)((?:At Will|Cantrips?(?:\s*\([^)]*\))?|\d+\/Day(?: Each)?|\d+(?:st|nd|rd|th)[- ]Level\s*\([^)]*\)|\d+\/Short|Innate):)/gi, '$1<strong>$2</strong>');
 		return `<p class="sb-trait">${nameHtml}${descHtml}</p>`;
 	}).join('');
 }
