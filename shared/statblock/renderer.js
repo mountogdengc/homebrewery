@@ -116,9 +116,10 @@ function renderTraits(items) {
 		const descHtml = esc(desc)
 			.replace(/\n\n+/g, '</p><p class="sb-trait">')
 			.replace(/\n/g, '<br>')
-			// Bold spell frequency headers: "At Will:", "Cantrips (at will):", "1/Day Each:", "3rd Level (2 slots):", etc.
-			// Must appear after <br>, after </p><p...>, or at start of text
-			.replace(/(<br>|<\/p><p class="sb-trait">|^)((?:At Will|Cantrips?(?:\s*\([^)]*\))?|\d+\/Day(?: Each)?|\d+(?:st|nd|rd|th)[- ][Ll]evel\s*\([^)]*\)|\d+\/Short|Innate)\s*:)/gi, '$1<strong>$2</strong>');
+			// Bold spell frequency headers and indent spell-line paragraphs
+			.replace(/(<br>)((?:At Will|Cantrips?(?:\s*\([^)]*\))?|\d+\/Day(?: Each)?|\d+(?:st|nd|rd|th)[- ][Ll]evel\s*\([^)]*\)|\d+\/Short|Innate)\s*:)/gi, '$1<strong>$2</strong>')
+			.replace(/(<\/p><p class="sb-trait">)((?:At Will|Cantrips?(?:\s*\([^)]*\))?|\d+\/Day(?: Each)?|\d+(?:st|nd|rd|th)[- ][Ll]evel\s*\([^)]*\)|\d+\/Short|Innate)\s*:)/gi, '</p><p class="sb-trait sb-spell-line"><strong>$2</strong>')
+			.replace(/^((?:At Will|Cantrips?(?:\s*\([^)]*\))?|\d+\/Day(?: Each)?|\d+(?:st|nd|rd|th)[- ][Ll]evel\s*\([^)]*\)|\d+\/Short|Innate)\s*:)/gi, '<strong>$1</strong>');
 		return `<p class="sb-trait">${nameHtml}${descHtml}</p>`;
 	}).join('');
 }
