@@ -536,6 +536,27 @@ export default async function createApp(vite) {
 	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
 	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 
+	//Stat Block Editor - New
+	app.get('/statblock/new', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'New Stat Block',
+			description : 'Create a new monster stat block'
+		};
+		return next();
+	});
+
+	//Stat Block Editor - Edit
+	app.get('/statblock/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: StatblockModel } = await import('./statblock.model.js');
+		const sb = await StatblockModel.get({ editId: req.params.id });
+		req.statblock = sb.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `Editing: ${req.statblock.name || 'Stat Block'}`,
+			description : 'Edit a monster stat block'
+		};
+		return next();
+	}));
+
 	//Vault Page
 	app.get('/vault', asyncHandler(async(req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
@@ -574,7 +595,8 @@ export default async function createApp(vite) {
 			account     : req.account,
 			config      : configuration,
 			ogMeta      : req.ogMeta,
-			userThemes  : req.userThemes
+			userThemes  : req.userThemes,
+			statblock   : req.statblock
 		};
 
 		const ogTags = [];
