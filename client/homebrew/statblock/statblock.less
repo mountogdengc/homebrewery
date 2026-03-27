@@ -23,7 +23,7 @@
 	* { all: revert; }
 	strong, b { font-weight: bold !important; }
 	em, i { font-style: italic !important; }
-	p { display: block; margin: 0; }
+	p { display: block; margin: 0; &::first-letter { all: unset !important; float: none !important; font-size: inherit !important; } }
 	h1, h2, h3, h4, h5, h6 {
 		column-span: none !important;
 		-webkit-column-span: none !important;
