@@ -208,6 +208,14 @@ const StatblockLibraryPage = ()=>{
 										</div>
 									)}
 									<div className="cardActions">
+										<button onClick={(e)=>{
+											e.stopPropagation();
+											navigator.clipboard.writeText('{{statblock:' + sb.shareId + '}}');
+											setImportStatus('Copied embed for ' + (sb.name || 'Untitled'));
+											setTimeout(function(){ setImportStatus(null); }, 2000);
+										}}>
+											<i className="fas fa-code" /> Embed
+										</button>
 										<button onClick={(e)=>handleDuplicate(e, sb.shareId)}>
 											<i className="fas fa-copy" /> Duplicate
 										</button>
