@@ -233,7 +233,7 @@
       n.parentNode.replaceChild(document.createTextNode(n.textContent), n);
     });
     var fullText = c.textContent.replace(/\s+/g, ' ').trim();
-    var strongEl = c.querySelector('strong, em strong, strong em');
+    var strongEl = c.querySelector('strong, b, em strong, strong em, i strong, strong i, i b, b i');
     if (!strongEl) return null;
     var nameRaw = strongEl.textContent.replace(/\s+/g, ' ').trim().replace(/\.$/, '');
 
@@ -278,22 +278,54 @@
     }
     var lastArr = null;
 
-    content.querySelectorAll('p').forEach(function (p) {
-      if (!p.querySelector('strong') && !p.querySelector('em strong') && !p.querySelector('strong em')) {
-        var pt = cleanText(p);
-        if (isLeg)  legendary.preamble = pt;
-        if (isMyth) mythic.preamble    = pt;
-        if (isLair) lair.preamble      = pt;
-        return;
+    // Process all child elements, not just <p> — handles <ol>, <ul>, <li> too
+    var children = content.children;
+    for (var ci = 0; ci < children.length; ci++) {
+      var child = children[ci];
+      var tag = child.tagName;
+
+      // Lists (ol, ul) — append all items to the previous action's description
+      if (tag === 'OL' || tag === 'UL') {
+        if (lastArr && lastArr.length > 0) {
+          var items = child.querySelectorAll('li');
+          items.forEach(function (li) {
+            var liText = cleanText(li);
+            if (liText) lastArr[lastArr.length - 1].description += '\n' + liText;
+          });
+        }
+        continue;
       }
-      var parsed = parseActionParagraph(p);
-      if (!parsed) return;
+
+      // Non-paragraph elements — append text to previous action
+      if (tag !== 'P') {
+        var txt = cleanText(child);
+        if (txt && lastArr && lastArr.length > 0) {
+          lastArr[lastArr.length - 1].description += '\n' + txt;
+        }
+        continue;
+      }
+
+      // Paragraphs without bold — preamble text
+      if (!child.querySelector('strong, b')) {
+        var pt = cleanText(child);
+        if (isLeg)  legendary.preamble = pt;
+        else if (isMyth) mythic.preamble = pt;
+        else if (isLair) lair.preamble = pt;
+        else if (lastArr && lastArr.length > 0) {
+          // Plain paragraph after an action — append as continuation
+          lastArr[lastArr.length - 1].description += '\n\n' + pt;
+        }
+        continue;
+      }
+
+      var parsed = parseActionParagraph(child);
+      if (!parsed) continue;
 
       if (!parsed.name) {
         if (parsed.appendText && lastArr && lastArr.length > 0) {
           lastArr[lastArr.length - 1].description += '\n' + parsed.appendText;
         }
-        return;
+        continue;
       }
 
       var entry;
@@ -312,11 +344,10 @@
         entry = { name: parsed.name, description: parsed.description, usage: parsed.usage };
         target.push(entry); lastArr = target;
       } else {
-        // Unknown section or no heading — treat as traits
         entry = { name: parsed.name, description: parsed.description, usage: parsed.usage };
         traits.push(entry); lastArr = traits;
       }
-    });
+    }
   });
 
   // ── Legendary action count from preamble ──────────────────────────────
