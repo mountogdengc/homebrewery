@@ -1,6 +1,6 @@
-// bookmarklet-ddb.js — D&D Beyond 2024 monster page → POST to Homebrewery
-// Extracts stat block data from the current D&D Beyond page and sends it
-// directly to your Homebrewery instance.
+// bookmarklet-ddb.js — D&D Beyond monster page → Homebrewery import
+// Supports both 2024 and legacy (2014) stat block formats.
+// Extracts data via DOM scraping and either POSTs to Homebrewery or copies to clipboard.
 //
 // FOR PERSONAL USE ONLY. D&D Beyond content is (c) Wizards of the Coast.
 'use strict';
@@ -9,11 +9,20 @@
 
   var HB_URL = '{{HB_URL}}';
 
+  // Detect format: try 2024 first, then legacy
+  var is2024 = true;
   var root = document.querySelector('.mon-stat-block-2024');
   if (!root) {
-    alert('No 2024 stat block found on this page.\nMake sure you are on a D&D Beyond monster page.');
+    is2024 = false;
+    root = document.querySelector('.mon-stat-block');
+  }
+  if (!root) {
+    alert('No stat block found on this page.\nMake sure you are on a D&D Beyond monster page.');
     return;
   }
+
+  // CSS class prefix differs by format
+  var P = is2024 ? 'mon-stat-block-2024__' : 'mon-stat-block__';
 
   function cleanText(el) {
     if (!el) return '';
@@ -46,12 +55,12 @@
 
   // ── Name ─────────────────────────────────────────────────────────────────
 
-  var nameEl = root.querySelector('.mon-stat-block-2024__name-link');
+  var nameEl = root.querySelector('.' + P + 'name-link') || root.querySelector('.' + P + 'name');
   var name = nameEl ? nameEl.textContent.trim() : 'Unknown';
 
   // ── Meta ─────────────────────────────────────────────────────────────────
 
-  var metaEl = root.querySelector('.mon-stat-block-2024__meta');
+  var metaEl = root.querySelector('.' + P + 'meta');
   var metaText = metaEl ? metaEl.textContent.trim() : '';
   var metaParts = metaText.split(',').map(function (s) { return s.trim(); });
   var tm = metaParts[0].match(/^(\w+)\s+(\w+)(?:\s+\(([^)]+)\))?/) || [];
@@ -65,18 +74,18 @@
   var acV = 10, acD = '', hpA = 0, hpF = '';
   var speed = { walk: 0, fly: 0, swim: 0, burrow: 0, climb: 0, hover: false };
 
-  root.querySelectorAll('.mon-stat-block-2024__attribute').forEach(function (attr) {
-    var lbl = (attr.querySelector('.mon-stat-block-2024__attribute-label') || {}).textContent || '';
-    var val = (attr.querySelector('.mon-stat-block-2024__attribute-data-value') || {}).textContent || '';
-    var ext =  attr.querySelector('.mon-stat-block-2024__attribute-data-extra');
+  root.querySelectorAll('.' + P + 'attribute').forEach(function (attr) {
+    var lbl = (attr.querySelector('.' + P + 'attribute-label') || {}).textContent || '';
+    var val = (attr.querySelector('.' + P + 'attribute-data-value') || {}).textContent || '';
+    var ext =  attr.querySelector('.' + P + 'attribute-data-extra');
     lbl = lbl.trim(); val = val.trim();
-    if (lbl === 'AC') {
+    if (/^a(rmor\s*)?c(lass)?$/i.test(lbl) || lbl === 'AC') {
       var m = val.match(/(\d+)\s*(.*)/);
       if (m) { acV = parseInt(m[1]) || 10; acD = m[2].replace(/[()]/g, '').trim(); }
-    } else if (lbl === 'HP') {
+    } else if (/^h(it\s*)?p(oints)?$/i.test(lbl) || lbl === 'HP') {
       hpA = parseInt(val) || 0;
       if (ext) hpF = ext.textContent.replace(/[()]/g, '').replace(/\s+/g, '').trim();
-    } else if (lbl === 'Speed') {
+    } else if (/^speed$/i.test(lbl)) {
       var wm = val.match(/^(\d+)/);           if (wm) speed.walk   = parseInt(wm[1]);
       var fm = val.match(/fly\s+(\d+)/i);     if (fm) speed.fly    = parseInt(fm[1]);
       var sm = val.match(/swim\s+(\d+)/i);    if (sm) speed.swim   = parseInt(sm[1]);
@@ -86,53 +95,99 @@
     }
   });
 
-  // ── Ability scores & saves ──────────────────────────────────────────────
+  // ── Ability scores ──────────────────────────────────────────────────────
 
   var AB_MAP = { STR: 'str', DEX: 'dex', CON: 'con', INT: 'int', WIS: 'wis', CHA: 'cha' };
   var abilities = { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
   var rawSave   = {};
 
-  root.querySelectorAll('.stat-table tbody tr').forEach(function (row) {
-    var abLabel = (row.querySelector('th') || {}).textContent || '';
-    var ab = AB_MAP[abLabel.trim()];
-    if (!ab) return;
-    var tds = row.querySelectorAll('td');
-    if (tds.length < 3) return;
-    abilities[ab] = parseInt(tds[0].textContent) || 10;
-    rawSave[ab]   = parseInt(tds[2].textContent) || 0;
-  });
+  if (is2024) {
+    // 2024 format: table with score, mod, save columns
+    root.querySelectorAll('.stat-table tbody tr').forEach(function (row) {
+      var abLabel = (row.querySelector('th') || {}).textContent || '';
+      var ab = AB_MAP[abLabel.trim()];
+      if (!ab) return;
+      var tds = row.querySelectorAll('td');
+      if (tds.length < 3) return;
+      abilities[ab] = parseInt(tds[0].textContent) || 10;
+      rawSave[ab]   = parseInt(tds[2].textContent) || 0;
+    });
+  } else {
+    // Legacy format: individual ability blocks
+    root.querySelectorAll('.ability-block__stat').forEach(function (stat) {
+      var heading = (stat.querySelector('.ability-block__heading') || {}).textContent || '';
+      var ab = AB_MAP[heading.trim()];
+      if (!ab) return;
+      var scoreEl = stat.querySelector('.ability-block__score');
+      if (scoreEl) abilities[ab] = parseInt(scoreEl.textContent) || 10;
+    });
+    // Try alternate legacy layout
+    if (abilities.str === 10 && abilities.dex === 10) {
+      root.querySelectorAll('.' + P + 'ability-scores-stat, .stat-block-ability-scores-stat').forEach(function (stat) {
+        var heading = (stat.querySelector('.' + P + 'ability-scores-heading, .stat-block-ability-scores-heading') || {}).textContent || '';
+        var ab = AB_MAP[heading.trim()];
+        if (!ab) return;
+        var scoreEl = stat.querySelector('.' + P + 'ability-scores-score, .stat-block-ability-scores-score');
+        if (scoreEl) abilities[ab] = parseInt(scoreEl.textContent) || 10;
+      });
+    }
+  }
 
   // ── CR + tidbits ────────────────────────────────────────────────────────
 
   var cr = '1', skillRaw = '', senses = '', languages = '\u2014';
   var dVuln = '', dRes = '', dImm = '', cImm = '';
+  var savesRaw = '';
 
-  root.querySelectorAll('.mon-stat-block-2024__tidbit').forEach(function (t) {
-    var lbl = (t.querySelector('.mon-stat-block-2024__tidbit-label') || {}).textContent || '';
-    var dat =  t.querySelector('.mon-stat-block-2024__tidbit-data');
+  root.querySelectorAll('.' + P + 'tidbit, .' + P + 'tidbits .mon-stat-block__tidbit').forEach(function (t) {
+    var lbl = (t.querySelector('.' + P + 'tidbit-label') || {}).textContent || '';
+    var dat =  t.querySelector('.' + P + 'tidbit-data');
     lbl = lbl.trim();
     var v = cleanText(dat);
-    if      (lbl === 'CR')                     { var m = v.match(/^(\d+\/\d+|\d+)/); if (m) cr = m[1]; }
-    else if (lbl === 'Skills')                 skillRaw  = v;
-    else if (lbl === 'Senses')                 senses    = v;
-    else if (lbl === 'Languages')              languages = v || '\u2014';
-    else if (lbl === 'Damage Vulnerabilities') dVuln     = v;
-    else if (lbl === 'Damage Resistances')     dRes      = v;
-    else if (lbl === 'Damage Immunities')      dImm      = v;
-    else if (lbl === 'Condition Immunities')   cImm      = v;
+    if      (/^c(hallenge)?r?(ating)?$/i.test(lbl) || lbl === 'CR')  { var m = v.match(/^(\d+\/\d+|\d+)/); if (m) cr = m[1]; }
+    else if (/^skill/i.test(lbl))                    skillRaw  = v;
+    else if (/^sense/i.test(lbl))                    senses    = v;
+    else if (/^language/i.test(lbl))                 languages = v || '\u2014';
+    else if (/^saving\s*throw/i.test(lbl))           savesRaw  = v;
+    else if (/^damage\s*vuln/i.test(lbl))            dVuln     = v;
+    else if (/^damage\s*res/i.test(lbl))             dRes      = v;
+    else if (/^damage\s*imm/i.test(lbl))             dImm      = v;
+    else if (/^condition\s*imm/i.test(lbl))          cImm      = v;
   });
 
   // ── Saving throws ──────────────────────────────────────────────────────
 
   var PB = getPB(cr);
   var savingThrows = {};
-  ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(function (ab) {
-    var em = abilityMod(abilities[ab]);
-    var sv = rawSave[ab] !== undefined ? rawSave[ab] : em;
-    var prof = sv !== em;
-    var ovr  = (prof && sv !== em + PB) ? sv : null;
-    savingThrows[ab] = { proficient: prof, override: ovr };
-  });
+
+  if (is2024) {
+    // 2024: saves parsed from ability table above
+    ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(function (ab) {
+      var em = abilityMod(abilities[ab]);
+      var sv = rawSave[ab] !== undefined ? rawSave[ab] : em;
+      var prof = sv !== em;
+      var ovr  = (prof && sv !== em + PB) ? sv : null;
+      savingThrows[ab] = { proficient: prof, override: ovr };
+    });
+  } else {
+    // Legacy: saves from tidbit line like "Str +7, Con +6"
+    var SAVE_MAP = { Str: 'str', Dex: 'dex', Con: 'con', Int: 'int', Wis: 'wis', Cha: 'cha' };
+    ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(function (ab) {
+      savingThrows[ab] = { proficient: false, override: null };
+    });
+    if (savesRaw) {
+      savesRaw.split(',').map(function (s) { return s.trim(); }).forEach(function (part) {
+        var m = part.match(/^(\w+)\s+([+-]\d+)$/);
+        if (!m) return;
+        var ab = SAVE_MAP[m[1].trim()];
+        if (!ab) return;
+        var bonus = parseInt(m[2]);
+        var em = abilityMod(abilities[ab]);
+        savingThrows[ab].proficient = true;
+        if (bonus !== em + PB) savingThrows[ab].override = bonus;
+      });
+    }
+  }
 
   // ── Skills ─────────────────────────────────────────────────────────────
 
@@ -178,7 +233,7 @@
       n.parentNode.replaceChild(document.createTextNode(n.textContent), n);
     });
     var fullText = c.textContent.replace(/\s+/g, ' ').trim();
-    var strongEl = c.querySelector('strong');
+    var strongEl = c.querySelector('strong, em strong, strong em');
     if (!strongEl) return null;
     var nameRaw = strongEl.textContent.replace(/\s+/g, ' ').trim().replace(/\.$/, '');
 
@@ -209,19 +264,22 @@
   var lair      = { enabled: false, preamble: '', actions: [] };
   var SECTION_MAP = { 'Traits': traits, 'Actions': actions, 'Bonus Actions': bonusActions, 'Reactions': reactions };
 
-  root.querySelectorAll('.mon-stat-block-2024__description-block').forEach(function (block) {
-    var hdEl    = block.querySelector('.mon-stat-block-2024__description-block-heading');
-    var content = block.querySelector('.mon-stat-block-2024__description-block-content');
+  root.querySelectorAll('.' + P + 'description-block').forEach(function (block) {
+    var hdEl    = block.querySelector('.' + P + 'description-block-heading');
+    var content = block.querySelector('.' + P + 'description-block-content');
     if (!content) return;
     var heading = hdEl ? hdEl.textContent.trim() : '';
-    var isLeg  = heading === 'Legendary Actions';
-    var isMyth = heading === 'Mythic Actions';
-    var isLair = heading === 'Lair Actions';
-    var target = SECTION_MAP[heading] || null;
+    var isLeg  = /^legendary/i.test(heading);
+    var isMyth = /^mythic/i.test(heading);
+    var isLair = /^lair/i.test(heading);
+    var target = null;
+    for (var key in SECTION_MAP) {
+      if (heading.toLowerCase() === key.toLowerCase()) { target = SECTION_MAP[key]; break; }
+    }
     var lastArr = null;
 
     content.querySelectorAll('p').forEach(function (p) {
-      if (!p.querySelector('strong')) {
+      if (!p.querySelector('strong') && !p.querySelector('em strong') && !p.querySelector('strong em')) {
         var pt = cleanText(p);
         if (isLeg)  legendary.preamble = pt;
         if (isMyth) mythic.preamble    = pt;
@@ -253,16 +311,27 @@
       } else if (target) {
         entry = { name: parsed.name, description: parsed.description, usage: parsed.usage };
         target.push(entry); lastArr = target;
+      } else {
+        // Unknown section or no heading — treat as traits
+        entry = { name: parsed.name, description: parsed.description, usage: parsed.usage };
+        traits.push(entry); lastArr = traits;
       }
     });
   });
 
-  // ── Build & POST ──────────────────────────────────────────────────────
+  // ── Legendary action count from preamble ──────────────────────────────
+
+  if (legendary.preamble) {
+    var lcm = legendary.preamble.match(/can take (\d+) legendary/i);
+    if (lcm) legendary.count = parseInt(lcm[1]);
+  }
+
+  // ── Build statblock ──────────────────────────────────────────────────────
 
   var sb = {
     system: '5e2024',
     name: name, size: size, type: type, subtype: subtype, alignment: alignment,
-    isHomebrew: false, source: 'D&D Beyond (2024)', tags: [],
+    isHomebrew: false, source: is2024 ? 'D&D Beyond (2024)' : 'D&D Beyond (Legacy)', tags: [],
     habitat: '', treasure: '',
     ac: { value: acV, description: acD },
     hp: { average: hpA, formula: hpF },
@@ -276,7 +345,7 @@
   };
 
   // Try POST first, fall back to clipboard
-  showBanner('Importing ' + name + '...', '#1565c0');
+  showBanner('Importing ' + name + (is2024 ? '' : ' (legacy)') + '...', '#1565c0');
 
   fetch(HB_URL + '/api/statblock', {
     method: 'POST',

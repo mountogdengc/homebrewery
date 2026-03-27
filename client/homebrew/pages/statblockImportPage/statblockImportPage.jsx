@@ -95,7 +95,8 @@ const StatblockImportPage = ()=>{
 					<ul style={{ color: '#aaa', lineHeight: 1.8, paddingLeft: '20px' }}>
 						<li>A D&D Beyond account with access to the monster content</li>
 						<li>Chrome, Edge, or another Chromium-based browser</li>
-						<li>Only 2024 format stat blocks are supported</li>
+						<li>Supports both <strong style={{ color: '#f5e6c8' }}>2024</strong> and <strong style={{ color: '#f5e6c8' }}>legacy (2014)</strong> stat block formats</li>
+						<li>Legacy stat blocks are automatically converted to 2024 format</li>
 					</ul>
 
 					<div style={{
