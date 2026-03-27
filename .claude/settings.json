@@ -14,7 +14,12 @@
       "Bash(curl -I http://localhost:8000)",
       "Bash(echo $NODE_ENV)",
       "Bash(NODE_ENV=local node -e \"console.log\\(''NODE_ENV:'', process.env.NODE_ENV\\)\")",
-      "Read(//d/Done/**)"
+      "Read(//d/Done/**)",
+      "Bash(curl -s http://localhost:8000/api/statblocks)",
+      "Bash(curl -s http://localhost:8000/api/statblock/render/ZPyq_K40dRJO)",
+      "Bash(node --input-type=module -e \":*)",
+      "Bash(curl -s http://localhost:8000/api/statblock/ZPyq_K40dRJO)",
+      "Bash(curl -s http://localhost:8000/api/statblock-render/ZPyq_K40dRJO -v)"
     ]
   }
 }
