@@ -10,9 +10,10 @@ import _                                      from 'lodash';
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
-import SplitPane    from '../../../components/splitPane/splitPane.jsx';
-import Editor       from '../../editor/editor.jsx';
-import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
+import SplitPane       from '../../../components/splitPane/splitPane.jsx';
+import Editor          from '../../editor/editor.jsx';
+import BrewRenderer    from '../../brewRenderer/brewRenderer.jsx';
+import StatblockPicker from '../../statblock/statblockPicker.jsx';
 
 import Nav                       from '@navbar/nav.jsx';
 import Navbar                    from '@navbar/navbar.jsx';
@@ -73,6 +74,7 @@ const EditPage = (props)=>{
 	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
+	const [showStatblockPicker, setShowStatblockPicker] = useState(false);
 
 	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
@@ -361,6 +363,12 @@ const EditPage = (props)=>{
 						{renderSaveButton()}
 						{renderAutoSaveButton()}
 					</Nav.dropdown>}
+				<Nav.item
+					icon={showStatblockPicker ? 'fas fa-eye' : 'fas fa-dragon'}
+					onClick={()=>setShowStatblockPicker(!showStatblockPicker)}
+				>
+					{showStatblockPicker ? 'Preview' : 'Stat Blocks'}
+				</Nav.item>
 				<NewBrewItem />
 				<PrintNavItem />
 				<HelpNavItem />
@@ -397,21 +405,28 @@ const EditPage = (props)=>{
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
 					/>
-					<BrewRenderer
-						text={currentBrew.text}
-						style={currentBrew.style}
-						renderer={currentBrew.renderer}
-						theme={currentBrew.theme}
-						themeBundle={themeBundle}
-						errors={HTMLErrors}
-						lang={currentBrew.lang}
-						onPageChange={setCurrentBrewRendererPageNum}
-						currentEditorViewPageNum={currentEditorViewPageNum}
-						currentEditorCursorPageNum={currentEditorCursorPageNum}
-						currentBrewRendererPageNum={currentBrewRendererPageNum}
-						allowPrint={true}
-						onPreviewClick={(text, pageNum)=>{editorRef.current?.jumpToText(text, pageNum);}}
-					/>
+					{showStatblockPicker ? (
+						<StatblockPicker
+							onInsert={(code)=>{editorRef.current?.handleInject(code);}}
+							onClose={()=>setShowStatblockPicker(false)}
+						/>
+					) : (
+						<BrewRenderer
+							text={currentBrew.text}
+							style={currentBrew.style}
+							renderer={currentBrew.renderer}
+							theme={currentBrew.theme}
+							themeBundle={themeBundle}
+							errors={HTMLErrors}
+							lang={currentBrew.lang}
+							onPageChange={setCurrentBrewRendererPageNum}
+							currentEditorViewPageNum={currentEditorViewPageNum}
+							currentEditorCursorPageNum={currentEditorCursorPageNum}
+							currentBrewRendererPageNum={currentBrewRendererPageNum}
+							allowPrint={true}
+							onPreviewClick={(text, pageNum)=>{editorRef.current?.jumpToText(text, pageNum);}}
+						/>
+					)}
 				</SplitPane>
 			</div>
 		</div>
