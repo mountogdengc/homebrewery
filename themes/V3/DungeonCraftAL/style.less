@@ -585,23 +585,23 @@
 	}
 
 	// Cover page logo positioning
+	// Use the same pattern as .footnote/.pageNumber which are absolute-positioned
+	// and work correctly — they're direct children of .page via the markdown
 	.coverLogoTopRight {
-		position            : absolute;
-		top                 : 0;
-		right               : 0;
-		z-index             : 100;
-		column-span         : all;
-		-webkit-column-span : all;
+		position    : absolute;
+		top         : 20px;
+		right       : 20px;
+		z-index     : 100;
+		text-align  : right;
 		img { max-height : 1.5in; }
 	}
 
 	.coverLogoBottomRight {
-		position            : absolute;
-		bottom              : 0;
-		right               : 0;
-		z-index             : 100;
-		column-span         : all;
-		-webkit-column-span : all;
+		position    : absolute;
+		bottom      : 20px;
+		right       : 20px;
+		z-index     : 100;
+		text-align  : right;
 		img { max-height : 1.5in; }
 	}
 
