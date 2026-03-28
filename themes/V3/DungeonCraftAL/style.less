@@ -876,39 +876,8 @@
 // ── Print ────────────────────────────────────────────────────────────────
 
 @media print {
-	.page {
-		padding : 0;
-
-		.footnote {
-			left   : 0;
-			right  : 0;
-			bottom : 0;
-		}
-
-		.legal {
-			left   : 0;
-			right  : 0;
-			bottom : 0;
-		}
-
-		.pageNumber {
-			right  : 0;
-			bottom : 0;
-		}
-
-		&:nth-child(even) {
-			.pageNumber {
-				left  : 0;
-				right : auto;
-			}
-			.footnote {
-				left  : auto;
-				right : 0;
-			}
-		}
-	}
 	@page {
 		size   : letter;
-		margin : 0.58in 0.81in 0.79in;
+		margin : 0;
 	}
 }
