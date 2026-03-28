@@ -1,0 +1,277 @@
+// ── Willowlight Engine Statblock Styles ───────────────────────────────
+
+// Statblock visual rendering
+.wl-statblock {
+	font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+	color: #d4d4e8;
+	padding: 16px 20px;
+	max-width: 500px;
+	margin: 20px auto;
+	border: 2px solid #4a6fa5;
+	border-radius: 8px;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.5), inset 0 0 30px rgba(74,111,165,0.1);
+
+	&.wl-wide {
+		max-width: 800px;
+	}
+}
+
+.wl-header {
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+.wl-name {
+	font-size: 24px;
+	font-weight: 700;
+	color: #a8d8ea;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+}
+
+.wl-subtitle {
+	font-size: 13px;
+	font-style: italic;
+	color: #7a8aad;
+	margin-top: 2px;
+}
+
+.wl-divider {
+	height: 1px;
+	background: linear-gradient(to right, transparent, #4a6fa5, transparent);
+	margin: 10px 0;
+}
+
+// Attributes
+.wl-attributes {
+	display: flex;
+	gap: 16px;
+	justify-content: space-between;
+	margin: 8px 0;
+	flex-wrap: wrap;
+}
+
+.wl-attr-group {
+	flex: 1;
+	min-width: 120px;
+}
+
+.wl-attr-group-label {
+	font-size: 10px;
+	font-weight: 700;
+	color: #4a6fa5;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin-bottom: 4px;
+	border-bottom: 1px solid #2a3a5e;
+	padding-bottom: 2px;
+}
+
+.wl-attr-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 2px 0;
+}
+
+.wl-attr-name {
+	font-size: 13px;
+	color: #b0b8d0;
+	font-weight: 500;
+}
+
+// Dots
+.wl-dots {
+	display: inline-flex;
+	gap: 3px;
+}
+
+.wl-dot {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	border: 1.5px solid #4a6fa5;
+}
+
+.wl-dot-filled {
+	background: #a8d8ea;
+	border-color: #a8d8ea;
+	box-shadow: 0 0 4px rgba(168,216,234,0.4);
+}
+
+.wl-dot-empty {
+	background: transparent;
+}
+
+// Health Tracks
+.wl-health-track {
+	margin: 6px 0;
+}
+
+.wl-track-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 4px;
+}
+
+.wl-track-name {
+	font-size: 13px;
+	font-weight: 600;
+	color: #b0b8d0;
+}
+
+.wl-track-def {
+	font-size: 11px;
+	color: #7a8aad;
+	font-weight: 600;
+}
+
+.wl-track-boxes {
+	display: flex;
+	gap: 3px;
+	flex-wrap: wrap;
+}
+
+.wl-health-box {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border: 1.5px solid #4a6fa5;
+	border-radius: 2px;
+	background: rgba(74,111,165,0.1);
+}
+
+// Sections
+.wl-section {
+	margin: 10px 0;
+}
+
+.wl-section-title {
+	font-size: 13px;
+	font-weight: 700;
+	color: #a8d8ea;
+	border-bottom: 1px solid #4a6fa5;
+	margin-bottom: 6px;
+	padding-bottom: 3px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-size: 12px;
+}
+
+// Skills
+.wl-skill-tier {
+	display: flex;
+	gap: 8px;
+	margin: 3px 0;
+	font-size: 13px;
+}
+
+.wl-skill-tier-label {
+	color: #7a8aad;
+	font-weight: 600;
+	min-width: 100px;
+}
+
+.wl-skill-entry {
+	color: #d4d4e8;
+}
+
+// Attacks table
+.wl-attacks {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12px;
+	margin-top: 4px;
+
+	th {
+		background: rgba(74,111,165,0.3);
+		color: #a8d8ea;
+		padding: 4px 6px;
+		text-align: left;
+		font-weight: 600;
+		font-size: 11px;
+		border-bottom: 1px solid #4a6fa5;
+	}
+
+	td {
+		padding: 3px 6px;
+		border-bottom: 1px solid rgba(74,111,165,0.2);
+		color: #d4d4e8;
+	}
+
+	tr:last-child td {
+		border-bottom: none;
+	}
+}
+
+// Dot lists (Edges, Aspects, Burdens)
+.wl-dot-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 2px 0;
+}
+
+.wl-dot-name {
+	font-size: 13px;
+	color: #d4d4e8;
+}
+
+// Notes
+.wl-notes {
+	font-size: 13px;
+	font-style: italic;
+	color: #7a8aad;
+	line-height: 1.4;
+}
+
+// ── Willowlight Editor Page Styles ────────────────────────────────────
+
+.willowlightStatblockEditorPage {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+
+	.content {
+		flex: 1;
+		overflow: hidden;
+	}
+}
+
+.willowlightStatblockPreview {
+	padding: 20px;
+	overflow-y: auto;
+	height: 100%;
+	background: #0a0a1a;
+}
+
+// ── Dot selector in form ──────────────────────────────────────────────
+.wlDotSelector {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+
+	.wlDotBtn {
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		border: 2px solid #4a6fa5;
+		background: transparent;
+		cursor: pointer;
+		padding: 0;
+		transition: all 0.15s;
+
+		&.filled {
+			background: #a8d8ea;
+			border-color: #a8d8ea;
+			box-shadow: 0 0 6px rgba(168,216,234,0.4);
+		}
+
+		&:hover {
+			border-color: #a8d8ea;
+		}
+	}
+}

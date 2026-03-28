@@ -21,6 +21,8 @@ import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
 import statblockApi                from './statblock.api.js';
 import besmCharacterApi            from './besm-character.api.js';
+import brpStatblockApi             from './brp-statblock.api.js';
+import willowlightStatblockApi     from './willowlight-statblock.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
@@ -121,6 +123,8 @@ export default async function createApp(vite) {
 	app.use(vaultApi);
 	app.use(statblockApi);
 	app.use(besmCharacterApi);
+	app.use(brpStatblockApi);
+	app.use(willowlightStatblockApi);
 
 	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 	const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
@@ -651,6 +655,90 @@ export default async function createApp(vite) {
 		return next();
 	});
 
+	//BRP Stat Block Builder - New
+	app.get('/brp/new', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'BRP Stat Block Builder',
+			description : 'Create a BRP (Basic Roleplaying) stat block'
+		};
+		return next();
+	});
+
+	//BRP Stat Block Builder - Edit
+	app.get('/brp/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: BrpStatblockModel } = await import('./brp-statblock.model.js');
+		const sb = await BrpStatblockModel.get({ editId: req.params.id });
+		req.brpStatblock = sb.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `Editing: ${req.brpStatblock.name || 'BRP Stat Block'}`,
+			description : 'Edit a BRP stat block'
+		};
+		return next();
+	}));
+
+	//BRP Stat Block Share
+	app.get('/brp/share/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: BrpStatblockModel } = await import('./brp-statblock.model.js');
+		const sb = await BrpStatblockModel.get({ shareId: req.params.id });
+		req.brpStatblock = sb.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : req.brpStatblock.name || 'BRP Stat Block',
+			description : `${req.brpStatblock.category} BRP creature`
+		};
+		return next();
+	}));
+
+	//BRP Stat Block Library
+	app.get('/brp/library', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'BRP Stat Block Library',
+			description : 'Browse your BRP stat blocks'
+		};
+		return next();
+	});
+
+	//Willowlight Stat Block Builder - New
+	app.get('/willowlight/new', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Willowlight Stat Block Builder',
+			description : 'Create a Willowlight Engine stat block'
+		};
+		return next();
+	});
+
+	//Willowlight Stat Block Builder - Edit
+	app.get('/willowlight/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: WillowlightStatblockModel } = await import('./willowlight-statblock.model.js');
+		const sb = await WillowlightStatblockModel.get({ editId: req.params.id });
+		req.willowlightStatblock = sb.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `Editing: ${req.willowlightStatblock.name || 'Willowlight Stat Block'}`,
+			description : 'Edit a Willowlight Engine stat block'
+		};
+		return next();
+	}));
+
+	//Willowlight Stat Block Share
+	app.get('/willowlight/share/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: WillowlightStatblockModel } = await import('./willowlight-statblock.model.js');
+		const sb = await WillowlightStatblockModel.get({ shareId: req.params.id });
+		req.willowlightStatblock = sb.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : req.willowlightStatblock.name || 'Willowlight Stat Block',
+			description : 'Willowlight Engine stat block'
+		};
+		return next();
+	}));
+
+	//Willowlight Stat Block Library
+	app.get('/willowlight/library', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Willowlight Stat Block Library',
+			description : 'Browse your Willowlight Engine stat blocks'
+		};
+		return next();
+	});
+
 	//Vault Page
 	app.get('/vault', asyncHandler(async(req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
@@ -690,9 +778,11 @@ export default async function createApp(vite) {
 			config      : configuration,
 			ogMeta         : req.ogMeta,
 			userThemes     : req.userThemes,
-			statblock      : req.statblock,
-			userStatblocks : req.userStatblocks,
-			besmCharacter  : req.besmCharacter
+			statblock              : req.statblock,
+			userStatblocks         : req.userStatblocks,
+			besmCharacter          : req.besmCharacter,
+			brpStatblock           : req.brpStatblock,
+			willowlightStatblock   : req.willowlightStatblock
 		};
 
 		const ogTags = [];

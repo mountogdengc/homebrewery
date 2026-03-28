@@ -1,0 +1,185 @@
+// ── BRP Statblock Styles ──────────────────────────────────────────────
+
+// Statblock visual rendering
+.brp-statblock {
+	font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	background: #f4e8d1;
+	color: #1a1a1a;
+	padding: 16px 20px;
+	max-width: 500px;
+	margin: 20px auto;
+	border: 2px solid #4a3520;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+
+	&.brp-wide {
+		max-width: 800px;
+	}
+}
+
+.brp-header {
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+.brp-name {
+	font-size: 22px;
+	font-weight: 700;
+	color: #4a3520;
+	font-variant: small-caps;
+	letter-spacing: 1px;
+}
+
+.brp-subtitle {
+	font-size: 13px;
+	font-style: italic;
+	color: #6b5a4a;
+	margin-top: 2px;
+}
+
+.brp-divider {
+	height: 2px;
+	background: linear-gradient(to right, transparent, #4a3520, transparent);
+	margin: 8px 0;
+}
+
+// Characteristics table
+.brp-chars {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 8px 0;
+
+	td {
+		text-align: center;
+		padding: 4px 2px;
+	}
+
+	.brp-char-label {
+		font-size: 11px;
+		font-weight: 700;
+		color: #4a3520;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+
+	.brp-char-value {
+		font-size: 18px;
+		font-weight: 700;
+		color: #1a1a1a;
+	}
+}
+
+// Derived values
+.brp-derived {
+	width: 100%;
+	margin: 4px 0;
+
+	.brp-derived-label {
+		font-weight: 600;
+		color: #4a3520;
+		font-size: 13px;
+		padding: 2px 8px 2px 0;
+		width: 120px;
+	}
+
+	.brp-derived-value {
+		font-size: 13px;
+		color: #1a1a1a;
+		padding: 2px 0;
+	}
+}
+
+// Sections
+.brp-section {
+	margin: 8px 0;
+}
+
+.brp-section-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #4a3520;
+	border-bottom: 1px solid #4a3520;
+	margin-bottom: 4px;
+	padding-bottom: 2px;
+	font-variant: small-caps;
+	letter-spacing: 0.5px;
+}
+
+// Skills
+.brp-skill-list {
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.brp-skill {
+	white-space: nowrap;
+}
+
+// Weapons table
+.brp-weapons, .brp-hit-locations {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12px;
+	margin-top: 4px;
+
+	th {
+		background: #4a3520;
+		color: #f4e8d1;
+		padding: 3px 6px;
+		text-align: left;
+		font-weight: 600;
+		font-size: 11px;
+	}
+
+	td {
+		padding: 3px 6px;
+		border-bottom: 1px solid #c8b89a;
+	}
+
+	tr:last-child td {
+		border-bottom: none;
+	}
+}
+
+// Spells
+.brp-spell {
+	font-size: 13px;
+	margin: 2px 0;
+	line-height: 1.4;
+}
+
+// Traits
+.brp-trait {
+	font-size: 13px;
+	margin: 4px 0;
+	line-height: 1.4;
+}
+
+// Notes
+.brp-notes {
+	font-size: 13px;
+	font-style: italic;
+	color: #4a3a2a;
+	line-height: 1.4;
+}
+
+// ── BRP Editor Page Styles ────────────────────────────────────────────
+
+.brpStatblockEditorPage {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+
+	.content {
+		flex: 1;
+		overflow: hidden;
+	}
+}
+
+.brpStatblockPreview {
+	padding: 20px;
+	overflow-y: auto;
+	height: 100%;
+	background: #2a2a3a;
+}
+
+// ── BRP Form uses same .statblockForm styles from statblock.less ──────

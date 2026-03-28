@@ -59,12 +59,38 @@ const LandingPage = ()=>{
 							Stats, Attributes, Defects, and Skills.
 						</p>
 					</a>
+
+					<a className="toolCard" href="/brp/new">
+						<div className="toolIcon">
+							<i className="fas fa-scroll" />
+						</div>
+						<h2 className="toolName">BRP Stat Block Builder</h2>
+						<p className="toolDesc">
+							Build Chaosium BRP (Basic Roleplaying) creature and
+							NPC stat blocks with characteristics, skills, weapons,
+							spells, and hit locations.
+						</p>
+					</a>
+
+					<a className="toolCard" href="/willowlight/new">
+						<div className="toolIcon">
+							<i className="fas fa-moon" />
+						</div>
+						<h2 className="toolName">Willowlight Engine Builder</h2>
+						<p className="toolDesc">
+							Create stat blocks for the Willowlight Engine with
+							attributes, health tracks, edges, aspects, burdens,
+							and attacks.
+						</p>
+					</a>
 				</div>
 
 				<div className="quickLinks">
 					<a href="/new">New Brew</a>
 					<a href="/statblock/library">Stat Block Library</a>
 					<a href="/besm/library">BESM Characters</a>
+					<a href="/brp/library">BRP Stat Blocks</a>
+					<a href="/willowlight/library">Willowlight Stat Blocks</a>
 					<a href="/vault">The Vault</a>
 					<a href="/changelog">Changelog</a>
 					<a href="/faq">FAQ</a>
