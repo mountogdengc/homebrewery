@@ -1,6 +1,6 @@
 import 'core-js/es/string/to-well-formed.js'; // Polyfill for older browsers
 import './homebrew.less';
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router';
 
 import { updateLocalStorage } from './utils/updateLocalStorage/updateLocalStorageKeys.js';
@@ -18,6 +18,10 @@ import StatblockLibraryPage from './pages/statblockLibraryPage/statblockLibraryP
 import StatblockSharePage from './pages/statblockSharePage/statblockSharePage.jsx';
 import LandingPage from './pages/landingPage/landingPage.jsx';
 import StatblockImportPage from './pages/statblockImportPage/statblockImportPage.jsx';
+
+// Lazy-load BESM pages — keeps ~500KB of data libraries out of the main bundle
+const BesmBuilderPage = lazy(()=>import('./pages/besmBuilder/besmBuilderPage.jsx'));
+const BesmLibraryPage = lazy(()=>import('./pages/besmLibraryPage/besmLibraryPage.jsx'));
 
 const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
@@ -74,6 +78,9 @@ const Homebrew = (props)=>{
 		<Router>
 			<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
+					<Route path='/besm/new' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading BESM Builder...</div>}><WithRoute el={BesmBuilderPage} /></Suspense>} />
+					<Route path='/besm/edit/:id' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading BESM Builder...</div>}><WithRoute el={BesmBuilderPage} besmCharacter={props.besmCharacter} /></Suspense>} />
+					<Route path='/besm/library' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading...</div>}><WithRoute el={BesmLibraryPage} /></Suspense>} />
 					<Route path='/statblock/new' element={<WithRoute el={StatblockEditorPage} />} />
 					<Route path='/statblock/edit/:id' element={<WithRoute el={StatblockEditorPage} statblock={props.statblock} />} />
 					<Route path='/statblock/share/:id' element={<WithRoute el={StatblockSharePage} statblock={props.statblock} />} />

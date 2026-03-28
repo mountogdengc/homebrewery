@@ -1,0 +1,1510 @@
+export interface DefectTemplate {
+  name: string;
+  key: string;
+  rank_type: 'Lesser' | 'Greater' | 'Serious';
+  cp_refund: number;
+  max_rank: number;
+  description: string;
+  source: string;
+  sourcesRefs?: Array<{ abbr: string; page: number }>;
+  ranks: Array<{
+    rank: string;
+    description: string;
+    modifier?: string;
+  }>;
+  requires_description?: boolean;
+  stat_mods?: {
+    multipliers?: Record<string, number>;
+    rank_based?: Record<string, {
+      multipliers?: Record<string, number>;
+    }>;
+  };
+}
+
+export const DEFECTS_LIBRARY: DefectTemplate[] = [
+  {
+    "name": "Achilles Heel",
+    "key": "achilles_heel",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "The character loses twice as many Health Points as normal from a particular attack form (e.g., silver for werewolves).",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 161 },
+      { "abbr": "Naked", "page": 78 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Rare attack form"
+      },
+      {
+        "rank": "2",
+        "description": "Uncommon attack form"
+      },
+      {
+        "rank": "3",
+        "description": "Common attack form"
+      }
+    ]
+  },
+  {
+    "name": "Awkward Size",
+    "key": "awkward_size",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 10,
+    "description": "The item is significantly larger than a human and harder to maneuver or conceal. Grants a bonus/penalty to ranged attacks depending on relative size.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 156 },
+      { "abbr": "Naked", "page": 76 }
+    ],
+    "ranks": []
+  },
+  {
+    "name": "Bane",
+    "key": "bane",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "The character is harmed by exposure to a substance or material. Contact damage varies based on exposure and rarity.",
+    "requires_description": true,
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 156 },
+      { "abbr": "Naked", "page": 76 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "The Bane causes the character minor damage: 10 damage per round of exposure.",
+        "modifier": "-10"
+      },
+      {
+        "rank": "2",
+        "description": "The Bane causes the character moderate damage: 20 damage per round of exposure.",
+        "modifier": "-20"
+      },
+      {
+        "rank": "3",
+        "description": "The Bane causes the character major damage: 30 damage per round of exposure.",
+        "modifier": "-30"
+      }
+    ]
+  },
+  {
+    "name": "Big, Heavy, and Obvious",
+    "key": "big_heavy_obvious",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 10,
+    "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 156 },
+      { "abbr": "Naked", "page": 76 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      },
+      {
+        "rank": "2",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      },
+      {
+        "rank": "3",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      },
+      {
+        "rank": "4",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      },
+      {
+        "rank": "5",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      },
+      {
+        "rank": "6",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      },
+      {
+        "rank": "7",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      },
+      {
+        "rank": "8",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      },
+      {
+        "rank": "9",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      },
+      {
+        "rank": "10",
+        "description": "You're impossible to miss—and not in a good way. Whether due to your massive size, thundering footsteps, gleaming armor, or crackling magical aura, you stand out in any crowd. Stealth is nearly impossible, subtlety isn't your style, and you'll often be the first target in any confrontation."
+      }
+    ]
+  },
+  {
+    "name": "Blind Fury",
+    "key": "blind_fury",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "Under certain triggers, the character enters an uncontrollable rage, attacking anyone nearby until calmed.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 157 },
+      { "abbr": "Naked", "page": 77 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Initiating the Blind Fury is difficult; reverting to a normal emotional state is easy"
+      },
+      {
+        "rank": "2",
+        "description": "Initiating the Blind Fury and reverting to a normal emotional state are both moderately difficult"
+      },
+      {
+        "rank": "3",
+        "description": "Initiating the Blind Fury is easy; reverting to a normal emotional state is difficult"
+      }
+    ]
+  },
+  {
+    "name": "Conditional Ownership",
+    "key": "conditional_ownership",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The Companion or Item actually belongs to an organization, and its use is restricted or conditional.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 157 },
+      { "abbr": "Naked", "page": 77 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Mild conditions are imposed on the object's ownership and usage"
+      },
+      {
+        "rank": "2",
+        "description": "Strict conditions are imposed on the object's ownership and usage"
+      },
+      {
+        "rank": "3",
+        "description": "Severe conditions are imposed on the object's ownership and usage"
+      }
+    ]
+  },
+  {
+    "name": "Confined",
+    "key": "confined",
+    "rank_type": "Greater",
+    "cp_refund": 3,
+    "max_rank": 3,
+    "description": "The character is restricted to a specific physical area and cannot leave it.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 34 },
+      { "abbr": "Naked", "page": 18 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Confined to a large area (100 km radius), such as a single kingdom, country, or large city"
+      },
+      {
+        "rank": "2",
+        "description": "Confined to a moderate area (1 km radius), such as a small town or large, multi-structure complex"
+      },
+      {
+        "rank": "3",
+        "description": "Confined to a small area (100 m radius), such as a tiny village or single building"
+      }
+    ]
+  },
+  {
+    "name": "Cursed",
+    "key": "cursed",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "The character suffers from a supernatural or divine curse that hinders their life.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 158 },
+      { "abbr": "Naked", "page": 77 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Demure",
+    "key": "demure",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character is shy or overly modest, often hesitant to assert themselves in social situations.",
+    "source": "Extras",
+    "sourcesRefs": [
+      { "abbr": "Extras", "page": 11 }
+    ],
+    "ranks": [
+      { "rank": "1", "description": "Slight consequences" },
+      { "rank": "2", "description": "Moderate consequences" },
+      { "rank": "3", "description": "Severe consequences" }
+    ]
+  },
+  {
+    "name": "Easily Distracted",
+    "key": "easily_distracted",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character is frequently distracted by specific triggers.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 158 },
+      { "abbr": "Naked", "page": 77 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Extra Damage from all Attacks",
+    "key": "extra_damage_from_all_attacks",
+    "rank_type": "Serious",
+    "cp_refund": 4,
+    "max_rank": 10,
+    "description": "The character takes extra damage from all attacks.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 158 },
+      { "abbr": "Naked", "page": 77 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Suffers 10 Extra Damage from all Attacks",
+        "modifier": "-10"
+      },
+      {
+        "rank": "2",
+        "description": "Suffers 20 Extra Damage from all Attacks",
+        "modifier": "-20"
+      },
+      {
+        "rank": "3",
+        "description": "Suffers 30 Extra Damage from all Attacks",
+        "modifier": "-30"
+      },
+      {
+        "rank": "4",
+        "description": "Suffers 40 Extra Damage from all Attacks",
+        "modifier": "-40"
+      },
+      {
+        "rank": "5",
+        "description": "Suffers 50 Extra Damage from all Attacks",
+        "modifier": "-50"
+      },
+      {
+        "rank": "6",
+        "description": "Suffers 60 Extra Damage from all Attacks",
+        "modifier": "-60"
+      },
+      {
+        "rank": "7",
+        "description": "Suffers 70 Extra Damage from all Attacks",
+        "modifier": "-70"
+      },
+      {
+        "rank": "8",
+        "description": "Suffers 80 Extra Damage from all Attacks",
+        "modifier": "-80"
+      },
+      {
+        "rank": "9",
+        "description": "Suffers 90 Extra Damage from all Attacks",
+        "modifier": "-90"
+      },
+      {
+        "rank": "10",
+        "description": "Suffers 100 Extra Damage from all Attacks",
+        "modifier": "-100"
+      }
+    ]
+  },
+  {
+    "name": "Fragile",
+    "key": "fragile",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character has fewer Health Points than expected for their stats.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 158 },
+      { "abbr": "Naked", "page": 77 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "HP reduced by 10%"
+      },
+      {
+        "rank": "2",
+        "description": "HP reduced by 20%"
+      },
+      {
+        "rank": "3",
+        "description": "HP reduced by 30%"
+      }
+    ],
+    "stat_mods": {
+      "multipliers": {
+        "HP": 0.9
+      },
+      "rank_based": {
+        "1": {
+          "multipliers": {
+            "HP": 0.9
+          }
+        },
+        "2": {
+          "multipliers": {
+            "HP": 0.8
+          }
+        },
+        "3": {
+          "multipliers": {
+            "HP": 0.7
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "Hounded",
+    "key": "hounded",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "The character is constantly monitored or followed, making privacy difficult.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 158 },
+      { "abbr": "Naked", "page": 77 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Impaired Manipulation",
+    "key": "impaired_manipulation",
+    "rank_type": "Serious",
+    "cp_refund": 3,
+    "max_rank": 3,
+    "description": "The ability to manipulate objects with hands or other appendages is one of the major advantages that humans have over other species. If a character lacks these abilities, due to natural design or an unfortunate accident, they will be at a significant disadvantage.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 158 },
+      { "abbr": "Naked", "page": 78 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Impaired Speech",
+    "key": "impaired_speech",
+    "rank_type": "Serious",
+    "cp_refund": 3,
+    "max_rank": 3,
+    "description": "Character cannot easily communicate through spoken language. This may stem from natural design, injury, or species traits. Communication is severely limited or impossible.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 160 },
+      { "abbr": "Naked", "page": 78 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Inept Attack",
+    "key": "inept_attack",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 10,
+    "description": "Character is poor at offensive combat. They suffer reduced accuracy, either generally or in certain types of attacks (melee, ranged, etc.).",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 160 },
+      { "abbr": "Naked", "page": 78 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Inept Defence",
+    "key": "inept_defence",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 10,
+    "description": "Character is ineffective at defending. They suffer a reduced ability to dodge or block, either generally or in specific types of combat.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 160 },
+      { "abbr": "Naked", "page": 78 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Involuntary Change",
+    "key": "involuntary_change",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "Character changes form due to external triggers or stress. This applies to characters with the Alternate Form, Alternate Identity, or Merge attributes. The change is not under the character's control.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 160 },
+      { "abbr": "Naked", "page": 78 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Ism",
+    "key": "ism",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "Character faces prejudice or systemic bias based on race, gender, species, appearance, or other identifying traits. Roleplaying boundaries should be discussed before use.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 160 },
+      { "abbr": "Naked", "page": 78 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Unique Defect: Lifting Capacity",
+    "key": "lifting_capacity",
+    "rank_type": "Serious",
+    "cp_refund": 6,
+    "max_rank": 10,
+    "description": "The character's lifting capacity is reduced.",
+    "source": "BESM4e",
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "÷5 lifting capacity",
+        "modifier": "÷5"
+      },
+      {
+        "rank": "2",
+        "description": "÷25 lifting capacity",
+        "modifier": "÷25"
+      },
+      {
+        "rank": "3",
+        "description": "÷100 lifting capacity",
+        "modifier": "÷100"
+      },
+      {
+        "rank": "4",
+        "description": "÷500 lifting capacity",
+        "modifier": "÷500"
+      },
+      {
+        "rank": "5",
+        "description": "÷2,500 lifting capacity",
+        "modifier": "÷2,500"
+      },
+      {
+        "rank": "6",
+        "description": "÷10,000 lifting capacity",
+        "modifier": "÷10,000"
+      },
+      {
+        "rank": "7",
+        "description": "÷50,000 lifting capacity",
+        "modifier": "÷50,000"
+      },
+      {
+        "rank": "8",
+        "description": "÷250,000 lifting capacity",
+        "modifier": "÷250,000"
+      },
+      {
+        "rank": "9",
+        "description": "÷1,000,000 lifting capacity",
+        "modifier": "÷1,000,000"
+      },
+      {
+        "rank": "10",
+        "description": "÷5,000,000 lifting capacity",
+        "modifier": "÷5,000,000"
+      }
+    ]
+  },
+  {
+    "name": "Magnet",
+    "key": "magnet",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "Character attracts obsessive or amorous attention from others. This is not due to charisma, but some unseen fate or aura. Attention is usually unwanted and problematic.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 161 },
+      { "abbr": "Naked", "page": 78 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Marked",
+    "key": "marked",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "Character bears a visible mark or trait that identifies them or makes them stand out. This can be a brand, birthmark, scar, tattoo, or even their entire species/race.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 160 },
+      { "abbr": "Naked", "page": 78 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Nemesis",
+    "key": "nemesis",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character has someone in their life that actively interferes with their goals. This may be a professional, personal, or romantic rival. The Nemesis is persistent and disruptive, though not necessarily a mortal enemy.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 160 },
+      { "abbr": "Naked", "page": 79 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Nightmares",
+    "key": "nightmares",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character is haunted by recurring nightmares, often tied to trauma, prophecy, or memories. These affect their rest and performance.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 160 },
+      { "abbr": "Naked", "page": 79 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Obligated",
+    "key": "obligated",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "The character is controlled or indebted to an organization or individual. This obligation may stem from legal, technological, or psychological control.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 163 },
+      { "abbr": "Naked", "page": 79 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Phobia",
+    "key": "phobia",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character has an irrational fear of a specific object, event, or person. It limits choices and behaviors when triggered.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 163 },
+      { "abbr": "Naked", "page": 79 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Physical Impairment",
+    "key": "physical_impairment",
+    "rank_type": "Serious",
+    "cp_refund": 3,
+    "max_rank": 3,
+    "description": "The character has a debilitating condition such as a missing limb, chronic illness, or recurring injury that impedes their daily function.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 163 },
+      { "abbr": "Naked", "page": 79 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Red Tape",
+    "key": "red_tape",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character must navigate bureaucracy to act. This may include pre- or post-action paperwork or organizational obstacles.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 163 },
+      { "abbr": "Naked", "page": 79 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Reduced Damage",
+    "key": "reduced_damage",
+    "rank_type": "Serious",
+    "cp_refund": 3,
+    "max_rank": 3,
+    "description": "The character inflicts reduced damage in combat, possibly due to feebleness, lack of combat experience, or youth.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 163 },
+      { "abbr": "Naked", "page": 80 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Running Speed",
+    "key": "running_speed",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 10,
+    "description": "The character's running speed is reduced.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 34 },
+      { "abbr": "Naked", "page": 18 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "÷2 running speed",
+        "modifier": "÷2"
+      },
+      {
+        "rank": "2",
+        "description": "÷4 running speed",
+        "modifier": "÷4"
+      },
+      {
+        "rank": "3",
+        "description": "÷8 running speed",
+        "modifier": "÷8"
+      },
+      {
+        "rank": "4",
+        "description": "÷16 running speed",
+        "modifier": "÷16"
+      },
+      {
+        "rank": "5",
+        "description": "÷32 running speed",
+        "modifier": "÷32"
+      },
+      {
+        "rank": "6",
+        "description": "÷64 running speed",
+        "modifier": "÷64"
+      },
+      {
+        "rank": "7",
+        "description": "÷128 running speed",
+        "modifier": "÷128"
+      },
+      {
+        "rank": "8",
+        "description": "÷256 running speed",
+        "modifier": "÷256"
+      },
+      {
+        "rank": "9",
+        "description": "÷512 running speed",
+        "modifier": "÷512"
+      },
+      {
+        "rank": "10",
+        "description": "÷1024 running speed",
+        "modifier": "÷1024"
+      }
+    ]
+  },
+  {
+    "name": "Sensory Impairment",
+    "key": "sensory_impairment",
+    "rank_type": "Serious",
+    "cp_refund": 3,
+    "max_rank": 3,
+    "description": "One or more of the character's senses (sight, hearing, taste, touch, smell) are either diminished or lost.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 164 },
+      { "abbr": "Naked", "page": 80 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Shortcoming",
+    "key": "shortcoming",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "A character has a deficiency in one or more aspects of a Stat that is lower than the rest of the Stat.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 164 },
+      { "abbr": "Naked", "page": 80 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Significant Other",
+    "key": "significant_other",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character has someone they are deeply devoted to protecting, often at great personal risk.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 165 },
+      { "abbr": "Naked", "page": 80 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Skeleton in the Closet",
+    "key": "skeleton_in_the_closet",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "The character has a dark secret that could cause them harm if exposed.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 165 },
+      { "abbr": "Naked", "page": 80 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Social Fault",
+    "key": "social_fault",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character exhibits a Social Fault that produces hardship for either the character or their companions and allies (or both).",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 166 },
+      { "abbr": "Naked", "page": 81 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Special Requirement",
+    "key": "special_requirement",
+    "rank_type": "Serious",
+    "cp_refund": 3,
+    "max_rank": 3,
+    "description": "The character has a Special Requirement that must be fulfilled in order for them to continue to function normally.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 166 },
+      { "abbr": "Naked", "page": 81 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Unique Defect: Strength Damage",
+    "key": "strength_damage",
+    "rank_type": "Serious",
+    "cp_refund": 2,
+    "max_rank": 10,
+    "description": "The character's damage from Strength attacks is reduced.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 34 },
+      { "abbr": "Naked", "page": 18 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "-10 Strength Damage",
+        "modifier": "-10"
+      },
+      {
+        "rank": "2",
+        "description": "-20 Strength Damage",
+        "modifier": "-20"
+      },
+      {
+        "rank": "3",
+        "description": "-30 Strength Damage",
+        "modifier": "-30"
+      },
+      {
+        "rank": "4",
+        "description": "-40 Strength Damage",
+        "modifier": "-40"
+      },
+      {
+        "rank": "5",
+        "description": "-50 Strength Damage",
+        "modifier": "-50"
+      },
+      {
+        "rank": "6",
+        "description": "-60 Strength Damage",
+        "modifier": "-60"
+      },
+      {
+        "rank": "7",
+        "description": "-70 Strength Damage",
+        "modifier": "-70"
+      },
+      {
+        "rank": "8",
+        "description": "-80 Strength Damage",
+        "modifier": "-80"
+      },
+      {
+        "rank": "9",
+        "description": "-90 Strength Damage",
+        "modifier": "-90"
+      },
+      {
+        "rank": "10",
+        "description": "-100 Strength Damage",
+        "modifier": "-100"
+      }
+    ]
+  },
+  {
+    "name": "Unappealing",
+    "key": "unappealing",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "An Unappealing character may find it difficult to blend into a crowd because their appearance is distinctive.",
+    "source": "BESM4e",
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Lesser Unique Defect",
+    "key": "lesser_unique_defect",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "A minor unique defect that affects the character in a specific way. Each rank provides 1 CP refund.",
+    "requires_description": true,
+    "source": "BESM4e",
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Minor unique defect with slight impact"
+      },
+      {
+        "rank": "2",
+        "description": "Minor unique defect with moderate impact"
+      },
+      {
+        "rank": "3",
+        "description": "Minor unique defect with significant impact"
+      }
+    ]
+  },
+  {
+    "name": "Greater Unique Defect",
+    "key": "greater_unique_defect",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "A significant unique defect that affects the character in a major way. Each rank provides 2 CP refund.",
+    "requires_description": true,
+    "source": "BESM4e",
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Major unique defect with moderate impact"
+      },
+      {
+        "rank": "2",
+        "description": "Major unique defect with significant impact"
+      },
+      {
+        "rank": "3",
+        "description": "Major unique defect with severe impact"
+      }
+    ]
+  },
+  {
+    "name": "Serious Unique Defect",
+    "key": "serious_unique_defect",
+    "rank_type": "Serious",
+    "cp_refund": 3,
+    "max_rank": 3,
+    "description": "A severe unique defect that affects the character in a critical way. Each rank provides 3 CP refund.",
+    "requires_description": true,
+    "source": "BESM4e",
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Severe unique defect with significant impact"
+      },
+      {
+        "rank": "2",
+        "description": "Severe unique defect with severe impact"
+      },
+      {
+        "rank": "3",
+        "description": "Severe unique defect with critical impact"
+      }
+    ]
+  },
+  {
+    "name": "Unique Defect: Thrown Weapon Distance",
+    "key": "thrown_weapon_distance",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 10,
+    "description": "The character's thrown weapons have a decreased range.",
+    "requires_description": true,
+    "source": "BESM4e",
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "÷2 thrown weapon range",
+        "modifier": "÷2"
+      },
+      {
+        "rank": "2",
+        "description": "÷4 thrown weapon range",
+        "modifier": "÷4"
+      },
+      {
+        "rank": "3",
+        "description": "÷8 thrown weapon range",
+        "modifier": "÷8"
+      },
+      {
+        "rank": "4",
+        "description": "÷16 thrown weapon range",
+        "modifier": "÷16"
+      },
+      {
+        "rank": "5",
+        "description": "÷32 thrown weapon range",
+        "modifier": "÷32"
+      },
+      {
+        "rank": "6",
+        "description": "÷64 thrown weapon range",
+        "modifier": "÷64"
+      },
+      {
+        "rank": "7",
+        "description": "÷128 thrown weapon range",
+        "modifier": "÷128"
+      },
+      {
+        "rank": "8",
+        "description": "÷256 thrown weapon range",
+        "modifier": "÷256"
+      },
+      {
+        "rank": "9",
+        "description": "÷512 thrown weapon range",
+        "modifier": "÷512"
+      },
+      {
+        "rank": "10",
+        "description": "÷1024 thrown weapon range",
+        "modifier": "÷1024"
+      }
+    ]
+  },
+  {
+    "name": "Vulnerability",
+    "key": "vulnerability",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "The character has a critical weakness to a specific object, environment, thought, activity, or condition.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 167 },
+      { "abbr": "Naked", "page": 81 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Wanted",
+    "key": "wanted",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "The character is Wanted by the law, a criminal, or a powerful organization.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 167 },
+      { "abbr": "Naked", "page": 81 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "Weak Point",
+    "key": "weak_point",
+    "rank_type": "Greater",
+    "cp_refund": 2,
+    "max_rank": 3,
+    "description": "The character has a physical Weak Point that causes double damage or instant defeat if struck.",
+    "source": "BESM4e",
+    "sourcesRefs": [
+      { "abbr": "BESM4e", "page": 167 },
+      { "abbr": "Naked", "page": 81 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  },
+  {
+    "name": "No Healing",
+    "key": "no_healing",
+    "rank_type": "Serious",
+    "cp_refund": 3,
+    "max_rank": 1,
+    "description": "The character cannot recover Health Points by normal or magical healing methods; only specific conditions may restore HP.",
+    "source": "Extras",
+    "sourcesRefs": [
+      { "abbr": "Extras", "page": 11 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "No healing from standard methods"
+      }
+    ]
+  },
+  {
+    "name": "Unsettled",
+    "key": "unsettled",
+    "rank_type": "Lesser",
+    "cp_refund": 1,
+    "max_rank": 3,
+    "description": "The character suffers from lingering unease, trauma, or instability that intermittently hinders performance or decision-making.",
+    "source": "Extras",
+    "sourcesRefs": [
+      { "abbr": "Extras", "page": 11 }
+    ],
+    "ranks": [
+      {
+        "rank": "1",
+        "description": "Slight consequences"
+      },
+      {
+        "rank": "2",
+        "description": "Moderate consequences"
+      },
+      {
+        "rank": "3",
+        "description": "Severe consequences"
+      }
+    ]
+  }
+];
+
+// Helper functions for working with defects
+export function getDefectByKey(key: string): DefectTemplate | undefined {
+  return DEFECTS_LIBRARY.find(defect => defect.key === key);
+}
+
+export function getDefectsBySource(source: string): DefectTemplate[] {
+  return DEFECTS_LIBRARY.filter(defect => defect.source === source);
+}
+
+export function getDefectsByRankType(rankType: 'Lesser' | 'Greater' | 'Serious'): DefectTemplate[] {
+  return DEFECTS_LIBRARY.filter(defect => defect.rank_type === rankType);
+}
+
+export function searchDefects(query: string): DefectTemplate[] {
+  const lowercaseQuery = query.toLowerCase();
+  return DEFECTS_LIBRARY.filter(defect => 
+    defect.name.toLowerCase().includes(lowercaseQuery) ||
+    defect.description.toLowerCase().includes(lowercaseQuery)
+  );
+}
+
+export function calculateDefectBonus(template: DefectTemplate, rank: number): number {
+  return template.cp_refund * rank;
+}

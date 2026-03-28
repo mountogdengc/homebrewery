@@ -114,6 +114,7 @@
     "jwt-simple": "^0.5.6",
     "less": "^4.5.1",
     "lodash": "^4.17.21",
+    "lucide-react": "^1.7.0",
     "marked": "15.0.12",
     "marked-alignment-paragraphs": "^1.0.0",
     "marked-definition-lists": "^1.0.1",
@@ -130,12 +131,14 @@
     "nanoid": "5.1.6",
     "nconf": "^0.13.0",
     "node": "^25.7.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-frame-component": "^5.2.7",
     "react-router": "^7.13.1",
     "sanitize-filename": "1.6.3",
-    "superagent": "^10.2.1"
+    "superagent": "^10.2.1",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^5.0.1",

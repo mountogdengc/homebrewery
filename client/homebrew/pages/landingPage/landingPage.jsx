@@ -47,11 +47,24 @@ const LandingPage = ()=>{
 							directly in your brews.
 						</p>
 					</a>
+
+					<a className="toolCard" href="/besm/new">
+						<div className="toolIcon">
+							<i className="fas fa-bolt" />
+						</div>
+						<h2 className="toolName">BESM Character Builder</h2>
+						<p className="toolDesc">
+							Create BESM 4th Edition characters with a guided
+							step-by-step wizard. Allocate Character Points to
+							Stats, Attributes, Defects, and Skills.
+						</p>
+					</a>
 				</div>
 
 				<div className="quickLinks">
 					<a href="/new">New Brew</a>
 					<a href="/statblock/library">Stat Block Library</a>
+					<a href="/besm/library">BESM Characters</a>
 					<a href="/vault">The Vault</a>
 					<a href="/changelog">Changelog</a>
 					<a href="/faq">FAQ</a>

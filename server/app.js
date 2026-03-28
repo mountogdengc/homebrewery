@@ -20,6 +20,7 @@ const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
 import statblockApi                from './statblock.api.js';
+import besmCharacterApi            from './besm-character.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
@@ -119,6 +120,7 @@ export default async function createApp(vite) {
 	app.use(adminApi(vite));
 	app.use(vaultApi);
 	app.use(statblockApi);
+	app.use(besmCharacterApi);
 
 	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 	const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
@@ -619,6 +621,36 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
+	//BESM Character Builder - New
+	app.get('/besm/new', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'BESM Character Builder',
+			description : 'Create a BESM 4th Edition character'
+		};
+		return next();
+	});
+
+	//BESM Character Builder - Edit
+	app.get('/besm/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: BesmCharacterModel } = await import('./besm-character.model.js');
+		const bc = await BesmCharacterModel.get({ editId: req.params.id });
+		req.besmCharacter = bc.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `Editing: ${req.besmCharacter.name || 'BESM Character'}`,
+			description : 'Edit a BESM 4th Edition character'
+		};
+		return next();
+	}));
+
+	//BESM Character Library
+	app.get('/besm/library', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'BESM Character Library',
+			description : 'Browse your BESM characters'
+		};
+		return next();
+	});
+
 	//Vault Page
 	app.get('/vault', asyncHandler(async(req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
@@ -659,7 +691,8 @@ export default async function createApp(vite) {
 			ogMeta         : req.ogMeta,
 			userThemes     : req.userThemes,
 			statblock      : req.statblock,
-			userStatblocks : req.userStatblocks
+			userStatblocks : req.userStatblocks,
+			besmCharacter  : req.besmCharacter
 		};
 
 		const ogTags = [];
