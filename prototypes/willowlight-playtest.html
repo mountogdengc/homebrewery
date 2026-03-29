@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Willowlight Engine — Playtest Table</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Fira+Mono:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --bg-darkest: #0f0e0c;
+    --bg-dark: #1a1816;
+    --bg-panel: #211f1b;
+    --bg-card: #2a2722;
+    --bg-card-hover: #332f2a;
+    --border: #3d3830;
+    --border-light: #554e42;
+    --gold: #c9a84c;
+    --gold-dim: #8a7534;
+    --gold-bright: #e8c65a;
+    --text: #d4ccba;
+    --text-dim: #8c8474;
+    --text-bright: #f0ead8;
+    --red: #b34040;
+    --red-bright: #d45050;
+    --red-dim: #6b2828;
+    --blue: #4a7a9b;
+    --blue-bright: #5e9ac0;
+    --green: #5a8a4a;
+    --green-bright: #70b058;
+    --purple: #7a5a9b;
+    --purple-bright: #9a70c0;
+    --phys-color: #b34040;
+    --ment-color: #4a7a9b;
+    --soc-color: #c9a84c;
+    --corruption-color: #7a3a7a;
+    --luck-color: #50a878;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-darkest);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 14px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* === TOP BAR === */
+  .top-bar {
+    background: var(--bg-dark);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 36px;
+  }
+  .top-bar h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .top-bar .session-info {
+    font-family: 'Fira Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .taint-display {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Fira Mono', monospace; font-size: 12px;
+  }
+  .taint-display label { color: var(--corruption-color); font-weight: 500; }
+  .taint-val {
+    background: var(--bg-card); border: 1px solid var(--corruption-color);
+    color: var(--corruption-color); padding: 2px 10px; border-radius: 3px;
+    font-size: 14px; font-weight: 700; min-width: 32px; text-align: center;
+    cursor: pointer; user-select: none;
+  }
+  .taint-val:hover { background: #2a1a2a; }
+  .taint-btn { background: none; border: 1px solid var(--border); color: var(--text-dim);
+    width: 20px; height: 20px; cursor: pointer; border-radius: 2px; font-size: 14px;
+    display: flex; align-items: center; justify-content: center; }
+  .taint-btn:hover { border-color: var(--corruption-color); color: var(--corruption-color); }
+
+  /* === MAIN LAYOUT === */
+  .main-area {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* === LEFT PANEL: PARTY === */
+  .party-panel {
+    width: 260px;
+    min-width: 260px;
+    background: var(--bg-dark);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-header {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    padding: 10px 12px 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .party-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px;
+  }
+
+  /* Character Card */
+  .char-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .char-card:hover { border-color: var(--border-light); background: var(--bg-card-hover); }
+  .char-card.selected { border-color: var(--gold-dim); }
+  .char-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px 4px;
+    gap: 10px;
+  }
+  .char-portrait {
+    width: 48px; height: 48px;
+    border-radius: 4px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-darkest);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .char-info { flex: 1; min-width: 0; }
+  .char-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--text-bright);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .char-subtitle {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* Health Tracks */
+  .char-tracks { padding: 4px 10px 8px; }
+  .track-row {
+    display: flex; align-items: center; gap: 4px; margin-bottom: 3px;
+  }
+  .track-label {
+    font-family: 'Fira Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: 32px;
+    flex-shrink: 0;
+  }
+  .track-label.phys { color: var(--phys-color); }
+  .track-label.ment { color: var(--ment-color); }
+  .track-label.soc { color: var(--soc-color); }
+  .track-boxes { display: flex; gap: 2px; flex: 1; }
+  .track-box {
+    width: 16px; height: 12px;
+    border-radius: 2px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .track-box.phys { border-color: var(--phys-color); }
+  .track-box.phys.filled { background: var(--phys-color); }
+  .track-box.ment { border-color: var(--ment-color); }
+  .track-box.ment.filled { background: var(--ment-color); }
+  .track-box.soc { border-color: var(--soc-color); }
+  .track-box.soc.filled { background: var(--soc-color); }
+  .track-box:hover { opacity: 0.7; }
+
+  /* Quick stats row */
+  .char-quick {
+    display: flex; gap: 6px; padding: 0 10px 8px;
+    font-family: 'Fira Mono', monospace; font-size: 10px;
+  }
+  .quick-stat {
+    display: flex; align-items: center; gap: 3px;
+    padding: 2px 6px; border-radius: 3px;
+    background: var(--bg-darkest); border: 1px solid var(--border);
+  }
+  .quick-stat .qs-label { color: var(--text-dim); }
+  .quick-stat .qs-val { color: var(--text-bright); font-weight: 500; }
+  .quick-stat.luck { border-color: var(--luck-color); }
+  .quick-stat.luck .qs-label { color: var(--luck-color); }
+  .quick-stat.luck .qs-val { color: var(--luck-color); }
+  .quick-stat.corr { border-color: var(--corruption-color); }
+  .quick-stat.corr .qs-label { color: var(--corruption-color); }
+  .quick-stat.corr .qs-val { color: var(--corruption-color); }
+
+  /* === CENTER PANEL === */
+  .center-panel {
+    flex: 1;
+    background: var(--bg-darkest);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .center-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  /* Character Detail View */
+  .detail-view { max-width: 640px; margin: 0 auto; }
+  .detail-name {
+    font-family: 'Cinzel', serif; font-size: 22px; color: var(--gold);
+    margin-bottom: 2px;
+  }
+  .detail-subtitle { font-style: italic; color: var(--text-dim); margin-bottom: 16px; font-size: 15px; }
+
+  .detail-section {
+    margin-bottom: 16px;
+  }
+  .detail-section-title {
+    font-family: 'Cinzel', serif; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--gold-dim); border-bottom: 1px solid var(--border);
+    padding-bottom: 4px; margin-bottom: 8px;
+  }
+
+  .attr-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  .attr-domain {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 8px;
+  }
+  .attr-domain-title {
+    font-family: 'Fira Mono', monospace; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid var(--border);
+  }
+  .attr-domain-title.phys { color: var(--phys-color); }
+  .attr-domain-title.ment { color: var(--ment-color); }
+  .attr-domain-title.soc { color: var(--soc-color); }
+  .attr-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 2px 0; font-size: 13px;
+  }
+  .attr-row .a-name { color: var(--text); }
+  .attr-row .a-val {
+    font-family: 'Fira Mono', monospace; font-weight: 700;
+    color: var(--text-bright); font-size: 14px;
+  }
+  .attr-row .a-name.anchor { font-weight: 600; }
+
+  .detail-tracks { margin-bottom: 12px; }
+  .detail-track-row {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .detail-track-label {
+    font-family: 'Fira Mono', monospace; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1px; width: 80px;
+  }
+  .detail-track-boxes { display: flex; gap: 3px; }
+  .detail-track-box {
+    width: 24px; height: 18px; border: 1px solid; border-radius: 2px;
+    cursor: pointer; transition: background 0.1s;
+  }
+  .detail-track-box.phys { border-color: var(--phys-color); }
+  .detail-track-box.phys.filled { background: var(--phys-color); }
+  .detail-track-box.ment { border-color: var(--ment-color); }
+  .detail-track-box.ment.filled { background: var(--ment-color); }
+  .detail-track-box.soc { border-color: var(--soc-color); }
+  .detail-track-box.soc.filled { background: var(--soc-color); }
+  .detail-track-tn {
+    font-family: 'Fira Mono', monospace; font-size: 11px; color: var(--text-dim);
+    margin-left: 8px;
+  }
+
+  .skills-list { font-size: 13px; line-height: 1.6; }
+  .skill-tier { color: var(--text-dim); font-family: 'Fira Mono', monospace; font-size: 10px; margin-right: 4px; }
+  .edges-list { font-size: 13px; line-height: 1.6; }
+  .edge-dots { color: var(--gold); font-family: 'Fira Mono', monospace; }
+
+  /* Conviction / Path display */
+  .identity-row { display: flex; gap: 12px; margin-bottom: 8px; }
+  .identity-block {
+    flex: 1; background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 4px; padding: 10px;
+  }
+  .identity-type {
+    font-family: 'Fira Mono', monospace; font-size: 9px; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text-dim); margin-bottom: 2px;
+  }
+  .identity-name { font-family: 'Cinzel', serif; font-size: 15px; color: var(--text-bright); }
+
+  /* === RIGHT PANEL: ENEMIES === */
+  .enemy-panel {
+    width: 280px;
+    min-width: 280px;
+    background: var(--bg-dark);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .enemy-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px;
+  }
+
+  /* Enemy Card */
+  .enemy-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 6px;
+    transition: border-color 0.15s;
+  }
+  .enemy-card:hover { border-color: var(--border-light); }
+  .enemy-card.expanded { border-color: var(--red); }
+  .enemy-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px; cursor: pointer; user-select: none;
+  }
+  .enemy-left { display: flex; align-items: center; gap: 8px; }
+  .enemy-tier-badge {
+    font-family: 'Fira Mono', monospace; font-size: 9px; text-transform: uppercase;
+    padding: 1px 5px; border-radius: 2px; letter-spacing: 1px;
+    border: 1px solid;
+  }
+  .tier-mook { color: var(--text-dim); border-color: var(--border-light); }
+  .tier-elite { color: var(--blue-bright); border-color: var(--blue); }
+  .tier-boss { color: var(--red-bright); border-color: var(--red); }
+  .tier-legend { color: var(--gold-bright); border-color: var(--gold); }
+  .enemy-name {
+    font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-bright);
+  }
+  .enemy-quick-tn {
+    font-family: 'Fira Mono', monospace; font-size: 11px; color: var(--text-dim);
+  }
+  .expand-arrow {
+    color: var(--text-dim); font-size: 10px; transition: transform 0.2s;
+  }
+  .enemy-card.expanded .expand-arrow { transform: rotate(90deg); }
+
+  .enemy-detail {
+    display: none; padding: 0 10px 10px; border-top: 1px solid var(--border);
+    font-size: 12px; line-height: 1.5;
+  }
+  .enemy-card.expanded .enemy-detail { display: block; padding-top: 8px; }
+  .enemy-stat-row {
+    display: flex; gap: 4px; margin-bottom: 3px;
+  }
+  .enemy-stat-label {
+    font-family: 'Fira Mono', monospace; font-size: 10px; text-transform: uppercase;
+    color: var(--text-dim); width: 60px; flex-shrink: 0;
+  }
+  .enemy-stat-val { color: var(--text); font-size: 12px; }
+  .enemy-trait {
+    background: var(--bg-darkest); border-left: 2px solid var(--red-dim);
+    padding: 4px 8px; margin: 6px 0; font-size: 12px;
+  }
+  .enemy-trait-name { color: var(--red-bright); font-weight: 600; }
+  .enemy-goal {
+    font-style: italic; color: var(--text-dim); margin-top: 6px;
+    padding-top: 6px; border-top: 1px solid var(--border);
+  }
+
+  /* Mook group size tracker */
+  .mook-size { display: flex; gap: 3px; align-items: center; }
+  .mook-pip {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 1px solid var(--text-dim); cursor: pointer;
+  }
+  .mook-pip.alive { background: var(--text-dim); }
+  .mook-pip:hover { opacity: 0.7; }
+
+  /* Enemy health track (bosses/elites) */
+  .enemy-track { display: flex; gap: 2px; margin: 4px 0; }
+  .enemy-track-box {
+    width: 18px; height: 14px; border: 1px solid var(--red);
+    border-radius: 2px; cursor: pointer;
+  }
+  .enemy-track-box.filled { background: var(--red); }
+
+  /* === BOTTOM PANEL === */
+  .bottom-panel {
+    background: var(--bg-dark);
+    border-top: 2px solid var(--border);
+    min-height: 120px;
+    display: flex;
+    align-items: stretch;
+  }
+
+  /* Dice Roller */
+  .dice-section {
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-right: 1px solid var(--border);
+    min-width: 320px;
+  }
+  .dice-section-title {
+    font-family: 'Cinzel', serif; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--gold-dim);
+  }
+  .dice-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .die {
+    width: 44px; height: 44px;
+    background: var(--bg-card); border: 2px solid var(--border-light);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700;
+    color: var(--text-bright);
+    transition: border-color 0.2s, transform 0.15s;
+    cursor: default;
+  }
+  .die.result { border-color: var(--text-dim); }
+  .die.luck { border-color: var(--luck-color); color: var(--luck-color); }
+  .die.rolling { animation: diceRoll 0.08s infinite alternate; }
+  @keyframes diceRoll {
+    from { transform: rotate(-3deg) scale(1.05); }
+    to { transform: rotate(3deg) scale(0.95); }
+  }
+  .die-label {
+    font-family: 'Fira Mono', monospace; font-size: 9px; color: var(--text-dim);
+    text-align: center; margin-top: 2px;
+  }
+  .die-group { display: flex; flex-direction: column; align-items: center; }
+  .plus-sign { font-size: 18px; color: var(--text-dim); }
+
+  .roll-btn {
+    font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--bg-card); border: 2px solid var(--gold-dim);
+    color: var(--gold); padding: 8px 20px; border-radius: 4px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .roll-btn:hover { background: var(--gold-dim); color: var(--bg-darkest); border-color: var(--gold); }
+  .roll-btn:active { transform: scale(0.96); }
+  .roll-btn:disabled { opacity: 0.3; cursor: default; pointer-events: none; }
+
+  /* Swap phase UI */
+  .die.swappable { cursor: pointer; animation: swapPulse 1s ease-in-out infinite; }
+  @keyframes swapPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(80, 168, 120, 0); }
+    50% { box-shadow: 0 0 8px 2px rgba(80, 168, 120, 0.4); }
+  }
+  .die.swap-target { border-color: var(--gold-bright) !important; box-shadow: 0 0 8px 2px rgba(201, 168, 76, 0.3); cursor: pointer; }
+  .die.swapped { border-color: var(--luck-color) !important; background: rgba(80, 168, 120, 0.1); }
+  .die.taint-swapped { border-color: var(--corruption-color) !important; background: rgba(122, 58, 122, 0.15); }
+
+  .swap-prompt {
+    display: flex; flex-direction: column; gap: 4px;
+    font-family: 'Fira Mono', monospace; font-size: 11px;
+  }
+  .swap-prompt-text { color: var(--luck-color); font-weight: 500; }
+  .swap-prompt-text.taint { color: var(--corruption-color); }
+  .swap-actions { display: flex; gap: 6px; }
+  .swap-btn {
+    font-family: 'Fira Mono', monospace; font-size: 10px; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 3px; cursor: pointer;
+    border: 1px solid; transition: all 0.15s; letter-spacing: 0.5px;
+  }
+  .swap-btn.luck-swap {
+    border-color: var(--luck-color); color: var(--luck-color); background: none;
+  }
+  .swap-btn.luck-swap:hover { background: rgba(80, 168, 120, 0.15); }
+  .swap-btn.taint-swap {
+    border-color: var(--corruption-color); color: var(--corruption-color); background: none;
+  }
+  .swap-btn.taint-swap:hover { background: rgba(122, 58, 122, 0.15); }
+  .swap-btn.pass-btn {
+    border-color: var(--border-light); color: var(--text-dim); background: none;
+  }
+  .swap-btn.pass-btn:hover { border-color: var(--text-dim); color: var(--text); }
+  .swap-btn.confirm-btn {
+    border-color: var(--gold-dim); color: var(--gold); background: none;
+  }
+  .swap-btn.confirm-btn:hover { background: rgba(201, 168, 76, 0.15); }
+  .swap-resolved {
+    font-family: 'Fira Mono', monospace; font-size: 10px;
+    color: var(--text-dim); font-style: italic; padding-top: 2px;
+  }
+  .swap-resolved.used-luck { color: var(--luck-color); }
+  .swap-resolved.used-taint { color: var(--corruption-color); }
+
+  .roll-config {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Fira Mono', monospace; font-size: 11px;
+  }
+  .roll-config label { color: var(--text-dim); }
+  .roll-config select, .roll-config input {
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text); padding: 3px 6px; border-radius: 3px;
+    font-family: 'Fira Mono', monospace; font-size: 11px;
+  }
+  .roll-config input[type="number"] { width: 40px; text-align: center; }
+
+  /* Roll Result */
+  .roll-result {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 10px 16px;
+    border-right: 1px solid var(--border);
+    min-width: 200px;
+  }
+  .result-total {
+    font-family: 'Cinzel', serif; font-size: 28px; color: var(--text-bright);
+  }
+  .result-breakdown {
+    font-family: 'Fira Mono', monospace; font-size: 11px; color: var(--text-dim);
+  }
+  .result-outcome {
+    font-family: 'Cinzel', serif; font-size: 13px; padding: 3px 10px;
+    border-radius: 3px; display: inline-block; margin-top: 2px;
+  }
+  .outcome-crit { background: #2a3a1a; color: var(--green-bright); border: 1px solid var(--green); }
+  .outcome-success { background: #1a2a1a; color: var(--green); border: 1px solid #3a5a2a; }
+  .outcome-cost { background: #2a2a1a; color: var(--gold); border: 1px solid var(--gold-dim); }
+  .outcome-fail { background: #2a1a1a; color: var(--red); border: 1px solid var(--red-dim); }
+  .outcome-complication { background: #2a1a2a; color: var(--purple-bright); border: 1px solid var(--purple); margin-top: 4px; font-size: 11px; }
+
+  /* Log */
+  .log-section {
+    flex: 1; padding: 10px 16px; overflow-y: auto;
+  }
+  .log-section-title {
+    font-family: 'Cinzel', serif; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--gold-dim); margin-bottom: 6px;
+  }
+  .log-entry {
+    font-family: 'Fira Mono', monospace; font-size: 11px; color: var(--text-dim);
+    padding: 2px 0; border-bottom: 1px solid #1a1816;
+  }
+  .log-entry .log-char { color: var(--text); }
+  .log-entry .log-result { color: var(--text-bright); }
+  .log-entry .log-crit { color: var(--green-bright); }
+  .log-entry .log-comp { color: var(--purple-bright); }
+
+  /* Placeholder */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%; color: var(--text-dim); font-style: italic; font-size: 14px;
+    text-align: center; padding: 32px;
+  }
+  .empty-state .hint {
+    font-family: 'Fira Mono', monospace; font-size: 11px; margin-top: 8px;
+    color: var(--border-light);
+  }
+
+  /* Bottom Tab Bar */
+  .bottom-tabs {
+    display: flex;
+    background: var(--bg-darkest);
+    border-top: 2px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 0 8px;
+    gap: 0;
+  }
+  .bottom-tab {
+    font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 7px 18px; cursor: pointer;
+    color: var(--text-dim); background: none; border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .bottom-tab:hover { color: var(--text); }
+  .bottom-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .bottom-tab-content { display: none; }
+  .bottom-tab-content.active { display: flex; }
+
+  /* Party Management Tab */
+  .party-mgmt {
+    display: flex; flex: 1; gap: 0; align-items: stretch;
+    overflow: hidden;
+  }
+  .party-mgmt-section {
+    flex: 1; padding: 10px 14px; border-right: 1px solid var(--border);
+    overflow-y: auto; display: flex; flex-direction: column; gap: 6px;
+  }
+  .party-mgmt-section:last-child { border-right: none; }
+  .mgmt-section-title {
+    font-family: 'Cinzel', serif; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--gold-dim); margin-bottom: 4px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mgmt-item {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px;
+    padding: 6px 10px; font-size: 13px;
+  }
+  .mgmt-item-header {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mgmt-item-name { color: var(--text-bright); font-weight: 600; }
+  .mgmt-item-char { font-family: 'Fira Mono', monospace; font-size: 10px; color: var(--text-dim); }
+  .mgmt-item-desc {
+    font-style: italic; color: var(--text-dim); font-size: 12px; margin-top: 3px;
+  }
+  .mgmt-item .remove-btn {
+    background: none; border: none; color: var(--red-dim); cursor: pointer;
+    font-size: 14px; padding: 0 4px; transition: color 0.15s;
+  }
+  .mgmt-item .remove-btn:hover { color: var(--red); }
+
+  .anchor-box {
+    background: var(--bg-card); border: 1px solid var(--gold-dim); border-radius: 4px;
+    padding: 8px 12px;
+  }
+  .anchor-label {
+    font-family: 'Cinzel', serif; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--gold); margin-bottom: 4px;
+  }
+  .anchor-text {
+    color: var(--text-bright); font-size: 14px;
+  }
+  .anchor-desc {
+    color: var(--text-dim); font-style: italic; font-size: 12px; margin-top: 3px;
+  }
+
+  /* Downtime section */
+  .downtime-item {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px;
+    padding: 6px 10px;
+  }
+  .downtime-char { color: var(--text-bright); font-weight: 600; font-size: 13px; }
+  .downtime-activity {
+    font-family: 'Fira Mono', monospace; font-size: 11px; color: var(--text-dim); margin-top: 2px;
+  }
+  .downtime-select {
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text); padding: 3px 6px; border-radius: 3px;
+    font-family: 'Fira Mono', monospace; font-size: 11px;
+    width: 100%; margin-top: 4px;
+  }
+  .downtime-notes {
+    background: var(--bg-darkest); border: 1px solid var(--border);
+    color: var(--text); padding: 4px 6px; border-radius: 3px;
+    font-family: 'EB Garamond', serif; font-size: 12px;
+    width: 100%; margin-top: 4px; resize: vertical; min-height: 28px;
+  }
+
+  /* SG / Tides Tab */
+  .sg-mgmt {
+    display: flex; flex: 1; gap: 0; align-items: stretch;
+    overflow: hidden;
+  }
+  .tides-section {
+    flex: 1; padding: 10px 14px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .tide-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px;
+    padding: 8px 12px;
+  }
+  .tide-header {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .tide-name { color: var(--text-bright); font-weight: 600; font-size: 14px; }
+  .tide-desc { color: var(--text-dim); font-style: italic; font-size: 12px; margin-top: 3px; }
+  .tide-track {
+    display: flex; gap: 3px; margin-top: 6px;
+  }
+  .tide-pip {
+    width: 22px; height: 22px; border: 2px solid var(--purple); border-radius: 50%;
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tide-pip.filled { background: var(--purple); }
+  .tide-pip:hover { border-color: var(--purple-bright); }
+
+  .add-inline-btn {
+    background: none; border: 1px dashed var(--border);
+    color: var(--text-dim); cursor: pointer; border-radius: 3px;
+    font-family: 'Fira Mono', monospace; font-size: 10px;
+    padding: 2px 8px; transition: all 0.15s;
+  }
+  .add-inline-btn:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+
+  /* SG Notes section */
+  .sg-notes-section {
+    flex: 1; padding: 10px 14px; border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .sg-notes-textarea {
+    flex: 1; background: var(--bg-darkest); border: 1px solid var(--border);
+    color: var(--text); padding: 8px; border-radius: 3px;
+    font-family: 'EB Garamond', serif; font-size: 13px;
+    resize: none; width: 100%;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-darkest); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+  /* Add button */
+  .add-btn {
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+    padding: 6px; margin: 4px 6px;
+    background: none; border: 1px dashed var(--border);
+    color: var(--text-dim); cursor: pointer; border-radius: 4px;
+    font-family: 'Fira Mono', monospace; font-size: 11px;
+    transition: all 0.15s;
+  }
+  .add-btn:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <h1>Willowlight Engine</h1>
+  <div class="taint-display">
+    <label>SG TAINT</label>
+    <button class="taint-btn" onclick="adjustTaint(-1)">−</button>
+    <span class="taint-val" id="taintVal">0</span>
+    <button class="taint-btn" onclick="adjustTaint(1)">+</button>
+  </div>
+  <div class="session-info">Playtest Session — <span id="sessionDate"></span></div>
+</div>
+
+<!-- MAIN AREA -->
+<div class="main-area">
+
+  <!-- LEFT: PARTY -->
+  <div class="party-panel">
+    <div class="panel-header">Party</div>
+    <div class="party-list" id="partyList"></div>
+    <button class="add-btn" onclick="addCharacter()">+ Add Character</button>
+  </div>
+
+  <!-- CENTER: DETAIL -->
+  <div class="center-panel">
+    <div class="center-content" id="centerContent">
+      <div class="empty-state">
+        Select a character or enemy to view details
+        <span class="hint">Click a card on either side panel</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: ENEMIES -->
+  <div class="enemy-panel">
+    <div class="panel-header">Encounters</div>
+    <div class="enemy-list" id="enemyList"></div>
+    <button class="add-btn" onclick="addEnemy()">+ Add Enemy</button>
+  </div>
+
+</div>
+
+<!-- BOTTOM TABS -->
+<div class="bottom-tabs">
+  <button class="bottom-tab active" onclick="switchBottomTab('dice')">Dice Roller</button>
+  <button class="bottom-tab" onclick="switchBottomTab('party')">Party</button>
+  <button class="bottom-tab" onclick="switchBottomTab('sg')">Storyguide</button>
+</div>
+
+<!-- DICE ROLLER TAB -->
+<div class="bottom-panel bottom-tab-content active" id="tab-dice">
+
+  <div class="dice-section">
+    <div class="dice-section-title">Dice Roller</div>
+    <div class="dice-row">
+      <div class="die-group">
+        <div class="die result" id="die1" onclick="onDieClick(1)">—</div>
+        <div class="die-label">Result 1</div>
+      </div>
+      <div class="die-group">
+        <div class="die result" id="die2" onclick="onDieClick(2)">—</div>
+        <div class="die-label">Result 2</div>
+      </div>
+      <span class="plus-sign">+</span>
+      <div class="die-group">
+        <div class="die luck" id="die3">—</div>
+        <div class="die-label">Luck Die</div>
+      </div>
+      <button class="roll-btn" id="rollBtn" onclick="rollDice()">Roll</button>
+    </div>
+    <div class="roll-config">
+      <label>Attr</label>
+      <input type="number" id="rollAttr" value="2" min="0" max="5">
+      <label>Skill</label>
+      <select id="rollSkill">
+        <option value="3">Vocation (+3)</option>
+        <option value="2">Interest (+2)</option>
+        <option value="1">Hobby (+1)</option>
+        <option value="0" selected>None (+0)</option>
+      </select>
+      <label>TN</label>
+      <input type="number" id="rollTN" value="12" min="6" max="20">
+    </div>
+    <div id="swapArea"></div>
+  </div>
+
+  <div class="roll-result" id="rollResultPanel">
+    <div class="dice-section-title">Result</div>
+    <div class="result-total" id="resultTotal">—</div>
+    <div class="result-breakdown" id="resultBreakdown">Roll to see result</div>
+    <div id="resultOutcome"></div>
+  </div>
+
+  <div class="log-section">
+    <div class="log-section-title">Roll Log</div>
+    <div id="rollLog"></div>
+  </div>
+
+</div>
+
+<!-- PARTY TAB -->
+<div class="bottom-panel bottom-tab-content" id="tab-party">
+  <div class="party-mgmt">
+
+    <!-- Anchor (party-level) -->
+    <div class="party-mgmt-section" style="max-width: 220px;">
+      <div class="mgmt-section-title">Anchor</div>
+      <div class="anchor-box">
+        <div class="anchor-text" id="anchorName">The Old Mill at Briarford</div>
+        <div class="anchor-desc" id="anchorDesc">The crumbling mill where the party first gathered — it grounds them to one another.</div>
+      </div>
+      <button class="add-inline-btn" onclick="editAnchor()">Edit Anchor</button>
+
+      <div class="mgmt-section-title" style="margin-top: 12px;">Downtime</div>
+      <div id="downtimeList"></div>
+    </div>
+
+    <!-- Connections (per-character) -->
+    <div class="party-mgmt-section">
+      <div class="mgmt-section-title">
+        Connections
+        <button class="add-inline-btn" onclick="addConnection()">+ Add</button>
+      </div>
+      <div id="connectionsList"></div>
+    </div>
+
+    <!-- Secrets (per-character) -->
+    <div class="party-mgmt-section">
+      <div class="mgmt-section-title">
+        Secrets
+        <button class="add-inline-btn" onclick="addSecret()">+ Add</button>
+      </div>
+      <div id="secretsList"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STORYGUIDE TAB -->
+<div class="bottom-panel bottom-tab-content" id="tab-sg">
+  <div class="sg-mgmt">
+
+    <div class="tides-section">
+      <div class="mgmt-section-title">
+        Tides
+        <button class="add-inline-btn" onclick="addTide()">+ Add Tide</button>
+      </div>
+      <div id="tidesList"></div>
+    </div>
+
+    <div class="sg-notes-section">
+      <div class="mgmt-section-title">SG Notes</div>
+      <textarea class="sg-notes-textarea" id="sgNotes" placeholder="Session notes, reminders, scene plans..."></textarea>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// === DATA ===
+let taintPool = 0;
+let selectedChar = null;
+let rollCount = 0;
+
+const characters = [
+  {
+    name: "Royce Stout",
+    subtitle: "The Penitent Defector",
+    icon: "⚔",
+    conviction: "Survival",
+    path: "Stewardship",
+    attrs: {
+      physical: { Might: 3, Reflex: 2, Endurance: 2 },
+      mental: { Reason: 1, Guile: 2, Resolve: 2 },
+      social: { Influence: 1, Poise: 1, Command: 2 }
+    },
+    tracks: { vitality: { max: 5, current: 5 }, willpower: { max: 5, current: 5 }, composure: { max: 5, current: 5 } },
+    luck: { max: 1, current: 1 },
+    corruption: 0,
+    vocation: "Combat Veteran (+3)",
+    interests: ["Tactics (+2)", "Survival (+2)", "Intimidation (+2)"],
+    hobbies: ["Threat Assessment (+1)", "Weapon Maint. (+1)", "First Aid (+1)"],
+    edges: ["Quick Draw (•)", "Dual Strike (••)", "Brutal Finish (••)", "Riposte (••)"],
+    aspects: ["Juggernaut (Might) •••"],
+    connections: [{ name: "Sergeant Voss", desc: "Former commanding officer — owes Royce a debt" }],
+    secrets: [{ text: "Deserted his post during the Siege of Tarnhollow" }],
+    downtime: ""
+  },
+  {
+    name: "Mira",
+    subtitle: "The Necessary Liar",
+    icon: "🗡",
+    conviction: "Justice",
+    path: "Defiance",
+    attrs: {
+      physical: { Might: 1, Reflex: 2, Endurance: 1 },
+      mental: { Reason: 2, Guile: 3, Resolve: 2 },
+      social: { Influence: 2, Poise: 2, Command: 1 }
+    },
+    tracks: { vitality: { max: 4, current: 4 }, willpower: { max: 5, current: 5 }, composure: { max: 4, current: 4 } },
+    luck: { max: 1, current: 1 },
+    corruption: 0,
+    vocation: "Intelligence Operative (+3)",
+    interests: ["Deception (+2)", "Investigation (+2)", "Stealth (+2)"],
+    hobbies: ["Poison Lore (+1)", "Ciphers (+1)", "Disguise (+1)"],
+    edges: ["Silver Tongue (••)", "Shadow Step (••)", "Assess Weakness (•)", "Contacts (••)"],
+    aspects: ["Serpent's Guile (Guile) •••"],
+    connections: [{ name: "Lark", desc: "Street informant — reliable but expensive" }, { name: "The Archivist", desc: "Anonymous contact who trades in secrets" }],
+    secrets: [{ text: "Knows the real identity of the Pale Shepherd's lieutenant" }],
+    downtime: ""
+  },
+  {
+    name: "Elira Corventi",
+    subtitle: "The Unburnt Scholar",
+    icon: "✦",
+    conviction: "Freedom",
+    path: "Wandering",
+    attrs: {
+      physical: { Might: 1, Reflex: 1, Endurance: 1 },
+      mental: { Reason: 3, Guile: 2, Resolve: 3 },
+      social: { Influence: 2, Poise: 1, Command: 1 }
+    },
+    tracks: { vitality: { max: 4, current: 4 }, willpower: { max: 6, current: 6 }, composure: { max: 4, current: 4 } },
+    luck: { max: 1, current: 1 },
+    corruption: 0,
+    vocation: "Arcane Scholar (+3)",
+    interests: ["History (+2)", "Occult Theory (+2)", "Languages (+2)"],
+    hobbies: ["Herbalism (+1)", "Cartography (+1)", "Astronomy (+1)"],
+    edges: ["Arcane Attunement (••)", "Mental Fortress (••)", "Second Wind (•)", "Specialist — Wards (••)"],
+    aspects: ["Arcanist (Reason) •••"],
+    connections: [{ name: "Professor Hale", desc: "Mentor at the Athenaeum — exiled for forbidden research" }],
+    secrets: [{ text: "Her 'scholarship' was funded by selling ward-breaking knowledge to smugglers" }],
+    downtime: ""
+  },
+  {
+    name: "Sera",
+    subtitle: "The Reluctant Heir",
+    icon: "♛",
+    conviction: "Devotion",
+    path: "Leadership",
+    attrs: {
+      physical: { Might: 2, Reflex: 1, Endurance: 2 },
+      mental: { Reason: 2, Guile: 1, Resolve: 1 },
+      social: { Influence: 3, Poise: 2, Command: 2 }
+    },
+    tracks: { vitality: { max: 5, current: 5 }, willpower: { max: 4, current: 4 }, composure: { max: 5, current: 5 } },
+    luck: { max: 1, current: 1 },
+    corruption: 0,
+    vocation: "Diplomat (+3)",
+    interests: ["Negotiation (+2)", "Command (+2)", "Etiquette (+2)"],
+    hobbies: ["Heraldry (+1)", "Horsemanship (+1)", "Music (+1)"],
+    edges: ["Silver Tongue (••)", "Status (••)", "Weight of Authority (••)", "Allies — Lysandra House (•)"],
+    aspects: ["Sovereign Presence (Command) •••"],
+    connections: [{ name: "Lady Lysandra", desc: "Head of her noble house — expects Sera to return and lead" }, { name: "Father Aldric", desc: "Family chaplain who sheltered her escape" }],
+    secrets: [{ text: "Fled an arranged marriage that would have sealed a political alliance" }],
+    downtime: ""
+  }
+];
+
+const enemies = [
+  {
+    tier: "mook", name: "City Watch Patrol",
+    tn: 10, threshold: 2, size: 4, sizeLeft: 4,
+    scale: "Phys 3 / Soc 3 / Ment 2",
+    trait: "Shield Wall — when 3+ members remain, melee attacks against the group suffer +1 TN",
+    goal: "Detain suspects and escort to the magistrate."
+  },
+  {
+    tier: "mook", name: "Pale Vanguard Scouts",
+    tn: 9, threshold: 2, size: 3, sizeLeft: 3,
+    scale: "Phys 3 / Soc 2 / Ment 2",
+    trait: "Unnerving — characters who first encounter them roll Composure vs TN 10 or gain Tier 1 Shaken",
+    goal: "Probe defenses and report back."
+  },
+  {
+    tier: "elite", name: "Harvel Doss",
+    subtitle: "Regional Merchant",
+    tn: { physical: 10, mental: 12, social: 14 },
+    scale: "Phys 3 / Soc 5 / Ment 4",
+    health: { composure: { max: 5, current: 5 } },
+    traits: [
+      { name: "Patient", desc: "Never deploys leverage immediately. Waits one round before using any leverage he holds." },
+      { name: "Good Accounts", desc: "Once per scene, produces specific financial information functioning as Major leverage on anyone who owes debts in the region." }
+    ],
+    goal: "Establish that the Dragon Flagon property is commercially viable for redevelopment."
+  },
+  {
+    tier: "boss", name: "Mayor Aldous Fenn",
+    subtitle: "Voice of Goldenfields",
+    tn: { physical: 8, mental: 12, social: 16 },
+    scale: "Phys 3 / Soc 6 / Ment 4",
+    health: {
+      vitality: { max: 4, current: 4 },
+      willpower: { max: 5, current: 5 },
+      composure: { max: 7, current: 7 }
+    },
+    traits: [
+      { name: "Institutional Weight", desc: "While Mayor, all Social attacks against him in Goldenfields suffer +2 TN." },
+      { name: "Never Says Anything Actionable", desc: "His attacks never generate evidence usable against him." },
+      { name: "Harvel in the Back", desc: "When Harvel Doss is present, Social Scale treated as 7." }
+    ],
+    goal: "Remain the unchallenged voice of Goldenfields. Will concede tactical ground but not structural authority."
+  },
+  {
+    tier: "legend", name: "The Pale Shepherd",
+    subtitle: "That Which Guides the Dead",
+    tn: { physical: 14, mental: 16, social: 12 },
+    scale: "Phys 5 / Soc 4 / Ment 6",
+    health: {
+      vitality: { max: 8, current: 8 },
+      willpower: { max: 9, current: 9 },
+      composure: { max: 6, current: 6 }
+    },
+    traits: [
+      { name: "Death Does Not Apply", desc: "Cannot be reduced below 1 Vitality by physical means alone. Must be unbound first (Mental extended challenge, track 8)." },
+      { name: "Whisper Walk", desc: "Can appear in any location where the dead are unburied. No movement required." },
+      { name: "The Flock Answers", desc: "Once per round, may summon a Pale Vanguard Scouts mook group (Size 3) at Near range." }
+    ],
+    goal: "Reclaim the valley's dead. Not malicious — operates on an ancient covenant. Will negotiate if approached through the correct rites."
+  }
+];
+
+// === RENDERING ===
+
+function renderParty() {
+  const list = document.getElementById('partyList');
+  list.innerHTML = characters.map((c, i) => `
+    <div class="char-card ${selectedChar === i ? 'selected' : ''}" onclick="selectChar(${i})">
+      <div class="char-header">
+        <div class="char-portrait">${c.icon}</div>
+        <div class="char-info">
+          <div class="char-name">${c.name}</div>
+          <div class="char-subtitle">${c.subtitle}</div>
+        </div>
+      </div>
+      <div class="char-tracks">
+        ${renderMiniTrack('VIT', 'phys', c.tracks.vitality)}
+        ${renderMiniTrack('WIL', 'ment', c.tracks.willpower)}
+        ${renderMiniTrack('COM', 'soc', c.tracks.composure)}
+      </div>
+      <div class="char-quick">
+        <div class="quick-stat luck">
+          <span class="qs-label">LCK</span>
+          <span class="qs-val">${c.luck.current}/${c.luck.max}</span>
+        </div>
+        <div class="quick-stat corr">
+          <span class="qs-label">COR</span>
+          <span class="qs-val">${c.corruption}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderMiniTrack(label, domain, track) {
+  let boxes = '';
+  for (let j = 0; j < track.max; j++) {
+    boxes += `<div class="track-box ${domain} ${j < track.current ? 'filled' : ''}"></div>`;
+  }
+  return `<div class="track-row">
+    <span class="track-label ${domain}">${label}</span>
+    <div class="track-boxes">${boxes}</div>
+  </div>`;
+}
+
+function selectChar(index) {
+  selectedChar = index;
+  renderParty();
+  renderCharDetail(characters[index]);
+}
+
+function renderCharDetail(c) {
+  const defTN = (anchor) => 8 + anchor;
+  const center = document.getElementById('centerContent');
+  center.innerHTML = `
+    <div class="detail-view">
+      <div class="detail-name">${c.name}</div>
+      <div class="detail-subtitle">${c.subtitle}</div>
+
+      <div class="identity-row">
+        <div class="identity-block">
+          <div class="identity-type">Conviction</div>
+          <div class="identity-name">${c.conviction}</div>
+        </div>
+        <div class="identity-block">
+          <div class="identity-type">Path</div>
+          <div class="identity-name">${c.path}</div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Attributes</div>
+        <div class="attr-grid">
+          <div class="attr-domain">
+            <div class="attr-domain-title phys">Physical</div>
+            ${Object.entries(c.attrs.physical).map(([k,v]) =>
+              `<div class="attr-row"><span class="a-name ${k==='Endurance'?'anchor':''}">${k}</span><span class="a-val">${v}</span></div>`
+            ).join('')}
+          </div>
+          <div class="attr-domain">
+            <div class="attr-domain-title ment">Mental</div>
+            ${Object.entries(c.attrs.mental).map(([k,v]) =>
+              `<div class="attr-row"><span class="a-name ${k==='Resolve'?'anchor':''}">${k}</span><span class="a-val">${v}</span></div>`
+            ).join('')}
+          </div>
+          <div class="attr-domain">
+            <div class="attr-domain-title soc">Social</div>
+            ${Object.entries(c.attrs.social).map(([k,v]) =>
+              `<div class="attr-row"><span class="a-name ${k==='Command'?'anchor':''}">${k}</span><span class="a-val">${v}</span></div>`
+            ).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Health Tracks</div>
+        <div class="detail-tracks">
+          ${renderDetailTrack('Vitality', 'phys', c.tracks.vitality, defTN(c.attrs.physical.Endurance), 'vitality', characters.indexOf(c))}
+          ${renderDetailTrack('Willpower', 'ment', c.tracks.willpower, defTN(c.attrs.mental.Resolve), 'willpower', characters.indexOf(c))}
+          ${renderDetailTrack('Composure', 'soc', c.tracks.composure, defTN(c.attrs.social.Command), 'composure', characters.indexOf(c))}
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Skills</div>
+        <div class="skills-list">
+          <div><span class="skill-tier">VOC</span> ${c.vocation}</div>
+          ${c.interests.map(s => `<div><span class="skill-tier">INT</span> ${s}</div>`).join('')}
+          ${c.hobbies.map(s => `<div><span class="skill-tier">HOB</span> ${s}</div>`).join('')}
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Edges</div>
+        <div class="edges-list">
+          ${c.edges.map(e => `<div>${e}</div>`).join('')}
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Aspects</div>
+        <div class="edges-list">
+          ${c.aspects.map(a => `<div>${a}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderDetailTrack(name, domain, track, defTN, trackKey, charIdx) {
+  let boxes = '';
+  for (let j = 0; j < track.max; j++) {
+    boxes += `<div class="detail-track-box ${domain} ${j < track.current ? 'filled' : ''}" onclick="toggleBox(${charIdx},'${trackKey}',${j})"></div>`;
+  }
+  return `<div class="detail-track-row">
+    <span class="detail-track-label" style="color: var(--${domain}-color)">${name}</span>
+    <div class="detail-track-boxes">${boxes}</div>
+    <span class="detail-track-tn">DEF ${defTN}</span>
+  </div>`;
+}
+
+function toggleBox(charIdx, trackKey, boxIdx) {
+  const track = characters[charIdx].tracks[trackKey];
+  if (boxIdx < track.current) {
+    track.current = boxIdx;
+  } else {
+    track.current = boxIdx + 1;
+  }
+  renderParty();
+  renderCharDetail(characters[charIdx]);
+}
+
+// === ENEMIES ===
+
+function renderEnemies() {
+  const list = document.getElementById('enemyList');
+  list.innerHTML = enemies.map((e, i) => renderEnemyCard(e, i)).join('');
+}
+
+function renderEnemyCard(e, i) {
+  const tierClass = `tier-${e.tier}`;
+  const tierLabel = e.tier.charAt(0).toUpperCase() + e.tier.slice(1);
+  let quickTN = '';
+  if (typeof e.tn === 'number') {
+    quickTN = `TN ${e.tn}`;
+  } else if (e.tn) {
+    quickTN = `TN ${Math.max(e.tn.physical, e.tn.mental, e.tn.social)}`;
+  }
+
+  return `<div class="enemy-card" id="enemy-${i}">
+    <div class="enemy-card-header" onclick="toggleEnemy(${i})">
+      <div class="enemy-left">
+        <span class="enemy-tier-badge ${tierClass}">${tierLabel}</span>
+        <span class="enemy-name">${e.name}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="enemy-quick-tn">${quickTN}</span>
+        <span class="expand-arrow">▶</span>
+      </div>
+    </div>
+    <div class="enemy-detail">
+      ${renderEnemyDetail(e, i)}
+    </div>
+  </div>`;
+}
+
+function renderEnemyDetail(e, i) {
+  let html = '';
+  if (e.subtitle) html += `<div style="font-style:italic;color:var(--text-dim);margin-bottom:6px">${e.subtitle}</div>`;
+
+  if (e.tier === 'mook') {
+    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">TN</span><span class="enemy-stat-val">${e.tn} (drops by 1 per member lost)</span></div>`;
+    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Thresh</span><span class="enemy-stat-val">${e.threshold}</span></div>`;
+    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Scale</span><span class="enemy-stat-val">${e.scale}</span></div>`;
+    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Size</span><span class="enemy-stat-val">`;
+    html += `<div class="mook-size">`;
+    for (let j = 0; j < e.size; j++) {
+      html += `<div class="mook-pip ${j < e.sizeLeft ? 'alive' : ''}" onclick="toggleMook(${i},${j})"></div>`;
+    }
+    html += `</div></span></div>`;
+    if (e.trait) html += `<div class="enemy-trait"><span class="enemy-trait-name">Trait:</span> ${e.trait}</div>`;
+  } else {
+    // Elite, Boss, Legend
+    if (typeof e.tn === 'object') {
+      html += `<div class="enemy-stat-row"><span class="enemy-stat-label">TN</span><span class="enemy-stat-val">Phys ${e.tn.physical} / Ment ${e.tn.mental} / Soc ${e.tn.social}</span></div>`;
+    }
+    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Scale</span><span class="enemy-stat-val">${e.scale}</span></div>`;
+
+    if (e.health) {
+      for (const [key, track] of Object.entries(e.health)) {
+        const domain = key === 'vitality' ? 'phys' : key === 'willpower' ? 'ment' : 'soc';
+        const label = key.charAt(0).toUpperCase() + key.slice(1);
+        let boxes = '';
+        for (let j = 0; j < track.max; j++) {
+          boxes += `<div class="enemy-track-box ${j < track.current ? 'filled' : ''}" onclick="toggleEnemyTrack(${i},'${key}',${j})" style="border-color: var(--${domain}-color); ${j < track.current ? 'background: var(--'+domain+'-color)' : ''}"></div>`;
+        }
+        html += `<div class="enemy-stat-row"><span class="enemy-stat-label">${label.slice(0,4)}</span><span class="enemy-stat-val"><div class="enemy-track">${boxes}</div></span></div>`;
+      }
+    }
+
+    if (e.traits) {
+      e.traits.forEach(t => {
+        html += `<div class="enemy-trait"><span class="enemy-trait-name">${t.name}</span> — ${t.desc}</div>`;
+      });
+    }
+  }
+
+  if (e.goal) html += `<div class="enemy-goal"><strong>Goal:</strong> ${e.goal}</div>`;
+  return html;
+}
+
+function toggleEnemy(i) {
+  document.getElementById(`enemy-${i}`).classList.toggle('expanded');
+}
+
+function toggleMook(enemyIdx, pipIdx) {
+  const e = enemies[enemyIdx];
+  if (pipIdx < e.sizeLeft) {
+    e.sizeLeft = pipIdx;
+  } else {
+    e.sizeLeft = pipIdx + 1;
+  }
+  renderEnemies();
+  // Re-expand the card
+  document.getElementById(`enemy-${enemyIdx}`).classList.add('expanded');
+}
+
+function toggleEnemyTrack(enemyIdx, trackKey, boxIdx) {
+  const track = enemies[enemyIdx].health[trackKey];
+  if (boxIdx < track.current) {
+    track.current = boxIdx;
+  } else {
+    track.current = boxIdx + 1;
+  }
+  renderEnemies();
+  document.getElementById(`enemy-${enemyIdx}`).classList.add('expanded');
+}
+
+// === DICE ROLLER ===
+// Roll state machine: 'idle' → 'player_swap' → 'sg_swap' → 'resolved'
+let rollState = 'idle';
+let currentRoll = null; // { d1, d2, d3, attr, skill, tn, swapped: null|'luck'|'taint', swapTarget: null|1|2 }
+
+function rollDice() {
+  if (rollState !== 'idle' && rollState !== 'resolved') return;
+
+  const die1El = document.getElementById('die1');
+  const die2El = document.getElementById('die2');
+  const die3El = document.getElementById('die3');
+
+  // Clear previous state
+  clearDieClasses();
+  document.getElementById('swapArea').innerHTML = '';
+  document.getElementById('resultOutcome').innerHTML = '';
+
+  die1El.classList.add('rolling');
+  die2El.classList.add('rolling');
+  die3El.classList.add('rolling');
+  document.getElementById('rollBtn').disabled = true;
+
+  setTimeout(() => {
+    const d1 = Math.floor(Math.random() * 6) + 1;
+    const d2 = Math.floor(Math.random() * 6) + 1;
+    const d3 = Math.floor(Math.random() * 6) + 1;
+
+    currentRoll = {
+      d1, d2, d3,
+      attr: parseInt(document.getElementById('rollAttr').value) || 0,
+      skill: parseInt(document.getElementById('rollSkill').value) || 0,
+      tn: parseInt(document.getElementById('rollTN').value) || 12,
+      swapped: null,
+      swapTarget: null
+    };
+
+    die1El.textContent = d1;
+    die2El.textContent = d2;
+    die3El.textContent = d3;
+    die1El.classList.remove('rolling');
+    die2El.classList.remove('rolling');
+    die3El.classList.remove('rolling');
+
+    // Show pre-swap result
+    updateResultDisplay();
+
+    // Enter player swap phase
+    const char = selectedChar !== null ? characters[selectedChar] : null;
+    const hasLuck = char && char.luck.current > 0;
+
+    rollState = 'player_swap';
+    showPlayerSwapPrompt(hasLuck);
+  }, 300);
+}
+
+function showPlayerSwapPrompt(hasLuck) {
+  const area = document.getElementById('swapArea');
+  if (hasLuck) {
+    // Highlight dice as clickable swap targets
+    document.getElementById('die1').classList.add('swap-target');
+    document.getElementById('die2').classList.add('swap-target');
+
+    area.innerHTML = `
+      <div class="swap-prompt">
+        <span class="swap-prompt-text">Spend Luck to swap? Click a Result die to swap it with the Luck die.</span>
+        <div class="swap-actions">
+          <button class="swap-btn pass-btn" onclick="playerPassSwap()">Pass — Keep roll</button>
+        </div>
+      </div>
+    `;
+  } else {
+    area.innerHTML = `
+      <div class="swap-prompt">
+        <span class="swap-prompt-text" style="color: var(--text-dim)">No Luck tokens available.</span>
+        <div class="swap-actions">
+          <button class="swap-btn pass-btn" onclick="playerPassSwap()">Continue</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function onDieClick(dieNum) {
+  if (rollState === 'player_swap' && (dieNum === 1 || dieNum === 2)) {
+    const char = selectedChar !== null ? characters[selectedChar] : null;
+    if (!char || char.luck.current <= 0) return;
+
+    // Perform the swap
+    performSwap(dieNum, 'luck');
+  }
+}
+
+function performSwap(targetDie, source) {
+  const r = currentRoll;
+  const die1El = document.getElementById('die1');
+  const die2El = document.getElementById('die2');
+  const die3El = document.getElementById('die3');
+
+  // Do the swap
+  const oldLuck = r.d3;
+  if (targetDie === 1) {
+    r.d3 = r.d1;
+    r.d1 = oldLuck;
+  } else {
+    r.d3 = r.d2;
+    r.d2 = oldLuck;
+  }
+  r.swapped = source;
+  r.swapTarget = targetDie;
+
+  // Update die display
+  die1El.textContent = r.d1;
+  die2El.textContent = r.d2;
+  die3El.textContent = r.d3;
+
+  // Clear swap-target styling
+  clearDieClasses();
+
+  // Mark the swapped die and luck die
+  if (source === 'luck') {
+    (targetDie === 1 ? die1El : die2El).classList.add('swapped');
+    die3El.classList.add('swapped');
+
+    // Spend the luck token
+    if (selectedChar !== null) {
+      characters[selectedChar].luck.current = Math.max(0, characters[selectedChar].luck.current - 1);
+      renderParty();
+    }
+  } else if (source === 'taint') {
+    (targetDie === 1 ? die1El : die2El).classList.add('taint-swapped');
+    die3El.classList.add('taint-swapped');
+
+    // Spend taint
+    taintPool = Math.max(0, taintPool - 1);
+    document.getElementById('taintVal').textContent = taintPool;
+  }
+
+  // Update result display
+  updateResultDisplay();
+
+  // Resolve the roll
+  resolveRoll(source);
+}
+
+function playerPassSwap() {
+  clearDieClasses();
+
+  // Player passed — SG gets a chance if they have Taint
+  if (taintPool > 0) {
+    rollState = 'sg_swap';
+    showSGSwapPrompt();
+  } else {
+    // No taint available, resolve immediately
+    resolveRoll(null);
+  }
+}
+
+function showSGSwapPrompt() {
+  // SG can force a swap — the SG picks the die that hurts the player most
+  const area = document.getElementById('swapArea');
+
+  // Highlight dice as potential SG swap targets
+  document.getElementById('die1').classList.add('swap-target');
+  document.getElementById('die1').style.animation = 'none'; // Override pulse
+  document.getElementById('die1').style.borderColor = 'var(--corruption-color)';
+  document.getElementById('die1').style.boxShadow = '0 0 8px 2px rgba(122, 58, 122, 0.3)';
+  document.getElementById('die2').classList.add('swap-target');
+  document.getElementById('die2').style.animation = 'none';
+  document.getElementById('die2').style.borderColor = 'var(--corruption-color)';
+  document.getElementById('die2').style.boxShadow = '0 0 8px 2px rgba(122, 58, 122, 0.3)';
+
+  area.innerHTML = `
+    <div class="swap-prompt">
+      <span class="swap-prompt-text taint">SG: Spend 1 Taint to force a swap? Click a Result die to swap it.</span>
+      <div class="swap-actions">
+        <button class="swap-btn taint-swap" onclick="sgSwap(1)">Swap Die 1 ↔ Luck</button>
+        <button class="swap-btn taint-swap" onclick="sgSwap(2)">Swap Die 2 ↔ Luck</button>
+        <button class="swap-btn pass-btn" onclick="sgPassSwap()">Pass — No Taint spend</button>
+      </div>
+    </div>
+  `;
+}
+
+function sgSwap(targetDie) {
+  performSwap(targetDie, 'taint');
+}
+
+function sgPassSwap() {
+  clearDieClasses();
+  resolveRoll(null);
+}
+
+function resolveRoll(swapSource) {
+  rollState = 'resolved';
+  const area = document.getElementById('swapArea');
+
+  // Show swap resolution status
+  if (swapSource === 'luck') {
+    area.innerHTML = `<div class="swap-resolved used-luck">Luck spent — die ${currentRoll.swapTarget} swapped with Luck die</div>`;
+  } else if (swapSource === 'taint') {
+    area.innerHTML = `<div class="swap-resolved used-taint">Taint spent — SG forced swap on die ${currentRoll.swapTarget}</div>`;
+  } else {
+    area.innerHTML = `<div class="swap-resolved">No swap — roll stands as rolled</div>`;
+  }
+
+  // Re-enable roll button
+  document.getElementById('rollBtn').disabled = false;
+
+  // Update final result
+  updateResultDisplay();
+
+  // Log the roll
+  logRoll();
+}
+
+function updateResultDisplay() {
+  const r = currentRoll;
+  if (!r) return;
+
+  const total = r.d1 + r.d2 + r.attr + r.skill;
+  const resultDiceTotal = r.d1 + r.d2;
+  const isCrit = (r.d1 === 6 && r.d2 === 6);
+  const isComplication = (resultDiceTotal <= 3);
+
+  let outcome = '';
+  let outcomeClass = '';
+  if (total >= r.tn + 2) { outcome = isCrit ? 'CRITICAL SUCCESS+' : 'Success Plus'; outcomeClass = 'outcome-crit'; }
+  else if (total >= r.tn) { outcome = isCrit ? 'CRITICAL SUCCESS' : 'Success'; outcomeClass = isCrit ? 'outcome-crit' : 'outcome-success'; }
+  else if (total >= r.tn - 2) { outcome = 'Success at Cost'; outcomeClass = 'outcome-cost'; }
+  else { outcome = 'Failure'; outcomeClass = 'outcome-fail'; }
+
+  document.getElementById('resultTotal').textContent = total;
+  document.getElementById('resultBreakdown').textContent =
+    `(${r.d1}+${r.d2}) + ${r.attr}attr + ${r.skill}skill [Luck: ${r.d3}] vs TN ${r.tn}`;
+
+  let outcomeHTML = `<div class="result-outcome ${outcomeClass}">${outcome}</div>`;
+  if (isComplication) {
+    outcomeHTML += `<div class="result-outcome outcome-complication">⚠ Complication (Result: ${resultDiceTotal})</div>`;
+  }
+
+  // Only show final outcome badges when resolved
+  if (rollState === 'resolved') {
+    document.getElementById('resultOutcome').innerHTML = outcomeHTML;
+  } else {
+    // During swap phase, show provisional result
+    document.getElementById('resultOutcome').innerHTML =
+      `<div class="result-outcome" style="border-color:var(--border);color:var(--text-dim)">${outcome} (provisional)</div>`;
+  }
+}
+
+function logRoll() {
+  const r = currentRoll;
+  const total = r.d1 + r.d2 + r.attr + r.skill;
+  const resultDiceTotal = r.d1 + r.d2;
+  const isCrit = (r.d1 === 6 && r.d2 === 6);
+  const isComplication = (resultDiceTotal <= 3);
+
+  let outcome = '';
+  if (total >= r.tn + 2) outcome = isCrit ? 'Crit+' : 'Success+';
+  else if (total >= r.tn) outcome = isCrit ? 'Crit' : 'Success';
+  else if (total >= r.tn - 2) outcome = 'At Cost';
+  else outcome = 'Failure';
+
+  rollCount++;
+  const charName = selectedChar !== null ? characters[selectedChar].name : 'Unknown';
+  const logEntry = document.createElement('div');
+  logEntry.className = 'log-entry';
+  let logText = `#${rollCount} <span class="log-char">${charName}</span> → <span class="log-result">${total}</span> vs TN ${r.tn}`;
+  if (r.swapped === 'luck') logText += ` <span style="color:var(--luck-color)">[LCK]</span>`;
+  if (r.swapped === 'taint') logText += ` <span style="color:var(--corruption-color)">[TAINT]</span>`;
+  if (isCrit) logText += ` <span class="log-crit">CRIT</span>`;
+  if (isComplication) logText += ` <span class="log-comp">COMP</span>`;
+  logText += ` — ${outcome}`;
+  logEntry.innerHTML = logText;
+  const log = document.getElementById('rollLog');
+  log.insertBefore(logEntry, log.firstChild);
+}
+
+function clearDieClasses() {
+  ['die1', 'die2', 'die3'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('swappable', 'swap-target', 'swapped', 'taint-swapped');
+    el.style.animation = '';
+    el.style.borderColor = '';
+    el.style.boxShadow = '';
+  });
+}
+
+// === TAINT ===
+function adjustTaint(delta) {
+  taintPool = Math.max(0, taintPool + delta);
+  document.getElementById('taintVal').textContent = taintPool;
+}
+
+// === BOTTOM TAB SWITCHING ===
+function switchBottomTab(tab) {
+  document.querySelectorAll('.bottom-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.bottom-tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.querySelectorAll('.bottom-tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(tab === 'dice' ? 'dice' : tab === 'party' ? 'party' : 'story')) t.classList.add('active');
+  });
+  // Render content when switching
+  if (tab === 'party') renderPartyTab();
+  if (tab === 'sg') renderSGTab();
+}
+
+// === PARTY ANCHOR ===
+let partyAnchor = { name: "The Old Mill at Briarford", desc: "The crumbling mill where the party first gathered — it grounds them to one another." };
+
+function editAnchor() {
+  const name = prompt('Anchor name:', partyAnchor.name);
+  if (name === null) return;
+  const desc = prompt('Anchor description:', partyAnchor.desc);
+  if (desc === null) return;
+  partyAnchor.name = name;
+  partyAnchor.desc = desc;
+  renderPartyTab();
+}
+
+// === CONNECTIONS ===
+function renderConnections() {
+  const el = document.getElementById('connectionsList');
+  let html = '';
+  characters.forEach((c, ci) => {
+    (c.connections || []).forEach((conn, j) => {
+      html += `<div class="mgmt-item">
+        <div class="mgmt-item-header">
+          <span class="mgmt-item-name">${conn.name}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="mgmt-item-char">${c.name.split(' ')[0]}</span>
+            <button class="remove-btn" onclick="removeConnection(${ci},${j})">×</button>
+          </div>
+        </div>
+        ${conn.desc ? `<div class="mgmt-item-desc">${conn.desc}</div>` : ''}
+      </div>`;
+    });
+  });
+  if (!html) html = '<div style="color:var(--text-dim);font-style:italic;font-size:12px">No connections yet</div>';
+  el.innerHTML = html;
+}
+
+function addConnection() {
+  const charIdx = selectedChar !== null ? selectedChar : 0;
+  const name = prompt(`Connection name (for ${characters[charIdx].name}):`);
+  if (!name) return;
+  const desc = prompt('Description (optional):') || '';
+  if (!characters[charIdx].connections) characters[charIdx].connections = [];
+  characters[charIdx].connections.push({ name, desc });
+  renderPartyTab();
+}
+
+function removeConnection(charIdx, connIdx) {
+  characters[charIdx].connections.splice(connIdx, 1);
+  renderPartyTab();
+}
+
+// === SECRETS ===
+function renderSecrets() {
+  const el = document.getElementById('secretsList');
+  let html = '';
+  characters.forEach((c, ci) => {
+    (c.secrets || []).forEach((s, j) => {
+      html += `<div class="mgmt-item">
+        <div class="mgmt-item-header">
+          <span class="mgmt-item-char">${c.name.split(' ')[0]}</span>
+          <button class="remove-btn" onclick="removeSecret(${ci},${j})">×</button>
+        </div>
+        <div style="color:var(--text);font-size:12px;margin-top:2px">${s.text}</div>
+      </div>`;
+    });
+  });
+  if (!html) html = '<div style="color:var(--text-dim);font-style:italic;font-size:12px">No secrets yet</div>';
+  el.innerHTML = html;
+}
+
+function addSecret() {
+  const charIdx = selectedChar !== null ? selectedChar : 0;
+  const text = prompt(`Secret (for ${characters[charIdx].name}):`);
+  if (!text) return;
+  if (!characters[charIdx].secrets) characters[charIdx].secrets = [];
+  characters[charIdx].secrets.push({ text });
+  renderPartyTab();
+}
+
+function removeSecret(charIdx, secretIdx) {
+  characters[charIdx].secrets.splice(secretIdx, 1);
+  renderPartyTab();
+}
+
+// === DOWNTIME ===
+const downtimeActivities = ['— None —', 'Recover', 'Train', 'Research', 'Craft', 'Connect', 'Work', 'Other'];
+
+function renderDowntime() {
+  const el = document.getElementById('downtimeList');
+  let html = '';
+  characters.forEach((c, ci) => {
+    const opts = downtimeActivities.map(a =>
+      `<option value="${a}" ${c.downtime === a ? 'selected' : ''}>${a}</option>`
+    ).join('');
+    html += `<div class="downtime-item">
+      <div class="downtime-char">${c.name.split(' ')[0]}</div>
+      <select class="downtime-select" onchange="setDowntime(${ci}, this.value)">${opts}</select>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+function setDowntime(charIdx, activity) {
+  characters[charIdx].downtime = activity;
+}
+
+// === PARTY TAB RENDER ===
+function renderPartyTab() {
+  document.getElementById('anchorName').textContent = partyAnchor.name;
+  document.getElementById('anchorDesc').textContent = partyAnchor.desc;
+  renderConnections();
+  renderSecrets();
+  renderDowntime();
+}
+
+// === TIDES ===
+let tides = [
+  { name: "The Pale Advance", desc: "The Pale Shepherd's forces push toward the city gates.", progress: 2, max: 6 },
+  { name: "Civic Unrest", desc: "Citizens grow restless as food supplies dwindle.", progress: 1, max: 4 }
+];
+
+function renderTides() {
+  const el = document.getElementById('tidesList');
+  let html = '';
+  tides.forEach((t, i) => {
+    let pips = '';
+    for (let j = 0; j < t.max; j++) {
+      pips += `<div class="tide-pip ${j < t.progress ? 'filled' : ''}" onclick="toggleTidePip(${i},${j})"></div>`;
+    }
+    html += `<div class="tide-card">
+      <div class="tide-header">
+        <span class="tide-name">${t.name}</span>
+        <button class="remove-btn" onclick="removeTide(${i})" style="background:none;border:none;color:var(--red-dim);cursor:pointer;font-size:14px">×</button>
+      </div>
+      <div class="tide-desc">${t.desc}</div>
+      <div class="tide-track">${pips}</div>
+    </div>`;
+  });
+  if (!html) html = '<div style="color:var(--text-dim);font-style:italic;font-size:12px">No active tides</div>';
+  el.innerHTML = html;
+}
+
+function toggleTidePip(tideIdx, pipIdx) {
+  const t = tides[tideIdx];
+  if (pipIdx < t.progress) {
+    t.progress = pipIdx;
+  } else {
+    t.progress = pipIdx + 1;
+  }
+  renderTides();
+}
+
+function addTide() {
+  const name = prompt('Tide name:');
+  if (!name) return;
+  const desc = prompt('Description:') || '';
+  const maxStr = prompt('Track size (number of segments):', '6');
+  const max = parseInt(maxStr) || 6;
+  tides.push({ name, desc, progress: 0, max });
+  renderSGTab();
+}
+
+function removeTide(idx) {
+  tides.splice(idx, 1);
+  renderSGTab();
+}
+
+// === SG TAB RENDER ===
+function renderSGTab() {
+  renderTides();
+}
+
+// === PLACEHOLDERS ===
+function addCharacter() {
+  alert('Character creation form would open here.\n\nIn the full app, this would be your split-pane form + preview pattern with fields for attributes, skills, edges, etc.');
+}
+function addEnemy() {
+  alert('Enemy creation form would open here.\n\nSelect tier (Mook/Elite/Boss/Legend) and fill in the appropriate stat block fields.');
+}
+
+// === INIT ===
+document.getElementById('sessionDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+renderParty();
+renderEnemies();
+// Auto-select first character
+selectChar(0);
+</script>
+</body>
+</html>
