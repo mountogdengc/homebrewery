@@ -1,0 +1,146 @@
+// ── Willowlight Character Sheet Additional Styles ─────────────────────
+// Base statblock styles are imported from willowlightStatblock.less
+
+.wl-player {
+	font-size: 12px;
+	color: #7a8aad;
+	margin-top: 2px;
+}
+
+.wl-character-sheet {
+	max-width: 600px;
+
+	&.wl-wide {
+		max-width: 900px;
+	}
+}
+
+// Resources grid (luck, corruption, XP)
+.wl-resource-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin: 6px 0;
+}
+
+.wl-resource-col {
+	flex: 1;
+	min-width: 100px;
+}
+
+.wl-resource-label {
+	font-size: 10px;
+	font-weight: 700;
+	color: #7a8aad;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 4px;
+}
+
+.wl-resource-value {
+	display: flex;
+	gap: 2px;
+	flex-wrap: wrap;
+}
+
+.wl-resource-number {
+	font-size: 18px;
+	font-weight: 700;
+	color: #a8d8ea;
+}
+
+.wl-box-filled {
+	background: rgba(168,216,234,0.3) !important;
+}
+
+// Milestones
+.wl-milestone-grid {
+	display: flex;
+	gap: 20px;
+}
+
+.wl-milestone-col {
+	flex: 1;
+}
+
+.wl-milestone-heading {
+	font-size: 11px;
+	font-weight: 700;
+	color: #7a8aad;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 4px;
+}
+
+.wl-milestone-row {
+	font-size: 13px;
+	color: #d4d4e8;
+	padding: 2px 0;
+}
+
+// Secrets
+.wl-secret {
+	margin: 6px 0;
+	padding: 8px;
+	background: rgba(74,111,165,0.08);
+	border-radius: 4px;
+	border-left: 3px solid #4a6fa5;
+}
+
+.wl-secret-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	font-size: 13px;
+	color: #d4d4e8;
+}
+
+.wl-secret-meta {
+	font-size: 11px;
+	color: #7a8aad;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.wl-secret-plan, .wl-secret-contacts {
+	font-size: 12px;
+	color: #7a8aad;
+	margin-top: 4px;
+	line-height: 1.4;
+}
+
+// B&W overrides for character-specific elements
+.wl-statblock.wl-bw {
+	.wl-player { color: #555; }
+	.wl-resource-label { color: #666; }
+	.wl-resource-number { color: #1a1a1a; }
+	.wl-box-filled { background: rgba(0,0,0,0.15) !important; }
+	.wl-milestone-heading { color: #666; }
+	.wl-milestone-row { color: #1a1a1a; }
+	.wl-secret { background: rgba(0,0,0,0.04); border-left-color: #333; }
+	.wl-secret-header { color: #1a1a1a; }
+	.wl-secret-meta { color: #666; }
+	.wl-secret-plan, .wl-secret-contacts { color: #555; }
+}
+
+// ── Editor Page ───────────────────────────────────────────────────────
+.willowlightCharacterEditorPage {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+
+	.content {
+		flex: 1;
+		overflow: hidden;
+	}
+}
+
+.willowlightCharacterPreview {
+	padding: 20px;
+	overflow-y: auto;
+	height: 100%;
+	background: #0a0a1a;
+}

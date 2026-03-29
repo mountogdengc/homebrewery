@@ -24,6 +24,9 @@ import BrpStatblockSharePage from './pages/brpStatblockSharePage/brpStatblockSha
 import WillowlightStatblockEditorPage from './pages/willowlightStatblockEditorPage/willowlightStatblockEditorPage.jsx';
 import WillowlightStatblockLibraryPage from './pages/willowlightStatblockLibraryPage/willowlightStatblockLibraryPage.jsx';
 import WillowlightStatblockSharePage from './pages/willowlightStatblockSharePage/willowlightStatblockSharePage.jsx';
+import WillowlightCharacterEditorPage from './pages/willowlightCharacterEditorPage/willowlightCharacterEditorPage.jsx';
+import WillowlightCharacterLibraryPage from './pages/willowlightCharacterLibraryPage/willowlightCharacterLibraryPage.jsx';
+import WillowlightCharacterSharePage from './pages/willowlightCharacterSharePage/willowlightCharacterSharePage.jsx';
 
 // Lazy-load BESM pages — keeps ~500KB of data libraries out of the main bundle
 const BesmBuilderPage = lazy(()=>import('./pages/besmBuilder/besmBuilderPage.jsx'));
@@ -95,6 +98,10 @@ const Homebrew = (props)=>{
 					<Route path='/willowlight/edit/:id' element={<WithRoute el={WillowlightStatblockEditorPage} willowlightStatblock={props.willowlightStatblock} />} />
 					<Route path='/willowlight/share/:id' element={<WithRoute el={WillowlightStatblockSharePage} willowlightStatblock={props.willowlightStatblock} />} />
 					<Route path='/willowlight/library' element={<WithRoute el={WillowlightStatblockLibraryPage} />} />
+					<Route path='/willowlight-character/new' element={<WithRoute el={WillowlightCharacterEditorPage} />} />
+					<Route path='/willowlight-character/edit/:id' element={<WithRoute el={WillowlightCharacterEditorPage} willowlightCharacter={props.willowlightCharacter} />} />
+					<Route path='/willowlight-character/share/:id' element={<WithRoute el={WillowlightCharacterSharePage} willowlightCharacter={props.willowlightCharacter} />} />
+					<Route path='/willowlight-character/library' element={<WithRoute el={WillowlightCharacterLibraryPage} />} />
 					<Route path='/statblock/new' element={<WithRoute el={StatblockEditorPage} />} />
 					<Route path='/statblock/edit/:id' element={<WithRoute el={StatblockEditorPage} statblock={props.statblock} />} />
 					<Route path='/statblock/share/:id' element={<WithRoute el={StatblockSharePage} statblock={props.statblock} />} />

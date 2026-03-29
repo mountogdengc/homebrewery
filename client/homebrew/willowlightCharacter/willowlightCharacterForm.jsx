@@ -5,10 +5,10 @@ import {
 	HEALTH_TRACKS, getTrackBoxes, getDefTN
 } from '@shared/willowlightStatblock/constants.js';
 
-const WillowlightStatblockForm = ({ statblock, onChange })=>{
+const WillowlightCharacterForm = ({ character, onChange })=>{
 
 	const update = useCallback((path, value)=>{
-		const updated = JSON.parse(JSON.stringify(statblock));
+		const updated = JSON.parse(JSON.stringify(character));
 		const keys = path.split('.');
 		let obj = updated;
 		for (let i = 0; i < keys.length - 1; i++) {
@@ -18,11 +18,11 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 		const lastKey = keys[keys.length - 1].match(/^\d+$/) ? parseInt(keys[keys.length - 1]) : keys[keys.length - 1];
 		obj[lastKey] = value;
 		onChange(updated);
-	}, [statblock, onChange]);
+	}, [character, onChange]);
 
 	const field = (label, path, type = 'text', opts = {})=>{
 		const keys = path.split('.');
-		let val = statblock;
+		let val = character;
 		for (const k of keys) val = val?.[k];
 
 		if(type === 'select') {
@@ -44,6 +44,12 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 				<textarea value={val || ''} onChange={(e)=>update(path, e.target.value)} />
 			</label>;
 		}
+		if(type === 'checkbox') {
+			return <label>
+				<span>{label}</span>
+				<input type="checkbox" checked={!!val} onChange={(e)=>update(path, e.target.checked)} />
+			</label>;
+		}
 		return <label>
 			<span>{label}</span>
 			<input type={type} value={val ?? ''} onChange={(e)=>{
@@ -52,11 +58,10 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 		</label>;
 	};
 
-	const attrs = statblock.attributes || {};
+	const attrs = character.attributes || {};
 
-	// ── Repeat helpers ─────────────────────────────────────────────
 	const addItem = (path, item)=>{
-		const updated = JSON.parse(JSON.stringify(statblock));
+		const updated = JSON.parse(JSON.stringify(character));
 		const keys = path.split('.');
 		let arr = updated;
 		for (const k of keys) arr = arr[k];
@@ -65,7 +70,7 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 	};
 
 	const removeItem = (path, idx)=>{
-		const updated = JSON.parse(JSON.stringify(statblock));
+		const updated = JSON.parse(JSON.stringify(character));
 		const keys = path.split('.');
 		let arr = updated;
 		for (const k of keys) arr = arr[k];
@@ -74,7 +79,7 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 	};
 
 	const moveItem = (path, idx, dir)=>{
-		const updated = JSON.parse(JSON.stringify(statblock));
+		const updated = JSON.parse(JSON.stringify(character));
 		const keys = path.split('.');
 		let arr = updated;
 		for (const k of keys) arr = arr[k];
@@ -86,13 +91,11 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 
 	const attrOptions = ALL_ATTRIBUTES.map((a)=>({ value: a, label: ATTRIBUTE_LABELS[a] }));
 
-	// Dot selector component
 	const DotSelector = ({ path, max = 5 })=>{
 		const keys = path.split('.');
-		let val = statblock;
+		let val = character;
 		for (const k of keys) val = val?.[k];
 		val = val || 0;
-
 		return <div className="wlDotSelector">
 			{Array.from({ length: max }, (_, i)=>(
 				<button key={i}
@@ -106,14 +109,14 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 	return <div className="statblockForm">
 		{/* ── Identity ─────────────────────────────────────────────── */}
 		<h3>Identity</h3>
-		{field('Name', 'name')}
+		{field('Character Name', 'name')}
+		{field('Player', 'player')}
 		<div className="formRow">
 			{field('Conviction', 'conviction')}
 			{field('Path', 'path')}
 		</div>
 		{field('Short Description', 'shortDescription')}
 		{field('Description', 'description', 'textarea')}
-		{field('Source', 'source')}
 
 		{/* ── Attributes ───────────────────────────────────────────── */}
 		<h3>Attributes</h3>
@@ -150,18 +153,31 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 			return <div key={track.key} style={{ marginBottom: '8px', padding: '6px 8px', background: '#252538', borderRadius: '4px' }}>
 				<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 					<span style={{ color: '#c0c0d8', fontWeight: 600, fontSize: '13px' }}>{track.label}</span>
-					<span style={{ color: '#666', fontSize: '12px' }}>
-						{derived} boxes | DEF TN {defTN}
-					</span>
+					<span style={{ color: '#666', fontSize: '12px' }}>{derived} boxes | DEF TN {defTN}</span>
 				</div>
 				<label style={{ marginTop: '4px' }}>
 					<span>Override Boxes</span>
-					<input type="number" value={statblock[overrideKey] ?? ''}
+					<input type="number" value={character[overrideKey] ?? ''}
 						placeholder={derived}
 						onChange={(e)=>update(overrideKey, e.target.value === '' ? null : Number(e.target.value))} />
 				</label>
 			</div>;
 		})}
+
+		{/* ── Luck / Corruption / XP ───────────────────────────────── */}
+		<h3>Luck / Corruption / XP</h3>
+		<div className="formRow">
+			<label>
+				<span>Luck Rating</span>
+				<DotSelector path="luckRating" max={3} />
+			</label>
+			{field('Luck Tokens', 'luckTokens', 'number')}
+		</div>
+		<div className="formRow">
+			{field('Corruption', 'corruption', 'number')}
+			{field('Unspent XP', 'unspentXP', 'number')}
+		</div>
+		{field('Wealth Points', 'wealthPoints', 'number')}
 
 		{/* ── Skills ───────────────────────────────────────────────── */}
 		<h3>Skills</h3>
@@ -172,15 +188,12 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 				{field('Bonus', 'vocation.bonus', 'number')}
 			</div>
 		</div>
-
 		<div style={{ color: '#8a8aad', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>Interests (+2)</div>
-		{statblock.interests?.map((interest, idx)=>(
+		{character.interests?.map((_, idx)=>(
 			<div className="repeatItem" key={idx}>
 				<div className="repeatHeader">
 					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Interest {idx + 1}</strong>
-					<div className="repeatControls">
-						<button onClick={()=>removeItem('interests', idx)}>✕</button>
-					</div>
+					<div className="repeatControls"><button onClick={()=>removeItem('interests', idx)}>✕</button></div>
 				</div>
 				{field('Name', `interests.${idx}.name`)}
 			</div>
@@ -188,13 +201,11 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 		<button className="addButton" onClick={()=>addItem('interests', { name: '', bonus: 2 })}>+ Add Interest</button>
 
 		<div style={{ color: '#8a8aad', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px', marginTop: '8px' }}>Hobbies (+1)</div>
-		{statblock.hobbies?.map((hobby, idx)=>(
+		{character.hobbies?.map((_, idx)=>(
 			<div className="repeatItem" key={idx}>
 				<div className="repeatHeader">
 					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Hobby {idx + 1}</strong>
-					<div className="repeatControls">
-						<button onClick={()=>removeItem('hobbies', idx)}>✕</button>
-					</div>
+					<div className="repeatControls"><button onClick={()=>removeItem('hobbies', idx)}>✕</button></div>
 				</div>
 				{field('Name', `hobbies.${idx}.name`)}
 			</div>
@@ -203,7 +214,7 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 
 		{/* ── Attacks ──────────────────────────────────────────────── */}
 		<h3>Attacks</h3>
-		{statblock.attacks?.map((attack, idx)=>(
+		{character.attacks?.map((_, idx)=>(
 			<div className="repeatItem" key={idx}>
 				<div className="repeatHeader">
 					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Attack {idx + 1}</strong>
@@ -232,13 +243,11 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 
 		{/* ── Edges ────────────────────────────────────────────────── */}
 		<h3>Edges</h3>
-		{statblock.edges?.map((edge, idx)=>(
+		{character.edges?.map((edge, idx)=>(
 			<div className="repeatItem" key={idx}>
 				<div className="repeatHeader">
 					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Edge {idx + 1}</strong>
-					<div className="repeatControls">
-						<button onClick={()=>removeItem('edges', idx)}>✕</button>
-					</div>
+					<div className="repeatControls"><button onClick={()=>removeItem('edges', idx)}>✕</button></div>
 				</div>
 				<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
 					<label style={{ flex: 1 }}>
@@ -253,13 +262,11 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 
 		{/* ── Aspects ──────────────────────────────────────────────── */}
 		<h3>Aspects</h3>
-		{statblock.aspects?.map((aspect, idx)=>(
+		{character.aspects?.map((aspect, idx)=>(
 			<div className="repeatItem" key={idx}>
 				<div className="repeatHeader">
 					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Aspect {idx + 1}</strong>
-					<div className="repeatControls">
-						<button onClick={()=>removeItem('aspects', idx)}>✕</button>
-					</div>
+					<div className="repeatControls"><button onClick={()=>removeItem('aspects', idx)}>✕</button></div>
 				</div>
 				<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
 					<label style={{ flex: 1 }}>
@@ -274,13 +281,11 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 
 		{/* ── Burdens ──────────────────────────────────────────────── */}
 		<h3>Burdens</h3>
-		{statblock.burdens?.map((burden, idx)=>(
+		{character.burdens?.map((burden, idx)=>(
 			<div className="repeatItem" key={idx}>
 				<div className="repeatHeader">
 					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Burden {idx + 1}</strong>
-					<div className="repeatControls">
-						<button onClick={()=>removeItem('burdens', idx)}>✕</button>
-					</div>
+					<div className="repeatControls"><button onClick={()=>removeItem('burdens', idx)}>✕</button></div>
 				</div>
 				<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
 					<label style={{ flex: 1 }}>
@@ -293,10 +298,101 @@ const WillowlightStatblockForm = ({ statblock, onChange })=>{
 		))}
 		<button className="addButton" onClick={()=>addItem('burdens', { name: '', dots: 1 })}>+ Add Burden</button>
 
+		{/* ── Milestones ───────────────────────────────────────────── */}
+		<h3>Milestones</h3>
+		<div style={{ color: '#8a8aad', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>Conviction Milestones</div>
+		{character.convictionMilestones?.map((m, idx)=>(
+			<div className="formRow" key={idx} style={{ alignItems: 'center' }}>
+				<input type="checkbox" checked={!!m.completed}
+					onChange={(e)=>update(`convictionMilestones.${idx}.completed`, e.target.checked)}
+					style={{ width: 'auto' }} />
+				<label style={{ flex: 1 }}>
+					<input type="text" value={m.text || ''} placeholder={`Milestone ${idx + 1}`}
+						onChange={(e)=>update(`convictionMilestones.${idx}.text`, e.target.value)} />
+				</label>
+			</div>
+		))}
+
+		<div style={{ color: '#8a8aad', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px', marginTop: '8px' }}>Path Milestones</div>
+		{character.pathMilestones?.map((m, idx)=>(
+			<div className="formRow" key={idx} style={{ alignItems: 'center' }}>
+				<input type="checkbox" checked={!!m.completed}
+					onChange={(e)=>update(`pathMilestones.${idx}.completed`, e.target.checked)}
+					style={{ width: 'auto' }} />
+				<label style={{ flex: 1 }}>
+					<input type="text" value={m.text || ''} placeholder={`Milestone ${idx + 1}`}
+						onChange={(e)=>update(`pathMilestones.${idx}.text`, e.target.value)} />
+				</label>
+			</div>
+		))}
+
+		{/* ── Contacts ─────────────────────────────────────────────── */}
+		<h3>Contacts / Enemies / Allies</h3>
+		{character.contacts?.map((contact, idx)=>(
+			<div className="repeatItem" key={idx}>
+				<div className="repeatHeader">
+					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Contact {idx + 1}</strong>
+					<div className="repeatControls">
+						<button onClick={()=>moveItem('contacts', idx, -1)}>▲</button>
+						<button onClick={()=>moveItem('contacts', idx, 1)}>▼</button>
+						<button onClick={()=>removeItem('contacts', idx)}>✕</button>
+					</div>
+				</div>
+				<div className="formRow">
+					{field('Name', `contacts.${idx}.name`)}
+					{field('Type', `contacts.${idx}.type`, 'select', {
+						options: ['Contact', 'Enemy', 'Ally', 'Retainer'],
+						allowEmpty: true
+					})}
+				</div>
+				<div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+					<span style={{ color: '#c0c0d8', fontSize: '12px' }}>Health</span>
+					<DotSelector path={`contacts.${idx}.health`} />
+				</div>
+				{field('Note', `contacts.${idx}.note`)}
+			</div>
+		))}
+		<button className="addButton" onClick={()=>addItem('contacts', { name: '', health: 1, type: 'Contact', note: '' })}>+ Add Contact</button>
+
+		{/* ── Secrets ──────────────────────────────────────────────── */}
+		<h3>Secrets</h3>
+		{character.secrets?.map((secret, idx)=>(
+			<div className="repeatItem" key={idx}>
+				<div className="repeatHeader">
+					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Secret {idx + 1}</strong>
+					<div className="repeatControls">
+						<button onClick={()=>removeItem('secrets', idx)}>✕</button>
+					</div>
+				</div>
+				{field('Name', `secrets.${idx}.name`)}
+				<div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+					<span style={{ color: '#c0c0d8', fontSize: '12px' }}>Weight</span>
+					<DotSelector path={`secrets.${idx}.weight`} max={3} />
+				</div>
+				<div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+					<span style={{ color: '#c0c0d8', fontSize: '12px' }}>Spread</span>
+					{[0, 1, 2].map((si)=>(
+						<input key={si} type="checkbox"
+							checked={!!(secret.spread && secret.spread[si])}
+							onChange={(e)=>{
+								const updated = JSON.parse(JSON.stringify(character));
+								if(!updated.secrets[idx].spread) updated.secrets[idx].spread = [false, false, false];
+								updated.secrets[idx].spread[si] = e.target.checked;
+								onChange(updated);
+							}}
+							style={{ width: 'auto' }} />
+					))}
+				</div>
+				{field('Containment Plan', `secrets.${idx}.containmentPlan`, 'textarea')}
+				{field('Contacts', `secrets.${idx}.contacts`)}
+			</div>
+		))}
+		<button className="addButton" onClick={()=>addItem('secrets', { name: '', weight: 1, spread: [false, false, false], containmentPlan: '', contacts: '' })}>+ Add Secret</button>
+
 		{/* ── Notes ─────────────────────────────────────────────────── */}
 		<h3>Notes</h3>
 		{field('Notes', 'notes', 'textarea')}
 	</div>;
 };
 
-export default WillowlightStatblockForm;
+export default WillowlightCharacterForm;

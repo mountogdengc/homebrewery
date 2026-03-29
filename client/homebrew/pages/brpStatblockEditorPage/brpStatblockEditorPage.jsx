@@ -8,6 +8,7 @@ import SplitPane           from '../../../components/splitPane/splitPane.jsx';
 import BrpStatblockForm    from '../../brpStatblock/brpStatblockForm.jsx';
 import BrpStatblockPreview from '../../brpStatblock/brpStatblockPreview.jsx';
 
+import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
 import Nav             from '@navbar/nav.jsx';
 import Navbar          from '@navbar/navbar.jsx';
 import AccountNavItem  from '@navbar/account.navitem.jsx';
@@ -135,7 +136,15 @@ const BrpStatblockEditorPage = (props)=>{
 
 			<div className="content">
 				<SplitPane showDividerButtons={false}>
-					<BrpStatblockForm statblock={statblock} onChange={handleChange} />
+					<div style={{ overflow: 'auto', height: '100%' }}>
+						<div style={{ padding: '12px 12px 0' }}>
+							<AiGenerateButton
+								endpoint="/api/ai/generate/brp-statblock"
+								onGenerated={(data)=>handleChange({ ...statblock, ...data })}
+							/>
+						</div>
+						<BrpStatblockForm statblock={statblock} onChange={handleChange} />
+					</div>
 					<BrpStatblockPreview statblock={statblock} layout={layout} />
 				</SplitPane>
 			</div>

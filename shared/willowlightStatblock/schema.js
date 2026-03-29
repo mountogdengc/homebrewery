@@ -6,8 +6,9 @@ export function createEmptyWillowlightStatblock() {
 		name       : '',
 		path       : '',
 		conviction : '',
-		description: '',
-		source     : '',
+		shortDescription : '',
+		description      : '',
+		source           : '',
 		tags       : [],
 
 		// Attributes (0–5 dots each)
@@ -21,6 +22,13 @@ export function createEmptyWillowlightStatblock() {
 			influence : 0,
 			poise     : 0,
 			command   : 0
+		},
+
+		// Scale
+		scale : {
+			physical : '',
+			mental   : '',
+			social   : ''
 		},
 
 		// Skills

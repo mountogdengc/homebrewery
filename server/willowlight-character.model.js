@@ -1,29 +1,28 @@
 import mongoose   from 'mongoose';
 import { nanoid } from 'nanoid';
 
-const WillowlightStatblockSchema = mongoose.Schema({
+const WillowlightCharacterSchema = mongoose.Schema({
 	shareId   : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
 	editId    : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
 	authors   : { type: [String], index: true },
 	published : { type: Boolean, default: false, index: true },
 
 	// Identity
-	name       : { type: String, default: '', index: true },
-	path       : { type: String, default: '' },
-	conviction : { type: String, default: '' },
+	name             : { type: String, default: '', index: true },
+	player           : { type: String, default: '' },
+	conviction       : { type: String, default: '' },
+	path             : { type: String, default: '' },
 	shortDescription : { type: String, default: '' },
 	description      : { type: String, default: '' },
 	source           : { type: String, default: '' },
-	tags       : { type: [String], index: true },
+	tags             : { type: [String], index: true },
 
-	// Attributes
+	// Attributes & Scale
 	attributes : { type: mongoose.Schema.Types.Mixed, default: ()=>({
 		might: 0, reflex: 0, endurance: 0,
 		reason: 0, guile: 0, resolve: 0,
 		influence: 0, poise: 0, command: 0
 	}) },
-
-	// Scale
 	scale : { type: mongoose.Schema.Types.Mixed, default: ()=>({ physical: '', mental: '', social: '' }) },
 
 	// Skills
@@ -42,6 +41,18 @@ const WillowlightStatblockSchema = mongoose.Schema({
 	aspects : [mongoose.Schema.Types.Mixed],
 	burdens : [mongoose.Schema.Types.Mixed],
 
+	// Character-specific
+	luckRating : { type: Number, default: 3 },
+	luckTokens : { type: Number, default: 3 },
+	corruption : { type: Number, default: 0 },
+	unspentXP  : { type: Number, default: 0 },
+	wealthPoints : { type: Number, default: 0 },
+
+	convictionMilestones : [mongoose.Schema.Types.Mixed],
+	pathMilestones       : [mongoose.Schema.Types.Mixed],
+	contacts             : [mongoose.Schema.Types.Mixed],
+	secrets              : [mongoose.Schema.Types.Mixed],
+
 	// Notes
 	notes : { type: String, default: '' },
 
@@ -51,40 +62,26 @@ const WillowlightStatblockSchema = mongoose.Schema({
 	views     : { type: Number, default: 0 },
 }, { versionKey: false });
 
-// STATIC FUNCTIONS
-
-WillowlightStatblockSchema.statics.get = async function(query, fields = null) {
-	const sb = await WillowlightStatblock.findOne(query, fields).orFail()
-		.catch(()=>{throw 'Can not find Willowlight stat block';});
-	return sb;
+WillowlightCharacterSchema.statics.get = async function(query, fields = null) {
+	const ch = await WillowlightCharacter.findOne(query, fields).orFail()
+		.catch(()=>{throw 'Can not find Willowlight character';});
+	return ch;
 };
 
-WillowlightStatblockSchema.statics.getByUser = async function(username, allowAccess = false, fields = null) {
+WillowlightCharacterSchema.statics.getByUser = async function(username, allowAccess = false, fields = null) {
 	const query = { authors: username, published: true };
-	if(allowAccess) {
-		delete query.published;
-	}
-	const statblocks = await WillowlightStatblock.find(query, fields).lean().exec()
-		.catch(()=>{throw 'Can not find Willowlight stat blocks';});
-	return statblocks;
+	if(allowAccess) delete query.published;
+	const chars = await WillowlightCharacter.find(query, fields).lean().exec()
+		.catch(()=>{throw 'Can not find Willowlight characters';});
+	return chars;
 };
 
-WillowlightStatblockSchema.statics.increaseView = async function(query) {
-	const sb = await WillowlightStatblock.findOne(query).exec();
-	if(!sb) return;
-	sb.views = sb.views + 1;
-	await sb.save().catch((err)=>{return err;});
-	return sb;
-};
+WillowlightCharacterSchema.index({ name: 'text' });
+WillowlightCharacterSchema.index({ updatedAt: -1 });
 
-// INDEXES
-
-WillowlightStatblockSchema.index({ name: 'text' });
-WillowlightStatblockSchema.index({ updatedAt: -1 });
-
-const WillowlightStatblock = mongoose.model('WillowlightStatblock', WillowlightStatblockSchema);
+const WillowlightCharacter = mongoose.model('WillowlightCharacter', WillowlightCharacterSchema);
 
 export {
-	WillowlightStatblockSchema as schema,
-	WillowlightStatblock       as model
+	WillowlightCharacterSchema as schema,
+	WillowlightCharacter       as model
 };

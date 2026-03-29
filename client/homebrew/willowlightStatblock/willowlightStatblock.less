@@ -37,6 +37,13 @@
 	margin-top: 2px;
 }
 
+.wl-description {
+	font-size: 12px;
+	color: #7a8aad;
+	margin-top: 4px;
+	line-height: 1.4;
+}
+
 .wl-divider {
 	height: 1px;
 	background: linear-gradient(to right, transparent, #4a6fa5, transparent);
@@ -220,12 +227,81 @@
 	color: #d4d4e8;
 }
 
+// Scale
+.wl-scale-grid {
+	display: flex;
+	justify-content: space-around;
+	text-align: center;
+	margin: 6px 0;
+}
+
+.wl-scale-col {
+	flex: 1;
+}
+
+.wl-scale-label {
+	font-size: 11px;
+	font-weight: 700;
+	color: #7a8aad;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 4px;
+}
+
+.wl-scale-value {
+	font-size: 16px;
+	font-weight: 600;
+	color: #d4d4e8;
+	min-height: 22px;
+}
+
 // Notes
 .wl-notes {
 	font-size: 13px;
 	font-style: italic;
 	color: #7a8aad;
 	line-height: 1.4;
+}
+
+// ── B&W Mode ──────────────────────────────────────────────────────────
+.wl-statblock.wl-bw {
+	background: #ffffff;
+	border-color: #333;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+	color: #1a1a1a;
+
+	.wl-name { color: #1a1a1a; }
+	.wl-subtitle { color: #555; }
+	.wl-description { color: #555; }
+	.wl-divider { background: linear-gradient(to right, transparent, #333, transparent); }
+
+	.wl-attr-group-label { color: #333; border-bottom-color: #ccc; }
+	.wl-attr-name { color: #444; }
+
+	.wl-dot-filled {
+		background: #333;
+		border-color: #333;
+		box-shadow: none;
+	}
+	.wl-dot-empty { border-color: #999; }
+
+	.wl-health-box { border-color: #666; background: rgba(0,0,0,0.03); }
+	.wl-track-name { color: #333; }
+	.wl-track-def { color: #666; }
+
+	.wl-section-title { color: #1a1a1a; border-bottom-color: #333; }
+	.wl-skill-tier-label { color: #666; }
+	.wl-skill-entry { color: #1a1a1a; }
+
+	.wl-attacks {
+		th { background: rgba(0,0,0,0.08); color: #1a1a1a; border-bottom-color: #333; }
+		td { color: #1a1a1a; border-bottom-color: #ddd; }
+	}
+
+	.wl-dot-name { color: #1a1a1a; }
+	.wl-scale-label { color: #666; }
+	.wl-scale-value { color: #1a1a1a; }
+	.wl-notes { color: #555; }
 }
 
 // ── Willowlight Editor Page Styles ────────────────────────────────────

@@ -8,6 +8,7 @@ import SplitPane                    from '../../../components/splitPane/splitPan
 import WillowlightStatblockForm     from '../../willowlightStatblock/willowlightStatblockForm.jsx';
 import WillowlightStatblockPreview  from '../../willowlightStatblock/willowlightStatblockPreview.jsx';
 
+import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
 import Nav             from '@navbar/nav.jsx';
 import Navbar          from '@navbar/navbar.jsx';
 import AccountNavItem  from '@navbar/account.navitem.jsx';
@@ -80,11 +81,14 @@ const WillowlightStatblockEditorPage = (props)=>{
 	}, [save]);
 
 	const [copied, setCopied] = useState(false);
+	const [bw, setBw] = useState(false);
 	const toggleLayout = ()=>setLayout((l)=>l === 'narrow' ? 'wide' : 'narrow');
+	const toggleBw = ()=>setBw((b)=>!b);
 
 	const copyEmbed = ()=>{
 		if(!shareId) return;
-		const code = `{{willowlight-statblock:${shareId}}}`;
+		const opts = [layout === 'wide' ? 'wide' : '', bw ? 'bw' : ''].filter(Boolean).join(',');
+		const code = opts ? `{{willowlight-statblock:${shareId}|${opts}}}` : `{{willowlight-statblock:${shareId}}}`;
 		navigator.clipboard.writeText(code).then(()=>{
 			setCopied(true);
 			setTimeout(()=>setCopied(false), 2000);
@@ -113,6 +117,13 @@ const WillowlightStatblockEditorPage = (props)=>{
 						{layout === 'narrow' ? 'Wide' : 'Narrow'}
 					</Nav.item>
 
+					<Nav.item
+						icon={bw ? 'fas fa-palette' : 'fas fa-adjust'}
+						onClick={toggleBw}
+					>
+						{bw ? 'Color' : 'B&W'}
+					</Nav.item>
+
 					{shareId && (
 						<Nav.item icon={copied ? 'fas fa-check' : 'fas fa-code'} onClick={copyEmbed}>
 							{copied ? 'Copied!' : 'Copy Embed'}
@@ -135,8 +146,16 @@ const WillowlightStatblockEditorPage = (props)=>{
 
 			<div className="content">
 				<SplitPane showDividerButtons={false}>
-					<WillowlightStatblockForm statblock={statblock} onChange={handleChange} />
-					<WillowlightStatblockPreview statblock={statblock} layout={layout} />
+					<div style={{ overflow: 'auto', height: '100%' }}>
+						<div style={{ padding: '12px 12px 0' }}>
+							<AiGenerateButton
+								endpoint="/api/ai/generate/willowlight-statblock"
+								onGenerated={(data)=>handleChange({ ...statblock, ...data })}
+							/>
+						</div>
+						<WillowlightStatblockForm statblock={statblock} onChange={handleChange} />
+					</div>
+					<WillowlightStatblockPreview statblock={statblock} layout={layout} bw={bw} />
 				</SplitPane>
 			</div>
 		</div>

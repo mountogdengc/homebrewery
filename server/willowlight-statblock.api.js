@@ -66,6 +66,7 @@ router.put('/api/willowlight-statblock/:id', asyncHandler(async (req, res)=>{
 
 	Object.assign(sb, updates);
 	sb.markModified('attributes');
+	sb.markModified('scale');
 	sb.markModified('vocation');
 	sb.markModified('interests');
 	sb.markModified('hobbies');
@@ -115,7 +116,8 @@ router.get('/api/willowlight-statblock/render/:id', asyncHandler(async (req, res
 		});
 
 	const layout = req.query.layout === 'wide' ? 'wide' : 'narrow';
-	const html = render(sb.toObject(), layout);
+	const bw = req.query.bw === '1' || req.query.bw === 'true';
+	const html = render(sb.toObject(), layout, { bw });
 	res.status(200).send(html);
 }));
 

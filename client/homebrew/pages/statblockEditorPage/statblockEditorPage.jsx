@@ -8,6 +8,7 @@ import SplitPane       from '../../../components/splitPane/splitPane.jsx';
 import StatblockForm   from '../../statblock/statblockForm.jsx';
 import StatblockPreview from '../../statblock/statblockPreview.jsx';
 
+import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
 import Nav             from '@navbar/nav.jsx';
 import Navbar          from '@navbar/navbar.jsx';
 import AccountNavItem  from '@navbar/account.navitem.jsx';
@@ -146,10 +147,18 @@ const StatblockEditorPage = (props)=>{
 
 			<div className="content">
 				<SplitPane showDividerButtons={false}>
-					<StatblockForm
-						statblock={statblock}
-						onChange={handleChange}
-					/>
+					<div style={{ overflow: 'auto', height: '100%' }}>
+						<div style={{ padding: '12px 12px 0' }}>
+							<AiGenerateButton
+								endpoint="/api/ai/generate/statblock"
+								onGenerated={(data)=>handleChange({ ...statblock, ...data })}
+							/>
+						</div>
+						<StatblockForm
+							statblock={statblock}
+							onChange={handleChange}
+						/>
+					</div>
 					<StatblockPreview
 						statblock={statblock}
 						layout={layout}

@@ -110,17 +110,32 @@ function renderDotList(title, items) {
 	return `<div class="wl-section"><div class="wl-section-title">${esc(title)}</div>${rows}</div>`;
 }
 
-export function render(sb, layout = 'narrow') {
-	const name = esc(sb.name) || 'Unnamed';
-	const subtitle = [sb.path, sb.conviction].filter(Boolean).join(' \u2014 ');
+function renderScale(scale) {
+	const phys = esc(scale?.physical || '\u2014');
+	const ment = esc(scale?.mental || '\u2014');
+	const soc  = esc(scale?.social || '\u2014');
+	return `<div class="wl-section"><div class="wl-section-title">Scale</div>
+		<div class="wl-scale-grid">
+			<div class="wl-scale-col"><div class="wl-scale-label">Physical</div><div class="wl-scale-value">${phys}</div></div>
+			<div class="wl-scale-col"><div class="wl-scale-label">Mental</div><div class="wl-scale-value">${ment}</div></div>
+			<div class="wl-scale-col"><div class="wl-scale-label">Social</div><div class="wl-scale-value">${soc}</div></div>
+		</div></div>`;
+}
 
-	let html = `<div class="wl-statblock ${layout === 'wide' ? 'wl-wide' : 'wl-narrow'}">`;
+export function render(sb, layout = 'narrow', opts = {}) {
+	const name = esc(sb.name) || 'Unnamed';
+	const subtitle = [sb.conviction, sb.path].filter(Boolean).join(' \u2014 ');
+	const bwClass = opts.bw ? ' wl-bw' : '';
+
+	let html = `<div class="wl-statblock ${layout === 'wide' ? 'wl-wide' : 'wl-narrow'}${bwClass}">`;
 	html += `<div class="wl-header"><div class="wl-name">${name}</div>`;
 	if(subtitle) html += `<div class="wl-subtitle">${esc(subtitle)}</div>`;
+	if(sb.shortDescription) html += `<div class="wl-description">${esc(sb.shortDescription)}</div>`;
 	html += `</div>`;
 	html += `<div class="wl-divider"></div>`;
 	html += renderAttributes(sb.attributes);
 	html += `<div class="wl-divider"></div>`;
+	html += renderScale(sb.scale);
 	html += renderHealthTracks(sb);
 	html += renderSkills(sb);
 	html += renderAttacks(sb.attacks);
