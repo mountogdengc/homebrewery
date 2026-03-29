@@ -14,13 +14,16 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 - [ ] Character sheet tab consolidation — too many tabs to click through for a single character; consider combining profile + narrative into one page, or a single scrollable "full sheet" view that prints as multiple pages
 
 ## Willowlight Engine
-- [ ] Willowlight character sheet print/PDF layout
+- [x] Willowlight character sheet print/PDF layout — 2-page landscape sheet at `/willowlight-character/sheet/:id`, populated from saved character data
+- [x] Character builder schema expanded — demographics, domain focus, lifestyle, downtime, session/total/spent XP, hearth trigger, afflictions, equipment, connection rating/relationship
 - [ ] Contacts health track rendering in character sheet preview
 
 ## AI Generation
 - [ ] Add Claude API as alternative generator (toggle between local and cloud)
 - [ ] Server-side post-processing to validate and fix LLM output (force save count, cap ability scores, recalculate HP formulas)
-- [ ] AI Generate for Willowlight character builder
+- [x] Generate Flavor button for all stat block editors (5e, BRP, Willowlight) — second-pass AI that writes descriptions, lore, trait/action flavor, and encounter hooks
+- [x] Generate Flavor button for Willowlight character editor — appearance, personality, backstory, edge/aspect/burden flavor, plot hooks
+- [ ] AI Generate for Willowlight character builder — full character generation from prompt
 - [ ] AI Generate for BRP stat blocks — refine prompt with BRP-specific math rules
 - [ ] ComfyUI image generation pipeline — character/creature portraits from descriptions
 - [ ] Scene illustration generation for Brew Editor
@@ -99,7 +102,9 @@ These need design decisions before implementation:
 - [ ] Replace Homebrewery/NaturalCrit branding in top menu bar with better UX
 - [ ] Standardize navigation buttons across all tools — consistent home/back button, save/load, library link in the same position and style on every tool page
 - [x] Landing page cards for character tools should link to library, not blank new — new character button is already on the library page
-- [ ] Consider the same library-first pattern for stat block tools
+- [x] Consider the same library-first pattern for stat block tools — done: all homepage cards now link to system libraries
+- [x] Consolidate landing page cards by game system — one tile per system (D&D 5e, BRP, BESM 4e, Willowlight) instead of separate stat block / character tiles
+- [x] Library pages as system homepages — toolbar nav buttons for each system's tools (new, character builder, stat blocks, playtest)
 
 ## Infrastructure
 - [ ] Cover logo positioning still has column-layout issues in some cases

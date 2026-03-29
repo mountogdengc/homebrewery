@@ -93,7 +93,10 @@ const BrpStatblockLibraryPage = ()=>{
 			<Navbar>
 				<Nav.logo />
 				<Nav.section>
-					<Nav.item color="orange">BRP Stat Block Library</Nav.item>
+					<Nav.item color="orange">BRP</Nav.item>
+					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/brp/new'; }}>
+						New Stat Block
+					</Nav.item>
 				</Nav.section>
 				<Nav.section>
 					<AccountNavItem />

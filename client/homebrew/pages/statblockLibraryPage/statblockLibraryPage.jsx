@@ -107,7 +107,10 @@ const StatblockLibraryPage = ()=>{
 			<Navbar>
 				<Nav.logo />
 				<Nav.section>
-					<Nav.item color="purple">Stat Block Library</Nav.item>
+					<Nav.item color="purple">D&amp;D 5e</Nav.item>
+					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/statblock/new'; }}>
+						New Stat Block
+					</Nav.item>
 				</Nav.section>
 				<Nav.section>
 					<AccountNavItem />

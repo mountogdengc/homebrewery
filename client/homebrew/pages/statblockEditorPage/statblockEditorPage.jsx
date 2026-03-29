@@ -25,6 +25,9 @@ const StatblockEditorPage = (props)=>{
 	const [hasChanges, setHasChanges] = useState(false);
 	const [error, setError] = useState(null);
 	const saveTimeout = useRef(null);
+	const [conceptPrompt, setConceptPrompt] = useState('');
+	const [isGeneratingFlavor, setIsGeneratingFlavor] = useState(false);
+	const [flavorError, setFlavorError] = useState(null);
 
 	const handleChange = useCallback((updated)=>{
 		setStatblock(updated);
@@ -81,6 +84,64 @@ const StatblockEditorPage = (props)=>{
 		document.addEventListener('keydown', handleKeyDown);
 		return ()=>document.removeEventListener('keydown', handleKeyDown);
 	}, [save]);
+
+	const handleAiGenerate = useCallback((data)=>{
+		if(data._conceptPrompt) setConceptPrompt(data._conceptPrompt);
+		handleChange({ ...statblock, ...data });
+	}, [statblock, handleChange]);
+
+	const handleGenerateFlavor = useCallback(async ()=>{
+		if(isGeneratingFlavor) return;
+		setIsGeneratingFlavor(true);
+		setFlavorError(null);
+
+		try {
+			const res = await request.post('/api/ai/generate/statblock-flavor')
+				.send({ concept: conceptPrompt || statblock.name || 'D&D 5e creature', statBlock: statblock })
+				.timeout({ response: 180000 });
+
+			const flavor = res.body;
+			const updated = { ...statblock };
+
+			// Merge description into the first trait or add as a new one
+			if(flavor.description) {
+				updated.description = flavor.description;
+			}
+			if(flavor.lore) {
+				updated.lore = flavor.lore;
+			}
+
+			// Merge trait flavor into trait descriptions
+			if(flavor.trait_flavor && updated.traits) {
+				for (const tf of flavor.trait_flavor) {
+					const trait = updated.traits.find((t)=>t.name?.toLowerCase() === tf.name?.toLowerCase());
+					if(trait) trait.flavor = tf.flavor;
+				}
+			}
+
+			// Merge action flavor
+			if(flavor.action_flavor && updated.actions) {
+				for (const af of flavor.action_flavor) {
+					const action = updated.actions.find((a)=>a.name?.toLowerCase() === af.name?.toLowerCase());
+					if(action) action.flavor = af.flavor;
+				}
+			}
+
+			// Store encounter hooks in notes
+			if(flavor.encounter_hooks && flavor.encounter_hooks.length > 0) {
+				const hookText = flavor.encounter_hooks.map((h)=>`${h.title}: ${h.description}`).join('\n\n');
+				updated.notes = (updated.notes ? updated.notes + '\n\n' : '') + '── Encounter Hooks ──\n\n' + hookText;
+			}
+
+			handleChange(updated);
+		} catch (err) {
+			console.error('Flavor generation failed:', err);
+			setFlavorError(err?.response?.body?.error || err.message || 'Flavor generation failed');
+			setTimeout(()=>setFlavorError(null), 5000);
+		} finally {
+			setIsGeneratingFlavor(false);
+		}
+	}, [statblock, conceptPrompt, isGeneratingFlavor, handleChange]);
 
 	const [copied, setCopied] = useState(false);
 
@@ -148,11 +209,25 @@ const StatblockEditorPage = (props)=>{
 			<div className="content">
 				<SplitPane showDividerButtons={false}>
 					<div style={{ overflow: 'auto', height: '100%' }}>
-						<div style={{ padding: '12px 12px 0' }}>
+						<div style={{ padding: '12px 12px 0', display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
 							<AiGenerateButton
 								endpoint="/api/ai/generate/statblock"
-								onGenerated={(data)=>handleChange({ ...statblock, ...data })}
+								onGenerated={handleAiGenerate}
 							/>
+							{statblock.name && (
+								<button
+									className="aiGenerateBtn"
+									onClick={handleGenerateFlavor}
+									disabled={isGeneratingFlavor}
+									style={{ background: isGeneratingFlavor ? '#444' : undefined }}
+								>
+									{isGeneratingFlavor
+										? <><i className="fas fa-spinner fa-spin" /> Generating Flavor...</>
+										: <><i className="fas fa-feather-alt" /> Generate Flavor</>
+									}
+								</button>
+							)}
+							{flavorError && <span style={{ color: '#ff6b6b', fontSize: '13px' }}>{flavorError}</span>}
 						</div>
 						<StatblockForm
 							statblock={statblock}

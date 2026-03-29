@@ -623,4 +623,290 @@ stat_block: ${JSON.stringify(statBlock)}`;
 	}
 }));
 
+// ── Generate 5e stat block flavor (second pass) ────────────────────
+router.post('/api/ai/generate/statblock-flavor', asyncHandler(async (req, res)=>{
+	const { concept, statBlock, system } = req.body;
+	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
+
+	const systemPrompt = system || `You are a monster lore writer for D&D 5e. You will receive the original concept prompt and the creature's stat block in JSON. Your job is to write narrative flavor content that brings the creature to life. Return only raw JSON — no markdown, no code fences, no commentary.
+
+══════════════════════════════════════
+REQUIRED OUTPUT SCHEMA
+══════════════════════════════════════
+{
+  "description": string,
+  "lore": string,
+  "trait_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "action_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "encounter_hooks": [
+    { "title": string, "description": string }
+  ]
+}
+
+══════════════════════════════════════
+FIELD INSTRUCTIONS
+══════════════════════════════════════
+
+DESCRIPTION
+  - What the creature looks like: body, features, coloring, distinguishing marks, sounds, smells.
+  - Reflect size and type. A Huge dragon looks different from a Small fey.
+  - Length: one paragraph.
+
+LORE
+  - Where the creature comes from, how it behaves in the world, what role it plays in the ecology or society.
+  - Reference its type, alignment, and abilities to ground the lore.
+  - Length: one paragraph.
+
+TRAIT_FLAVOR
+  - One entry for every trait in the stat block.
+  - Describe what the trait looks like in fiction — how it manifests visually or narratively.
+  - Do not restate the mechanical effect.
+
+ACTION_FLAVOR
+  - One entry for every action (including bonus actions, reactions, legendary actions) in the stat block.
+  - Describe what the attack or ability looks like when used — the motion, the sound, the visual effect.
+  - Do not restate damage numbers or mechanics.
+
+ENCOUNTER_HOOKS
+  - Write exactly 3 encounter hooks a DM could use to introduce this creature.
+  - Each should suggest a scenario, location, or motivation.
+  - title: 3-6 words. description: one paragraph.
+
+══════════════════════════════════════
+CONSTRAINTS
+══════════════════════════════════════
+- Never restate mechanical values (AC, HP, damage dice, bonuses) in flavor text.
+- trait_flavor must have exactly as many entries as there are traits in the stat block.
+- action_flavor must cover every action, bonus action, reaction, and legendary action.
+- Tone should match the creature's alignment and type.`;
+
+	const userPrompt = `concept: ${concept}\n\nstat_block: ${JSON.stringify(statBlock)}`;
+
+	try {
+		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		res.status(200).send(parsed);
+	} catch (err) {
+		console.error('AI flavor generate error:', err);
+		res.status(502).send({ error: `AI flavor generation failed: ${err.message}` });
+	}
+}));
+
+// ── Generate BRP stat block flavor (second pass) ────────────────────
+router.post('/api/ai/generate/brp-flavor', asyncHandler(async (req, res)=>{
+	const { concept, statBlock, system } = req.body;
+	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
+
+	const systemPrompt = system || `You are a creature/NPC lore writer for Chaosium's Basic Roleplaying (BRP) system. You will receive the original concept prompt and the creature's stat block in JSON. Write narrative flavor. Return only raw JSON — no markdown, no code fences, no commentary.
+
+══════════════════════════════════════
+REQUIRED OUTPUT SCHEMA
+══════════════════════════════════════
+{
+  "description": string,
+  "lore": string,
+  "trait_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "encounter_hooks": [
+    { "title": string, "description": string }
+  ]
+}
+
+══════════════════════════════════════
+FIELD INSTRUCTIONS
+══════════════════════════════════════
+
+DESCRIPTION
+  - Physical appearance: build, features, coloring, clothing/armor, distinguishing marks.
+  - Reflect the creature's SIZ and category.
+  - Length: one paragraph.
+
+LORE
+  - Ecology, behavior, habitat, social structure, or role in the world.
+  - Reference the creature's characteristics and category.
+  - Length: one paragraph.
+
+TRAIT_FLAVOR
+  - One entry for every trait in the stat block.
+  - Describe the fictional manifestation — what it looks like, how it affects the creature's behavior.
+
+ENCOUNTER_HOOKS
+  - Write exactly 3 encounter hooks a Keeper/GM could use.
+  - Each should suggest a scenario grounded in the BRP/Chaosium tone (investigation, horror, mystery).
+  - title: 3-6 words. description: one paragraph.
+
+══════════════════════════════════════
+CONSTRAINTS
+══════════════════════════════════════
+- Never restate mechanical values (percentages, damage dice, characteristics) in flavor text.
+- trait_flavor must have exactly as many entries as there are traits.
+- Tone: gritty, grounded, and slightly unsettling — matching BRP's horror/investigation roots.`;
+
+	const userPrompt = `concept: ${concept}\n\nstat_block: ${JSON.stringify(statBlock)}`;
+
+	try {
+		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		res.status(200).send(parsed);
+	} catch (err) {
+		console.error('AI flavor generate error:', err);
+		res.status(502).send({ error: `AI flavor generation failed: ${err.message}` });
+	}
+}));
+
+// ── Generate Willowlight stat block flavor (second pass) ────────────
+router.post('/api/ai/generate/willowlight-flavor', asyncHandler(async (req, res)=>{
+	const { concept, statBlock, system } = req.body;
+	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
+
+	const systemPrompt = system || `You are a character/NPC writer for the Willowlight Engine tabletop RPG. You will receive the original concept prompt and the character's stat block in JSON. Write narrative flavor. Return only raw JSON — no markdown, no code fences, no commentary.
+
+══════════════════════════════════════
+REQUIRED OUTPUT SCHEMA
+══════════════════════════════════════
+{
+  "description": string,
+  "lore": string,
+  "edge_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "aspect_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "burden_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "encounter_hooks": [
+    { "title": string, "description": string }
+  ]
+}
+
+══════════════════════════════════════
+FIELD INSTRUCTIONS
+══════════════════════════════════════
+
+DESCRIPTION
+  - Physical appearance, bearing, clothing, mannerisms.
+  - Reflect the character's conviction and path.
+  - Length: one paragraph.
+
+LORE
+  - Who this character is in the world: their role, reputation, relationships, and motivations.
+  - Reference their conviction, path, edges, and burdens.
+  - Length: one paragraph.
+
+EDGE_FLAVOR
+  - One entry for every edge in the stat block.
+  - Describe how the edge manifests — what advantage it represents in fiction.
+
+ASPECT_FLAVOR
+  - One entry for every aspect in the stat block.
+  - Describe the defining quality — how it shapes the character's identity and actions.
+
+BURDEN_FLAVOR
+  - One entry for every burden in the stat block.
+  - Describe how the burden affects the character's life — the cost, the struggle.
+
+ENCOUNTER_HOOKS
+  - Write exactly 3 encounter hooks.
+  - Each should be rooted in the character's burdens or aspects — personal drama creates story.
+  - title: 3-6 words. description: one paragraph.
+
+══════════════════════════════════════
+CONSTRAINTS
+══════════════════════════════════════
+- Never restate mechanical values (dot ratings, attribute numbers, modifiers) in flavor text.
+- edge_flavor, aspect_flavor, burden_flavor arrays must match the stat block exactly.
+- Tone: evocative, atmospheric, slightly melancholic — matching the Willowlight aesthetic.`;
+
+	const userPrompt = `concept: ${concept}\n\nstat_block: ${JSON.stringify(statBlock)}`;
+
+	try {
+		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		res.status(200).send(parsed);
+	} catch (err) {
+		console.error('AI flavor generate error:', err);
+		res.status(502).send({ error: `AI flavor generation failed: ${err.message}` });
+	}
+}));
+
+// ── Generate Willowlight character flavor (second pass) ─────────────
+router.post('/api/ai/generate/willowlight-character-flavor', asyncHandler(async (req, res)=>{
+	const { concept, statBlock, system } = req.body;
+	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
+
+	const systemPrompt = system || `You are a character writer for the Willowlight Engine tabletop RPG. You will receive the original concept prompt and a full player character sheet in JSON. Write rich narrative flavor for the character. Return only raw JSON — no markdown, no code fences, no commentary.
+
+══════════════════════════════════════
+REQUIRED OUTPUT SCHEMA
+══════════════════════════════════════
+{
+  "appearance": string,
+  "personality": string,
+  "backstory": string,
+  "edge_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "aspect_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "burden_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "plot_hooks": [
+    { "title": string, "description": string }
+  ]
+}
+
+══════════════════════════════════════
+FIELD INSTRUCTIONS
+══════════════════════════════════════
+
+APPEARANCE
+  - Physical description: build, features, clothing, equipment, visible signs of their edges/burdens.
+  - Reflect conviction and path in how they present themselves.
+  - Length: one paragraph.
+
+PERSONALITY
+  - How the character thinks, speaks, and relates to others.
+  - Every burden must be reflected in the personality. Burdens shape behavior.
+  - Write in prose, not a list of traits.
+  - Length: one paragraph.
+
+BACKSTORY
+  - Narrative prose explaining how the character became who they are.
+  - Must account for burdens — they are consequences of history.
+  - Must suggest why the character has their most notable edges.
+  - Length: one paragraph.
+
+EDGE_FLAVOR / ASPECT_FLAVOR / BURDEN_FLAVOR
+  - One entry per edge/aspect/burden in the stat block.
+  - Describe the fictional manifestation — what it looks like, how it affects the character.
+
+PLOT_HOOKS
+  - Write exactly 3 plot hooks rooted in the character's burdens and aspects.
+  - Each should be usable by a Storyguide as a session or arc starter.
+  - title: 3-6 words. description: one paragraph.
+
+══════════════════════════════════════
+CONSTRAINTS
+══════════════════════════════════════
+- Never restate mechanical values in flavor text.
+- All flavor arrays must match the stat block exactly in count and names.
+- Tone: evocative and atmospheric, matching the Willowlight aesthetic.`;
+
+	const userPrompt = `concept: ${concept}\n\nstat_block: ${JSON.stringify(statBlock)}`;
+
+	try {
+		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		res.status(200).send(parsed);
+	} catch (err) {
+		console.error('AI flavor generate error:', err);
+		res.status(502).send({ error: `AI flavor generation failed: ${err.message}` });
+	}
+}));
+
 export default router;

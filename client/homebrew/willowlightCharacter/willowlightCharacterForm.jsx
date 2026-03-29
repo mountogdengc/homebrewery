@@ -115,6 +115,12 @@ const WillowlightCharacterForm = ({ character, onChange })=>{
 			{field('Conviction', 'conviction')}
 			{field('Path', 'path')}
 		</div>
+		<div className="formRow">
+			{field('Age', 'age')}
+			{field('Gender', 'gender')}
+			{field('Height', 'height')}
+			{field('Weight', 'weight')}
+		</div>
 		{field('Short Description', 'shortDescription')}
 		{field('Description', 'description', 'textarea')}
 
@@ -175,9 +181,22 @@ const WillowlightCharacterForm = ({ character, onChange })=>{
 		</div>
 		<div className="formRow">
 			{field('Corruption', 'corruption', 'number')}
+			{field('Hearth Trigger', 'hearthTrigger')}
+		</div>
+		<div className="formRow">
+			{field('Session XP', 'sessionXP', 'number')}
+			{field('Total XP', 'totalXP', 'number')}
+			{field('XP Spent', 'xpSpent', 'number')}
 			{field('Unspent XP', 'unspentXP', 'number')}
 		</div>
-		{field('Wealth Points', 'wealthPoints', 'number')}
+		<div className="formRow">
+			{field('Wealth Points', 'wealthPoints', 'number')}
+			<label>
+				<span>Lifestyle</span>
+				<DotSelector path="lifestyle" />
+			</label>
+		</div>
+		{field('Downtime', 'downtime')}
 
 		{/* ── Skills ───────────────────────────────────────────────── */}
 		<h3>Skills</h3>
@@ -187,6 +206,7 @@ const WillowlightCharacterForm = ({ character, onChange })=>{
 				{field('Name', 'vocation.name')}
 				{field('Bonus', 'vocation.bonus', 'number')}
 			</div>
+			{field('Domain Focus', 'domainFocus')}
 		</div>
 		<div style={{ color: '#8a8aad', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>Interests (+2)</div>
 		{character.interests?.map((_, idx)=>(
@@ -345,14 +365,21 @@ const WillowlightCharacterForm = ({ character, onChange })=>{
 						allowEmpty: true
 					})}
 				</div>
-				<div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-					<span style={{ color: '#c0c0d8', fontSize: '12px' }}>Health</span>
-					<DotSelector path={`contacts.${idx}.health`} />
+				{field('Relationship', `contacts.${idx}.relationship`)}
+				<div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '4px' }}>
+					<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+						<span style={{ color: '#c0c0d8', fontSize: '12px' }}>Rating</span>
+						<DotSelector path={`contacts.${idx}.rating`} />
+					</div>
+					<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+						<span style={{ color: '#c0c0d8', fontSize: '12px' }}>Health</span>
+						<DotSelector path={`contacts.${idx}.health`} />
+					</div>
 				</div>
 				{field('Note', `contacts.${idx}.note`)}
 			</div>
 		))}
-		<button className="addButton" onClick={()=>addItem('contacts', { name: '', health: 1, type: 'Contact', note: '' })}>+ Add Contact</button>
+		<button className="addButton" onClick={()=>addItem('contacts', { name: '', health: 1, rating: 1, type: 'Contact', relationship: '', note: '' })}>+ Add Contact</button>
 
 		{/* ── Secrets ──────────────────────────────────────────────── */}
 		<h3>Secrets</h3>
@@ -388,6 +415,33 @@ const WillowlightCharacterForm = ({ character, onChange })=>{
 			</div>
 		))}
 		<button className="addButton" onClick={()=>addItem('secrets', { name: '', weight: 1, spread: [false, false, false], containmentPlan: '', contacts: '' })}>+ Add Secret</button>
+
+		{/* ── Afflictions ──────────────────────────────────────────── */}
+		<h3>Afflictions &amp; Conditions</h3>
+		<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px', marginBottom: '8px' }}>
+			{['terrified', 'discredited', 'stunned', 'prone', 'blinded', 'disoriented', 'restrained', 'slowed', 'disarmed', 'dying'].map((aff)=>(
+				<label key={aff} style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+					<input type="checkbox" checked={!!(character.afflictions && character.afflictions[aff])}
+						onChange={(e)=>update(`afflictions.${aff}`, e.target.checked)}
+						style={{ width: 'auto' }} />
+					<span style={{ textTransform: 'capitalize', color: '#c0c0d8', fontSize: '12px' }}>{aff}</span>
+				</label>
+			))}
+		</div>
+		{field('Other Conditions', 'afflictions.other')}
+
+		{/* ── Equipment ────────────────────────────────────────────── */}
+		<h3>Equipment &amp; Gear</h3>
+		{character.equipment?.map((item, idx)=>(
+			<div className="repeatItem" key={idx}>
+				<div className="repeatHeader">
+					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Item {idx + 1}</strong>
+					<div className="repeatControls"><button onClick={()=>removeItem('equipment', idx)}>✕</button></div>
+				</div>
+				{field('Name', `equipment.${idx}.name`)}
+			</div>
+		))}
+		<button className="addButton" onClick={()=>addItem('equipment', { name: '' })}>+ Add Item</button>
 
 		{/* ── Notes ─────────────────────────────────────────────────── */}
 		<h3>Notes</h3>

@@ -9,6 +9,7 @@ import SplitPane                      from '../../../components/splitPane/splitP
 import WillowlightCharacterForm       from '../../willowlightCharacter/willowlightCharacterForm.jsx';
 import WillowlightCharacterPreview    from '../../willowlightCharacter/willowlightCharacterPreview.jsx';
 
+import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
 import Nav             from '@navbar/nav.jsx';
 import Navbar          from '@navbar/navbar.jsx';
 import AccountNavItem  from '@navbar/account.navitem.jsx';
@@ -26,6 +27,9 @@ const WillowlightCharacterEditorPage = (props)=>{
 	const [hasChanges, setHasChanges] = useState(false);
 	const [error, setError] = useState(null);
 	const saveTimeout = useRef(null);
+	const [conceptPrompt, setConceptPrompt] = useState('');
+	const [isGeneratingFlavor, setIsGeneratingFlavor] = useState(false);
+	const [flavorError, setFlavorError] = useState(null);
 
 	const handleChange = useCallback((updated)=>{
 		setCharacter(updated);
@@ -76,6 +80,62 @@ const WillowlightCharacterEditorPage = (props)=>{
 		return ()=>document.removeEventListener('keydown', handleKeyDown);
 	}, [save]);
 
+	const handleAiGenerate = useCallback((data)=>{
+		if(data._conceptPrompt) setConceptPrompt(data._conceptPrompt);
+		handleChange({ ...character, ...data });
+	}, [character, handleChange]);
+
+	const handleGenerateFlavor = useCallback(async ()=>{
+		if(isGeneratingFlavor) return;
+		setIsGeneratingFlavor(true);
+		setFlavorError(null);
+
+		try {
+			const res = await request.post('/api/ai/generate/willowlight-character-flavor')
+				.send({ concept: conceptPrompt || character.name || 'Willowlight character', statBlock: character })
+				.timeout({ response: 180000 });
+
+			const flavor = res.body;
+			const updated = { ...character };
+
+			if(flavor.appearance) updated.appearance = flavor.appearance;
+			if(flavor.personality) updated.personality = flavor.personality;
+			if(flavor.backstory) updated.backstory = flavor.backstory;
+
+			if(flavor.edge_flavor && updated.edges) {
+				for (const ef of flavor.edge_flavor) {
+					const edge = updated.edges.find((e)=>e.name?.toLowerCase() === ef.name?.toLowerCase());
+					if(edge) edge.flavor = ef.flavor;
+				}
+			}
+			if(flavor.aspect_flavor && updated.aspects) {
+				for (const af of flavor.aspect_flavor) {
+					const aspect = updated.aspects.find((a)=>a.name?.toLowerCase() === af.name?.toLowerCase());
+					if(aspect) aspect.flavor = af.flavor;
+				}
+			}
+			if(flavor.burden_flavor && updated.burdens) {
+				for (const bf of flavor.burden_flavor) {
+					const burden = updated.burdens.find((b)=>b.name?.toLowerCase() === bf.name?.toLowerCase());
+					if(burden) burden.flavor = bf.flavor;
+				}
+			}
+
+			if(flavor.plot_hooks && flavor.plot_hooks.length > 0) {
+				const hookText = flavor.plot_hooks.map((h)=>`${h.title}: ${h.description}`).join('\n\n');
+				updated.notes = (updated.notes ? updated.notes + '\n\n' : '') + '── Plot Hooks ──\n\n' + hookText;
+			}
+
+			handleChange(updated);
+		} catch (err) {
+			console.error('Flavor generation failed:', err);
+			setFlavorError(err?.response?.body?.error || err.message || 'Flavor generation failed');
+			setTimeout(()=>setFlavorError(null), 5000);
+		} finally {
+			setIsGeneratingFlavor(false);
+		}
+	}, [character, conceptPrompt, isGeneratingFlavor, handleChange]);
+
 	const [copied, setCopied] = useState(false);
 
 	const copyEmbed = ()=>{
@@ -112,6 +172,12 @@ const WillowlightCharacterEditorPage = (props)=>{
 					</Nav.item>
 
 					{shareId && (
+						<Nav.item icon="fas fa-file-alt" onClick={()=>{ window.location.href = `/willowlight-character/sheet/${shareId}`; }}>
+							Character Sheet
+						</Nav.item>
+					)}
+
+					{shareId && (
 						<Nav.item icon={copied ? 'fas fa-check' : 'fas fa-code'} onClick={copyEmbed}>
 							{copied ? 'Copied!' : 'Copy Embed'}
 						</Nav.item>
@@ -129,7 +195,30 @@ const WillowlightCharacterEditorPage = (props)=>{
 
 			<div className="content">
 				<SplitPane showDividerButtons={false}>
-					<WillowlightCharacterForm character={character} onChange={handleChange} />
+					<div style={{ overflow: 'auto', height: '100%' }}>
+						<div style={{ padding: '12px 12px 0', display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+							<AiGenerateButton
+								endpoint="/api/ai/generate/willowlight-statblock"
+								onGenerated={handleAiGenerate}
+								buttonLabel="AI Generate"
+							/>
+							{character.name && (
+								<button
+									className="aiGenerateBtn"
+									onClick={handleGenerateFlavor}
+									disabled={isGeneratingFlavor}
+									style={{ background: isGeneratingFlavor ? '#444' : undefined }}
+								>
+									{isGeneratingFlavor
+										? <><i className="fas fa-spinner fa-spin" /> Generating Flavor...</>
+										: <><i className="fas fa-feather-alt" /> Generate Flavor</>
+									}
+								</button>
+							)}
+							{flavorError && <span style={{ color: '#ff6b6b', fontSize: '13px' }}>{flavorError}</span>}
+						</div>
+						<WillowlightCharacterForm character={character} onChange={handleChange} />
+					</div>
 					<WillowlightCharacterPreview character={character} layout={layout} bw={bw} />
 				</SplitPane>
 			</div>

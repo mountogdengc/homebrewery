@@ -102,7 +102,10 @@ const BesmLibraryPage = ()=>{
 			<Navbar>
 				<Nav.logo />
 				<Nav.section>
-					<Nav.item color="purple">BESM Character Library</Nav.item>
+					<Nav.item color="purple">BESM 4e</Nav.item>
+					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/besm/new'; }}>
+						New Character
+					</Nav.item>
 				</Nav.section>
 				<Nav.section>
 					<AccountNavItem />

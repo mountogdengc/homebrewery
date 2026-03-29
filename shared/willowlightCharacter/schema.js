@@ -12,6 +12,12 @@ export function createEmptyWillowlightCharacter() {
 		source           : '',
 		tags             : [],
 
+		// Demographics
+		age    : '',
+		gender : '',
+		height : '',
+		weight : '',
+
 		// Attributes (0–5 dots each)
 		attributes : {
 			might     : 0,
@@ -33,9 +39,10 @@ export function createEmptyWillowlightCharacter() {
 		},
 
 		// Skills
-		vocation  : { name: '', bonus: 0 },
-		interests : [],  // { name, bonus: 2 }
-		hobbies   : [],  // { name, bonus: 1 }
+		vocation    : { name: '', bonus: 0 },
+		domainFocus : '',
+		interests   : [],  // { name, bonus: 2 }
+		hobbies     : [],  // { name, bonus: 1 }
 
 		// Health track overrides
 		vitalityOverride  : null,
@@ -57,11 +64,17 @@ export function createEmptyWillowlightCharacter() {
 		luckTokens : 3,
 
 		// Corruption (max 10)
-		corruption : 0,
+		corruption    : 0,
+		hearthTrigger : '',
 
 		// XP & Wealth
 		unspentXP    : 0,
+		totalXP      : 0,
+		xpSpent      : 0,
+		sessionXP    : 0,
 		wealthPoints : 0,
+		lifestyle    : 0,
+		downtime     : '',
 
 		// Milestones
 		convictionMilestones : [
@@ -78,7 +91,25 @@ export function createEmptyWillowlightCharacter() {
 		],
 
 		// Contacts / Enemies / Allies
-		contacts : [],  // { name, health (1-5), type, note }
+		contacts : [],  // { name, health (1-5), type, rating (1-5), relationship, note }
+
+		// Afflictions
+		afflictions : {
+			terrified    : false,
+			discredited  : false,
+			stunned      : false,
+			prone        : false,
+			blinded      : false,
+			disoriented  : false,
+			restrained   : false,
+			slowed       : false,
+			disarmed     : false,
+			dying        : false,
+			other        : ''
+		},
+
+		// Equipment
+		equipment : [],  // { name }
 
 		// Secrets
 		secrets : [],  // { name, weight (1-3), spread: [false,false,false], containmentPlan, contacts }

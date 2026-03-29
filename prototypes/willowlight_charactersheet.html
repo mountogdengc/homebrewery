@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Willowlight Engine — Character Sheet</title>
+<style>
+  @page {
+    size: 11in 8.5in;
+    margin: 0.35in;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 8.5pt;
+    line-height: 1.3;
+    color: #1a1a1a;
+    background: #fff;
+  }
+
+  .page {
+    width: 10.3in;
+    height: 7.8in;
+    padding: 0.15in;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page:last-child { page-break-after: avoid; }
+
+  /* ---- Typography ---- */
+  .page-title {
+    font-size: 14pt;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 2.5px solid #1a1a1a;
+    padding-bottom: 2px;
+    margin-bottom: 6px;
+  }
+
+  .page-title span {
+    font-weight: 300;
+    font-size: 9pt;
+    letter-spacing: 0.04em;
+    margin-left: 8px;
+    text-transform: none;
+  }
+
+  .section-label {
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 1px 5px;
+    margin-bottom: 3px;
+    display: block;
+  }
+
+  .sub-label {
+    font-size: 7pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #555;
+  }
+
+  /* ---- Layout helpers ---- */
+  .row { display: flex; gap: 6px; }
+  .col { display: flex; flex-direction: column; gap: 4px; }
+
+  .flex-1 { flex: 1; }
+  .flex-2 { flex: 2; }
+  .flex-3 { flex: 3; }
+
+  /* ---- Panels ---- */
+  .panel {
+    border: 1px solid #999;
+    padding: 4px 5px;
+    border-radius: 2px;
+  }
+
+  .panel-light {
+    border: 1px solid #ccc;
+    padding: 3px 5px;
+    border-radius: 2px;
+    background: #fafafa;
+  }
+
+  /* ---- Fields ---- */
+  .field-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  .field-label {
+    font-size: 7pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    color: #444;
+  }
+
+  .field-line {
+    flex: 1;
+    border-bottom: 1px solid #aaa;
+    min-width: 40px;
+    height: 14px;
+  }
+
+  .field-line-short {
+    width: 50px;
+    border-bottom: 1px solid #aaa;
+    height: 14px;
+  }
+
+  /* ---- Dots ---- */
+  .dots {
+    display: inline-flex;
+    gap: 3px;
+    align-items: center;
+  }
+
+  .dot {
+    width: 11px;
+    height: 11px;
+    border: 1.5px solid #333;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-sm {
+    width: 9px;
+    height: 9px;
+    border: 1.2px solid #333;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* ---- Health boxes ---- */
+  .health-box {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid #333;
+    display: inline-block;
+    margin-right: 2px;
+  }
+
+  .health-box-sm {
+    width: 13px;
+    height: 13px;
+    border: 1.2px solid #333;
+    display: inline-block;
+    margin-right: 1px;
+  }
+
+  /* ---- Attribute grid ---- */
+  .attr-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+  }
+
+  .attr-domain {
+    text-align: center;
+    padding: 2px 4px;
+    border: 1px solid #999;
+    border-radius: 2px;
+  }
+
+  .attr-domain-title {
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1px;
+  }
+
+  .attr-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5px 2px;
+  }
+
+  .attr-name {
+    font-size: 8pt;
+    font-weight: 500;
+  }
+
+  .attr-anchor {
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .attr-note {
+    font-size: 6pt;
+    color: #777;
+  }
+
+  /* ---- Write-in rows ---- */
+  .writein-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 3px;
+    min-height: 16px;
+  }
+
+  .writein-line {
+    flex: 1;
+    border-bottom: 1px solid #aaa;
+    height: 14px;
+  }
+
+  /* ---- Health track ---- */
+  .health-track {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+
+  .health-track-label {
+    font-size: 8.5pt;
+    font-weight: 700;
+    width: 68px;
+  }
+
+  .tier-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .tier-label {
+    font-size: 6.5pt;
+    font-weight: 600;
+    color: #666;
+    width: 14px;
+    text-align: center;
+  }
+
+  .tier-divider {
+    width: 1px;
+    height: 14px;
+    background: #999;
+    margin: 0 2px;
+  }
+
+  /* ---- Connection card ---- */
+  .conn-card {
+    border: 1px solid #999;
+    padding: 4px 5px;
+    margin-bottom: 4px;
+    border-radius: 2px;
+  }
+
+  .conn-header {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+
+  /* ---- Secret card ---- */
+  .secret-card {
+    border: 1px solid #999;
+    padding: 4px 5px;
+    margin-bottom: 4px;
+    border-radius: 2px;
+  }
+
+  /* ---- Milestone checklist ---- */
+  .milestone-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  .check-box {
+    width: 10px;
+    height: 10px;
+    border: 1.2px solid #333;
+    flex-shrink: 0;
+  }
+
+  /* ---- Notes area ---- */
+  .notes-lines {
+    width: 100%;
+  }
+
+  .note-line {
+    border-bottom: 1px solid #ccc;
+    height: 16px;
+    width: 100%;
+  }
+
+  /* ---- Print ---- */
+  @media print {
+    body { background: none; }
+    .page { margin: 0; }
+  }
+
+  /* ---- Screen preview ---- */
+  @media screen {
+    body { background: #e0e0e0; padding: 20px; }
+    .page {
+      background: #fff;
+      margin: 0 auto 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- PAGE 1: IDENTITY · ATTRIBUTES · SKILLS · HEALTH · EDGES      -->
+<!-- ============================================================ -->
+<div class="page">
+
+  <div class="page-title">Willowlight Engine <span>Character Sheet — Page 1</span></div>
+
+  <div class="row" style="gap:6px;">
+
+    <!-- LEFT COLUMN -->
+    <div class="col flex-2" style="gap:5px;">
+
+      <!-- IDENTITY -->
+      <div class="panel">
+        <div class="section-label">Identity</div>
+        <div class="row" style="gap:8px; flex-wrap:wrap;">
+          <div class="field-row flex-2"><span class="field-label">Name</span><div class="field-line"></div></div>
+          <div class="field-row flex-1"><span class="field-label">Vocation</span><div class="field-line"></div></div>
+        </div>
+        <div class="row" style="gap:8px; flex-wrap:wrap; margin-top:2px;">
+          <div class="field-row flex-1"><span class="field-label">Conviction</span><div class="field-line"></div></div>
+          <div class="field-row flex-1"><span class="field-label">Path</span><div class="field-line"></div></div>
+        </div>
+        <div class="row" style="gap:8px; flex-wrap:wrap; margin-top:2px;">
+          <div class="field-row flex-1"><span class="field-label">Age</span><div class="field-line"></div></div>
+          <div class="field-row flex-1"><span class="field-label">Gender</span><div class="field-line"></div></div>
+          <div class="field-row flex-1"><span class="field-label">Height</span><div class="field-line"></div></div>
+          <div class="field-row flex-1"><span class="field-label">Weight</span><div class="field-line"></div></div>
+        </div>
+        <div class="field-row" style="margin-top:2px;">
+          <span class="field-label">Description</span><div class="field-line"></div>
+        </div>
+      </div>
+
+      <!-- ATTRIBUTES -->
+      <div class="panel">
+        <div class="section-label">Attributes</div>
+        <div class="attr-grid">
+          <!-- Physical -->
+          <div class="attr-domain">
+            <div class="attr-domain-title">Physical</div>
+            <div class="attr-row">
+              <span class="attr-name">Might</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-name">Reflex <span class="attr-note">(init)</span></span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-name attr-anchor">Endurance ☆</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="attr-row" style="border-top:1px solid #ddd; margin-top:2px; padding-top:2px;">
+              <span class="attr-name" style="font-size:7pt; color:#666;">Scale</span>
+              <span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span>
+            </div>
+          </div>
+          <!-- Mental -->
+          <div class="attr-domain">
+            <div class="attr-domain-title">Mental</div>
+            <div class="attr-row">
+              <span class="attr-name">Reason</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-name">Guile <span class="attr-note">(init)</span></span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-name attr-anchor">Resolve ☆</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="attr-row" style="border-top:1px solid #ddd; margin-top:2px; padding-top:2px;">
+              <span class="attr-name" style="font-size:7pt; color:#666;">Scale</span>
+              <span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span>
+            </div>
+          </div>
+          <!-- Social -->
+          <div class="attr-domain">
+            <div class="attr-domain-title">Social</div>
+            <div class="attr-row">
+              <span class="attr-name">Influence</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-name">Poise <span class="attr-note">(init)</span></span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-name attr-anchor">Command ☆</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="attr-row" style="border-top:1px solid #ddd; margin-top:2px; padding-top:2px;">
+              <span class="attr-name" style="font-size:7pt; color:#666;">Scale</span>
+              <span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:6pt; color:#888; margin-top:2px;">☆ = Anchor attribute · (init) = governs initiative in that domain</div>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="panel">
+        <div class="section-label">Vocation · Interests · Hobbies</div>
+        <div class="row" style="gap:8px;">
+          <div style="flex:1;">
+            <div class="sub-label" style="margin-bottom:2px;">Vocation (Tier 3)</div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+          </div>
+          <div style="flex:2;">
+            <div class="sub-label" style="margin-bottom:2px;">Domain Focus</div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+          </div>
+        </div>
+        <div class="row" style="gap:8px; margin-top:2px;">
+          <div style="flex:1;">
+            <div class="sub-label" style="margin-bottom:2px;">Interests (Tier 2)</div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+          </div>
+          <div style="flex:1;">
+            <div class="sub-label" style="margin-bottom:2px;">Hobbies (Tier 1)</div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+            <div class="writein-row"><div class="writein-line"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEALTH TRACKS -->
+      <div class="panel">
+        <div class="section-label">Health Tracks</div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+          <!-- Vitality -->
+          <div class="panel-light">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
+              <span style="font-size:8.5pt; font-weight:700;">Vitality</span>
+              <span class="sub-label">3 + Endurance</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
+              <span class="sub-label" style="width:22px;">T1</span>
+              <span class="health-box"></span><span class="health-box"></span><span class="health-box"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
+              <span class="sub-label" style="width:22px;">T2</span>
+              <span class="health-box"></span><span class="health-box"></span><span class="health-box"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
+              <span class="sub-label" style="width:22px;">T3</span>
+              <span class="health-box"></span><span class="health-box"></span>
+            </div>
+            <div class="field-row" style="margin-top:2px;">
+              <span class="field-label">Defense TN</span>
+              <div class="field-line-short"></div>
+            </div>
+            <div style="font-size:6pt; color:#888;">8 + Endurance</div>
+          </div>
+
+          <!-- Willpower -->
+          <div class="panel-light">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
+              <span style="font-size:8.5pt; font-weight:700;">Willpower</span>
+              <span class="sub-label">3 + Resolve</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
+              <span class="sub-label" style="width:22px;">T1</span>
+              <span class="health-box"></span><span class="health-box"></span><span class="health-box"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
+              <span class="sub-label" style="width:22px;">T2</span>
+              <span class="health-box"></span><span class="health-box"></span><span class="health-box"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
+              <span class="sub-label" style="width:22px;">T3</span>
+              <span class="health-box"></span><span class="health-box"></span>
+            </div>
+            <div class="field-row" style="margin-top:2px;">
+              <span class="field-label">Defense TN</span>
+              <div class="field-line-short"></div>
+            </div>
+            <div style="font-size:6pt; color:#888;">8 + Resolve</div>
+          </div>
+
+          <!-- Composure -->
+          <div class="panel-light">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
+              <span style="font-size:8.5pt; font-weight:700;">Composure</span>
+              <span class="sub-label">3 + Command</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
+              <span class="sub-label" style="width:22px;">T1</span>
+              <span class="health-box"></span><span class="health-box"></span><span class="health-box"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
+              <span class="sub-label" style="width:22px;">T2</span>
+              <span class="health-box"></span><span class="health-box"></span><span class="health-box"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;">
+              <span class="sub-label" style="width:22px;">T3</span>
+              <span class="health-box"></span><span class="health-box"></span>
+            </div>
+            <div class="field-row" style="margin-top:2px;">
+              <span class="field-label">Defense TN</span>
+              <div class="field-line-short"></div>
+            </div>
+            <div style="font-size:6pt; color:#888;">8 + Command</div>
+          </div>
+        </div>
+
+        <!-- Afflictions -->
+        <div style="margin-top:4px;">
+          <div class="sub-label" style="margin-bottom:3px;">Afflictions &amp; Conditions</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; font-size:7pt;">
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Terrified</label>
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Discredited</label>
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Stunned</label>
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Prone</label>
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Blinded</label>
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Disoriented</label>
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Restrained</label>
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Slowed</label>
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Disarmed</label>
+            <label style="display:inline-flex; align-items:center; gap:2px;"><span class="check-box" style="width:8px; height:8px;"></span> Dying</label>
+          </div>
+          <div class="writein-row" style="margin-top:3px;"><span class="field-label">Other</span><div class="writein-line"></div></div>
+        </div>
+      </div>
+
+    </div><!-- /LEFT COLUMN -->
+
+    <!-- RIGHT COLUMN -->
+    <div class="col flex-1" style="gap:5px;">
+
+      <!-- EDGES -->
+      <div class="panel">
+        <div class="section-label">Edges</div>
+        <div style="font-size:6.5pt; color:#777; margin-bottom:3px;">7 dots at creation · Fill dots to mark rating</div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+      </div>
+
+      <!-- BURDENS -->
+      <div class="panel">
+        <div class="section-label">Burdens</div>
+        <div style="font-size:6.5pt; color:#777; margin-bottom:3px;">3 dots at creation</div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+      </div>
+
+      <!-- ASPECTS -->
+      <div class="panel">
+        <div class="section-label">Aspects</div>
+        <div style="font-size:6.5pt; color:#777; margin-bottom:3px;">3 dots at creation · Note linked attribute</div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+        <div class="writein-row"><div class="writein-line"></div><span class="dots"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span></div>
+      </div>
+
+      <!-- LUCK & RESOURCES -->
+      <div class="panel">
+        <div class="section-label">Luck &amp; Resources</div>
+        <div class="row" style="gap:10px;">
+          <div style="flex:1;">
+            <div class="sub-label" style="margin-bottom:2px;">Luck Rating</div>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+            </div>
+            <div class="sub-label" style="margin-top:4px; margin-bottom:2px;">Current Tokens</div>
+            <div style="display:flex; gap:3px;">
+              <span class="health-box"></span><span class="health-box"></span><span class="health-box"></span><span class="health-box"></span><span class="health-box"></span>
+            </div>
+          </div>
+          <div style="flex:1;">
+            <div class="field-row"><span class="field-label">Wealth</span><div class="field-line"></div></div>
+            <div class="field-row" style="margin-top:4px;"><span class="field-label">Downtime</span><div class="field-line"></div></div>
+            <div class="field-row" style="margin-top:4px;"><span class="field-label">Lifestyle</span>
+              <span class="dots" style="margin-left:4px;"><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span><span class="dot-sm"></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADVANCEMENT -->
+      <div class="panel">
+        <div class="section-label">Advancement</div>
+        <div class="row" style="gap:10px;">
+          <div style="flex:1;">
+            <div class="sub-label" style="margin-bottom:2px;">Session XP (max 3)</div>
+            <div style="display:flex; gap:3px;">
+              <span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span>
+            </div>
+          </div>
+          <div style="flex:1;">
+            <div class="field-row"><span class="field-label">Total XP</span><div class="field-line"></div></div>
+            <div class="field-row" style="margin-top:2px;"><span class="field-label">XP Spent</span><div class="field-line"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /RIGHT COLUMN -->
+
+  </div><!-- /main row -->
+
+  <div style="position:absolute; bottom:4px; right:8px; font-size:6pt; color:#aaa;">Willowlight Engine &copy; Mount Ogden Gaming Company</div>
+</div><!-- /PAGE 1 -->
+
+
+<!-- ============================================================ -->
+<!-- PAGE 2: CONNECTIONS · SECRETS · MILESTONES · EQUIPMENT        -->
+<!-- ============================================================ -->
+<div class="page">
+
+  <div class="page-title">Willowlight Engine <span>Character Sheet — Page 2</span></div>
+
+  <div class="row" style="gap:6px; height: calc(100% - 28px);">
+
+    <!-- LEFT COLUMN: CONNECTIONS then SECRETS -->
+    <div class="col flex-3" style="gap:5px;">
+
+      <div class="panel">
+        <div class="section-label">Connections</div>
+        <div style="font-size:6.5pt; color:#777; margin-bottom:4px;">Type: Contact / Ally / Rival / Retainer · Start with 2 free contacts at rating 2</div>
+
+        <div style="display:flex; flex-direction:column; gap: 4px;">
+          <!-- Connection 1 -->
+          <div class="conn-card">
+            <div class="conn-header">
+              <span class="field-label">Name</span><div class="field-line" style="flex:2;"></div>
+              <span class="field-label" style="margin-left:6px;">Type</span><div class="field-line" style="flex:1;"></div>
+            </div>
+            <div class="field-row"><span class="field-label">Relationship</span><div class="field-line"></div></div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+              <span class="sub-label">Rating</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+              <span class="sub-label" style="margin-left:8px;">Health</span>
+              <span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span>
+            </div>
+            <div class="field-row" style="margin-top:2px;"><span class="field-label">Notes / Secrets Carried</span><div class="field-line"></div></div>
+          </div>
+
+          <!-- Connection 2 -->
+          <div class="conn-card">
+            <div class="conn-header">
+              <span class="field-label">Name</span><div class="field-line" style="flex:2;"></div>
+              <span class="field-label" style="margin-left:6px;">Type</span><div class="field-line" style="flex:1;"></div>
+            </div>
+            <div class="field-row"><span class="field-label">Relationship</span><div class="field-line"></div></div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+              <span class="sub-label">Rating</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+              <span class="sub-label" style="margin-left:8px;">Health</span>
+              <span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span>
+            </div>
+            <div class="field-row" style="margin-top:2px;"><span class="field-label">Notes / Secrets Carried</span><div class="field-line"></div></div>
+          </div>
+
+          <!-- Connection 3 -->
+          <div class="conn-card">
+            <div class="conn-header">
+              <span class="field-label">Name</span><div class="field-line" style="flex:2;"></div>
+              <span class="field-label" style="margin-left:6px;">Type</span><div class="field-line" style="flex:1;"></div>
+            </div>
+            <div class="field-row"><span class="field-label">Relationship</span><div class="field-line"></div></div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+              <span class="sub-label">Rating</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+              <span class="sub-label" style="margin-left:8px;">Health</span>
+              <span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span>
+            </div>
+            <div class="field-row" style="margin-top:2px;"><span class="field-label">Notes / Secrets Carried</span><div class="field-line"></div></div>
+          </div>
+
+          <!-- Connection 4 -->
+          <div class="conn-card">
+            <div class="conn-header">
+              <span class="field-label">Name</span><div class="field-line" style="flex:2;"></div>
+              <span class="field-label" style="margin-left:6px;">Type</span><div class="field-line" style="flex:1;"></div>
+            </div>
+            <div class="field-row"><span class="field-label">Relationship</span><div class="field-line"></div></div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+              <span class="sub-label">Rating</span>
+              <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+              <span class="sub-label" style="margin-left:8px;">Health</span>
+              <span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span>
+            </div>
+            <div class="field-row" style="margin-top:2px;"><span class="field-label">Notes / Secrets Carried</span><div class="field-line"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECRETS -->
+      <div class="panel" style="padding-bottom:10px;">
+        <div class="section-label">Secrets</div>
+        <div style="font-size:6.5pt; color:#777; margin-bottom:4px;">Containment Cost = Weight + current Spread (paid per arc)</div>
+
+        <div style="display:flex; flex-direction:column; gap: 4px;">
+          <!-- Secret 1 -->
+          <div class="secret-card">
+            <div class="field-row"><span class="field-label">Secret</span><div class="field-line"></div></div>
+            <div class="row" style="gap:8px; margin-top:3px;">
+              <div style="flex:1;">
+                <div class="sub-label">Weight (1–3)</div>
+                <div style="display:flex; gap:3px; margin-top:2px;">
+                  <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                </div>
+              </div>
+              <div style="flex:2;">
+                <div class="sub-label">Spread</div>
+                <div style="display:flex; align-items:center; gap:2px; margin-top:2px;">
+                  <span class="health-box-sm"></span><span style="font-size:6pt; color:#888;">Whispered</span>
+                  <span class="health-box-sm" style="margin-left:4px;"></span><span style="font-size:6pt; color:#888;">Spread</span>
+                  <span class="health-box-sm" style="margin-left:4px;"></span><span style="font-size:6pt; color:#888;">Exposed</span>
+                </div>
+              </div>
+            </div>
+            <div class="field-row" style="margin-top:3px;"><span class="field-label">Containment Cost</span><div class="field-line-short"></div></div>
+            <div class="field-row"><span class="field-label">Contacts Carrying</span><div class="field-line"></div></div>
+            <div class="field-row"><span class="field-label">Notes</span><div class="field-line"></div></div>
+          </div>
+
+          <!-- Secret 2 -->
+          <div class="secret-card">
+            <div class="field-row"><span class="field-label">Secret</span><div class="field-line"></div></div>
+            <div class="row" style="gap:8px; margin-top:3px;">
+              <div style="flex:1;">
+                <div class="sub-label">Weight (1–3)</div>
+                <div style="display:flex; gap:3px; margin-top:2px;">
+                  <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                </div>
+              </div>
+              <div style="flex:2;">
+                <div class="sub-label">Spread</div>
+                <div style="display:flex; align-items:center; gap:2px; margin-top:2px;">
+                  <span class="health-box-sm"></span><span style="font-size:6pt; color:#888;">Whispered</span>
+                  <span class="health-box-sm" style="margin-left:4px;"></span><span style="font-size:6pt; color:#888;">Spread</span>
+                  <span class="health-box-sm" style="margin-left:4px;"></span><span style="font-size:6pt; color:#888;">Exposed</span>
+                </div>
+              </div>
+            </div>
+            <div class="field-row" style="margin-top:3px;"><span class="field-label">Containment Cost</span><div class="field-line-short"></div></div>
+            <div class="field-row"><span class="field-label">Contacts Carrying</span><div class="field-line"></div></div>
+            <div class="field-row"><span class="field-label">Notes</span><div class="field-line"></div></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /LEFT COLUMN -->
+
+    <!-- RIGHT COLUMN: MILESTONES · CORRUPTION · EQUIPMENT · NOTES -->
+    <div class="col flex-1" style="gap:5px;">
+
+      <!-- MILESTONES -->
+      <div class="panel">
+        <div class="section-label">Milestones</div>
+        <div class="row" style="gap:8px;">
+          <div style="flex:1;">
+            <div class="sub-label" style="margin-bottom:3px;">Conviction Milestones</div>
+            <div class="milestone-row"><span class="check-box"></span><div class="writein-line"></div></div>
+            <div class="milestone-row"><span class="check-box"></span><div class="writein-line"></div></div>
+            <div class="milestone-row"><span class="check-box"></span><div class="writein-line"></div></div>
+            <div class="milestone-row"><span class="check-box"></span><div class="writein-line"></div></div>
+          </div>
+          <div style="flex:1;">
+            <div class="sub-label" style="margin-bottom:3px;">Path Milestones</div>
+            <div class="milestone-row"><span class="check-box"></span><div class="writein-line"></div></div>
+            <div class="milestone-row"><span class="check-box"></span><div class="writein-line"></div></div>
+            <div class="milestone-row"><span class="check-box"></span><div class="writein-line"></div></div>
+            <div class="milestone-row"><span class="check-box"></span><div class="writein-line"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CORRUPTION -->
+      <div class="panel">
+        <div class="section-label">Corruption</div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="sub-label">Current</span>
+          <span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span>
+          <span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span><span class="health-box-sm"></span>
+        </div>
+        <div class="field-row" style="margin-top:3px;"><span class="field-label">Hearth Trigger</span><div class="field-line"></div></div>
+      </div>
+
+      <!-- EQUIPMENT & GEAR -->
+      <div class="panel">
+        <div class="section-label">Equipment &amp; Gear</div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+        <div class="writein-row"><div class="writein-line"></div></div>
+      </div>
+
+      <!-- NOTES -->
+      <div class="panel">
+        <div class="section-label">Notes</div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+      </div>
+
+    </div><!-- /RIGHT COLUMN -->
+
+  </div><!-- /main row -->
+
+  <div style="position:absolute; bottom:4px; right:8px; font-size:6pt; color:#aaa;">Willowlight Engine &copy; Mount Ogden Gaming Company</div>
+</div><!-- /PAGE 2 -->
+
+</body>
+</html>

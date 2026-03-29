@@ -68,6 +68,9 @@ export default async function createApp(vite) {
 	app.get('/besm/sheet/:id', (req, res)=>{
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/besm-character-sheet-dynamic.html'));
 	});
+	app.get('/willowlight-character/sheet/:id', (req, res)=>{
+		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-dynamic.html'));
+	});
 
 	if(vite) {
 		app.use(vite.middlewares);

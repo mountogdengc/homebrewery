@@ -78,7 +78,21 @@ const WillowlightCharacterLibraryPage = ()=>{
 		<div className="statblockLibraryPage">
 			<Navbar>
 				<Nav.logo />
-				<Nav.section><Nav.item color="blue">Willowlight Character Library</Nav.item></Nav.section>
+				<Nav.section>
+					<Nav.item color="blue">Willowlight Characters</Nav.item>
+					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/willowlight-character/new'; }}>
+						New Character
+					</Nav.item>
+					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/willowlight/new'; }}>
+						New Stat Block
+					</Nav.item>
+					<Nav.item icon="fas fa-th-list" onClick={()=>{ window.location.href = '/willowlight/library'; }}>
+						Stat Blocks
+					</Nav.item>
+					<Nav.item icon="fas fa-dice-d20" onClick={()=>{ window.location.href = '/playtest'; }}>
+						Playtest
+					</Nav.item>
+				</Nav.section>
 				<Nav.section><AccountNavItem /></Nav.section>
 			</Navbar>
 

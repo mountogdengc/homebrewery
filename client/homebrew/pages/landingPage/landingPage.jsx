@@ -23,9 +23,63 @@ const LandingPage = ()=>{
 					<p>Create authentic-looking homebrew content for tabletop RPGs</p>
 				</div>
 
-				{/* ── Documents ─────────────────────────────────────────── */}
+				{/* ── Game Systems (alphabetical) ──────────────────────── */}
 				<div className="toolRow">
-					<h2 className="rowTitle">Documents</h2>
+					<h2 className="rowTitle">Game Systems</h2>
+					<div className="toolCards">
+						<a className="toolCard" href="/besm/library">
+							<div className="toolIcon">
+								<i className="fas fa-bolt" />
+							</div>
+							<h3 className="toolName">BESM 4e</h3>
+							<p className="toolDesc">
+								Create BESM 4th Edition characters with a guided
+								builder, AI generation, printable character sheets,
+								and embeddable stat blocks.
+							</p>
+						</a>
+
+						<a className="toolCard" href="/brp/library">
+							<div className="toolIcon">
+								<i className="fas fa-scroll" />
+							</div>
+							<h3 className="toolName">BRP</h3>
+							<p className="toolDesc">
+								Build Chaosium BRP (Basic Roleplaying) creature and
+								NPC stat blocks with characteristics, skills, weapons,
+								spells, and hit locations.
+							</p>
+						</a>
+
+						<a className="toolCard" href="/statblock/library">
+							<div className="toolIcon">
+								<i className="fas fa-dragon" />
+							</div>
+							<h3 className="toolName">D&amp;D 5e</h3>
+							<p className="toolDesc">
+								Build monster and NPC stat blocks with a form-based
+								editor, live preview, and AI generation. Save to your
+								library and embed directly in your brews.
+							</p>
+						</a>
+
+						<a className="toolCard" href="/willowlight/library">
+							<div className="toolIcon">
+								<i className="fas fa-moon" />
+							</div>
+							<h3 className="toolName">Willowlight Engine</h3>
+							<p className="toolDesc">
+								Build stat blocks and full character sheets for the
+								Willowlight Engine. Includes AI generation, playtest
+								table, and embeddable stat blocks.
+							</p>
+						</a>
+					</div>
+				</div>
+
+				{/* ── Tools (alphabetical) ─────────────────────────────── */}
+				<div className="toolRow">
+					<h2 className="rowTitle">Tools</h2>
 					<div className="toolCards">
 						<a className="toolCard" href="/new">
 							<div className="toolIcon">
@@ -38,85 +92,7 @@ const LandingPage = ()=>{
 								professional styling and PDF export.
 							</p>
 						</a>
-					</div>
-				</div>
 
-				{/* ── Stat Blocks ───────────────────────────────────────── */}
-				<div className="toolRow">
-					<h2 className="rowTitle">Stat Blocks</h2>
-					<div className="toolCards">
-						<a className="toolCard" href="/statblock/new">
-							<div className="toolIcon">
-								<i className="fas fa-dragon" />
-							</div>
-							<h3 className="toolName">D&amp;D 5e Stat Block</h3>
-							<p className="toolDesc">
-								Build monster stat blocks with a form-based editor
-								and live preview. Save to your library and embed
-								directly in your brews.
-							</p>
-						</a>
-
-						<a className="toolCard" href="/brp/new">
-							<div className="toolIcon">
-								<i className="fas fa-scroll" />
-							</div>
-							<h3 className="toolName">BRP Stat Block</h3>
-							<p className="toolDesc">
-								Build Chaosium BRP (Basic Roleplaying) creature and
-								NPC stat blocks with characteristics, skills, weapons,
-								spells, and hit locations.
-							</p>
-						</a>
-
-						<a className="toolCard" href="/willowlight/new">
-							<div className="toolIcon">
-								<i className="fas fa-moon" />
-							</div>
-							<h3 className="toolName">Willowlight Engine Stat Block</h3>
-							<p className="toolDesc">
-								Create stat blocks for the Willowlight Engine with
-								attributes, health tracks, edges, aspects, burdens,
-								and attacks.
-							</p>
-						</a>
-					</div>
-				</div>
-
-				{/* ── Characters ────────────────────────────────────────── */}
-				<div className="toolRow">
-					<h2 className="rowTitle">Characters</h2>
-					<div className="toolCards">
-						<a className="toolCard" href="/besm/library">
-							<div className="toolIcon">
-								<i className="fas fa-bolt" />
-							</div>
-							<h3 className="toolName">BESM 4e Character</h3>
-							<p className="toolDesc">
-								Create BESM 4th Edition characters with a guided
-								step-by-step wizard. Allocate Character Points to
-								Stats, Attributes, Defects, and Skills.
-							</p>
-						</a>
-
-						<a className="toolCard toolCard--coming" href="/willowlight-character/new">
-							<div className="toolIcon">
-								<i className="fas fa-moon" />
-							</div>
-							<h3 className="toolName">Willowlight Engine Character</h3>
-							<p className="toolDesc">
-								Build full Willowlight Engine character sheets with
-								attributes, skills, health tracks, contacts, secrets,
-								milestones, and more.
-							</p>
-						</a>
-					</div>
-				</div>
-
-				{/* ── Tools ────────────────────────────────────────── */}
-				<div className="toolRow">
-					<h2 className="rowTitle">Tools</h2>
-					<div className="toolCards">
 						<a className="toolCard" href="/playtest">
 							<div className="toolIcon">
 								<i className="fas fa-dice-d20" />
@@ -132,12 +108,11 @@ const LandingPage = ()=>{
 				</div>
 
 				<div className="quickLinks">
-					<a href="/new">New Brew</a>
-					<a href="/statblock/library">5e Stat Blocks</a>
-					<a href="/brp/library">BRP Stat Blocks</a>
-					<a href="/willowlight/library">Willowlight Stat Blocks</a>
-					<a href="/besm/library">BESM Characters</a>
-					<a href="/willowlight-character/library">Willowlight Characters</a>
+					<a href="/besm/library">BESM 4e</a>
+					<a href="/brp/library">BRP</a>
+					<a href="/statblock/library">D&amp;D 5e</a>
+					<a href="/willowlight/library">Willowlight</a>
+					<a href="/new">Brew Editor</a>
 					<a href="/playtest">Playtest Table</a>
 					<a href="/vault">The Vault</a>
 					<a href="/changelog">Changelog</a>

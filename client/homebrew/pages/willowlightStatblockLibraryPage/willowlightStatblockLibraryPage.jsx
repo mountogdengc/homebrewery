@@ -90,7 +90,19 @@ const WillowlightStatblockLibraryPage = ()=>{
 			<Navbar>
 				<Nav.logo />
 				<Nav.section>
-					<Nav.item color="blue">Willowlight Stat Block Library</Nav.item>
+					<Nav.item color="blue">Willowlight Engine</Nav.item>
+					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/willowlight/new'; }}>
+						New Stat Block
+					</Nav.item>
+					<Nav.item icon="fas fa-user-plus" onClick={()=>{ window.location.href = '/willowlight-character/new'; }}>
+						New Character
+					</Nav.item>
+					<Nav.item icon="fas fa-user" onClick={()=>{ window.location.href = '/willowlight-character/library'; }}>
+						Characters
+					</Nav.item>
+					<Nav.item icon="fas fa-dice-d20" onClick={()=>{ window.location.href = '/playtest'; }}>
+						Playtest
+					</Nav.item>
 				</Nav.section>
 				<Nav.section>
 					<AccountNavItem />

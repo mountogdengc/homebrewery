@@ -25,6 +25,9 @@ const WillowlightStatblockEditorPage = (props)=>{
 	const [hasChanges, setHasChanges] = useState(false);
 	const [error, setError] = useState(null);
 	const saveTimeout = useRef(null);
+	const [conceptPrompt, setConceptPrompt] = useState('');
+	const [isGeneratingFlavor, setIsGeneratingFlavor] = useState(false);
+	const [flavorError, setFlavorError] = useState(null);
 
 	const handleChange = useCallback((updated)=>{
 		setStatblock(updated);
@@ -79,6 +82,61 @@ const WillowlightStatblockEditorPage = (props)=>{
 		document.addEventListener('keydown', handleKeyDown);
 		return ()=>document.removeEventListener('keydown', handleKeyDown);
 	}, [save]);
+
+	const handleAiGenerate = useCallback((data)=>{
+		if(data._conceptPrompt) setConceptPrompt(data._conceptPrompt);
+		handleChange({ ...statblock, ...data });
+	}, [statblock, handleChange]);
+
+	const handleGenerateFlavor = useCallback(async ()=>{
+		if(isGeneratingFlavor) return;
+		setIsGeneratingFlavor(true);
+		setFlavorError(null);
+
+		try {
+			const res = await request.post('/api/ai/generate/willowlight-flavor')
+				.send({ concept: conceptPrompt || statblock.name || 'Willowlight character', statBlock: statblock })
+				.timeout({ response: 180000 });
+
+			const flavor = res.body;
+			const updated = { ...statblock };
+
+			if(flavor.description) updated.description = flavor.description;
+			if(flavor.lore) updated.lore = flavor.lore;
+
+			if(flavor.edge_flavor && updated.edges) {
+				for (const ef of flavor.edge_flavor) {
+					const edge = updated.edges.find((e)=>e.name?.toLowerCase() === ef.name?.toLowerCase());
+					if(edge) edge.flavor = ef.flavor;
+				}
+			}
+			if(flavor.aspect_flavor && updated.aspects) {
+				for (const af of flavor.aspect_flavor) {
+					const aspect = updated.aspects.find((a)=>a.name?.toLowerCase() === af.name?.toLowerCase());
+					if(aspect) aspect.flavor = af.flavor;
+				}
+			}
+			if(flavor.burden_flavor && updated.burdens) {
+				for (const bf of flavor.burden_flavor) {
+					const burden = updated.burdens.find((b)=>b.name?.toLowerCase() === bf.name?.toLowerCase());
+					if(burden) burden.flavor = bf.flavor;
+				}
+			}
+
+			if(flavor.encounter_hooks && flavor.encounter_hooks.length > 0) {
+				const hookText = flavor.encounter_hooks.map((h)=>`${h.title}: ${h.description}`).join('\n\n');
+				updated.notes = (updated.notes ? updated.notes + '\n\n' : '') + '── Encounter Hooks ──\n\n' + hookText;
+			}
+
+			handleChange(updated);
+		} catch (err) {
+			console.error('Flavor generation failed:', err);
+			setFlavorError(err?.response?.body?.error || err.message || 'Flavor generation failed');
+			setTimeout(()=>setFlavorError(null), 5000);
+		} finally {
+			setIsGeneratingFlavor(false);
+		}
+	}, [statblock, conceptPrompt, isGeneratingFlavor, handleChange]);
 
 	const [copied, setCopied] = useState(false);
 	const [bw, setBw] = useState(false);
@@ -147,11 +205,25 @@ const WillowlightStatblockEditorPage = (props)=>{
 			<div className="content">
 				<SplitPane showDividerButtons={false}>
 					<div style={{ overflow: 'auto', height: '100%' }}>
-						<div style={{ padding: '12px 12px 0' }}>
+						<div style={{ padding: '12px 12px 0', display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
 							<AiGenerateButton
 								endpoint="/api/ai/generate/willowlight-statblock"
-								onGenerated={(data)=>handleChange({ ...statblock, ...data })}
+								onGenerated={handleAiGenerate}
 							/>
+							{statblock.name && (
+								<button
+									className="aiGenerateBtn"
+									onClick={handleGenerateFlavor}
+									disabled={isGeneratingFlavor}
+									style={{ background: isGeneratingFlavor ? '#444' : undefined }}
+								>
+									{isGeneratingFlavor
+										? <><i className="fas fa-spinner fa-spin" /> Generating Flavor...</>
+										: <><i className="fas fa-feather-alt" /> Generate Flavor</>
+									}
+								</button>
+							)}
+							{flavorError && <span style={{ color: '#ff6b6b', fontSize: '13px' }}>{flavorError}</span>}
 						</div>
 						<WillowlightStatblockForm statblock={statblock} onChange={handleChange} />
 					</div>
