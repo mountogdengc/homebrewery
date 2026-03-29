@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BESM Character Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@page { size: letter portrait; margin: 0.5in; }
+
+:root {
+  --sp: #D4537E;
+  --sp-light: #FBEAF0;
+  --sp-text: #72243E;
+  --su: #534AB7;
+  --su-light: #EEEDFE;
+  --su-text: #3C3489;
+  --sg: #5F5E5A;
+  --text: #1A1A1A;
+  --border: rgba(0,0,0,0.2);
+  --border-lt: rgba(0,0,0,0.09);
+  --bg-alt: #F8F8F8;
+  --r: 5px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  background: #E8E4F0;
+  display: flex;
+  justify-content: center;
+  padding: 0.5in;
+  min-height: 100vh;
+}
+
+.sheet {
+  width: 7.5in;
+  min-height: 10in;
+  background: white;
+  padding: 0.3in 0.35in;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.2);
+}
+
+/* ── HEADER ── */
+.sheet-header {
+  display: grid;
+  grid-template-columns: 1fr 1.05in auto;
+  gap: 14pt;
+  align-items: center;
+  padding-bottom: 10pt;
+  border-bottom: 2pt solid var(--sp);
+  margin-bottom: 10pt;
+}
+
+.char-name { font-size: 20pt; font-weight: 700; color: var(--text); line-height: 1; }
+
+.name-sub {
+  font-size: 6.5pt; font-weight: 700; color: var(--sp);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-top: 2pt; margin-bottom: 7pt;
+}
+
+.header-fields { display: flex; gap: 14pt; }
+
+.hf-item {
+  display: flex; align-items: baseline; gap: 4pt;
+  border-bottom: 0.5pt solid var(--border); padding-bottom: 2pt;
+  min-width: 1.1in;
+}
+
+.hf-lbl { font-size: 6.5pt; font-weight: 700; color: var(--sp); text-transform: uppercase; white-space: nowrap; }
+.hf-val { font-size: 8pt; font-weight: 700; color: var(--text); }
+
+/* PORTRAIT */
+.portrait-box {
+  width: 1.05in; height: 1.05in;
+  border: 1pt dashed rgba(0,0,0,0.2);
+  border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.pb-lbl {
+  font-size: 6.5pt; color: #BDBDBD; font-weight: 700;
+  text-transform: uppercase; text-align: center; line-height: 1.4;
+}
+
+/* CP TRACKER */
+.cp-tracker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4pt; }
+
+.cpt-box {
+  background: var(--su-light); border-radius: var(--r);
+  padding: 4pt; text-align: center;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.cpt-box.total { background: var(--sp); }
+
+.cpt-val { font-size: 14pt; font-weight: 700; color: var(--su-text); line-height: 1; }
+.cpt-box.total .cpt-val { color: white; }
+.cpt-lbl { font-size: 5.5pt; font-weight: 700; color: var(--su); text-transform: uppercase; margin-top: 1pt; }
+.cpt-box.total .cpt-lbl { color: #F4C0D1; }
+
+/* ── INFO ROW ── */
+.info-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 7pt;
+  margin-bottom: 12pt;
+}
+
+.info-cell { display: flex; flex-direction: column; }
+
+.ic-val {
+  font-size: 8pt; font-weight: 700; color: var(--text);
+  min-height: 18pt;
+  border-bottom: 0.5pt solid var(--border);
+  padding-bottom: 2pt;
+  display: flex; align-items: flex-end;
+}
+
+.ic-lbl {
+  font-size: 6pt; font-weight: 700; color: var(--sp);
+  text-transform: uppercase; margin-top: 2.5pt; letter-spacing: 0.2px;
+}
+
+/* ── MAIN GRID ── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 2.3in 1fr;
+  gap: 16pt;
+}
+
+.left-col { display: flex; flex-direction: column; }
+
+.sec-lbl {
+  font-size: 7pt; font-weight: 700; color: var(--su);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 6pt;
+  display: flex; align-items: center; gap: 6pt;
+}
+.sec-lbl::after { content: ''; flex: 1; height: 0.5pt; background: var(--border); }
+
+/* STAT ORBS */
+.stats-row { display: flex; justify-content: space-around; margin-bottom: 10pt; }
+.stat-orb { display: flex; flex-direction: column; align-items: center; gap: 4pt; }
+
+.orb {
+  width: 50pt; height: 50pt; border-radius: 50%;
+  border: 1.5pt solid var(--sp); background: var(--sp-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22pt; font-weight: 700; color: var(--sp-text);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.orb-lbl { font-size: 7pt; font-weight: 700; color: var(--su); text-transform: uppercase; }
+
+/* DERIVED STATS */
+.derived-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 4pt; margin-bottom: 10pt;
+}
+
+.d-box {
+  background: var(--su-light); border-radius: var(--r);
+  padding: 4pt 3pt; text-align: center;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.d-val { font-size: 14pt; font-weight: 700; color: var(--su-text); line-height: 1; }
+.d-lbl { font-size: 5.5pt; font-weight: 700; color: var(--su); text-transform: uppercase; margin-top: 1pt; line-height: 1.2; }
+
+/* COMBAT STATUS */
+.hp-track { display: grid; grid-template-columns: 1fr 1fr; gap: 4pt; margin-bottom: 5pt; }
+
+.hp-cell {
+  background: var(--su-light); border-radius: var(--r); padding: 4pt 6pt;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.hp-cell .hpc-lbl { font-size: 5.5pt; font-weight: 700; color: var(--su); text-transform: uppercase; margin-bottom: 2pt; }
+
+.hp-cell .hpc-val {
+  font-size: 14pt; font-weight: 700; color: var(--su-text); line-height: 1;
+  border-bottom: 0.5pt solid var(--border); min-height: 18pt;
+  display: flex; align-items: flex-end;
+}
+
+.conditions { display: flex; flex-wrap: wrap; gap: 3pt 8pt; margin-bottom: 10pt; }
+
+.cond-item {
+  display: flex; align-items: center; gap: 3pt;
+  font-size: 7pt; font-weight: 700; color: var(--text); cursor: pointer;
+}
+
+.cond-item input[type="checkbox"] {
+  width: 8pt; height: 8pt; margin: 0; accent-color: var(--sp);
+}
+
+/* NARRATIVE */
+.quote-box {
+  background: var(--su-light); border-left: 2pt solid var(--su);
+  border-radius: 0; padding: 5pt 8pt;
+  font-size: 8pt; font-style: italic; color: var(--text);
+  min-height: 22pt; margin-bottom: 7pt; line-height: 1.5;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.narr-field { margin-bottom: 6pt; }
+.nf-lbl { font-size: 6.5pt; font-weight: 700; color: var(--sp); text-transform: uppercase; margin-bottom: 2pt; }
+
+.nf-val {
+  font-size: 8pt; color: var(--text); line-height: 1.5;
+  border-bottom: 0.5pt solid var(--border);
+  min-height: 26pt; padding-bottom: 2pt;
+}
+
+/* GAME NOTES */
+.notes-box {
+  flex: 1; min-height: 72pt;
+  border: 0.5pt solid var(--border); border-radius: var(--r);
+  padding: 5pt 7pt;
+  font-size: 8pt; color: var(--text); line-height: 1.8;
+  background-image: repeating-linear-gradient(
+    to bottom, transparent, transparent calc(1.8em - 0.5pt),
+    rgba(0,0,0,0.07) calc(1.8em - 0.5pt), rgba(0,0,0,0.07) 1.8em
+  );
+  background-size: 100% 1.8em;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+/* ── TABLES ── */
+.sheet-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 8pt; margin-bottom: 10pt; table-layout: fixed;
+}
+
+.sheet-table thead th {
+  padding: 4pt 5pt; text-align: left;
+  font-weight: 700; font-size: 7pt; text-transform: uppercase;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.th-pink { background: var(--sp); color: white; }
+.th-purple { background: var(--su); color: white; }
+.th-gray { background: var(--sg); color: white; }
+
+.sheet-table tbody td {
+  padding: 2.5pt 5pt; color: var(--text);
+  border-bottom: 0.5pt solid var(--border-lt);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.sheet-table tbody tr:nth-child(even) td {
+  background: var(--bg-alt);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.td-c { text-align: center; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt; }
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; padding: 0; margin: 0; display: block; }
+  .sheet { box-shadow: none; padding: 0; width: 100%; min-height: auto; }
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- HEADER -->
+  <div class="sheet-header">
+    <div>
+      <div class="char-name" id="char-name">Kage no Shinobi</div>
+      <div class="name-sub">Character Name</div>
+      <div class="header-fields">
+        <div class="hf-item">
+          <span class="hf-lbl">Genre</span>
+          <span class="hf-val" id="genre">Fantasy</span>
+        </div>
+        <div class="hf-item">
+          <span class="hf-lbl">Setting</span>
+          <span class="hf-val" id="setting">Feudal Japan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="portrait-box" id="portrait">
+      <div class="pb-lbl">Character<br>Portrait</div>
+    </div>
+
+    <div class="cp-tracker">
+      <div class="cpt-box total">
+        <div class="cpt-val" id="cp-total">200</div>
+        <div class="cpt-lbl">Total CP</div>
+      </div>
+      <div class="cpt-box">
+        <div class="cpt-val" id="cp-spent">182</div>
+        <div class="cpt-lbl">Spent</div>
+      </div>
+      <div class="cpt-box">
+        <div class="cpt-val" id="cp-remain">18</div>
+        <div class="cpt-lbl">Remaining</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO ROW -->
+  <div class="info-row">
+    <div class="info-cell">
+      <div class="ic-val" id="player-name">&nbsp;</div>
+      <div class="ic-lbl">Player</div>
+    </div>
+    <div class="info-cell">
+      <div class="ic-val" id="gm-name">&nbsp;</div>
+      <div class="ic-lbl">Game Master</div>
+    </div>
+    <div class="info-cell">
+      <div class="ic-val" id="race">Human</div>
+      <div class="ic-lbl">Race / Species</div>
+    </div>
+    <div class="info-cell">
+      <div class="ic-val" id="occ">Assassin</div>
+      <div class="ic-lbl">Class / Occupation</div>
+    </div>
+    <div class="info-cell">
+      <div class="ic-val" id="home">Crimson Clan</div>
+      <div class="ic-lbl">Home World / Habitat</div>
+    </div>
+    <div class="info-cell">
+      <div class="ic-val" id="size">Med / 5'9" / 160lb</div>
+      <div class="ic-lbl">Size / Height / Weight</div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+
+      <div class="sec-lbl">Core Stats</div>
+      <div class="stats-row">
+        <div class="stat-orb"><div class="orb" id="body">6</div><div class="orb-lbl">Body</div></div>
+        <div class="stat-orb"><div class="orb" id="mind">5</div><div class="orb-lbl">Mind</div></div>
+        <div class="stat-orb"><div class="orb" id="soul">4</div><div class="orb-lbl">Soul</div></div>
+      </div>
+
+      <div class="derived-grid">
+        <div class="d-box"><div class="d-val" id="hp">50</div><div class="d-lbl">Health Points</div></div>
+        <div class="d-box"><div class="d-val" id="ep">45</div><div class="d-lbl">Energy Points</div></div>
+        <div class="d-box"><div class="d-val" id="dm">5</div><div class="d-lbl">Dmg Multiplier</div></div>
+        <div class="d-box"><div class="d-val" id="cv">5</div><div class="d-lbl">Combat Value</div></div>
+        <div class="d-box"><div class="d-val" id="atk">5</div><div class="d-lbl">Attack</div></div>
+        <div class="d-box"><div class="d-val" id="def">5</div><div class="d-lbl">Defence</div></div>
+      </div>
+
+      <div class="sec-lbl">Combat Status</div>
+      <div class="hp-track">
+        <div class="hp-cell">
+          <div class="hpc-lbl">Current HP</div>
+          <div class="hpc-val" id="current-hp">&nbsp;</div>
+        </div>
+        <div class="hp-cell">
+          <div class="hpc-lbl">Max HP</div>
+          <div class="hpc-val" id="max-hp">50</div>
+        </div>
+      </div>
+      <div class="conditions">
+        <label class="cond-item"><input type="checkbox"> Battered</label>
+        <label class="cond-item"><input type="checkbox"> Injured</label>
+        <label class="cond-item"><input type="checkbox"> Serious</label>
+        <label class="cond-item"><input type="checkbox"> Critical</label>
+        <label class="cond-item"><input type="checkbox"> Near Death</label>
+      </div>
+
+      <div class="sec-lbl">Character</div>
+      <div class="quote-box" id="char-quote">"Shadows do not cast shadows."</div>
+      <div class="narr-field">
+        <div class="nf-lbl">Appearance</div>
+        <div class="nf-val" id="appearance">A lean figure in dark layered cloth, face masked save for sharp watchful eyes and the faint gleam of concealed blades.</div>
+      </div>
+      <div class="narr-field">
+        <div class="nf-lbl">Personality</div>
+        <div class="nf-val" id="personality">Cold and deliberate, speaks rarely and only when words serve a purpose. Fierce loyalty burns beneath the silence.</div>
+      </div>
+      <div class="narr-field">
+        <div class="nf-lbl">Motivation</div>
+        <div class="nf-val" id="motivation">To honor the clan that raised him from the ashes of his family — and protect it at any cost.</div>
+      </div>
+
+      <div class="sec-lbl" style="margin-top: 8pt;">Game Notes</div>
+      <div class="notes-box" id="game-notes"></div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+
+      <div class="sec-lbl">Skills</div>
+      <table class="sheet-table">
+        <colgroup><col style="width:42%"><col style="width:22%"><col style="width:14%"><col style="width:22%"></colgroup>
+        <thead><tr class="th-pink"><th>Skill</th><th>Linked Stat</th><th class="td-c">Lvl</th><th>Specialty</th></tr></thead>
+        <tbody>
+          <tr><td>Stealth</td><td>Body</td><td class="td-c">2</td><td>Urban</td></tr>
+          <tr><td>Acrobatics</td><td>Body</td><td class="td-c">2</td><td>—</td></tr>
+          <tr><td>Intimidation</td><td>Soul</td><td class="td-c">1</td><td>—</td></tr>
+          <tr><td>Survival</td><td>Mind</td><td class="td-c">1</td><td>Forest</td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+
+      <div class="two-col">
+        <div>
+          <div class="sec-lbl">Attributes</div>
+          <table class="sheet-table">
+            <colgroup><col style="width:55%"><col style="width:20%"><col style="width:25%"></colgroup>
+            <thead><tr class="th-purple"><th>Attribute</th><th class="td-c">Lvl</th><th class="td-c">Pts</th></tr></thead>
+            <tbody>
+              <tr><td>Extra Actions</td><td class="td-c">3</td><td class="td-c">12</td></tr>
+              <tr><td>Combat Technique</td><td class="td-c">4</td><td class="td-c">4</td></tr>
+              <tr><td>Extra Arms</td><td class="td-c">2</td><td class="td-c">2</td></tr>
+              <tr><td>Skills</td><td class="td-c">2</td><td class="td-c">2</td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="sec-lbl">Defects</div>
+          <table class="sheet-table">
+            <colgroup><col style="width:55%"><col style="width:22%"><col style="width:23%"></colgroup>
+            <thead><tr class="th-gray"><th>Defect</th><th class="td-c">Rank</th><th class="td-c">Pts</th></tr></thead>
+            <tbody>
+              <tr><td>Blind Fury</td><td class="td-c">2</td><td class="td-c">4</td></tr>
+              <tr><td>Impaired Speech</td><td class="td-c">2</td><td class="td-c">6</td></tr>
+              <tr><td>Obligated</td><td class="td-c">3</td><td class="td-c">6</td></tr>
+              <tr><td>Skeleton in Closet</td><td class="td-c">1</td><td class="td-c">2</td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+              <tr><td>&nbsp;</td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BESM Narrative Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&family=Nunito+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+@page { size: letter portrait; margin: 0.5in; }
+
+:root {
+  --sp: #D4537E;
+  --sp-light: #FBEAF0;
+  --sp-text: #72243E;
+  --su: #534AB7;
+  --su-light: #EEEDFE;
+  --su-text: #3C3489;
+  --sg: #5F5E5A;
+  --text: #1A1A1A;
+  --text-muted: #5F5E5A;
+  --border: rgba(0,0,0,0.2);
+  --border-lt: rgba(0,0,0,0.09);
+  --r: 5px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  background: #E8E4F0;
+  display: flex;
+  justify-content: center;
+  padding: 0.5in;
+  min-height: 100vh;
+}
+
+.sheet {
+  width: 7.5in;
+  min-height: 10in;
+  background: white;
+  padding: 0.3in 0.35in;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+.sheet-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 8pt;
+  border-bottom: 2pt solid var(--sp);
+  margin-bottom: 16pt;
+}
+
+.char-name { font-size: 14pt; font-weight: 700; color: var(--text); }
+.sheet-title { font-size: 8pt; font-weight: 700; color: var(--sp); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── SECTION LABEL ── */
+.sec-lbl {
+  font-size: 7pt; font-weight: 700; color: var(--su);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 8pt;
+  display: flex; align-items: center; gap: 6pt;
+}
+.sec-lbl::after { content: ''; flex: 1; height: 0.5pt; background: var(--border); }
+
+/* ── BACKSTORY ── */
+.backstory-section { margin-bottom: 20pt; }
+
+.backstory-body {
+  border-left: 3pt solid var(--su);
+  padding: 10pt 14pt;
+  background: var(--su-light);
+  border-radius: 0 var(--r) var(--r) 0;
+  min-height: 3.4in;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.backstory-text {
+  font-family: 'Nunito Sans', 'Nunito', serif;
+  font-size: 9.5pt;
+  color: var(--text);
+  line-height: 1.75;
+}
+
+/* ── PLOT HOOKS ── */
+.hooks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12pt;
+  flex: 1;
+}
+
+.hook-card {
+  display: flex;
+  flex-direction: column;
+  border: 0.5pt solid var(--border-lt);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.hook-head {
+  background: var(--sp);
+  padding: 5pt 8pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.hook-number {
+  font-size: 6pt;
+  font-weight: 700;
+  color: rgba(255,255,255,0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2pt;
+}
+
+.hook-title {
+  font-size: 9pt;
+  font-weight: 700;
+  color: white;
+  line-height: 1.3;
+}
+
+.hook-body {
+  padding: 8pt 9pt;
+  flex: 1;
+  background: var(--sp-light);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.hook-text {
+  font-family: 'Nunito Sans', 'Nunito', serif;
+  font-size: 8.5pt;
+  color: var(--text);
+  line-height: 1.65;
+}
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; padding: 0; margin: 0; display: block; }
+  .sheet { box-shadow: none; padding: 0; width: 100%; min-height: auto; }
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- HEADER -->
+  <div class="sheet-header">
+    <div class="char-name" id="char-name">Kage no Shinobi</div>
+    <div class="sheet-title">Backstory &amp; Plot Hooks</div>
+  </div>
+
+  <!-- BACKSTORY -->
+  <div class="backstory-section">
+    <div class="sec-lbl">Backstory</div>
+    <div class="backstory-body">
+      <div class="backstory-text" id="backstory-text">Kage no Shinobi was not born into the shadows — he was pushed into them. The only child of a minor clan retainer, he was seven years old when their household was destroyed by a rival family's hired blade, an execution disguised as banditry. The Crimson Clan found him three days later, half-starved in the wreckage. They took him not out of mercy but out of recognition: the boy had not run. He had stayed with the bodies and watched the road, waiting. They saw in that patience something worth cultivating.
+
+His training was long and deliberately brutal. The throat wound that silenced much of his speech came during his third-year trials — an assessment designed to test whether a student would accept permanent cost in service of mission completion. He completed the trial. The wound was not treated for two days, to ensure the lesson held. It held. By the time he was nineteen, Kage had become one of the Clan's most reliable instruments, valued precisely because he asked no questions and carried his assignments like stones in his chest — heavy, permanent, silent.
+
+The job he cannot speak of came in his twenty-second year. It does not bear description here. What matters is that he completed it, that it was wrong, and that the Clan has never acknowledged it. He remains in their service. He does not know what else he would be.</div>
+    </div>
+  </div>
+
+  <!-- PLOT HOOKS -->
+  <div>
+    <div class="sec-lbl">Plot Hooks</div>
+    <div class="hooks-grid" id="hooks-grid">
+
+      <div class="hook-card">
+        <div class="hook-head">
+          <div class="hook-number">Hook 1</div>
+          <div class="hook-title" id="hook-1-title">The Retainer's Son Returns</div>
+        </div>
+        <div class="hook-body">
+          <div class="hook-text" id="hook-1-desc">A name from Kage's past surfaces: the child of the man whose family ordered his parents' deaths has come of age and begun asking questions about what really happened that night. He is not a villain. He may not even know the full truth. The Clan wants the inquiry ended quietly. Kage has been assigned.</div>
+        </div>
+      </div>
+
+      <div class="hook-card">
+        <div class="hook-head">
+          <div class="hook-number">Hook 2</div>
+          <div class="hook-title" id="hook-2-title">Impaired Instrument</div>
+        </div>
+        <div class="hook-body">
+          <div class="hook-text" id="hook-2-desc">A mission requires extended verbal negotiation — the one thing Kage cannot do. The Clan pairs him with a silver-tongued intermediary whose loyalty is unverified. Kage must keep the mission intact while determining whether his partner is an asset or an inside threat, communicating almost entirely through action and written notes.</div>
+        </div>
+      </div>
+
+      <div class="hook-card">
+        <div class="hook-head">
+          <div class="hook-number">Hook 3</div>
+          <div class="hook-title" id="hook-3-title">What the Closet Holds</div>
+        </div>
+        <div class="hook-body">
+          <div class="hook-text" id="hook-3-desc">Someone knows. A letter arrives through clan channels — no signature, just a location, a date, and three words that could only mean one thing to Kage. Whether this is blackmail, a trap, or a ghost looking for acknowledgment, showing up is dangerous. Not showing up may be worse.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

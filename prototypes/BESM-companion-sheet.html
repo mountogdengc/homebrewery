@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BESM Companion Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@page { size: letter portrait; margin: 0.5in; }
+
+:root {
+  --sp: #D4537E;
+  --sp-light: #FBEAF0;
+  --sp-text: #72243E;
+  --su: #534AB7;
+  --su-light: #EEEDFE;
+  --su-text: #3C3489;
+  --sg: #5F5E5A;
+  --sg-light: #F1EFE8;
+  --text: #1A1A1A;
+  --border: rgba(0,0,0,0.2);
+  --border-lt: rgba(0,0,0,0.09);
+  --bg-alt: #F8F8F8;
+  --r: 5px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  background: #E8E4F0;
+  display: flex;
+  justify-content: center;
+  padding: 0.5in;
+  min-height: 100vh;
+}
+
+.sheet {
+  width: 7.5in;
+  min-height: 10in;
+  background: white;
+  padding: 0.3in 0.35in;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+.sheet-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 8pt;
+  border-bottom: 2pt solid var(--sp);
+  margin-bottom: 10pt;
+  flex-shrink: 0;
+}
+
+.char-name { font-size: 14pt; font-weight: 700; color: var(--text); }
+.sheet-title { font-size: 8pt; font-weight: 700; color: var(--sp); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── CARD GRID ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10pt;
+  flex: 1;
+}
+
+/* ── CARD ── */
+.card {
+  border: 0.5pt solid var(--border-lt);
+  border-radius: var(--r);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CARD HEADER */
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 5pt 8pt;
+  flex-shrink: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.card.companion .card-head { background: var(--su); }
+.card.weapon    .card-head { background: var(--sg); }
+.card.vehicle   .card-head { background: var(--su); }
+.card.minion    .card-head { background: var(--su); }
+.card.blank     .card-head { background: #BDBDBD; }
+
+.card-name { font-size: 10pt; font-weight: 700; color: white; line-height: 1.2; }
+
+.card-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2pt; }
+
+.card-type {
+  font-size: 6pt; font-weight: 700; color: rgba(255,255,255,0.75);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.card-cp { font-size: 8pt; font-weight: 700; color: white; }
+
+/* DESCRIPTION */
+.card-desc {
+  padding: 4pt 8pt;
+  font-size: 7.5pt;
+  font-style: italic;
+  color: var(--text);
+  border-bottom: 0.5pt solid var(--border-lt);
+  flex-shrink: 0;
+  line-height: 1.4;
+  min-height: 18pt;
+}
+
+/* ── COMPANION STATS ── */
+.card-stats { flex-shrink: 0; padding: 5pt 8pt; border-bottom: 0.5pt solid var(--border-lt); }
+
+.bms-row { display: flex; justify-content: space-around; margin-bottom: 5pt; }
+
+.bms-orb { display: flex; flex-direction: column; align-items: center; gap: 2pt; }
+
+.mini-orb {
+  width: 30pt; height: 30pt; border-radius: 50%;
+  border: 1.5pt solid var(--sp); background: var(--sp-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14pt; font-weight: 700; color: var(--sp-text);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.bms-lbl { font-size: 6pt; font-weight: 700; color: var(--su); text-transform: uppercase; }
+
+.derived-mini {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 3pt;
+}
+
+.dm-box {
+  background: var(--su-light); border-radius: 3px;
+  padding: 2pt; text-align: center;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.dm-val { font-size: 10pt; font-weight: 700; color: var(--su-text); line-height: 1; }
+.dm-lbl { font-size: 5pt; font-weight: 700; color: var(--su); text-transform: uppercase; margin-top: 1pt; }
+
+/* ── WEAPON STATS ── */
+.weapon-stats {
+  flex-shrink: 0;
+  padding: 5pt 8pt;
+  border-bottom: 0.5pt solid var(--border-lt);
+}
+
+.ws-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3pt; margin-bottom: 4pt; }
+
+.ws-box {
+  background: var(--sg-light); border-radius: 3px;
+  padding: 2pt 4pt; text-align: center;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.ws-val { font-size: 9pt; font-weight: 700; color: var(--sg); line-height: 1; }
+.ws-lbl { font-size: 5pt; font-weight: 700; color: var(--sg); text-transform: uppercase; margin-top: 1pt; }
+
+.ws-notes { display: flex; align-items: baseline; gap: 4pt; }
+.ws-notes-lbl { font-size: 6pt; font-weight: 700; color: var(--sg); text-transform: uppercase; white-space: nowrap; }
+.ws-notes-val { font-size: 7.5pt; color: var(--text); line-height: 1.4; border-bottom: 0.5pt solid var(--border); flex: 1; padding-bottom: 1pt; }
+
+/* ── SKILLS ── */
+.card-skills { flex-shrink: 0; padding: 4pt 8pt; border-bottom: 0.5pt solid var(--border-lt); }
+
+.skills-mini { width: 100%; border-collapse: collapse; font-size: 7.5pt; table-layout: fixed; }
+
+.skills-mini thead th {
+  padding: 2pt 4pt; text-align: left; font-size: 6pt;
+  font-weight: 700; text-transform: uppercase;
+  background: var(--sp); color: white;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.skills-mini tbody td {
+  padding: 2pt 4pt; color: var(--text);
+  border-bottom: 0.5pt solid var(--border-lt);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.skills-mini tbody tr:nth-child(even) td {
+  background: var(--bg-alt);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.td-c { text-align: center; }
+
+/* ── ABILITIES (ATTRS + DEFECTS COMBINED) ── */
+.card-abilities { flex: 1; padding: 4pt 8pt; }
+
+.abilities-mini { width: 100%; border-collapse: collapse; font-size: 7.5pt; table-layout: fixed; }
+
+.abilities-mini thead th {
+  padding: 2pt 4pt; text-align: left; font-size: 6pt;
+  font-weight: 700; text-transform: uppercase;
+  background: var(--su); color: white;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.card.weapon .abilities-mini thead th { background: var(--sg); }
+
+.abilities-mini tbody td {
+  padding: 2pt 4pt; color: var(--text);
+  border-bottom: 0.5pt solid var(--border-lt);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.abilities-mini tbody tr:nth-child(even) td {
+  background: var(--bg-alt);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.type-badge {
+  display: inline-block;
+  font-size: 5.5pt; font-weight: 700;
+  padding: 1pt 3pt; border-radius: 2px;
+  text-transform: uppercase;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+.type-badge.a { background: var(--su-light); color: var(--su-text); }
+.type-badge.d { background: var(--sg-light); color: var(--sg); }
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; padding: 0; margin: 0; display: block; }
+  .sheet { box-shadow: none; padding: 0; width: 100%; min-height: auto; }
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- HEADER -->
+  <div class="sheet-header">
+    <div class="char-name" id="char-name">Kage no Shinobi</div>
+    <div class="sheet-title">Companions &amp; Equipment</div>
+  </div>
+
+  <!-- CARD GRID -->
+  <div class="card-grid">
+
+    <!-- ── CARD 1: COMPANION ── -->
+    <div class="card companion">
+      <div class="card-head">
+        <div class="card-name">Shadow</div>
+        <div class="card-meta">
+          <span class="card-type">Companion</span>
+          <span class="card-cp">35 CP</span>
+        </div>
+      </div>
+      <div class="card-desc">A trained raven used for reconnaissance, covert message delivery, and distraction.</div>
+      <div class="card-stats">
+        <div class="bms-row">
+          <div class="bms-orb"><div class="mini-orb">2</div><div class="bms-lbl">Body</div></div>
+          <div class="bms-orb"><div class="mini-orb">3</div><div class="bms-lbl">Mind</div></div>
+          <div class="bms-orb"><div class="mini-orb">2</div><div class="bms-lbl">Soul</div></div>
+        </div>
+        <div class="derived-mini">
+          <div class="dm-box"><div class="dm-val">20</div><div class="dm-lbl">HP</div></div>
+          <div class="dm-box"><div class="dm-val">25</div><div class="dm-lbl">EP</div></div>
+          <div class="dm-box"><div class="dm-val">1</div><div class="dm-lbl">DM</div></div>
+          <div class="dm-box"><div class="dm-val">2</div><div class="dm-lbl">CV</div></div>
+          <div class="dm-box"><div class="dm-val">2</div><div class="dm-lbl">Atk</div></div>
+          <div class="dm-box"><div class="dm-val">2</div><div class="dm-lbl">Def</div></div>
+        </div>
+      </div>
+      <div class="card-skills">
+        <table class="skills-mini">
+          <colgroup><col style="width:50%"><col style="width:28%"><col style="width:22%"></colgroup>
+          <thead><tr><th>Skill</th><th>Linked Stat</th><th class="td-c">Lvl</th></tr></thead>
+          <tbody>
+            <tr><td>Stealth</td><td>Body</td><td class="td-c">3</td></tr>
+            <tr><td>Scouting</td><td>Mind</td><td class="td-c">2</td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-abilities">
+        <table class="abilities-mini">
+          <colgroup><col style="width:52%"><col style="width:14%"><col style="width:18%"><col style="width:16%"></colgroup>
+          <thead><tr><th>Attribute / Defect</th><th class="td-c">Type</th><th class="td-c">Lvl / Rank</th><th class="td-c">Pts</th></tr></thead>
+          <tbody>
+            <tr><td>Flight</td><td class="td-c"><span class="type-badge a">A</span></td><td class="td-c">3</td><td class="td-c">6</td></tr>
+            <tr><td>Extra Sense (Low-Light)</td><td class="td-c"><span class="type-badge a">A</span></td><td class="td-c">1</td><td class="td-c">2</td></tr>
+            <tr><td>Easily Distracted</td><td class="td-c"><span class="type-badge d">D</span></td><td class="td-c">1</td><td class="td-c">2</td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── CARD 2: WEAPON ── -->
+    <div class="card weapon">
+      <div class="card-head">
+        <div class="card-name">Kuroha (Black Feather)</div>
+        <div class="card-meta">
+          <span class="card-type">Weapon</span>
+        </div>
+      </div>
+      <div class="card-desc">A perfectly balanced short blade weighted for both close quarters and throwing, silent on the draw.</div>
+      <div class="weapon-stats">
+        <div class="ws-grid">
+          <div class="ws-box"><div class="ws-val">2d6+3</div><div class="ws-lbl">Damage</div></div>
+          <div class="ws-box"><div class="ws-val">Melee</div><div class="ws-lbl">Range</div></div>
+          <div class="ws-box"><div class="ws-val">+1</div><div class="ws-lbl">Atk Bonus</div></div>
+          <div class="ws-box"><div class="ws-val">2</div><div class="ws-lbl">Armor Pierce</div></div>
+        </div>
+        <div class="ws-notes">
+          <span class="ws-notes-lbl">Notes</span>
+          <span class="ws-notes-val">Can also be thrown (range 15ft, no penalty); draw is silent.</span>
+        </div>
+      </div>
+      <div class="card-abilities" style="margin-top: 4pt;">
+        <table class="abilities-mini">
+          <colgroup><col style="width:52%"><col style="width:14%"><col style="width:18%"><col style="width:16%"></colgroup>
+          <thead><tr><th>Attribute / Defect</th><th class="td-c">Type</th><th class="td-c">Lvl / Rank</th><th class="td-c">Pts</th></tr></thead>
+          <tbody>
+            <tr><td>Thrown</td><td class="td-c"><span class="type-badge a">A</span></td><td class="td-c">2</td><td class="td-c">4</td></tr>
+            <tr><td>Concealed</td><td class="td-c"><span class="type-badge a">A</span></td><td class="td-c">1</td><td class="td-c">2</td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── CARD 3: BLANK ── -->
+    <div class="card blank">
+      <div class="card-head">
+        <div class="card-name">&nbsp;</div>
+        <div class="card-meta">
+          <span class="card-type">&nbsp;</span>
+          <span class="card-cp">&nbsp;</span>
+        </div>
+      </div>
+      <div class="card-desc">&nbsp;</div>
+      <div class="card-stats">
+        <div class="bms-row">
+          <div class="bms-orb"><div class="mini-orb">&nbsp;</div><div class="bms-lbl">Body</div></div>
+          <div class="bms-orb"><div class="mini-orb">&nbsp;</div><div class="bms-lbl">Mind</div></div>
+          <div class="bms-orb"><div class="mini-orb">&nbsp;</div><div class="bms-lbl">Soul</div></div>
+        </div>
+        <div class="derived-mini">
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">HP</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">EP</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">DM</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">CV</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">Atk</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">Def</div></div>
+        </div>
+      </div>
+      <div class="card-skills">
+        <table class="skills-mini">
+          <colgroup><col style="width:50%"><col style="width:28%"><col style="width:22%"></colgroup>
+          <thead><tr><th>Skill</th><th>Linked Stat</th><th class="td-c">Lvl</th></tr></thead>
+          <tbody>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-abilities">
+        <table class="abilities-mini">
+          <colgroup><col style="width:52%"><col style="width:14%"><col style="width:18%"><col style="width:16%"></colgroup>
+          <thead><tr><th>Attribute / Defect</th><th class="td-c">Type</th><th class="td-c">Lvl / Rank</th><th class="td-c">Pts</th></tr></thead>
+          <tbody>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── CARD 4: BLANK ── -->
+    <div class="card blank">
+      <div class="card-head">
+        <div class="card-name">&nbsp;</div>
+        <div class="card-meta">
+          <span class="card-type">&nbsp;</span>
+          <span class="card-cp">&nbsp;</span>
+        </div>
+      </div>
+      <div class="card-desc">&nbsp;</div>
+      <div class="card-stats">
+        <div class="bms-row">
+          <div class="bms-orb"><div class="mini-orb">&nbsp;</div><div class="bms-lbl">Body</div></div>
+          <div class="bms-orb"><div class="mini-orb">&nbsp;</div><div class="bms-lbl">Mind</div></div>
+          <div class="bms-orb"><div class="mini-orb">&nbsp;</div><div class="bms-lbl">Soul</div></div>
+        </div>
+        <div class="derived-mini">
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">HP</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">EP</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">DM</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">CV</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">Atk</div></div>
+          <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">Def</div></div>
+        </div>
+      </div>
+      <div class="card-skills">
+        <table class="skills-mini">
+          <colgroup><col style="width:50%"><col style="width:28%"><col style="width:22%"></colgroup>
+          <thead><tr><th>Skill</th><th>Linked Stat</th><th class="td-c">Lvl</th></tr></thead>
+          <tbody>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-abilities">
+        <table class="abilities-mini">
+          <colgroup><col style="width:52%"><col style="width:14%"><col style="width:18%"><col style="width:16%"></colgroup>
+          <thead><tr><th>Attribute / Defect</th><th class="td-c">Type</th><th class="td-c">Lvl / Rank</th><th class="td-c">Pts</th></tr></thead>
+          <tbody>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

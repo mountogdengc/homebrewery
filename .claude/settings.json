@@ -85,7 +85,8 @@
       "WebFetch(domain:lmstudio.ai)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:5e-bits.github.io)",
-      "WebFetch(domain:www.dnd5eapi.co)"
+      "WebFetch(domain:www.dnd5eapi.co)",
+      "Bash(xargs grep:*)"
     ],
     "additionalDirectories": [
       "\\tmp\\besm_source\\src\\utils",

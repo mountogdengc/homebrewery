@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BESM Supplement Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@page { size: letter portrait; margin: 0.5in; }
+
+:root {
+  --sp: #D4537E;
+  --sp-light: #FBEAF0;
+  --su: #534AB7;
+  --su-light: #EEEDFE;
+  --su-text: #3C3489;
+  --sg: #5F5E5A;
+  --sg-light: #F1EFE8;
+  --text: #1A1A1A;
+  --border: rgba(0,0,0,0.2);
+  --border-lt: rgba(0,0,0,0.09);
+  --bg-alt: #F8F8F8;
+  --r: 5px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  background: #E8E4F0;
+  display: flex;
+  justify-content: center;
+  padding: 0.5in;
+  min-height: 100vh;
+}
+
+.sheet {
+  width: 7.5in;
+  min-height: 10in;
+  background: white;
+  padding: 0.3in 0.35in;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+.supp-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 8pt;
+  border-bottom: 2pt solid var(--sp);
+  margin-bottom: 12pt;
+}
+
+.supp-name { font-size: 14pt; font-weight: 700; color: var(--text); }
+.supp-title { font-size: 8pt; font-weight: 700; color: var(--sp); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── SECTION LABEL ── */
+.sec-lbl {
+  font-size: 7pt; font-weight: 700; color: var(--su);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 6pt;
+  display: flex; align-items: center; gap: 6pt;
+}
+.sec-lbl::after { content: ''; flex: 1; height: 0.5pt; background: var(--border); }
+
+/* ── FLAVOR GRID ── */
+.flavor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14pt;
+  margin-bottom: 14pt;
+  flex: 1;
+}
+
+.flavor-col { display: flex; flex-direction: column; gap: 7pt; }
+
+.flavor-entry {
+  border: 0.5pt solid var(--border-lt);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.fe-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 3.5pt 7pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.fe-head.attr { background: var(--su); }
+.fe-head.defect { background: var(--sg); }
+
+.fe-name { font-size: 8pt; font-weight: 700; color: white; }
+.fe-rank { font-size: 7pt; font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase; }
+
+.fe-body {
+  padding: 5pt 7pt;
+  font-size: 8pt;
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 36pt;
+}
+
+/* ── COMBAT REFERENCE ── */
+.combat-ref {
+  border-top: 1pt solid var(--border);
+  padding-top: 10pt;
+}
+
+.combat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10pt;
+}
+
+.cs-head {
+  background: var(--sp);
+  color: white;
+  font-size: 7pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3.5pt 7pt;
+  border-radius: var(--r) var(--r) 0 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.cs-body {
+  border: 0.5pt solid var(--border-lt);
+  border-top: none;
+  border-radius: 0 0 var(--r) var(--r);
+  padding: 6pt 7pt;
+}
+
+.cs-item { margin-bottom: 5pt; }
+.cs-item:last-child { margin-bottom: 0; }
+
+.cs-label {
+  font-size: 6.5pt; font-weight: 700;
+  color: var(--su); text-transform: uppercase; margin-bottom: 1.5pt;
+}
+
+.cs-value { font-size: 7.5pt; color: var(--text); line-height: 1.5; }
+.cs-value em { font-style: normal; font-weight: 700; color: var(--sp); }
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; padding: 0; margin: 0; display: block; }
+  .sheet { box-shadow: none; padding: 0; width: 100%; min-height: auto; }
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- HEADER -->
+  <div class="supp-header">
+    <div class="supp-name" id="char-name">Kage no Shinobi</div>
+    <div class="supp-title">Ability &amp; Combat Reference</div>
+  </div>
+
+  <!-- FLAVOR GRID -->
+  <div class="flavor-grid">
+
+    <!-- ATTRIBUTE FLAVOR -->
+    <div>
+      <div class="sec-lbl">Attributes</div>
+      <div class="flavor-col" id="attr-flavor">
+
+        <div class="flavor-entry">
+          <div class="fe-head attr">
+            <span class="fe-name">Extra Actions</span>
+            <span class="fe-rank">Level 3</span>
+          </div>
+          <div class="fe-body">Kage moves through combat in bursts of unnatural speed, his body blurring between moments as though the shadows lend him fractions of time others cannot perceive. Against a single opponent he is relentless — blink and he has already struck twice more.</div>
+        </div>
+
+        <div class="flavor-entry">
+          <div class="fe-head attr">
+            <span class="fe-name">Combat Technique</span>
+            <span class="fe-rank">Level 4</span>
+          </div>
+          <div class="fe-body">Years of clan training have carved precise killing forms into Kage's muscle memory. Each strike flows from the last with mechanical economy — no wasted motion, no telegraphed intent. Opponents who survive his first exchange rarely understand what technique undid them.</div>
+        </div>
+
+        <div class="flavor-entry">
+          <div class="fe-head attr">
+            <span class="fe-name">Extra Arms</span>
+            <span class="fe-rank">Level 2</span>
+          </div>
+          <div class="fe-body">In the space between heartbeats, Kage's shadow extends beyond him, lending phantom leverage to his strikes and catches. What appears to be an impossible angle of attack or an inexplicable parry is the shadow acting an instant before the man.</div>
+        </div>
+
+        <div class="flavor-entry">
+          <div class="fe-head attr">
+            <span class="fe-name">Skills</span>
+            <span class="fe-rank">Level 2</span>
+          </div>
+          <div class="fe-body">The Crimson Clan did not train Kage only in the art of killing. They gave him languages, maps, and the reading of men's faces and loyalties. This breadth of knowledge surfaces only when needed, and never draws attention to itself.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DEFECT FLAVOR -->
+    <div>
+      <div class="sec-lbl">Defects</div>
+      <div class="flavor-col" id="defect-flavor">
+
+        <div class="flavor-entry">
+          <div class="fe-head defect">
+            <span class="fe-name">Blind Fury</span>
+            <span class="fe-rank">Rank 2</span>
+          </div>
+          <div class="fe-body">There is a point past which Kage stops calculating. When something he protects is threatened — a clanmate, a child — a cold rage rises that narrows his world to the threat in front of him. He does not become reckless, but he becomes uncompromising, and he will take injuries without registering them until the fury passes.</div>
+        </div>
+
+        <div class="flavor-entry">
+          <div class="fe-head defect">
+            <span class="fe-name">Impaired Speech</span>
+            <span class="fe-rank">Rank 2</span>
+          </div>
+          <div class="fe-body">A wound to the throat during his trials left his voice permanently rough and sustained speech painful. He communicates in clipped phrases, gestures, and silence. Those who know him have learned to read a great deal into very little. Those who don't often mistake brevity for contempt.</div>
+        </div>
+
+        <div class="flavor-entry">
+          <div class="fe-head defect">
+            <span class="fe-name">Obligated</span>
+            <span class="fe-rank">Rank 3</span>
+          </div>
+          <div class="fe-body">Kage belongs to the Crimson Clan in a way that goes beyond employment or loyalty. They raised him. They made him what he is. When the Clan calls, he answers — regardless of what else is on the table. This has cost him before. It will cost him again.</div>
+        </div>
+
+        <div class="flavor-entry">
+          <div class="fe-head defect">
+            <span class="fe-name">Skeleton in the Closet</span>
+            <span class="fe-rank">Rank 1</span>
+          </div>
+          <div class="fe-body">There is one assignment Kage completed that he has never spoken of, not even in confession. The target was not who he was told they were. He completed the contract anyway. The knowledge of what he did lives in him like a stone that will not settle.</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMBAT QUICK-REFERENCE -->
+  <div class="combat-ref">
+    <div class="sec-lbl">Combat Quick-Reference</div>
+    <div class="combat-grid">
+
+      <div>
+        <div class="cs-head">Attack &amp; Defence</div>
+        <div class="cs-body">
+          <div class="cs-item">
+            <div class="cs-label">Making an attack</div>
+            <div class="cs-value">Roll <em>2d6 + Attack CV</em> vs. defender's <em>2d6 + Defence CV</em>. Attacker wins ties.</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-label">Called shot</div>
+            <div class="cs-value"><em>+3</em> to attack roll. Attacker declares target location before rolling.</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-label">Multiple targets</div>
+            <div class="cs-value"><em>−3</em> to attack roll per additional target beyond the first.</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-label">Unarmed attack</div>
+            <div class="cs-value">Damage Multiplier reduced by 2 (minimum 1) unless a relevant attribute applies.</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="cs-head">Damage &amp; Shock</div>
+        <div class="cs-body">
+          <div class="cs-item">
+            <div class="cs-label">Dealing damage</div>
+            <div class="cs-value">Roll <em>2d6 + Damage Multiplier</em>, subtract target's Armor. Remainder is HP lost.</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-label">Shock</div>
+            <div class="cs-value">If damage dealt in a single hit equals or exceeds target's <em>Body score</em>, target is Shocked and loses their next action.</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-label">Condition thresholds</div>
+            <div class="cs-value">Battered <em>75%</em> · Injured <em>50%</em> · Serious <em>25%</em> · Critical <em>10%</em> · Near Death <em>1 HP</em></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="cs-head">Action Types</div>
+        <div class="cs-body">
+          <div class="cs-item">
+            <div class="cs-label">Standard action</div>
+            <div class="cs-value">Attack, activate a major attribute, full move. One per turn unless Extra Actions applies.</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-label">Sub-action</div>
+            <div class="cs-value">Short move, draw or stow a weapon, activate a minor or passive attribute effect.</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-label">Free action</div>
+            <div class="cs-value">Speak a short phrase, drop a held item, toggle an ongoing effect already in place.</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-label">Extra Actions</div>
+            <div class="cs-value">Each level grants one additional standard action per round at <em>−2 CV</em> cumulative.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
