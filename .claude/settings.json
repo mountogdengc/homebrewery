@@ -71,7 +71,21 @@
       "Bash(curl -s http://localhost:8000/besm/new)",
       "Bash(curl -s http://localhost:8000/)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/staticImages/besm/classes/no_class.png)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/staticImages/besm/BESM4_character_sheets_corrected.pdf)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/staticImages/besm/BESM4_character_sheets_corrected.pdf)",
+      "Bash(find /d/Done/homebrewery-master/client/homebrew/pages/statblock* -type f)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/brp/new)",
+      "Bash(curl -s -L http://localhost:8000/brp/new)",
+      "Bash(curl -s -D - http://localhost:8000/brp/new)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 55444 //F)",
+      "Bash(taskkill //PID 52320 //F)",
+      "Bash(echo \"NODE_ENV=$NODE_ENV\")",
+      "Read(//d/Done/homebrewery-master/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/willowlight-character/new)",
+      "WebFetch(domain:lmstudio.ai)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:5e-bits.github.io)",
+      "WebFetch(domain:www.dnd5eapi.co)"
     ],
     "additionalDirectories": [
       "\\tmp\\besm_source\\src\\utils",
