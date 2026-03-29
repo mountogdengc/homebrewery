@@ -9,7 +9,9 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 - [ ] Dedicated fields for plot hooks (currently stored in notes as stopgap)
 - [x] Derived values (HP, EP, ACV, DCV) not recalculating on AI-generated character load — fixed: builder now pushes recalculated values on initial load, renderer recomputes from stats when DB values are zero
 - [x] "View as Stat Block" button on the character builder page
-- [ ] BESM character sheet PDF — replacement for current PDF export with derived values and full layout
+- [x] BESM character sheet — 4-page printable sheet (character, narrative, reference, companions) loaded from saved character data
+- [ ] Companion sheet — wire to alternate forms / minions data from builder (currently renders blank cards)
+- [ ] Character sheet tab consolidation — too many tabs to click through for a single character; consider combining profile + narrative into one page, or a single scrollable "full sheet" view that prints as multiple pages
 
 ## Willowlight Engine
 - [ ] Willowlight character sheet print/PDF layout
@@ -23,6 +25,7 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 - [ ] ComfyUI image generation pipeline — character/creature portraits from descriptions
 - [ ] Scene illustration generation for Brew Editor
 - [ ] Token generator for VTT from creature/NPC descriptions
+- [ ] Flavor generation guidance prompt — pop-up window before generating flavor that lets the user provide direction (e.g. "young and compassionate, NOT gaunt/undead-looking") so the LLM doesn't make unwanted assumptions from the character concept
 - [ ] Prompt refinement: 5e stat blocks still occasionally overshoot on skills/saves
 - [ ] Model selector in UI (pick which loaded LM Studio model to use)
 - [ ] Download SRD monster data locally instead of live API calls for offline use
@@ -95,6 +98,8 @@ These need design decisions before implementation:
 - [ ] Recent items section on landing page
 - [ ] Replace Homebrewery/NaturalCrit branding in top menu bar with better UX
 - [ ] Standardize navigation buttons across all tools — consistent home/back button, save/load, library link in the same position and style on every tool page
+- [x] Landing page cards for character tools should link to library, not blank new — new character button is already on the library page
+- [ ] Consider the same library-first pattern for stat block tools
 
 ## Infrastructure
 - [ ] Cover logo positioning still has column-layout issues in some cases

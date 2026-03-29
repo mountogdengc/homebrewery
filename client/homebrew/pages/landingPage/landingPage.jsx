@@ -87,7 +87,7 @@ const LandingPage = ()=>{
 				<div className="toolRow">
 					<h2 className="rowTitle">Characters</h2>
 					<div className="toolCards">
-						<a className="toolCard" href="/besm/new">
+						<a className="toolCard" href="/besm/library">
 							<div className="toolIcon">
 								<i className="fas fa-bolt" />
 							</div>

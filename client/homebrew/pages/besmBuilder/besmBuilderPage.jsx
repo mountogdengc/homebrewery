@@ -299,13 +299,22 @@ const BesmBuilderPage = (props)=>{
 
 				<div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
 					{shareId && (
-						<a
-							href={`/besm/share/${shareId}`}
-							className="besm-back-link"
-							style={{ fontSize: '0.95rem' }}
-						>
-							<i className="fas fa-id-card" /> View Stat Block
-						</a>
+						<>
+							<a
+								href={`/besm/sheet/${shareId}`}
+								className="besm-back-link"
+								style={{ fontSize: '0.95rem' }}
+							>
+								<i className="fas fa-file-alt" /> Character Sheet
+							</a>
+							<a
+								href={`/besm/share/${shareId}`}
+								className="besm-back-link"
+								style={{ fontSize: '0.95rem' }}
+							>
+								<i className="fas fa-id-card" /> Stat Block
+							</a>
+						</>
 					)}
 					{flavorError && (
 						<span style={{ color: '#ff6b6b', fontSize: '13px' }}>{flavorError}</span>

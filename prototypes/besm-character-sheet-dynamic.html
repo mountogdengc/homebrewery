@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BESM Character Sheet</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&family=Nunito+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+@page { size: letter landscape; margin: 0.5in; }
+
+:root {
+  --sp: #D4537E;
+  --sp-light: #FBEAF0;
+  --sp-text: #72243E;
+  --su: #534AB7;
+  --su-light: #EEEDFE;
+  --su-text: #3C3489;
+  --sg: #5F5E5A;
+  --sg-light: #F1EFE8;
+  --text: #1A1A1A;
+  --text-muted: #5F5E5A;
+  --border: rgba(0,0,0,0.2);
+  --border-lt: rgba(0,0,0,0.09);
+  --bg-alt: #F8F8F8;
+  --r: 5px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  background: #E8E4F0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* ── TOOLBAR ── */
+.toolbar {
+  position: sticky; top: 0; z-index: 100;
+  width: 100%; background: #2a2a3a; padding: 8px 16px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.toolbar a, .toolbar button {
+  color: #ccc; text-decoration: none; font-family: 'Nunito', sans-serif;
+  font-size: 12px; background: none; border: 1px solid #555;
+  padding: 4px 12px; border-radius: 3px; cursor: pointer;
+}
+.toolbar a:hover, .toolbar button:hover { color: #fff; border-color: #aaa; }
+.toolbar .title { color: #fff; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px; flex: 1; }
+
+.tab-bar {
+  display: flex; gap: 0;
+}
+.tab-btn {
+  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+  padding: 5px 14px; cursor: pointer; border: 1px solid #555;
+  background: none; color: #999; border-radius: 0;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.tab-btn:first-child { border-radius: 3px 0 0 3px; }
+.tab-btn:last-child { border-radius: 0 3px 3px 0; }
+.tab-btn + .tab-btn { border-left: none; }
+.tab-btn.active { background: var(--sp); color: white; border-color: var(--sp); }
+.tab-btn:hover:not(.active) { color: #fff; }
+
+.sheets-container { padding: 0.5in 0; }
+.sheet-page { display: none; }
+.sheet-page.active { display: block; }
+
+/* ── SHARED SHEET ── */
+.sheet {
+  width: 10in; height: 7.5in;
+  background: white; padding: 0.25in 0.35in 0.15in;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.2);
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Page overflow indicator */
+.sheet::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 0;
+  pointer-events: none;
+  transition: height 0.2s;
+}
+.sheet.overflow::after {
+  height: 24px;
+  background: linear-gradient(to bottom, transparent, rgba(212, 83, 126, 0.25));
+}
+.sheet.overflow {
+  height: auto;
+  min-height: 7.5in;
+  border-bottom: 3px solid var(--sp);
+}
+
+/* Page boundary marker */
+.page-boundary {
+  position: absolute;
+  left: 0; right: 0;
+  border-top: 2px dashed var(--sp);
+  opacity: 0.5;
+  z-index: 10;
+  pointer-events: none;
+}
+.page-boundary::after {
+  content: 'Page break';
+  position: absolute;
+  right: 8px; top: -10px;
+  font-size: 7pt; font-weight: 700;
+  color: var(--sp); background: white;
+  padding: 0 4px; text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sheet-header {
+  display: grid; grid-template-columns: 1fr 1.05in auto;
+  gap: 14pt; align-items: center;
+  padding-bottom: 10pt; border-bottom: 2pt solid var(--sp); margin-bottom: 10pt;
+}
+.char-name { font-size: 20pt; font-weight: 700; color: var(--text); line-height: 1; }
+.name-sub { font-size: 6.5pt; font-weight: 700; color: var(--sp); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2pt; margin-bottom: 7pt; }
+.header-fields { display: flex; gap: 14pt; }
+.hf-item { display: flex; align-items: baseline; gap: 4pt; border-bottom: 0.5pt solid var(--border); padding-bottom: 2pt; min-width: 1.1in; }
+.hf-lbl { font-size: 6.5pt; font-weight: 700; color: var(--sp); text-transform: uppercase; white-space: nowrap; }
+.hf-val { font-size: 8pt; font-weight: 700; color: var(--text); }
+.portrait-box { width: 1.05in; height: 1.05in; border: 1pt dashed rgba(0,0,0,0.2); border-radius: var(--r); display: flex; align-items: center; justify-content: center; }
+.pb-lbl { font-size: 6.5pt; color: #BDBDBD; font-weight: 700; text-transform: uppercase; text-align: center; line-height: 1.4; }
+.cp-tracker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4pt; }
+.cpt-box { background: var(--su-light); border-radius: var(--r); padding: 4pt; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.cpt-box.total { background: var(--sp); }
+.cpt-val { font-size: 14pt; font-weight: 700; color: var(--su-text); line-height: 1; }
+.cpt-box.total .cpt-val { color: white; }
+.cpt-lbl { font-size: 5.5pt; font-weight: 700; color: var(--su); text-transform: uppercase; margin-top: 1pt; }
+.cpt-box.total .cpt-lbl { color: #F4C0D1; }
+
+.info-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 7pt; margin-bottom: 12pt; }
+.info-cell { display: flex; flex-direction: column; }
+.ic-val { font-size: 8pt; font-weight: 700; color: var(--text); min-height: 18pt; border-bottom: 0.5pt solid var(--border); padding-bottom: 2pt; display: flex; align-items: flex-end; }
+.ic-lbl { font-size: 6pt; font-weight: 700; color: var(--sp); text-transform: uppercase; margin-top: 2.5pt; letter-spacing: 0.2px; }
+
+.main-grid { display: grid; grid-template-columns: 2.8in 1fr; gap: 20pt; }
+.left-col { display: flex; flex-direction: column; }
+.sec-lbl { font-size: 7pt; font-weight: 700; color: var(--su); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6pt; display: flex; align-items: center; gap: 6pt; }
+.sec-lbl::after { content: ''; flex: 1; height: 0.5pt; background: var(--border); }
+
+/* Stat orbs */
+.stats-row { display: flex; justify-content: space-around; margin-bottom: 10pt; }
+.stat-orb { display: flex; flex-direction: column; align-items: center; gap: 4pt; }
+.orb { width: 50pt; height: 50pt; border-radius: 50%; border: 1.5pt solid var(--sp); background: var(--sp-light); display: flex; align-items: center; justify-content: center; font-size: 22pt; font-weight: 700; color: var(--sp-text); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.orb-lbl { font-size: 7pt; font-weight: 700; color: var(--su); text-transform: uppercase; }
+
+/* Derived */
+.derived-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4pt; margin-bottom: 10pt; }
+.d-box { background: var(--su-light); border-radius: var(--r); padding: 4pt 3pt; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.d-val { font-size: 14pt; font-weight: 700; color: var(--su-text); line-height: 1; }
+.d-lbl { font-size: 5.5pt; font-weight: 700; color: var(--su); text-transform: uppercase; margin-top: 1pt; line-height: 1.2; }
+
+/* Combat status */
+.hp-track { display: grid; grid-template-columns: 1fr 1fr; gap: 4pt; margin-bottom: 5pt; }
+.hp-cell { background: var(--su-light); border-radius: var(--r); padding: 4pt 6pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.hp-cell .hpc-lbl { font-size: 5.5pt; font-weight: 700; color: var(--su); text-transform: uppercase; margin-bottom: 2pt; }
+.hp-cell .hpc-val { font-size: 14pt; font-weight: 700; color: var(--su-text); line-height: 1; border-bottom: 0.5pt solid var(--border); min-height: 18pt; display: flex; align-items: flex-end; }
+.conditions { display: flex; flex-wrap: wrap; gap: 3pt 8pt; margin-bottom: 10pt; }
+.cond-item { display: flex; align-items: center; gap: 3pt; font-size: 7pt; font-weight: 700; color: var(--text); cursor: pointer; }
+.cond-item input[type="checkbox"] { width: 8pt; height: 8pt; margin: 0; accent-color: var(--sp); }
+
+/* Narrative */
+.quote-box { background: var(--su-light); border-left: 2pt solid var(--su); padding: 5pt 8pt; font-size: 8pt; font-style: italic; color: var(--text); min-height: 22pt; margin-bottom: 7pt; line-height: 1.5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.narr-field { margin-bottom: 6pt; }
+.nf-lbl { font-size: 6.5pt; font-weight: 700; color: var(--sp); text-transform: uppercase; margin-bottom: 2pt; }
+.nf-val { font-size: 8pt; color: var(--text); line-height: 1.5; border-bottom: 0.5pt solid var(--border); min-height: 26pt; padding-bottom: 2pt; }
+.notes-box { flex: 1; min-height: 72pt; border: 0.5pt solid var(--border); border-radius: var(--r); padding: 5pt 7pt; font-size: 8pt; color: var(--text); line-height: 1.8; background-image: repeating-linear-gradient(to bottom, transparent, transparent calc(1.8em - 0.5pt), rgba(0,0,0,0.07) calc(1.8em - 0.5pt), rgba(0,0,0,0.07) 1.8em); background-size: 100% 1.8em; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* Tables */
+.sheet-table { width: 100%; border-collapse: collapse; font-size: 8pt; margin-bottom: 10pt; table-layout: fixed; }
+.sheet-table thead th { padding: 4pt 5pt; text-align: left; font-weight: 700; font-size: 7pt; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.th-pink { background: var(--sp); color: white; }
+.th-purple { background: var(--su); color: white; }
+.th-gray { background: var(--sg); color: white; }
+.sheet-table tbody td { padding: 2.5pt 5pt; color: var(--text); border-bottom: 0.5pt solid var(--border-lt); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sheet-table tbody tr:nth-child(even) td { background: var(--bg-alt); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.td-c { text-align: center; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt; }
+
+/* ── PROFILE SHEET ── */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1.2in 1fr;
+  gap: 16pt;
+  flex: 1;
+}
+.profile-portrait {
+  width: 1.2in; height: 1.5in;
+  border: 1pt dashed var(--border);
+  border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+}
+.profile-fields { display: flex; flex-direction: column; gap: 8pt; }
+.profile-field { }
+.pf-lbl { font-size: 7pt; font-weight: 700; color: var(--sp); text-transform: uppercase; margin-bottom: 3pt; }
+.pf-val {
+  font-size: 9pt; color: var(--text); line-height: 1.7;
+  border-bottom: 0.5pt solid var(--border-lt);
+  padding-bottom: 4pt; min-height: 24pt;
+}
+.pf-val.quote {
+  background: var(--su-light); border-left: 2pt solid var(--su);
+  border-bottom: none; padding: 6pt 10pt;
+  font-style: italic; border-radius: 0 var(--r) var(--r) 0;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.profile-two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16pt;
+}
+
+/* ── NARRATIVE SHEET ── */
+.simple-header { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 8pt; border-bottom: 2pt solid var(--sp); margin-bottom: 16pt; }
+.simple-header .char-name { font-size: 14pt; }
+.sheet-title { font-size: 8pt; font-weight: 700; color: var(--sp); text-transform: uppercase; letter-spacing: 0.5px; }
+.backstory-section { margin-bottom: 20pt; }
+.backstory-body { border-left: 3pt solid var(--su); padding: 10pt 14pt; background: var(--su-light); border-radius: 0 var(--r) var(--r) 0; min-height: 2in; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.backstory-text { font-family: 'Nunito Sans', 'Nunito', serif; font-size: 9.5pt; color: var(--text); line-height: 1.75; }
+.hooks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12pt; flex: 1; }
+.hook-card { display: flex; flex-direction: column; border: 0.5pt solid var(--border-lt); border-radius: var(--r); overflow: hidden; }
+.hook-head { background: var(--sp); padding: 5pt 8pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.hook-number { font-size: 6pt; font-weight: 700; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2pt; }
+.hook-title { font-size: 9pt; font-weight: 700; color: white; line-height: 1.3; }
+.hook-body { padding: 8pt 9pt; flex: 1; background: var(--sp-light); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.hook-text { font-family: 'Nunito Sans', 'Nunito', serif; font-size: 8.5pt; color: var(--text); line-height: 1.65; }
+
+/* ── SUPPLEMENT SHEET ── */
+.flavor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; margin-bottom: 0; flex: 1; }
+.flavor-col { display: flex; flex-direction: column; gap: 7pt; }
+.flavor-col-header {
+  position: sticky; top: 0; z-index: 5;
+  background: white; padding-bottom: 2pt;
+}
+.flavor-entry { border: 0.5pt solid var(--border-lt); border-radius: var(--r); overflow: hidden; break-inside: avoid; }
+.fe-head { display: flex; align-items: baseline; justify-content: space-between; padding: 3.5pt 7pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.fe-head.attr { background: var(--su); }
+.fe-head.defect { background: var(--sg); }
+.fe-name { font-size: 8pt; font-weight: 700; color: white; }
+.fe-rank { font-size: 7pt; font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase; }
+.fe-body { padding: 5pt 7pt; font-size: 8pt; color: var(--text); line-height: 1.6; min-height: 36pt; }
+.combat-ref { border-top: 1pt solid var(--border); padding-top: 10pt; }
+.combat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10pt; }
+.cs-head { background: var(--sp); color: white; font-size: 7pt; font-weight: 700; text-transform: uppercase; padding: 3.5pt 7pt; border-radius: var(--r) var(--r) 0 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.cs-body { border: 0.5pt solid var(--border-lt); border-top: none; border-radius: 0 0 var(--r) var(--r); padding: 6pt 7pt; }
+.cs-item { margin-bottom: 5pt; }
+.cs-item:last-child { margin-bottom: 0; }
+.cs-label { font-size: 6.5pt; font-weight: 700; color: var(--su); text-transform: uppercase; margin-bottom: 1.5pt; }
+.cs-value { font-size: 7.5pt; color: var(--text); line-height: 1.5; }
+.cs-value em { font-style: normal; font-weight: 700; color: var(--sp); }
+
+/* ── COMPANION SHEET ── */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; gap: 10pt; flex: 1; }
+.card { border: 0.5pt solid var(--border-lt); border-radius: var(--r); overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 5pt 8pt; flex-shrink: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.card.companion .card-head, .card.vehicle .card-head, .card.minion .card-head { background: var(--su); }
+.card.weapon .card-head { background: var(--sg); }
+.card.blank .card-head { background: #BDBDBD; }
+.card-name { font-size: 10pt; font-weight: 700; color: white; line-height: 1.2; }
+.card-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2pt; }
+.card-type { font-size: 6pt; font-weight: 700; color: rgba(255,255,255,0.75); text-transform: uppercase; letter-spacing: 0.5px; }
+.card-cp { font-size: 8pt; font-weight: 700; color: white; }
+.card-desc { padding: 4pt 8pt; font-size: 7.5pt; font-style: italic; color: var(--text); border-bottom: 0.5pt solid var(--border-lt); flex-shrink: 0; line-height: 1.4; min-height: 18pt; }
+.card-stats { flex-shrink: 0; padding: 5pt 8pt; border-bottom: 0.5pt solid var(--border-lt); }
+.bms-row { display: flex; justify-content: space-around; margin-bottom: 5pt; }
+.bms-orb { display: flex; flex-direction: column; align-items: center; gap: 2pt; }
+.mini-orb { width: 30pt; height: 30pt; border-radius: 50%; border: 1.5pt solid var(--sp); background: var(--sp-light); display: flex; align-items: center; justify-content: center; font-size: 14pt; font-weight: 700; color: var(--sp-text); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.bms-lbl { font-size: 6pt; font-weight: 700; color: var(--su); text-transform: uppercase; }
+.derived-mini { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3pt; }
+.dm-box { background: var(--su-light); border-radius: 3px; padding: 2pt; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.dm-val { font-size: 10pt; font-weight: 700; color: var(--su-text); line-height: 1; }
+.dm-lbl { font-size: 5pt; font-weight: 700; color: var(--su); text-transform: uppercase; margin-top: 1pt; }
+.card-skills { flex-shrink: 0; padding: 4pt 8pt; border-bottom: 0.5pt solid var(--border-lt); }
+.skills-mini { width: 100%; border-collapse: collapse; font-size: 7.5pt; table-layout: fixed; }
+.skills-mini thead th { padding: 2pt 4pt; text-align: left; font-size: 6pt; font-weight: 700; text-transform: uppercase; background: var(--sp); color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.skills-mini tbody td { padding: 2pt 4pt; color: var(--text); border-bottom: 0.5pt solid var(--border-lt); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.skills-mini tbody tr:nth-child(even) td { background: var(--bg-alt); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.card-abilities { flex: 1; padding: 4pt 8pt; }
+.abilities-mini { width: 100%; border-collapse: collapse; font-size: 7.5pt; table-layout: fixed; }
+.abilities-mini thead th { padding: 2pt 4pt; text-align: left; font-size: 6pt; font-weight: 700; text-transform: uppercase; background: var(--su); color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.abilities-mini tbody td { padding: 2pt 4pt; color: var(--text); border-bottom: 0.5pt solid var(--border-lt); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.abilities-mini tbody tr:nth-child(even) td { background: var(--bg-alt); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.type-badge { display: inline-block; font-size: 5.5pt; font-weight: 700; padding: 1pt 3pt; border-radius: 2px; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.type-badge.a { background: var(--su-light); color: var(--su-text); }
+.type-badge.d { background: var(--sg-light); color: var(--sg); }
+
+/* ── LOADING / ERROR ── */
+.loading { text-align: center; padding: 3in 2in; color: var(--su); font-size: 14pt; }
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; padding: 0; margin: 0; display: block; }
+  .toolbar { display: none; }
+  .sheets-container { padding: 0; }
+  .sheet-page { display: block !important; page-break-after: always; }
+  .sheet-page:last-child { page-break-after: auto; }
+  .sheet { box-shadow: none; padding: 0; width: 100%; min-height: auto; height: auto; overflow: visible; border-bottom: none !important; }
+  .sheet::after { display: none; }
+  .page-boundary { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a href="/"><i class="fas fa-home"></i></a>
+  <span class="title" id="toolbar-title">BESM Character Sheet</span>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('character')">Stats</button>
+    <button class="tab-btn" onclick="switchTab('profile')">Profile</button>
+    <button class="tab-btn" onclick="switchTab('narrative')">Narrative</button>
+    <button class="tab-btn" onclick="switchTab('supplement')">Reference</button>
+    <button class="tab-btn" onclick="switchTab('companion')">Companions</button>
+  </div>
+  <button onclick="window.print()"><i class="fas fa-print"></i> Print All</button>
+  <a id="back-to-edit" href="#" style="display:none"><i class="fas fa-edit"></i> Edit</a>
+</div>
+
+<div class="sheets-container">
+  <div class="loading" id="loading">Loading character...</div>
+
+  <!-- PAGE 1: CHARACTER SHEET -->
+  <div class="sheet-page" id="page-character">
+    <div class="sheet" id="sheet-character"></div>
+  </div>
+
+  <!-- PAGE 2: PROFILE -->
+  <div class="sheet-page" id="page-profile">
+    <div class="sheet" id="sheet-profile" style="display:flex;flex-direction:column;"></div>
+  </div>
+
+  <!-- PAGE 3: NARRATIVE -->
+  <div class="sheet-page" id="page-narrative">
+    <div class="sheet" id="sheet-narrative" style="display:flex;flex-direction:column;"></div>
+  </div>
+
+  <!-- PAGE 3: SUPPLEMENT / REFERENCE -->
+  <div class="sheet-page" id="page-supplement">
+    <div class="sheet" id="sheet-supplement" style="display:flex;flex-direction:column;"></div>
+  </div>
+
+  <!-- PAGE 4: COMPANIONS -->
+  <div class="sheet-page" id="page-companion">
+    <div class="sheet" id="sheet-companion" style="display:flex;flex-direction:column;"></div>
+  </div>
+</div>
+
+<script>
+const esc = s => (s ?? '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function emptyRows(count, cols) {
+  return Array(count).fill(`<tr>${Array(cols).fill('<td>&nbsp;</td>').join('')}</tr>`).join('');
+}
+
+function computeDerived(ch) {
+  const body = ch.stats?.body || 0, mind = ch.stats?.mind || 0, soul = ch.stats?.soul || 0;
+  const mods = { CV:0, ACV:0, DCV:0, HP:0, EP:0, DM:0, SV:0, SCV:0 };
+  const mult = { CV:1, ACV:1, DCV:1, HP:1, EP:1, DM:1, SV:1, SCV:1 };
+  let bm=0, mm=0, sm=0;
+  (ch.attributes||[]).forEach(a => {
+    const sm2 = a.template?.stat_mods; if (!sm2) return;
+    const lv = a.level||1;
+    if (sm2.base) { bm+=(sm2.base.Body||0)*lv; mm+=(sm2.base.Mind||0)*lv; sm+=(sm2.base.Soul||0)*lv; }
+    if (sm2.derived) for (const k in sm2.derived) if (k in mods) mods[k]+=sm2.derived[k]*lv;
+    if (sm2.multipliers) for (const k in sm2.multipliers) if (k in mult) mult[k]*=sm2.multipliers[k];
+  });
+  (ch.defects||[]).forEach(d => {
+    const dm2 = d.template?.stat_mods;
+    if (dm2?.multipliers) for (const k in dm2.multipliers) if (k in mult) mult[k]*=dm2.multipliers[k];
+  });
+  const fb=Math.max(0,body+bm), fm=Math.max(0,mind+mm), fs=Math.max(0,soul+sm);
+  const cv = Math.floor((fb+fm+fs)/3)+mods.CV;
+  return {
+    acv: Math.floor((cv+mods.ACV)*mult.ACV*mult.CV),
+    dcv: Math.floor((cv+mods.DCV)*mult.DCV*mult.CV),
+    hp: Math.floor(((fb+fs)*5+mods.HP)*mult.HP),
+    ep: Math.floor(((fm+fs)*5+mods.EP)*mult.EP),
+    dm: Math.floor((5+mods.DM)*mult.DM),
+    sv: Math.floor((fb*2+mods.SV)*mult.SV),
+    scv: Math.floor((Math.floor((fm+fs)/2)+mods.SCV)*mult.SCV),
+    cv: cv, armour: ch.derivedValues?.armorRating || 0
+  };
+}
+
+function getDerived(ch) {
+  const dv = ch.derivedValues || {};
+  const acv = dv.attackCombatValue ?? 0;
+  const hp = dv.healthPoints ?? 0;
+  if (acv === 0 && hp === 0 && (ch.stats?.mind || ch.stats?.soul || ch.stats?.body)) {
+    return computeDerived(ch);
+  }
+  return {
+    acv: dv.attackCombatValue||0, dcv: dv.defenseCombatValue||0,
+    hp: dv.healthPoints||0, ep: dv.energyPoints||0,
+    dm: dv.damage||5, sv: dv.sv||dv.shockValue||0,
+    scv: dv.scv||0, cv: Math.floor(((ch.stats?.body||0)+(ch.stats?.mind||0)+(ch.stats?.soul||0))/3),
+    armour: dv.armorRating||0
+  };
+}
+
+function parseHooks(notes) {
+  if (!notes) return [];
+  const hookSection = notes.split('── Plot Hooks ──')[1];
+  if (!hookSection) return [];
+  const parts = hookSection.trim().split(/\n\n+/);
+  const hooks = [];
+  for (const p of parts) {
+    const colonIdx = p.indexOf(':');
+    if (colonIdx > 0) {
+      hooks.push({ title: p.slice(0, colonIdx).trim(), desc: p.slice(colonIdx+1).trim() });
+    }
+  }
+  return hooks;
+}
+
+function renderCharacterSheet(ch, dv) {
+  const body = ch.stats?.body || 0;
+  const mind = ch.stats?.mind || 0;
+  const soul = ch.stats?.soul || 0;
+  const sizeName = ch.templates?.size?.name || 'Medium';
+  const raceName = ch.templates?.race?.race_name || '';
+  const className = ch.templates?.class?.name || ch.identity || '';
+  const sizeStr = `${sizeName}${ch.height ? ' / '+ch.height : ''}${ch.weight ? ' / '+ch.weight : ''}`;
+
+  const skillRows = (ch.skills||[]).map(s =>
+    `<tr><td>${esc(s.name)}</td><td>${esc(s.relevantStat||'')}</td><td class="td-c">${s.level||1}</td><td>${esc(s.specialization||'—')}</td></tr>`
+  ).join('');
+  const skillPad = Math.max(0, 2);
+
+  const attrRows = (ch.attributes||[]).map(a =>
+    `<tr><td>${esc(a.template?.name||a.name||'')}</td><td class="td-c">${a.level||1}</td><td class="td-c">${a.cpCost||0}</td></tr>`
+  ).join('');
+  const attrPad = Math.max(0, 2);
+
+  const defRows = (ch.defects||[]).map(d =>
+    `<tr><td>${esc(d.template?.name||d.name||'')}</td><td class="td-c">${d.rank||1}</td><td class="td-c">${Math.abs(d.cpRefund||d.cpCost||0)}</td></tr>`
+  ).join('');
+  const defPad = Math.max(0, 2);
+
+  return `
+    <div class="sheet-header">
+      <div>
+        <div class="char-name">${esc(ch.name)}</div>
+        <div class="name-sub">Character Name</div>
+        <div class="header-fields">
+          <div class="hf-item"><span class="hf-lbl">Genre</span><span class="hf-val">${esc(ch.selectedGenre||'')}</span></div>
+          <div class="hf-item"><span class="hf-lbl">Setting</span><span class="hf-val">${esc(ch.selectedSubgenre||'')}</span></div>
+        </div>
+      </div>
+      <div class="portrait-box"><div class="pb-lbl">Character<br>Portrait</div></div>
+      <div class="cp-tracker">
+        <div class="cpt-box total"><div class="cpt-val">${ch.totalCP||0}</div><div class="cpt-lbl">Total CP</div></div>
+        <div class="cpt-box"><div class="cpt-val">${ch.totalPointsSpent||0}</div><div class="cpt-lbl">Spent</div></div>
+        <div class="cpt-box"><div class="cpt-val">${ch.availableCP||0}</div><div class="cpt-lbl">Remaining</div></div>
+      </div>
+    </div>
+    <div class="info-row">
+      <div class="info-cell"><div class="ic-val">${esc(ch.playerName)||'&nbsp;'}</div><div class="ic-lbl">Player</div></div>
+      <div class="info-cell"><div class="ic-val">${esc(ch.gmName)||'&nbsp;'}</div><div class="ic-lbl">Game Master</div></div>
+      <div class="info-cell"><div class="ic-val">${esc(raceName)||'&nbsp;'}</div><div class="ic-lbl">Race / Species</div></div>
+      <div class="info-cell"><div class="ic-val">${esc(className)||'&nbsp;'}</div><div class="ic-lbl">Class / Occupation</div></div>
+      <div class="info-cell"><div class="ic-val">${esc(ch.baseOfOperations||ch.habitat)||'&nbsp;'}</div><div class="ic-lbl">Home World / Habitat</div></div>
+      <div class="info-cell"><div class="ic-val">${esc(sizeStr)}</div><div class="ic-lbl">Size / Height / Weight</div></div>
+    </div>
+    <div class="main-grid">
+      <div class="left-col">
+        <div class="sec-lbl">Core Stats</div>
+        <div class="stats-row">
+          <div class="stat-orb"><div class="orb">${body}</div><div class="orb-lbl">Body</div></div>
+          <div class="stat-orb"><div class="orb">${mind}</div><div class="orb-lbl">Mind</div></div>
+          <div class="stat-orb"><div class="orb">${soul}</div><div class="orb-lbl">Soul</div></div>
+        </div>
+        <div class="derived-grid">
+          <div class="d-box"><div class="d-val">${dv.hp}</div><div class="d-lbl">Health Points</div></div>
+          <div class="d-box"><div class="d-val">${dv.ep}</div><div class="d-lbl">Energy Points</div></div>
+          <div class="d-box"><div class="d-val">${dv.dm}</div><div class="d-lbl">Dmg Multiplier</div></div>
+          <div class="d-box"><div class="d-val">${dv.cv}</div><div class="d-lbl">Combat Value</div></div>
+          <div class="d-box"><div class="d-val">${dv.acv}</div><div class="d-lbl">Attack</div></div>
+          <div class="d-box"><div class="d-val">${dv.dcv}</div><div class="d-lbl">Defence</div></div>
+        </div>
+        <div class="sec-lbl">Combat Status</div>
+        <div class="hp-track">
+          <div class="hp-cell"><div class="hpc-lbl">Current HP</div><div class="hpc-val">&nbsp;</div></div>
+          <div class="hp-cell"><div class="hpc-lbl">Max HP</div><div class="hpc-val">${dv.hp}</div></div>
+        </div>
+        <div class="conditions">
+          <label class="cond-item"><input type="checkbox"> Battered</label>
+          <label class="cond-item"><input type="checkbox"> Injured</label>
+          <label class="cond-item"><input type="checkbox"> Serious</label>
+          <label class="cond-item"><input type="checkbox"> Critical</label>
+          <label class="cond-item"><input type="checkbox"> Near Death</label>
+        </div>
+      </div>
+      <div>
+        <div class="sec-lbl">Skills</div>
+        <table class="sheet-table">
+          <colgroup><col style="width:42%"><col style="width:22%"><col style="width:14%"><col style="width:22%"></colgroup>
+          <thead><tr class="th-pink"><th>Skill</th><th>Linked Stat</th><th class="td-c">Lvl</th><th>Specialty</th></tr></thead>
+          <tbody>${skillRows}${emptyRows(skillPad, 4)}</tbody>
+        </table>
+        <div class="two-col">
+          <div>
+            <div class="sec-lbl">Attributes</div>
+            <table class="sheet-table">
+              <colgroup><col style="width:55%"><col style="width:20%"><col style="width:25%"></colgroup>
+              <thead><tr class="th-purple"><th>Attribute</th><th class="td-c">Lvl</th><th class="td-c">Pts</th></tr></thead>
+              <tbody>${attrRows}${emptyRows(attrPad, 3)}</tbody>
+            </table>
+          </div>
+          <div>
+            <div class="sec-lbl">Defects</div>
+            <table class="sheet-table">
+              <colgroup><col style="width:55%"><col style="width:22%"><col style="width:23%"></colgroup>
+              <thead><tr class="th-gray"><th>Defect</th><th class="td-c">Rank</th><th class="td-c">Pts</th></tr></thead>
+              <tbody>${defRows}${emptyRows(defPad, 3)}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderProfileSheet(ch) {
+  return `
+    <div class="simple-header">
+      <div class="char-name">${esc(ch.name)}</div>
+      <div class="sheet-title">Character Profile</div>
+    </div>
+    <div class="profile-grid">
+      <div>
+        <div class="profile-portrait"><div class="pb-lbl">Character<br>Portrait</div></div>
+      </div>
+      <div class="profile-fields">
+        ${ch.description ? `<div class="profile-field"><div class="pf-val quote">${esc(ch.description)}</div></div>` : ''}
+        <div class="profile-two-col">
+          <div class="profile-field">
+            <div class="pf-lbl">Appearance</div>
+            <div class="pf-val">${esc(ch.appearance) || '&nbsp;'}</div>
+          </div>
+          <div class="profile-field">
+            <div class="pf-lbl">Personality</div>
+            <div class="pf-val">${esc(ch.personality) || '&nbsp;'}</div>
+          </div>
+        </div>
+        <div class="profile-field">
+          <div class="pf-lbl">Background / Motivation</div>
+          <div class="pf-val">${esc(ch.background) || '&nbsp;'}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderNarrativeSheet(ch) {
+  const hooks = parseHooks(ch.notes);
+  const backstory = esc(ch.background || '');
+
+  let hooksHtml = '';
+  for (let i = 0; i < Math.max(3, hooks.length); i++) {
+    const h = hooks[i];
+    hooksHtml += `<div class="hook-card">
+      <div class="hook-head">
+        <div class="hook-number">Hook ${i+1}</div>
+        <div class="hook-title">${h ? esc(h.title) : '&nbsp;'}</div>
+      </div>
+      <div class="hook-body">
+        <div class="hook-text">${h ? esc(h.desc) : '&nbsp;'}</div>
+      </div>
+    </div>`;
+  }
+
+  return `
+    <div class="simple-header">
+      <div class="char-name">${esc(ch.name)}</div>
+      <div class="sheet-title">Backstory &amp; Plot Hooks</div>
+    </div>
+    <div class="backstory-section">
+      <div class="sec-lbl">Backstory</div>
+      <div class="backstory-body"><div class="backstory-text">${backstory || '&nbsp;'}</div></div>
+    </div>
+    <div>
+      <div class="sec-lbl">Plot Hooks</div>
+      <div class="hooks-grid">${hooksHtml}</div>
+    </div>`;
+}
+
+function renderSupplementSheet(ch) {
+  const attrsWithFlavor = (ch.attributes||[]).filter(a => a.notes && a.notes.trim());
+  const defectsWithFlavor = (ch.defects||[]).filter(d => d.notes && d.notes.trim());
+
+  const attrHtml = attrsWithFlavor.map(a => `
+    <div class="flavor-entry">
+      <div class="fe-head attr">
+        <span class="fe-name">${esc(a.template?.name||a.name)}</span>
+        <span class="fe-rank">Level ${a.level||1}</span>
+      </div>
+      <div class="fe-body">${esc(a.notes)}</div>
+    </div>`).join('');
+
+  const defHtml = defectsWithFlavor.map(d => `
+    <div class="flavor-entry">
+      <div class="fe-head defect">
+        <span class="fe-name">${esc(d.template?.name||d.name)}</span>
+        <span class="fe-rank">Rank ${d.rank||1}</span>
+      </div>
+      <div class="fe-body">${esc(d.notes)}</div>
+    </div>`).join('');
+
+  return `
+    <div class="simple-header">
+      <div class="char-name">${esc(ch.name)}</div>
+      <div class="sheet-title">Ability &amp; Combat Reference</div>
+    </div>
+    <div class="flavor-grid">
+      <div>
+        <div class="flavor-col-header"><div class="sec-lbl">Attributes</div></div>
+        <div class="flavor-col">${attrHtml || '<div style="color:var(--text-muted);font-style:italic;font-size:8pt;">No attribute flavor text. Generate flavor in the builder to populate this section.</div>'}</div>
+      </div>
+      <div>
+        <div class="flavor-col-header"><div class="sec-lbl">Defects</div></div>
+        <div class="flavor-col">${defHtml || '<div style="color:var(--text-muted);font-style:italic;font-size:8pt;">No defect flavor text. Generate flavor in the builder to populate this section.</div>'}</div>
+      </div>
+    </div>
+    `;
+}
+
+function renderCompanionSheet(ch) {
+  // For now, render blank cards — future: pull from alternate forms / minions
+  const blankCard = `<div class="card blank">
+    <div class="card-head"><div class="card-name">&nbsp;</div><div class="card-meta"><span class="card-type">&nbsp;</span><span class="card-cp">&nbsp;</span></div></div>
+    <div class="card-desc">&nbsp;</div>
+    <div class="card-stats">
+      <div class="bms-row">
+        <div class="bms-orb"><div class="mini-orb">&nbsp;</div><div class="bms-lbl">Body</div></div>
+        <div class="bms-orb"><div class="mini-orb">&nbsp;</div><div class="bms-lbl">Mind</div></div>
+        <div class="bms-orb"><div class="mini-orb">&nbsp;</div><div class="bms-lbl">Soul</div></div>
+      </div>
+      <div class="derived-mini">
+        <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">HP</div></div>
+        <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">EP</div></div>
+        <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">DM</div></div>
+        <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">CV</div></div>
+        <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">Atk</div></div>
+        <div class="dm-box"><div class="dm-val">&nbsp;</div><div class="dm-lbl">Def</div></div>
+      </div>
+    </div>
+    <div class="card-skills">
+      <table class="skills-mini"><colgroup><col style="width:50%"><col style="width:28%"><col style="width:22%"></colgroup>
+        <thead><tr><th>Skill</th><th>Linked Stat</th><th class="td-c">Lvl</th></tr></thead>
+        <tbody>${emptyRows(5, 3)}</tbody>
+      </table>
+    </div>
+    <div class="card-abilities">
+      <table class="abilities-mini"><colgroup><col style="width:52%"><col style="width:14%"><col style="width:18%"><col style="width:16%"></colgroup>
+        <thead><tr><th>Attribute / Defect</th><th class="td-c">Type</th><th class="td-c">Lvl / Rank</th><th class="td-c">Pts</th></tr></thead>
+        <tbody>${emptyRows(5, 4)}</tbody>
+      </table>
+    </div>
+  </div>`;
+
+  return `
+    <div class="simple-header">
+      <div class="char-name">${esc(ch.name)}</div>
+      <div class="sheet-title">Companions &amp; Equipment</div>
+    </div>
+    <div class="card-grid">
+      ${blankCard}${blankCard}
+    </div>`;
+}
+
+// ── TAB SWITCHING ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sheet-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  // Activate the clicked tab button
+  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
+  // Re-check overflow for the now-visible sheet
+  requestAnimationFrame(checkAllOverflow);
+}
+
+// ── LOAD & RENDER ──
+async function loadCharacter() {
+  // Get shareId from URL: /besm/sheet/:id
+  const pathParts = window.location.pathname.split('/');
+  const shareId = pathParts[pathParts.length - 1];
+  if (!shareId || shareId === 'sheet') {
+    document.getElementById('loading').textContent = 'No character ID provided. Use /besm/sheet/<shareId>';
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/besm/' + shareId);
+    if (!res.ok) throw new Error('Character not found');
+    const ch = await res.json();
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('toolbar-title').textContent = ch.name || 'BESM Character Sheet';
+
+    // Show edit link if we came from the builder
+    if (ch.editId) {
+      const editLink = document.getElementById('back-to-edit');
+      editLink.href = '/besm/edit/' + ch.editId;
+      editLink.style.display = '';
+    }
+
+    const dv = getDerived(ch);
+
+    document.getElementById('sheet-character').innerHTML = renderCharacterSheet(ch, dv);
+    document.getElementById('sheet-profile').innerHTML = renderProfileSheet(ch);
+    document.getElementById('sheet-narrative').innerHTML = renderNarrativeSheet(ch);
+    document.getElementById('sheet-supplement').innerHTML = renderSupplementSheet(ch);
+    document.getElementById('sheet-companion').innerHTML = renderCompanionSheet(ch);
+
+    // Show first tab
+    switchTab('character');
+
+    // Check overflow on all sheets
+    requestAnimationFrame(checkAllOverflow);
+  } catch (err) {
+    document.getElementById('loading').textContent = 'Error: ' + err.message;
+  }
+}
+
+// ── OVERFLOW DETECTION ──
+// Page height = 7.5in - 0.3in top pad - 0.3in bottom pad = 6.9in usable
+const PAGE_HEIGHT_PX = 7.5 * 96; // 720px at 96dpi
+const USABLE_HEIGHT_PX = 6.9 * 96; // 662px
+
+function checkOverflow(sheetEl) {
+  // Remove existing boundary markers and injected headers
+  sheetEl.querySelectorAll('.page-boundary').forEach(m => m.remove());
+  sheetEl.querySelectorAll('.injected-header').forEach(m => m.remove());
+  sheetEl.classList.remove('overflow');
+
+  const contentHeight = sheetEl.scrollHeight;
+  const sheetHeight = PAGE_HEIGHT_PX;
+
+  if (contentHeight > sheetHeight + 5) {
+    sheetEl.classList.add('overflow');
+
+    // Add page boundary markers at each page break
+    let y = sheetHeight;
+    let pageNum = 1;
+    while (y < contentHeight) {
+      const marker = document.createElement('div');
+      marker.className = 'page-boundary';
+      marker.style.top = y + 'px';
+      marker.setAttribute('data-page', 'Page ' + (pageNum + 1));
+      sheetEl.appendChild(marker);
+
+      // Inject repeated section headers at page breaks for flavor columns
+      sheetEl.querySelectorAll('.flavor-col').forEach(col => {
+        const colRect = col.getBoundingClientRect();
+        const sheetRect = sheetEl.getBoundingClientRect();
+        const colTop = colRect.top - sheetRect.top + sheetEl.scrollTop;
+        const colBottom = colTop + colRect.height;
+
+        if (colTop < y && colBottom > y) {
+          // This column spans the page break — find the header text
+          const headerEl = col.previousElementSibling?.querySelector('.sec-lbl') ||
+                           col.parentElement?.querySelector('.sec-lbl');
+          if (headerEl) {
+            const label = document.createElement('div');
+            label.className = 'injected-header';
+            label.style.cssText = `position:absolute;left:${colRect.left - sheetRect.left}px;top:${y + 4}px;font-size:7pt;font-weight:700;color:var(--su);text-transform:uppercase;letter-spacing:0.5px;z-index:6;`;
+            label.textContent = headerEl.textContent + ' (cont.)';
+            sheetEl.appendChild(label);
+          }
+        }
+      });
+
+      y += sheetHeight;
+      pageNum++;
+    }
+  }
+}
+
+function checkAllOverflow() {
+  document.querySelectorAll('.sheet').forEach(checkOverflow);
+}
+
+// Re-check on window resize
+window.addEventListener('resize', checkAllOverflow);
+
+loadCharacter();
+</script>
+</body>
+</html>
