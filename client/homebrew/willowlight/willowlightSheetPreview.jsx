@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { render } from '@shared/willowlightCharacter/renderer.js';
+import { render } from '@shared/willowlight/sheetRenderer.js';
 
-const WillowlightCharacterPreview = ({ character, layout = 'narrow', bw = false })=>{
+const WillowlightSheetPreview = ({ character, layout = 'narrow', bw = false })=>{
 	const html = useMemo(()=>{
 		try {
 			return render(character, layout, { bw });
@@ -15,4 +15,4 @@ const WillowlightCharacterPreview = ({ character, layout = 'narrow', bw = false 
 	</div>;
 };
 
-export default WillowlightCharacterPreview;
+export default WillowlightSheetPreview;

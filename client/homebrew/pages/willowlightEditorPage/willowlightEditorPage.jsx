@@ -1,13 +1,13 @@
-import '../../willowlightStatblock/willowlightStatblock.less';
-import '../../willowlightCharacter/willowlightCharacter.less';
+import '../../willowlight/willowlight.less';
 import '../../statblock/statblock.less';
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import request from '../../utils/request-middleware.js';
-import { createEmptyWillowlightCharacter } from '@shared/willowlightCharacter/schema.js';
+import { createEmptyWillowlightCharacter } from '@shared/willowlight/schema.js';
 
-import SplitPane                      from '../../../components/splitPane/splitPane.jsx';
-import WillowlightCharacterForm       from '../../willowlightCharacter/willowlightCharacterForm.jsx';
-import WillowlightCharacterPreview    from '../../willowlightCharacter/willowlightCharacterPreview.jsx';
+import SplitPane                    from '../../../components/splitPane/splitPane.jsx';
+import WillowlightForm             from '../../willowlight/willowlightForm.jsx';
+import WillowlightStatblockPreview from '../../willowlight/willowlightStatblockPreview.jsx';
+import WillowlightSheetPreview     from '../../willowlight/willowlightSheetPreview.jsx';
 
 import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
 import Nav             from '@navbar/nav.jsx';
@@ -16,7 +16,7 @@ import AccountNavItem  from '@navbar/account.navitem.jsx';
 
 const SAVE_TIMEOUT = 3000;
 
-const WillowlightCharacterEditorPage = (props)=>{
+const WillowlightEditorPage = (props)=>{
 	const initial = props.willowlightCharacter || createEmptyWillowlightCharacter();
 	const [character, setCharacter] = useState(initial);
 	const [editId, setEditId] = useState(props.willowlightCharacter?.editId || null);
@@ -24,6 +24,7 @@ const WillowlightCharacterEditorPage = (props)=>{
 	const [isSaving, setIsSaving] = useState(false);
 	const [layout, setLayout] = useState('narrow');
 	const [bw, setBw] = useState(false);
+	const [previewMode, setPreviewMode] = useState('statblock'); // 'statblock' or 'sheet'
 	const [hasChanges, setHasChanges] = useState(false);
 	const [error, setError] = useState(null);
 	const saveTimeout = useRef(null);
@@ -43,19 +44,19 @@ const WillowlightCharacterEditorPage = (props)=>{
 
 		try {
 			if(editId) {
-				const response = await request.put(`/api/willowlight-character/${editId}`)
+				const response = await request.put(`/api/willowlight/${editId}`)
 					.send(character).timeout({ response: 10000 });
 				setCharacter(response.body);
 				setHasChanges(false);
 			} else {
-				const response = await request.post('/api/willowlight-character')
+				const response = await request.post('/api/willowlight')
 					.send(character).timeout({ response: 10000 });
 				const saved = response.body;
 				setCharacter(saved);
 				setEditId(saved.editId);
 				setShareId(saved.shareId);
 				setHasChanges(false);
-				window.history.replaceState(null, '', `/willowlight-character/edit/${saved.editId}`);
+				window.history.replaceState(null, '', `/willowlight/edit/${saved.editId}`);
 			}
 		} catch (err) {
 			console.error('Save error:', err);
@@ -141,27 +142,36 @@ const WillowlightCharacterEditorPage = (props)=>{
 	const copyEmbed = ()=>{
 		if(!shareId) return;
 		const opts = [layout === 'wide' ? 'wide' : '', bw ? 'bw' : ''].filter(Boolean).join(',');
-		const code = opts ? `{{willowlight-character:${shareId}|${opts}}}` : `{{willowlight-character:${shareId}}}`;
+		const code = opts ? `{{willowlight:${shareId}|${opts}}}` : `{{willowlight:${shareId}}}`;
 		navigator.clipboard.writeText(code).then(()=>{
 			setCopied(true);
 			setTimeout(()=>setCopied(false), 2000);
 		});
 	};
 
+	const PreviewComponent = previewMode === 'sheet' ? WillowlightSheetPreview : WillowlightStatblockPreview;
+
 	return (
-		<div className="willowlightCharacterEditorPage">
+		<div className="willowlightEditorPage">
 			<Navbar>
 				<Nav.logo />
 				<Nav.section>
 					<Nav.item className="statblockTitle" color="blue">
 						{character.name || 'New Willowlight Character'}
 					</Nav.item>
-					<Nav.item icon="fas fa-th-list" onClick={()=>{ window.location.href = '/willowlight-character/library'; }}>
+					<Nav.item icon="fas fa-th-list" onClick={()=>{ window.location.href = '/willowlight/library'; }}>
 						Library
 					</Nav.item>
 				</Nav.section>
 
 				<Nav.section>
+					<Nav.item
+						icon={previewMode === 'statblock' ? 'fas fa-id-card' : 'fas fa-file-alt'}
+						onClick={()=>setPreviewMode((m)=>m === 'statblock' ? 'sheet' : 'statblock')}
+					>
+						{previewMode === 'statblock' ? 'Sheet View' : 'Stat Block View'}
+					</Nav.item>
+
 					<Nav.item icon={layout === 'narrow' ? 'fas fa-columns' : 'fas fa-align-justify'}
 						onClick={()=>setLayout((l)=>l === 'narrow' ? 'wide' : 'narrow')}>
 						{layout === 'narrow' ? 'Wide' : 'Narrow'}
@@ -172,7 +182,7 @@ const WillowlightCharacterEditorPage = (props)=>{
 					</Nav.item>
 
 					{shareId && (
-						<Nav.item icon="fas fa-file-alt" onClick={()=>{ window.location.href = `/willowlight-character/sheet/${shareId}`; }}>
+						<Nav.item icon="fas fa-file-alt" onClick={()=>{ window.location.href = `/willowlight/sheet/${shareId}`; }}>
 							Character Sheet
 						</Nav.item>
 					)}
@@ -217,13 +227,13 @@ const WillowlightCharacterEditorPage = (props)=>{
 							)}
 							{flavorError && <span style={{ color: '#ff6b6b', fontSize: '13px' }}>{flavorError}</span>}
 						</div>
-						<WillowlightCharacterForm character={character} onChange={handleChange} />
+						<WillowlightForm character={character} onChange={handleChange} />
 					</div>
-					<WillowlightCharacterPreview character={character} layout={layout} bw={bw} />
+					<PreviewComponent character={character} layout={layout} bw={bw} />
 				</SplitPane>
 			</div>
 		</div>
 	);
 };
 
-export default WillowlightCharacterEditorPage;
+export default WillowlightEditorPage;

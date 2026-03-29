@@ -1,12 +1,11 @@
 // ── Willowlight Engine Character Sheet Renderer ──────────────────────
-// Re-uses the stat block renderer functions where possible, then adds
-// character-specific sections (luck, corruption, milestones, contacts, secrets).
+// Renders the full character sheet view with all fields.
 
 import {
 	ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS,
 	HEALTH_TRACKS, DOMAIN_LABELS,
 	getTrackBoxes, getDefTN
-} from '../willowlightStatblock/constants.js';
+} from './constants.js';
 
 const esc = (s)=>(s ?? '').toString()
 	.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

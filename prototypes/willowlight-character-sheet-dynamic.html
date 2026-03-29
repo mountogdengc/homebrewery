@@ -837,12 +837,12 @@ async function loadCharacter() {
   const pathParts = window.location.pathname.split('/');
   const shareId = pathParts[pathParts.length - 1];
   if (!shareId || shareId === 'sheet') {
-    document.getElementById('loading').textContent = 'No character ID provided. Use /willowlight-character/sheet/<shareId>';
+    document.getElementById('loading').textContent = 'No character ID provided. Use /willowlight/sheet/<shareId>';
     return;
   }
 
   try {
-    const res = await fetch('/api/willowlight-character/' + shareId);
+    const res = await fetch('/api/willowlight/' + shareId);
     if (!res.ok) throw new Error('Character not found');
     const ch = await res.json();
 
@@ -852,7 +852,7 @@ async function loadCharacter() {
 
     if (ch.editId) {
       const editLink = document.getElementById('back-to-edit');
-      editLink.href = '/willowlight-character/edit/' + ch.editId;
+      editLink.href = '/willowlight/edit/' + ch.editId;
       editLink.style.display = '';
     }
 

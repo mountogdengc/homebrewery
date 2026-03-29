@@ -2,8 +2,9 @@ import _              from 'lodash';
 import express        from 'express';
 import asyncHandler   from 'express-async-handler';
 import { nanoid }     from 'nanoid';
-import { model as WillowlightCharacterModel } from './willowlight-character.model.js';
-import { render }     from '../shared/willowlightCharacter/renderer.js';
+import { model as WillowlightModel } from './willowlight.model.js';
+import { render as renderStatblock }  from '../shared/willowlight/statblockRenderer.js';
+import { render as renderSheet }      from '../shared/willowlight/sheetRenderer.js';
 import dbCheck        from './middleware/dbCheck.js';
 
 const router = express.Router();
@@ -22,46 +23,46 @@ const requireAuth = (req, res)=>{
 	return true;
 };
 
-router.use('/api/willowlight-character', dbCheck);
+const MIXED_FIELDS = ['attributes', 'scale', 'vocation', 'interests', 'hobbies',
+	'attacks', 'edges', 'aspects', 'burdens', 'afflictions',
+	'convictionMilestones', 'pathMilestones', 'contacts', 'secrets', 'equipment'];
+
+router.use('/api/willowlight', dbCheck);
 
 // Create
-router.post('/api/willowlight-character', asyncHandler(async (req, res)=>{
+router.post('/api/willowlight', asyncHandler(async (req, res)=>{
 	if(!requireAuth(req, res)) return;
 	const data = req.body;
 	delete data.editId; delete data.shareId;
 	data.authors = [req.account.username];
 
-	const ch = new WillowlightCharacterModel(data);
-	ch.editId  = nanoid(12);
-	ch.shareId = nanoid(12);
+	const doc = new WillowlightModel(data);
+	doc.editId  = nanoid(12);
+	doc.shareId = nanoid(12);
 
-	const saved = await ch.save().catch((err)=>{
+	const saved = await doc.save().catch((err)=>{
 		console.error(err);
-		throw { name: 'Save Error', message: `Error creating character: ${err.toString()}`, status: 500 };
+		throw { name: 'Save Error', message: `Error creating Willowlight character: ${err.toString()}`, status: 500 };
 	});
 	res.status(200).send(sanitize(saved.toObject()));
 }));
 
 // Update
-router.put('/api/willowlight-character/:id', asyncHandler(async (req, res)=>{
+router.put('/api/willowlight/:id', asyncHandler(async (req, res)=>{
 	if(!requireAuth(req, res)) return;
-	const ch = await WillowlightCharacterModel.get({ editId: req.params.id }).catch(()=>{
+	const doc = await WillowlightModel.get({ editId: req.params.id }).catch(()=>{
 		throw { name: 'Not Found', message: 'Character not found', status: 404 };
 	});
-	if(!ch.authors.includes(req.account.username)) {
+	if(!doc.authors.includes(req.account.username)) {
 		return res.status(403).send({ error: 'You are not an author' });
 	}
 
 	const updates = _.omit(req.body, ['_id', '__v', 'editId', 'shareId', 'authors', 'createdAt']);
 	updates.updatedAt = new Date();
-	Object.assign(ch, updates);
+	Object.assign(doc, updates);
+	for (const f of MIXED_FIELDS) doc.markModified(f);
 
-	const mixedFields = ['attributes', 'scale', 'vocation', 'interests', 'hobbies',
-		'attacks', 'edges', 'aspects', 'burdens',
-		'convictionMilestones', 'pathMilestones', 'contacts', 'secrets'];
-	for (const f of mixedFields) ch.markModified(f);
-
-	const saved = await ch.save().catch((err)=>{
+	const saved = await doc.save().catch((err)=>{
 		console.error(err);
 		throw { name: 'Update Error', message: `Error updating character: ${err.toString()}`, status: 500 };
 	});
@@ -69,45 +70,47 @@ router.put('/api/willowlight-character/:id', asyncHandler(async (req, res)=>{
 }));
 
 // Delete
-router.delete('/api/willowlight-character/:id', asyncHandler(async (req, res)=>{
+router.delete('/api/willowlight/:id', asyncHandler(async (req, res)=>{
 	if(!requireAuth(req, res)) return;
-	const ch = await WillowlightCharacterModel.findOne({ editId: req.params.id }).catch(()=>{
+	const doc = await WillowlightModel.findOne({ editId: req.params.id }).catch(()=>{
 		throw { name: 'Not Found', message: 'Character not found', status: 404 };
 	});
-	if(!ch) return res.status(404).send({ error: 'Character not found' });
-	if(!ch.authors.includes(req.account.username)) {
+	if(!doc) return res.status(404).send({ error: 'Character not found' });
+	if(!doc.authors.includes(req.account.username)) {
 		return res.status(403).send({ error: 'You are not an author' });
 	}
-	ch.authors = ch.authors.filter((a)=>a !== req.account.username);
-	if(ch.authors.length === 0) {
-		await WillowlightCharacterModel.deleteOne({ _id: ch._id });
+	doc.authors = doc.authors.filter((a)=>a !== req.account.username);
+	if(doc.authors.length === 0) {
+		await WillowlightModel.deleteOne({ _id: doc._id });
 	} else {
-		await ch.save();
+		await doc.save();
 	}
 	res.status(200).send({ success: true });
 }));
 
-// Render HTML
-router.get('/api/willowlight-character/render/:id', asyncHandler(async (req, res)=>{
-	const ch = await WillowlightCharacterModel.get({ shareId: req.params.id }).catch(()=>{
+// Render HTML — stat block (compact) or sheet (full)
+router.get('/api/willowlight/render/:id', asyncHandler(async (req, res)=>{
+	const doc = await WillowlightModel.get({ shareId: req.params.id }).catch(()=>{
 		throw { name: 'Not Found', message: 'Character not found', status: 404 };
 	});
 	const layout = req.query.layout === 'wide' ? 'wide' : 'narrow';
 	const bw = req.query.bw === '1' || req.query.bw === 'true';
-	const html = render(ch.toObject(), layout, { bw });
+	const view = req.query.view === 'sheet' ? 'sheet' : 'statblock';
+	const renderer = view === 'sheet' ? renderSheet : renderStatblock;
+	const html = renderer(doc.toObject(), layout, { bw });
 	res.status(200).send(html);
 }));
 
 // Get by shareId
-router.get('/api/willowlight-character/:id', asyncHandler(async (req, res)=>{
-	const ch = await WillowlightCharacterModel.get({ shareId: req.params.id }).catch(()=>{
+router.get('/api/willowlight/:id', asyncHandler(async (req, res)=>{
+	const doc = await WillowlightModel.get({ shareId: req.params.id }).catch(()=>{
 		throw { name: 'Not Found', message: 'Character not found', status: 404 };
 	});
-	res.status(200).send(sanitize(ch.toObject()));
+	res.status(200).send(sanitize(doc.toObject()));
 }));
 
 // List for current user
-router.get('/api/willowlight-characters', asyncHandler(async (req, res)=>{
+router.get('/api/willowlights', asyncHandler(async (req, res)=>{
 	if(!requireAuth(req, res)) return;
 	const page  = Math.max(1, parseInt(req.query.page) || 1);
 	const count = Math.min(100, Math.max(1, parseInt(req.query.count) || 50));
@@ -119,15 +122,15 @@ router.get('/api/willowlight-characters', asyncHandler(async (req, res)=>{
 	const fields = ['name', 'player', 'path', 'conviction', 'tags', 'source',
 		'shareId', 'editId', 'authors', 'createdAt', 'updatedAt', 'views'];
 
-	const [chars, total] = await Promise.all([
-		WillowlightCharacterModel.find(query, fields).sort({ updatedAt: -1 }).skip(skip).limit(count).lean().exec(),
-		WillowlightCharacterModel.countDocuments(query)
+	const [characters, total] = await Promise.all([
+		WillowlightModel.find(query, fields).sort({ updatedAt: -1 }).skip(skip).limit(count).lean().exec(),
+		WillowlightModel.countDocuments(query)
 	]);
-	res.status(200).send({ characters: chars, page, totalPages: Math.ceil(total / count), total });
+	res.status(200).send({ characters, page, totalPages: Math.ceil(total / count), total });
 }));
 
 // Bulk import
-router.post('/api/willowlight-characters/import', asyncHandler(async (req, res)=>{
+router.post('/api/willowlights/import', asyncHandler(async (req, res)=>{
 	if(!requireAuth(req, res)) return;
 	const items = req.body;
 	if(!Array.isArray(items) || items.length === 0) return res.status(400).send({ error: 'Must be a non-empty array' });
@@ -138,9 +141,9 @@ router.post('/api/willowlight-characters/import', asyncHandler(async (req, res)=
 		delete item._id; delete item.__v; delete item.editId;
 		delete item.shareId; delete item.id; delete item.createdAt; delete item.updatedAt;
 		item.authors = [req.account.username];
-		const ch = new WillowlightCharacterModel(item);
-		ch.editId = nanoid(12); ch.shareId = nanoid(12);
-		const saved = await ch.save().catch((err)=>{ console.error('Import error:', err); return null; });
+		const doc = new WillowlightModel(item);
+		doc.editId = nanoid(12); doc.shareId = nanoid(12);
+		const saved = await doc.save().catch((err)=>{ console.error('Import error:', err); return null; });
 		if(saved) results.push(sanitize(saved.toObject()));
 	}
 	res.status(200).send({ imported: results.length, characters: results });

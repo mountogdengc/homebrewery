@@ -1,4 +1,6 @@
-// ── Willowlight Engine Character Sheet Schema ────────────────────────
+// ── Willowlight Engine Unified Character Schema ──────────────────────
+// Every Willowlight entity (PC, NPC, creature) uses this schema.
+// Leave fields blank for anything that doesn't apply.
 
 export function createEmptyWillowlightCharacter() {
 	return {
@@ -56,8 +58,6 @@ export function createEmptyWillowlightCharacter() {
 		edges   : [],
 		aspects : [],
 		burdens : [],
-
-		// ── Character-only fields ─────────────────────────────────
 
 		// Luck
 		luckRating : 3,

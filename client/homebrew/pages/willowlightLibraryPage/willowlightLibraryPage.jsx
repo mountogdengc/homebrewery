@@ -6,83 +6,72 @@ import Nav            from '@navbar/nav.jsx';
 import Navbar         from '@navbar/navbar.jsx';
 import AccountNavItem from '@navbar/account.navitem.jsx';
 
-const WillowlightStatblockLibraryPage = ()=>{
-	const [statblocks, setStatblocks] = useState([]);
+const WillowlightLibraryPage = ()=>{
+	const [characters, setCharacters] = useState([]);
 	const [page, setPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(0);
 	const [total, setTotal] = useState(0);
 	const [search, setSearch] = useState('');
 	const [loading, setLoading] = useState(true);
-	const [importStatus, setImportStatus] = useState(null);
+	const [status, setStatus] = useState(null);
 	const [showImportBox, setShowImportBox] = useState(false);
 	const [importText, setImportText] = useState('');
 
-	const fetchStatblocks = useCallback(async ()=>{
+	const fetchCharacters = useCallback(async ()=>{
 		setLoading(true);
 		try {
 			const query = new URLSearchParams({ page, count: 24 });
 			if(search) query.set('search', search);
-
-			const res = await request.get(`/api/willowlight-statblocks?${query.toString()}`);
-			setStatblocks(res.body.statblocks);
+			const res = await request.get(`/api/willowlights?${query.toString()}`);
+			setCharacters(res.body.characters);
 			setTotalPages(res.body.totalPages);
 			setTotal(res.body.total);
 		} catch (err) {
-			console.error('Failed to fetch Willowlight stat blocks:', err);
-			setStatblocks([]);
+			console.error('Failed to fetch:', err);
+			setCharacters([]);
 		} finally {
 			setLoading(false);
 		}
 	}, [page, search]);
 
-	useEffect(()=>{ fetchStatblocks(); }, [fetchStatblocks]);
+	useEffect(()=>{ fetchCharacters(); }, [fetchCharacters]);
 	useEffect(()=>{ setPage(1); }, [search]);
 
 	const handleDelete = async (e, editId, name)=>{
 		e.stopPropagation();
 		if(!confirm(`Delete "${name || 'Untitled'}"?`)) return;
-		try {
-			await request.delete(`/api/willowlight-statblock/${editId}`);
-			fetchStatblocks();
-		} catch (err) {
-			console.error('Delete failed:', err);
-		}
+		try { await request.delete(`/api/willowlight/${editId}`); fetchCharacters(); }
+		catch (err) { console.error('Delete failed:', err); }
 	};
 
 	const handleImportSubmit = async ()=>{
 		if(!importText.trim()) return;
 		let data;
 		try { data = JSON.parse(importText); } catch (e) {
-			setImportStatus('Invalid JSON');
-			setTimeout(()=>setImportStatus(null), 3000);
-			return;
+			setStatus('Invalid JSON'); setTimeout(()=>setStatus(null), 3000); return;
 		}
 		const items = Array.isArray(data) ? data : [data];
 		let imported = 0;
 		for (const item of items) {
 			delete item.editId; delete item.shareId; delete item.id; delete item._id;
-			try { await request.post('/api/willowlight-statblock').send(item); imported++; }
-			catch (err) { console.error('Import failed for', item.name, err); }
+			try { await request.post('/api/willowlight').send(item); imported++; }
+			catch (err) { console.error('Import failed:', err); }
 		}
-		setImportStatus(`Imported ${imported} stat block${imported !== 1 ? 's' : ''}`);
-		setTimeout(()=>setImportStatus(null), 3000);
-		setImportText('');
-		setShowImportBox(false);
-		fetchStatblocks();
+		setStatus(`Imported ${imported} character${imported !== 1 ? 's' : ''}`);
+		setTimeout(()=>setStatus(null), 3000);
+		setImportText(''); setShowImportBox(false); fetchCharacters();
 	};
 
 	const handleDuplicate = async (e, shareId)=>{
 		e.stopPropagation();
 		try {
-			const res = await request.get(`/api/willowlight-statblock/${shareId}`);
-			const sb = res.body;
-			delete sb.editId; delete sb.shareId; delete sb.createdAt; delete sb.updatedAt;
-			sb.name = `${sb.name || 'Untitled'} (Copy)`;
-			const saved = await request.post('/api/willowlight-statblock').send(sb);
+			const res = await request.get(`/api/willowlight/${shareId}`);
+			const ch = res.body;
+			delete ch.editId; delete ch.shareId; delete ch.createdAt; delete ch.updatedAt;
+			ch.name = `${ch.name || 'Untitled'} (Copy)`;
+			const saved = await request.post('/api/willowlight').send(ch);
 			window.location.href = `/willowlight/edit/${saved.body.editId}`;
-		} catch (err) {
-			console.error('Duplicate failed:', err);
-		}
+		} catch (err) { console.error('Duplicate failed:', err); }
 	};
 
 	return (
@@ -92,33 +81,25 @@ const WillowlightStatblockLibraryPage = ()=>{
 				<Nav.section>
 					<Nav.item color="blue">Willowlight Engine</Nav.item>
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/willowlight/new'; }}>
-						New Stat Block
-					</Nav.item>
-					<Nav.item icon="fas fa-user-plus" onClick={()=>{ window.location.href = '/willowlight-character/new'; }}>
 						New Character
-					</Nav.item>
-					<Nav.item icon="fas fa-user" onClick={()=>{ window.location.href = '/willowlight-character/library'; }}>
-						Characters
 					</Nav.item>
 					<Nav.item icon="fas fa-dice-d20" onClick={()=>{ window.location.href = '/playtest'; }}>
 						Playtest
 					</Nav.item>
 				</Nav.section>
-				<Nav.section>
-					<AccountNavItem />
-				</Nav.section>
+				<Nav.section><AccountNavItem /></Nav.section>
 			</Navbar>
 
 			<div className="libraryContent">
 				<div className="libraryHeader">
-					<h1>Your Willowlight Stat Blocks <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
+					<h1>Willowlight Engine <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
 					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-						{importStatus && <span style={{ color: '#4caf50', fontSize: '13px' }}>{importStatus}</span>}
+						{status && <span style={{ color: '#4caf50', fontSize: '13px' }}>{status}</span>}
 						<button className="newButton" style={{ background: '#2e7d32', border: 'none', cursor: 'pointer' }}
 							onClick={()=>setShowImportBox(!showImportBox)}>
 							<i className="fas fa-paste" /> Paste Import
 						</button>
-						<a href="/willowlight/new" className="newButton">+ New Willowlight Stat Block</a>
+						<a href="/willowlight/new" className="newButton">+ New Character</a>
 					</div>
 				</div>
 
@@ -129,7 +110,7 @@ const WillowlightStatblockLibraryPage = ()=>{
 
 				{showImportBox && (
 					<div style={{ background: '#252538', border: '1px solid #3a3a54', borderRadius: '6px', padding: '12px', marginBottom: '16px' }}>
-						<p style={{ color: '#aaa', fontSize: '13px', margin: '0 0 8px' }}>Paste Willowlight stat block JSON:</p>
+						<p style={{ color: '#aaa', fontSize: '13px', margin: '0 0 8px' }}>Paste Willowlight character JSON:</p>
 						<textarea value={importText} onChange={(e)=>setImportText(e.target.value)}
 							placeholder='Paste JSON here...'
 							style={{ width: '100%', minHeight: '100px', background: '#1e1e2e', border: '1px solid #3a3a54', borderRadius: '4px', color: '#e0e0f0', padding: '8px', fontFamily: 'monospace', fontSize: '12px', resize: 'vertical' }} />
@@ -142,34 +123,35 @@ const WillowlightStatblockLibraryPage = ()=>{
 
 				{loading ? (
 					<div className="emptyState"><i className="fas fa-spinner fa-spin" /> Loading...</div>
-				) : statblocks.length === 0 ? (
+				) : characters.length === 0 ? (
 					<div className="emptyState">
-						{search ? 'No stat blocks match your search.' : 'No Willowlight stat blocks yet. Click "+ New Willowlight Stat Block" to create one.'}
+						{search ? 'No characters match your search.' : 'No Willowlight characters yet. Click "+ New Character" to create one.'}
 					</div>
 				) : (
 					<>
 						<div className="statblockGrid">
-							{statblocks.map((sb)=>(
-								<div className="statblockCard" key={sb.editId}
-									onClick={()=>{ window.location.href = `/willowlight/edit/${sb.editId}`; }}>
+							{characters.map((ch)=>(
+								<div className="statblockCard" key={ch.editId}
+									onClick={()=>{ window.location.href = `/willowlight/edit/${ch.editId}`; }}>
 									<div className="cardHeader">
-										<h3 className="cardName">{sb.name || 'Untitled'}</h3>
+										<h3 className="cardName">{ch.name || 'Untitled'}</h3>
 									</div>
-									<div className="cardMeta">{sb.path}{sb.conviction ? ` — ${sb.conviction}` : ''}</div>
-									{sb.tags && sb.tags.length > 0 && (
+									<div className="cardMeta">{ch.conviction}{ch.path ? ` — ${ch.path}` : ''}</div>
+									{ch.player && <div className="cardMeta">Player: {ch.player}</div>}
+									{ch.tags && ch.tags.length > 0 && (
 										<div className="cardTags">
-											{sb.tags.map((tag, i)=><span className="tag" key={i}>{tag}</span>)}
+											{ch.tags.map((tag, i)=><span className="tag" key={i}>{tag}</span>)}
 										</div>
 									)}
 									<div className="cardActions">
 										<button onClick={(e)=>{
 											e.stopPropagation();
-											navigator.clipboard.writeText('{{willowlight-statblock:' + sb.shareId + '}}');
-											setImportStatus('Copied embed for ' + (sb.name || 'Untitled'));
-											setTimeout(()=>setImportStatus(null), 2000);
+											navigator.clipboard.writeText('{{willowlight:' + ch.shareId + '}}');
+											setStatus('Copied embed for ' + (ch.name || 'Untitled'));
+											setTimeout(()=>setStatus(null), 2000);
 										}}><i className="fas fa-code" /> Embed</button>
-										<button onClick={(e)=>handleDuplicate(e, sb.shareId)}><i className="fas fa-copy" /> Duplicate</button>
-										<button onClick={(e)=>handleDelete(e, sb.editId, sb.name)}><i className="fas fa-trash" /> Delete</button>
+										<button onClick={(e)=>handleDuplicate(e, ch.shareId)}><i className="fas fa-copy" /> Duplicate</button>
+										<button onClick={(e)=>handleDelete(e, ch.editId, ch.name)}><i className="fas fa-trash" /> Delete</button>
 									</div>
 								</div>
 							))}
@@ -189,4 +171,4 @@ const WillowlightStatblockLibraryPage = ()=>{
 	);
 };
 
-export default WillowlightStatblockLibraryPage;
+export default WillowlightLibraryPage;

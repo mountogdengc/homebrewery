@@ -1,4 +1,7 @@
-// ── Willowlight Engine Statblock Renderer ─────────────────────────────
+// ── Willowlight Engine Stat Block Renderer (compact) ──────────────────
+// Renders the compact stat block view suitable for embedding in books.
+// Omits character-only fields (luck, corruption, milestones, etc.).
+
 import {
 	ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS,
 	HEALTH_TRACKS, DOMAIN_LABELS,

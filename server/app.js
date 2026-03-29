@@ -22,8 +22,7 @@ import vaultApi                    from './vault.api.js';
 import statblockApi                from './statblock.api.js';
 import besmCharacterApi            from './besm-character.api.js';
 import brpStatblockApi             from './brp-statblock.api.js';
-import willowlightStatblockApi     from './willowlight-statblock.api.js';
-import willowlightCharacterApi     from './willowlight-character.api.js';
+import willowlightApi              from './willowlight.api.js';
 import aiApi                       from './ai.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
@@ -68,7 +67,7 @@ export default async function createApp(vite) {
 	app.get('/besm/sheet/:id', (req, res)=>{
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/besm-character-sheet-dynamic.html'));
 	});
-	app.get('/willowlight-character/sheet/:id', (req, res)=>{
+	app.get('/willowlight/sheet/:id', (req, res)=>{
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-dynamic.html'));
 	});
 
@@ -137,8 +136,7 @@ export default async function createApp(vite) {
 	app.use(statblockApi);
 	app.use(besmCharacterApi);
 	app.use(brpStatblockApi);
-	app.use(willowlightStatblockApi);
-	app.use(willowlightCharacterApi);
+	app.use(willowlightApi);
 	app.use(aiApi);
 
 	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -730,61 +728,19 @@ export default async function createApp(vite) {
 		return next();
 	});
 
-	//Willowlight Stat Block Builder - New
+	//Willowlight Builder - New
 	app.get('/willowlight/new', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Willowlight Stat Block Builder',
-			description : 'Create a Willowlight Engine stat block'
-		};
-		return next();
-	});
-
-	//Willowlight Stat Block Builder - Edit
-	app.get('/willowlight/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
-		const { model: WillowlightStatblockModel } = await import('./willowlight-statblock.model.js');
-		const sb = await WillowlightStatblockModel.get({ editId: req.params.id });
-		req.willowlightStatblock = sb.toObject();
-		req.ogMeta = { ...defaultMetaTags,
-			title       : `Editing: ${req.willowlightStatblock.name || 'Willowlight Stat Block'}`,
-			description : 'Edit a Willowlight Engine stat block'
-		};
-		return next();
-	}));
-
-	//Willowlight Stat Block Share
-	app.get('/willowlight/share/:id', dbCheck, asyncHandler(async (req, res, next)=>{
-		const { model: WillowlightStatblockModel } = await import('./willowlight-statblock.model.js');
-		const sb = await WillowlightStatblockModel.get({ shareId: req.params.id });
-		req.willowlightStatblock = sb.toObject();
-		req.ogMeta = { ...defaultMetaTags,
-			title       : req.willowlightStatblock.name || 'Willowlight Stat Block',
-			description : 'Willowlight Engine stat block'
-		};
-		return next();
-	}));
-
-	//Willowlight Stat Block Library
-	app.get('/willowlight/library', (req, res, next)=>{
-		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Willowlight Stat Block Library',
-			description : 'Browse your Willowlight Engine stat blocks'
-		};
-		return next();
-	});
-
-	//Willowlight Character Builder - New
-	app.get('/willowlight-character/new', (req, res, next)=>{
-		req.ogMeta = { ...defaultMetaTags,
 			title       : 'Willowlight Character Builder',
-			description : 'Create a Willowlight Engine character sheet'
+			description : 'Create a Willowlight Engine character'
 		};
 		return next();
 	});
 
-	//Willowlight Character Builder - Edit
-	app.get('/willowlight-character/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
-		const { model: WillowlightCharacterModel } = await import('./willowlight-character.model.js');
-		const ch = await WillowlightCharacterModel.get({ editId: req.params.id });
+	//Willowlight Builder - Edit
+	app.get('/willowlight/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: WillowlightModel } = await import('./willowlight.model.js');
+		const ch = await WillowlightModel.get({ editId: req.params.id });
 		req.willowlightCharacter = ch.toObject();
 		req.ogMeta = { ...defaultMetaTags,
 			title       : `Editing: ${req.willowlightCharacter.name || 'Willowlight Character'}`,
@@ -793,22 +749,22 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
-	//Willowlight Character Share
-	app.get('/willowlight-character/share/:id', dbCheck, asyncHandler(async (req, res, next)=>{
-		const { model: WillowlightCharacterModel } = await import('./willowlight-character.model.js');
-		const ch = await WillowlightCharacterModel.get({ shareId: req.params.id });
+	//Willowlight Share
+	app.get('/willowlight/share/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: WillowlightModel } = await import('./willowlight.model.js');
+		const ch = await WillowlightModel.get({ shareId: req.params.id });
 		req.willowlightCharacter = ch.toObject();
 		req.ogMeta = { ...defaultMetaTags,
 			title       : req.willowlightCharacter.name || 'Willowlight Character',
-			description : 'Willowlight Engine character sheet'
+			description : 'Willowlight Engine character'
 		};
 		return next();
 	}));
 
-	//Willowlight Character Library
-	app.get('/willowlight-character/library', (req, res, next)=>{
+	//Willowlight Library
+	app.get('/willowlight/library', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Willowlight Character Library',
+			title       : 'Willowlight Engine',
 			description : 'Browse your Willowlight Engine characters'
 		};
 		return next();
@@ -857,7 +813,6 @@ export default async function createApp(vite) {
 			userStatblocks         : req.userStatblocks,
 			besmCharacter          : req.besmCharacter,
 			brpStatblock           : req.brpStatblock,
-			willowlightStatblock   : req.willowlightStatblock,
 			willowlightCharacter   : req.willowlightCharacter
 		};
 

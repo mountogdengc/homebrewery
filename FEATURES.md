@@ -14,9 +14,10 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 - [ ] Character sheet tab consolidation — too many tabs to click through for a single character; consider combining profile + narrative into one page, or a single scrollable "full sheet" view that prints as multiple pages
 
 ## Willowlight Engine
-- [x] Willowlight character sheet print/PDF layout — 2-page landscape sheet at `/willowlight-character/sheet/:id`, populated from saved character data
+- [x] Willowlight character sheet print/PDF layout — 2-page landscape sheet at `/willowlight/sheet/:id`, populated from saved character data
 - [x] Character builder schema expanded — demographics, domain focus, lifestyle, downtime, session/total/spent XP, hearth trigger, afflictions, equipment, connection rating/relationship
-- [ ] Contacts health track rendering in character sheet preview
+- [x] Contacts health track rendering in character sheet preview
+- [x] Unified character/NPC/creature model — one builder, one library, one DB collection; every entity gets both a compact stat block view (for books) and a full character sheet view; stat block and character routes consolidated under `/willowlight/*`
 
 ## AI Generation
 - [ ] Add Claude API as alternative generator (toggle between local and cloud)

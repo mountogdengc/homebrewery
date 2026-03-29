@@ -21,12 +21,9 @@ import StatblockImportPage from './pages/statblockImportPage/statblockImportPage
 import BrpStatblockEditorPage from './pages/brpStatblockEditorPage/brpStatblockEditorPage.jsx';
 import BrpStatblockLibraryPage from './pages/brpStatblockLibraryPage/brpStatblockLibraryPage.jsx';
 import BrpStatblockSharePage from './pages/brpStatblockSharePage/brpStatblockSharePage.jsx';
-import WillowlightStatblockEditorPage from './pages/willowlightStatblockEditorPage/willowlightStatblockEditorPage.jsx';
-import WillowlightStatblockLibraryPage from './pages/willowlightStatblockLibraryPage/willowlightStatblockLibraryPage.jsx';
-import WillowlightStatblockSharePage from './pages/willowlightStatblockSharePage/willowlightStatblockSharePage.jsx';
-import WillowlightCharacterEditorPage from './pages/willowlightCharacterEditorPage/willowlightCharacterEditorPage.jsx';
-import WillowlightCharacterLibraryPage from './pages/willowlightCharacterLibraryPage/willowlightCharacterLibraryPage.jsx';
-import WillowlightCharacterSharePage from './pages/willowlightCharacterSharePage/willowlightCharacterSharePage.jsx';
+import WillowlightEditorPage from './pages/willowlightEditorPage/willowlightEditorPage.jsx';
+import WillowlightLibraryPage from './pages/willowlightLibraryPage/willowlightLibraryPage.jsx';
+import WillowlightSharePage from './pages/willowlightSharePage/willowlightSharePage.jsx';
 
 // Lazy-load BESM pages — keeps ~500KB of data libraries out of the main bundle
 const BesmBuilderPage = lazy(()=>import('./pages/besmBuilder/besmBuilderPage.jsx'));
@@ -96,14 +93,10 @@ const Homebrew = (props)=>{
 					<Route path='/brp/edit/:id' element={<WithRoute el={BrpStatblockEditorPage} brpStatblock={props.brpStatblock} />} />
 					<Route path='/brp/share/:id' element={<WithRoute el={BrpStatblockSharePage} brpStatblock={props.brpStatblock} />} />
 					<Route path='/brp/library' element={<WithRoute el={BrpStatblockLibraryPage} />} />
-					<Route path='/willowlight/new' element={<WithRoute el={WillowlightStatblockEditorPage} />} />
-					<Route path='/willowlight/edit/:id' element={<WithRoute el={WillowlightStatblockEditorPage} willowlightStatblock={props.willowlightStatblock} />} />
-					<Route path='/willowlight/share/:id' element={<WithRoute el={WillowlightStatblockSharePage} willowlightStatblock={props.willowlightStatblock} />} />
-					<Route path='/willowlight/library' element={<WithRoute el={WillowlightStatblockLibraryPage} />} />
-					<Route path='/willowlight-character/new' element={<WithRoute el={WillowlightCharacterEditorPage} />} />
-					<Route path='/willowlight-character/edit/:id' element={<WithRoute el={WillowlightCharacterEditorPage} willowlightCharacter={props.willowlightCharacter} />} />
-					<Route path='/willowlight-character/share/:id' element={<WithRoute el={WillowlightCharacterSharePage} willowlightCharacter={props.willowlightCharacter} />} />
-					<Route path='/willowlight-character/library' element={<WithRoute el={WillowlightCharacterLibraryPage} />} />
+					<Route path='/willowlight/new' element={<WithRoute el={WillowlightEditorPage} />} />
+					<Route path='/willowlight/edit/:id' element={<WithRoute el={WillowlightEditorPage} willowlightCharacter={props.willowlightCharacter} />} />
+					<Route path='/willowlight/share/:id' element={<WithRoute el={WillowlightSharePage} willowlightCharacter={props.willowlightCharacter} />} />
+					<Route path='/willowlight/library' element={<WithRoute el={WillowlightLibraryPage} />} />
 					<Route path='/statblock/new' element={<WithRoute el={StatblockEditorPage} />} />
 					<Route path='/statblock/edit/:id' element={<WithRoute el={StatblockEditorPage} statblock={props.statblock} />} />
 					<Route path='/statblock/share/:id' element={<WithRoute el={StatblockSharePage} statblock={props.statblock} />} />
