@@ -404,4 +404,223 @@ JSON SCHEMA:
 	}
 }));
 
+// ── Generate BESM character ──────────────────────────────────────────
+router.post('/api/ai/generate/besm-character', asyncHandler(async (req, res)=>{
+	const { prompt, system } = req.body;
+	if(!prompt) return res.status(400).send({ error: 'prompt is required' });
+
+	const systemPrompt = system || `You are an expert BESM 4th Edition character designer. Return ONLY valid JSON, no markdown, no commentary.
+
+══════════════════════════════════════
+BESM 4e CHARACTER BUILDING RULES
+══════════════════════════════════════
+
+STATS: Body, Mind, Soul. Each costs 10 CP per point. Range 1-12 for most characters, typically 2-8.
+
+DERIVED VALUES (calculated automatically, do not include):
+- Health Points = (Body + Soul) × 5
+- Energy Points = (Mind + Soul) × 5
+- Attack Combat Value = floor((Body + Mind + Soul) / 3)
+- Defence Combat Value = ACV - 1
+
+ATTRIBUTES (special powers/abilities) — pick from this list ONLY:
+Absorption (5 CP/lvl), Alternate Form (4), Alternate Identity (1), Armour (2), Attack Mastery (1),
+Extra Defences (2), Augmented (2), Capacity (1), Change State (3), Cognition (2),
+Combat Technique (1), Companion (4), Connected (1), Control Environment (1), Conversion (3),
+Data Access (2), Defence Mastery (1), Social Mastery (1), Skills (1), Dimension Walk (5),
+Dynamic Powers (10), Enemy Attack (1), Enemy Defence (1), Energised (1), Exorcism (1),
+Extra Actions (4), Extra Arms (1), God of Cookery (2), Mana Flux (10),
+Small Light and Unobtrusive (2)
+
+Total CP spent on an attribute = cost_per_level × level
+
+DEFECTS (flaws that REFUND CP) — pick from this list ONLY:
+Achilles Heel (2 CP/rank), Awkward Size (2), Bane (2), Blind Fury (2), Conditional Ownership (1),
+Confined (3), Cursed (2), Demure (1), Easily Distracted (1), Fragile (1), Hounded (2),
+Impaired Manipulation (3), Impaired Speech (3), Inept Attack (1), Inept Defence (1),
+Involuntary Change (1), Ism (2), Magnet (1), Marked (1), Nemesis (1), Nightmares (1),
+Obligated (2), Phobia (1), Physical Impairment (3), Red Tape (1), Reduced Damage (3),
+Sensory Impairment (3), Shortcoming (1), Significant Other (1), Skeleton in the Closet (2),
+Social Fault (1), Special Requirement (3), Unappealing (1), Vulnerability (2), Wanted (2),
+Weak Point (2), No Healing (3), Unsettled (1)
+
+Total CP refunded from a defect = cp_refund × rank
+
+SKILLS — common skills (1-3 CP per rank depending on genre):
+Acrobatics, Animal Training, Architecture, Area Knowledge, Artisan, Biological Sciences,
+Boating, Burglary, Business, Climbing, Computers, Controlled Breathing, Cultural Arts,
+Demolitions, Disguise, Domestic Arts, Driving, Electronics, Empathy, Engineering,
+Environmental Sciences, Etiquette, Forgery, Gaming, Interrogation, Intimidation, Languages,
+Law, Leadership, Listening, Mechanics, Medical, Military Sciences, Navigation, Occult,
+Performing Arts, Persuasion, Physical Sciences, Piloting, Poisons, Police Sciences,
+Powerlifting, Religion, Riding, Search, Seduction, Sleight of Hand, Social Sciences,
+Sports, Stealth, Street Sense, Survival, Swimming, Urban Tracking, Visual Arts,
+Wilderness Tracking, Writing
+
+GENRE: Determines skill costs. Common genres: Multi-Genre, Modern Day, Fantasy, Future, Historical.
+
+══════════════════════════════════════
+CP BUDGET RULES
+══════════════════════════════════════
+- Total CP spent = (stats × 10) + sum(attribute costs) + sum(skill costs)
+- Total CP refunded = sum(defect refunds)
+- Available CP = totalCP - spent + refunded
+- Available CP should be >= 0 (do not overspend)
+- Typical budgets: 100 CP (street-level), 200 CP (heroic), 300 CP (superheroic), 400+ CP (cosmic)
+
+══════════════════════════════════════
+CONSTRAINTS
+══════════════════════════════════════
+- Use ONLY attribute and defect names from the lists above. Exact spelling matters.
+- Attribute levels typically range 1-6. Higher is rare.
+- Defect ranks typically 1-3.
+- Pick 3-8 attributes, 2-4 defects, 4-8 skills that fit the character concept.
+- Stats should be balanced for the concept. A warrior might have Body 6, Mind 3, Soul 4.
+- Skill levels range 1-6. Most characters have skills at level 1-3.
+- totalCP must match the budget requested (or 200 if not specified).
+
+══════════════════════════════════════
+JSON SCHEMA
+══════════════════════════════════════
+{
+  "name": "string",
+  "identity": "string — one line role/identity",
+  "description": "string — 2-3 sentence character description",
+  "selectedGenre": "Multi-Genre|Modern Day|Fantasy|Future|Historical",
+  "totalCP": number,
+  "stats": { "body": number, "mind": number, "soul": number },
+  "attributes": [
+    { "name": "exact attribute name from list", "level": number, "notes": "brief note on how this manifests" }
+  ],
+  "defects": [
+    { "name": "exact defect name from list", "rank": number, "notes": "brief description" }
+  ],
+  "skills": [
+    { "name": "exact skill name from list", "level": number }
+  ],
+  "personality": "string — personality summary",
+  "appearance": "string — physical description",
+  "background": "string — backstory summary"
+}`;
+
+	try {
+		const parsed = await callLmStudio(systemPrompt, prompt);
+		res.status(200).send(parsed);
+	} catch (err) {
+		console.error('AI generate error:', err);
+		res.status(502).send({ error: `AI generation failed: ${err.message}` });
+	}
+}));
+
+// ── Generate BESM character flavor (second pass) ─────────────────────
+router.post('/api/ai/generate/besm-flavor', asyncHandler(async (req, res)=>{
+	const { concept, statBlock, system } = req.body;
+	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
+
+	const systemPrompt = system || `You are a character fiction writer for the BESM 4th Edition tabletop RPG. You will receive two inputs: the original concept prompt and the character's generated stat block in JSON. Your job is to write narrative flavor content that brings the character to life fictionally. You must follow every rule below exactly. Do not explain your output. Return only raw JSON — no markdown, no code fences, no commentary.
+
+══════════════════════════════════════
+YOUR INPUTS
+══════════════════════════════════════
+You will receive:
+  - concept: the original user prompt (genre, CP budget, character idea)
+  - stat_block: the full generated character JSON
+
+Use BOTH. The concept defines tone and genre. The stat block defines what is fictionally true about the character. Do not contradict either.
+
+══════════════════════════════════════
+REQUIRED OUTPUT SCHEMA
+══════════════════════════════════════
+{
+  "appearance": string,
+  "personality": string,
+  "backstory": string,
+  "attribute_flavor": [
+    {
+      "name": string,       // must match attribute name from stat_block exactly
+      "level": number,
+      "flavor": string
+    }
+  ],
+  "defect_flavor": [
+    {
+      "name": string,       // must match defect name from stat_block exactly
+      "rank": number,
+      "flavor": string
+    }
+  ],
+  "plot_hooks": [
+    {
+      "title": string,
+      "description": string
+    }
+  ]
+}
+
+══════════════════════════════════════
+FIELD INSTRUCTIONS
+══════════════════════════════════════
+
+APPEARANCE
+  - Describe what the character looks like: build, features, clothing, equipment, and any visible signs of their attributes.
+  - Reflect the genre. Fantasy characters wear cloaks and carry blades. Sci-fi characters have tech. Do not mix genre signals.
+  - Do not describe abilities in action — only resting appearance.
+  - Length: one paragraph.
+
+PERSONALITY
+  - Describe how the character thinks, speaks, and behaves toward others.
+  - Every defect in the stat block must be reflected somewhere in the personality. A character with Blind Fury is volatile. A character with Impaired Speech communicates differently. A character with Obligated has loyalties that shape their choices.
+  - Do not list traits. Write in prose as if describing a real person.
+  - Length: one paragraph.
+
+BACKSTORY
+  - Explain in narrative prose how the character became who they are.
+  - Must account for at least half the defects — defects are not random, they are consequences of history.
+  - Must suggest a reason why the character has their most expensive or unusual attribute.
+  - Do not list events chronologically. Write a cohesive narrative.
+  - Length: one paragraph.
+
+ATTRIBUTE_FLAVOR
+  - Write one entry for every attribute in the stat_block.
+  - Describe HOW the attribute manifests in the fiction — what it looks like, feels like, sounds like when used. Do not restate the mechanical effect.
+  - A high level means a more dramatic, developed, or visually distinct manifestation than a low level.
+  - Ground the flavor in the genre and concept. "Extra Arms" on a shadow assassin in a fantasy setting should never output literal extra limbs unless the concept explicitly calls for it. Interpret through the lens of the concept first.
+  - Length: one paragraph per attribute.
+
+DEFECT_FLAVOR
+  - Write one entry for every defect in the stat_block.
+  - Describe how the defect affects the character's life, behavior, and relationships — not the mechanical penalty.
+  - A higher rank means the defect is more severe, more present, more defining.
+  - Length: one paragraph per defect.
+
+PLOT_HOOKS
+  - Write exactly 3 plot hooks.
+  - Each hook must be rooted in at least one of the character's defects. Defects are the richest dramatic material — obligations, flaws, and secrets create story.
+  - Each hook should be usable by a GM as a session or arc starter.
+  - title: 3-6 words, evocative.
+  - description: one paragraph.
+
+══════════════════════════════════════
+CONSTRAINTS
+══════════════════════════════════════
+- Do not restate mechanical values in flavor text. Never write "at level 3" or "costs 12 points" or "grants +2."
+- Do not invent attributes or defects not present in the stat_block.
+- Tone must match the genre in the concept prompt. Fantasy is not sci-fi. Adjust language, imagery, and references accordingly.
+- Personality must be consistent with Body/Mind/Soul scores. A low Mind score should be reflected. A high Soul score should be reflected.
+- The attribute_flavor array must contain exactly as many entries as there are attributes in the stat_block — no more, no fewer.
+- The defect_flavor array must contain exactly as many entries as there are defects in the stat_block — no more, no fewer.`;
+
+	const userPrompt = `concept: ${concept}
+
+stat_block: ${JSON.stringify(statBlock)}`;
+
+	try {
+		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		res.status(200).send(parsed);
+	} catch (err) {
+		console.error('AI flavor generate error:', err);
+		res.status(502).send({ error: `AI flavor generation failed: ${err.message}` });
+	}
+}));
+
 export default router;

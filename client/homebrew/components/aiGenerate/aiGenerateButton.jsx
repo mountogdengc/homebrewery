@@ -26,6 +26,7 @@ const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate' }
 			const res = await request.post(endpoint)
 				.send({ prompt: prompt.trim() })
 				.timeout({ response: 180000 });
+			res.body._conceptPrompt = prompt.trim();
 			onGenerated(res.body);
 			setShowModal(false);
 			setPrompt('');
