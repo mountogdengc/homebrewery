@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BESM 4e — Stat Block</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;700&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+  :root {
+    --header-bg: #3a3a50;
+    --header-text: #fff;
+    --border: #888;
+    --border-light: #bbb;
+    --row-alt: #f2f0ec;
+    --row-white: #fff;
+    --text: #222;
+    --text-dim: #555;
+    --bg: #faf8f4;
+    --accent: #4a4a6a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #e8e4dc;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 11px;
+    color: var(--text);
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .toolbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: var(--header-bg); padding: 8px 16px;
+    display: flex; align-items: center; gap: 12px; z-index: 100;
+  }
+  .toolbar a, .toolbar button {
+    color: #ccc; text-decoration: none; font-family: 'Open Sans', sans-serif;
+    font-size: 12px; background: none; border: 1px solid #666;
+    padding: 4px 12px; border-radius: 3px; cursor: pointer;
+  }
+  .toolbar a:hover, .toolbar button:hover { color: #fff; border-color: #aaa; }
+  .toolbar .title { color: #fff; font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 1px; flex: 1; }
+
+  .statblock {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    width: 380px;
+    box-shadow: 1px 2px 6px rgba(0,0,0,0.15);
+    margin-top: 50px;
+  }
+
+  /* === TITLE === */
+  .sb-title {
+    text-align: center;
+    padding: 10px 12px 6px;
+    border-bottom: 2px solid var(--border);
+  }
+  .sb-name {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .sb-subtitle {
+    font-style: italic;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  /* === SECTION HEADER === */
+  .sb-section-header {
+    background: var(--header-bg);
+    color: var(--header-text);
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+  }
+
+  /* === STATS TABLE === */
+  .sb-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .sb-stats-table th {
+    background: var(--header-bg);
+    color: var(--header-text);
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 6px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .sb-stats-table th:first-child {
+    text-align: left;
+    width: 60px;
+  }
+  .sb-stats-table td {
+    padding: 2px 6px;
+    text-align: center;
+    border: 1px solid var(--border-light);
+    font-weight: 600;
+    font-size: 11px;
+  }
+  .sb-stats-table td:first-child {
+    text-align: left;
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* === DERIVED VALUES === */
+  .sb-derived {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .sb-derived-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 8px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 11px;
+  }
+  .sb-derived-row:nth-child(odd) { background: var(--row-alt); }
+  .sb-derived-row:nth-child(even) { background: var(--row-white); }
+  .sb-derived-label { font-weight: 400; }
+  .sb-derived-val { font-weight: 700; text-align: right; }
+  .sb-derived-left, .sb-derived-right {
+    border-bottom: 1px solid var(--border-light);
+  }
+  .sb-derived-left {
+    border-right: 1px solid var(--border-light);
+  }
+
+  /* Movement Speed */
+  .sb-movement-header {
+    background: var(--header-bg);
+    color: var(--header-text);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    grid-column: 1 / -1;
+  }
+  .sb-movement {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .sb-movement-cell {
+    text-align: center;
+    padding: 1px 4px;
+    border-right: 1px solid var(--border-light);
+    font-size: 10px;
+  }
+  .sb-movement-cell:last-child { border-right: none; }
+  .sb-movement-cell.header {
+    font-weight: 700;
+    font-size: 9px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: var(--row-alt);
+  }
+
+  /* SCV row */
+  .sb-scv-row {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 8px;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--row-alt);
+    font-size: 11px;
+  }
+
+  /* === ATTRIBUTE/DEFECT TABLES === */
+  .sb-attr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .sb-attr-table th {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 2px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--row-alt);
+  }
+  .sb-attr-table th:nth-child(2),
+  .sb-attr-table th:nth-child(3) {
+    text-align: right;
+    width: 50px;
+  }
+  .sb-attr-table td {
+    padding: 1px 8px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .sb-attr-table td:nth-child(2),
+  .sb-attr-table td:nth-child(3) {
+    text-align: right;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sb-attr-table tr:nth-child(even) { background: var(--row-alt); }
+  .sb-attr-table tr:nth-child(odd) { background: var(--row-white); }
+  .sb-attr-table .attr-detail {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 10px;
+  }
+  .sb-attr-table .sub-row td {
+    padding-left: 16px;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  /* Points total row */
+  .sb-points-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 8px;
+    font-weight: 700;
+    font-size: 11px;
+    border-top: 2px solid var(--border);
+    background: var(--row-alt);
+  }
+
+  /* Power Bundle / Total */
+  .sb-total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    font-weight: 700;
+    font-size: 12px;
+    border-top: 2px solid var(--border);
+    background: var(--row-alt);
+  }
+
+  /* Print styles */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar { display: none; }
+    .statblock { box-shadow: none; margin-top: 0; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a href="/"><i class="fas fa-home"></i></a>
+  <span class="title">BESM 4e Stat Block</span>
+  <button onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+</div>
+
+<!-- ===== CORPSE LIGHT ===== -->
+<div class="statblock" id="sb-corpse-light"></div>
+
+<!-- ===== SPECTRAL WARRIOR ===== -->
+<div class="statblock" id="sb-spectral-warrior"></div>
+
+<script>
+// ---- DATA ----
+const corpseLight = {
+  name: "Corpse Light",
+  powerLevel: "Human",
+  totalCP: 23,
+  sizeRank: -3,
+  sizeName: "Diminutive (Malevolent Spirit of Lost Souls)",
+  stats: { body: null, mind: 2, soul: 6 },
+  statPoints: { body: 0, mind: 4, soul: 12 },
+  derived: {
+    acv: "3 (6)", dcv: "3 (6)", dm: 4, armour: -30,
+    hp: 40, ep: 90, sp: 8, sv: 10
+  },
+  scv: 4,
+  movement: { walk: 0.2, jog: 0.4, run: 0.5, sprint: 1 },
+  attributes: [
+    { name: "Energised", detail: "+30 EP", level: 3, points: 3 },
+    { name: "Features", detail: "No Pain", level: 1, points: 1 },
+    { name: "Immunity: Electricity", detail: null, level: 4, points: 12 },
+    { name: "Ranged Attack", detail: "+3 ACV", level: 3, points: 3 },
+    { name: "Ranged Defence", detail: "+3 DCV", level: 3, points: 3 },
+    { name: "Tough", detail: "+10 HP", level: 1, points: 1 },
+    { name: "Undetectable", detail: "Sight", level: 2, points: 4 },
+    { name: "Unique Attribute", detail: "Small, light, and unobtrusive", level: 3, points: 3 },
+    { name: "Weapon", detail: "Lightning; E: Enervation x2 -2; L: Deplete 10 EP +1", level: "5 (4)", points: 10 }
+  ],
+  attributePoints: 84,
+  defects: [
+    { name: "Unique Defect: Lifting Capacity", rank: 3, points: -18 },
+    { name: "Unique Defect: Running Speed", rank: 3, points: -3 },
+    { name: "Unique Defect: Strength Damage", rank: 3, points: -6 },
+    { name: "Unique Defect: Thrown Weapon Distance", rank: 3, points: -3 },
+    { name: "Unique Defect: Extra Damage", rank: 3, points: -12 }
+  ],
+  defectPoints: -71,
+  powerBundle: "Spectral Undead",
+  totalPoints: 16
+};
+
+const spectralWarrior = {
+  name: "Spectral Warrior",
+  powerLevel: "Heroic",
+  totalCP: 94,
+  sizeRank: 0,
+  sizeName: "Medium (Undead)",
+  stats: { body: null, mind: 8, soul: 10 },
+  statPoints: { body: 0, mind: 16, soul: 20 },
+  derived: {
+    acv: 10, dcv: 10, dm: 5, armour: 20,
+    hp: 130, ep: 80, sp: 18, sv: 26
+  },
+  scv: 9,
+  movement: { walk: 48, jog: 72, run: 96, sprint: "192-240" },
+  attributes: [
+    { name: "Armour", detail: null, level: 4, points: 12 },
+    { name: "Extra Actions", detail: null, level: 1, points: 4 },
+    { name: "Extra Limbs", detail: null, level: 2, points: 2 },
+    { name: "Features", detail: "Eidetic Memory, Longevity", level: 1, points: 1 },
+    { name: "Regeneration: Conditional", detail: "Soil; 15/hp rnd", level: "2 (3)", points: 10 },
+    { name: "Reincarnation: Regrow from acorn", detail: null, level: 1, points: 2 },
+    { name: "Sixth Sense: Grove Disturbances", detail: null, level: 1, points: 1 },
+    { name: "Special Movement: Fast x2", detail: null, level: 2, points: 2 },
+    { name: "Superstrength", detail: null, level: 2, points: 8 },
+    { name: "Tough", detail: null, level: 2, points: 2 },
+    { name: "Unique Attribute: x4 Thrown Weapon Distance", detail: null, level: 2, points: 2 },
+    { name: "Weapon: Branches", detail: "Muscle, Reach; Damage 30", level: "6 (4)", points: 12 }
+  ],
+  attributePoints: 54,
+  defects: [
+    { name: "Achilles Heel: Fire", rank: 3, points: -6 },
+    { name: "Confined: Druid Grove", rank: 2, points: -6 },
+    { name: "Inept Attack: Ranged", rank: 2, points: -2 },
+    { name: "Inept Defence: Ranged", rank: 2, points: -2 },
+    { name: "Unique Defect: Big, Heavy and Obvious", rank: 2, points: -4 }
+  ],
+  defectPoints: -20,
+  powerBundle: null,
+  totalPoints: null
+};
+
+// ---- RENDERER ----
+
+function renderStatblock(data, targetId) {
+  const el = document.getElementById(targetId);
+
+  const bodyDisplay = data.stats.body === null ? 'NA' : data.stats.body;
+  const bodyPoints = data.statPoints.body || '—';
+
+  let html = `
+    <div class="sb-title">
+      <div class="sb-name">${data.name}</div>
+      <div class="sb-subtitle">
+        <em>Power Level:</em> ${data.powerLevel} (${data.totalCP})<br>
+        <em>Size Rank ${data.sizeRank}:</em> ${data.sizeName}
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <table class="sb-stats-table">
+      <tr>
+        <th>Stat</th><th>Body</th><th>Mind</th><th>Soul</th>
+      </tr>
+      <tr>
+        <td>Value</td><td>${bodyDisplay}</td><td>${data.stats.mind}</td><td>${data.stats.soul}</td>
+      </tr>
+      <tr>
+        <td>Points</td><td>${bodyPoints}</td><td>${data.statPoints.mind}</td><td>${data.statPoints.soul}</td>
+      </tr>
+    </table>
+
+    <!-- Derived Values -->
+    <div class="sb-section-header">Derived Values</div>
+    <div class="sb-derived">
+      <div class="sb-derived-left">
+        <div class="sb-derived-row"><span class="sb-derived-label">Attack Combat Value</span><span class="sb-derived-val">${data.derived.acv}</span></div>
+        <div class="sb-derived-row"><span class="sb-derived-label">Defence Combat Value</span><span class="sb-derived-val">${data.derived.dcv}</span></div>
+        <div class="sb-derived-row"><span class="sb-derived-label">Damage Multiplier</span><span class="sb-derived-val">${data.derived.dm}</span></div>
+        <div class="sb-derived-row"><span class="sb-derived-label">Armour (Physical)</span><span class="sb-derived-val">${data.derived.armour}</span></div>
+      </div>
+      <div class="sb-derived-right">
+        <div class="sb-derived-row"><span class="sb-derived-label">Health Points</span><span class="sb-derived-val">${data.derived.hp}</span></div>
+        <div class="sb-derived-row"><span class="sb-derived-label">Energy Points</span><span class="sb-derived-val">${data.derived.ep}</span></div>
+        <div class="sb-derived-row"><span class="sb-derived-label">Sanity Points</span><span class="sb-derived-val">${data.derived.sp}</span></div>
+        <div class="sb-derived-row"><span class="sb-derived-label">Shock Value</span><span class="sb-derived-val">${data.derived.sv}</span></div>
+      </div>
+      <div class="sb-movement-header">Movement Speed</div>
+      <div class="sb-movement">
+        <div class="sb-movement-cell header">Walk</div>
+        <div class="sb-movement-cell header">Jog</div>
+        <div class="sb-movement-cell header">Run</div>
+        <div class="sb-movement-cell header">Sprint</div>
+        <div class="sb-movement-cell">${data.movement.walk}</div>
+        <div class="sb-movement-cell">${data.movement.jog}</div>
+        <div class="sb-movement-cell">${data.movement.run}</div>
+        <div class="sb-movement-cell">${data.movement.sprint}</div>
+      </div>
+      <div class="sb-scv-row">
+        <span class="sb-derived-label">Social Combat Value</span>
+        <span class="sb-derived-val">${data.scv}</span>
+      </div>
+    </div>
+
+    <!-- Attributes -->
+    <div class="sb-section-header">Attributes</div>
+    <table class="sb-attr-table">
+      <tr><th>Attribute</th><th>Level</th><th>Points</th></tr>
+      ${data.attributes.map(a => {
+        const nameStr = a.detail
+          ? `${a.name} <span class="attr-detail">(${a.detail})</span>`
+          : a.name;
+        return `<tr><td>${nameStr}</td><td>${a.level}</td><td>${a.points}</td></tr>`;
+      }).join('')}
+    </table>
+    <div class="sb-points-row"><span>Points</span><span>${data.attributePoints}</span></div>
+
+    <!-- Defects -->
+    <div class="sb-section-header">Defects</div>
+    <table class="sb-attr-table">
+      <tr><th>Defect</th><th>Rank</th><th>Points</th></tr>
+      ${data.defects.map(d =>
+        `<tr><td>${d.name}</td><td>${d.rank}</td><td>${d.points}</td></tr>`
+      ).join('')}
+    </table>
+    <div class="sb-points-row"><span>Points</span><span>${data.defectPoints}</span></div>
+  `;
+
+  if (data.powerBundle) {
+    html += `<div class="sb-section-header">Power Bundle: ${data.powerBundle}</div>`;
+  }
+
+  if (data.totalPoints !== null) {
+    html += `<div class="sb-total-row"><span>Total Points</span><span>${data.totalPoints}</span></div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+// ---- INIT ----
+renderStatblock(corpseLight, 'sb-corpse-light');
+renderStatblock(spectralWarrior, 'sb-spectral-warrior');
+</script>
+</body>
+</html>

@@ -102,6 +102,10 @@ are from the Player's Handbook, you will find it in the
 If you are developing locally and would like to generate your own, follow the
 above steps and then run `npm run phb`.
 
+## Troubleshooting
+
+Running into problems during local development? See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for common issues (route ordering with Vite middleware, `NODE_ENV` configuration, etc.).
+
 ## Issues, Suggestions, and Bugs
 If you run into any issues using The Homebrewery or have suggestions for
 improvement, please submit an issue [on GitHub][repo-issues-url].

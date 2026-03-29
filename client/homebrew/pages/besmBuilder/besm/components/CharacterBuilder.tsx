@@ -77,6 +77,11 @@ export function CharacterBuilder({ initialCharacter, onCharacterChange }: Charac
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
+      // On initial load, push the character with recalculated derived values
+      // so they get persisted on next save
+      if (character && onCharacterChange) {
+        onCharacterChange(character);
+      }
       return;
     }
     onCharacterChange?.(character);

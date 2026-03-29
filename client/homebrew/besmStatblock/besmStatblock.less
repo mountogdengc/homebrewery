@@ -1,0 +1,237 @@
+// ── BESM 4e Stat Block Styles ───────────────────────────────────────
+// Matches the InDesign Corpse Light / Spectral Warrior format
+
+@besm-header-bg:   #3a3a50;
+@besm-header-text: #fff;
+@besm-border:      #888;
+@besm-border-lt:   #bbb;
+@besm-row-alt:     #f2f0ec;
+@besm-row-white:   #fff;
+@besm-text:        #222;
+@besm-text-dim:    #555;
+@besm-bg:          #faf8f4;
+
+.besmStatblockPreview {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  min-height: 100%;
+  background: #e8e4dc;
+}
+
+.besm-statblock {
+  background: @besm-bg;
+  border: 1px solid @besm-border;
+  width: 380px;
+  box-shadow: 1px 2px 6px rgba(0,0,0,0.15);
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 11px;
+  color: @besm-text;
+
+  &--wide {
+    width: 720px;
+  }
+}
+
+// ── Title ──
+.besm-title {
+  text-align: center;
+  padding: 10px 12px 6px;
+  border-bottom: 2px solid @besm-border;
+}
+.besm-name {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: @besm-text;
+}
+.besm-subtitle {
+  font-style: italic;
+  font-size: 10px;
+  color: @besm-text-dim;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+// ── Section Header ──
+.besm-section-header {
+  background: @besm-header-bg;
+  color: @besm-header-text;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+}
+
+// ── Stats Table ──
+.besm-stats-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    background: @besm-header-bg;
+    color: @besm-header-text;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 6px;
+    text-align: center;
+    border: 1px solid @besm-border;
+
+    &:first-child { text-align: left; width: 60px; }
+  }
+
+  td {
+    padding: 2px 6px;
+    text-align: center;
+    border: 1px solid @besm-border-lt;
+    font-weight: 600;
+    font-size: 11px;
+
+    &:first-child {
+      text-align: left;
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: @besm-text-dim;
+    }
+  }
+}
+
+// ── Derived Values ──
+.besm-derived {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.besm-derived-left {
+  border-right: 1px solid @besm-border-lt;
+}
+
+.besm-derived-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 8px;
+  border-bottom: 1px solid @besm-border-lt;
+  font-size: 11px;
+
+  &:nth-child(odd) { background: @besm-row-alt; }
+  &:nth-child(even) { background: @besm-row-white; }
+}
+
+.besm-dv-label { font-weight: 400; }
+.besm-dv-val { font-weight: 700; text-align: right; }
+
+.besm-movement-header {
+  background: @besm-header-bg;
+  color: @besm-header-text;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  grid-column: 1 / -1;
+}
+
+.besm-movement {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-column: 1 / -1;
+  border-bottom: 1px solid @besm-border-lt;
+}
+
+.besm-mv-cell {
+  text-align: center;
+  padding: 1px 4px;
+  border-right: 1px solid @besm-border-lt;
+  font-size: 10px;
+
+  &:last-child { border-right: none; }
+
+  &.header {
+    font-weight: 700;
+    font-size: 9px;
+    text-transform: uppercase;
+    color: @besm-text-dim;
+    background: @besm-row-alt;
+  }
+}
+
+.besm-scv-row {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 8px;
+  border-bottom: 1px solid @besm-border-lt;
+  background: @besm-row-alt;
+  font-size: 11px;
+}
+
+// ── Attribute / Defect / Skill Tables ──
+.besm-attr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+
+  th {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: @besm-text-dim;
+    padding: 2px 8px;
+    text-align: left;
+    border-bottom: 1px solid @besm-border;
+    background: @besm-row-alt;
+
+    &:nth-child(2), &:nth-child(3) {
+      text-align: right;
+      width: 50px;
+    }
+  }
+
+  td {
+    padding: 1px 8px;
+    border-bottom: 1px solid @besm-border-lt;
+    vertical-align: top;
+    line-height: 1.4;
+
+    &:nth-child(2), &:nth-child(3) {
+      text-align: right;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+  }
+
+  tr:nth-child(even) { background: @besm-row-alt; }
+  tr:nth-child(odd)  { background: @besm-row-white; }
+}
+
+.besm-attr-detail {
+  font-style: italic;
+  color: @besm-text-dim;
+  font-size: 10px;
+}
+
+// ── Points Rows ──
+.besm-points-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 8px;
+  font-weight: 700;
+  font-size: 11px;
+  border-top: 2px solid @besm-border;
+  background: @besm-row-alt;
+}
+
+.besm-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+  font-weight: 700;
+  font-size: 12px;
+  border-top: 2px solid @besm-border;
+  background: @besm-row-alt;
+}

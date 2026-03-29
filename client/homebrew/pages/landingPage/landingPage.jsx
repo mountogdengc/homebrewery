@@ -113,6 +113,24 @@ const LandingPage = ()=>{
 					</div>
 				</div>
 
+				{/* ── Tools ────────────────────────────────────────── */}
+				<div className="toolRow">
+					<h2 className="rowTitle">Tools</h2>
+					<div className="toolCards">
+						<a className="toolCard" href="/playtest">
+							<div className="toolIcon">
+								<i className="fas fa-dice-d20" />
+							</div>
+							<h3 className="toolName">Playtest Table</h3>
+							<p className="toolDesc">
+								Run Willowlight Engine sessions with a GM dashboard.
+								Track party health, roll dice against NPCs, manage
+								tides, taint, and encounters.
+							</p>
+						</a>
+					</div>
+				</div>
+
 				<div className="quickLinks">
 					<a href="/new">New Brew</a>
 					<a href="/statblock/library">5e Stat Blocks</a>
@@ -120,6 +138,7 @@ const LandingPage = ()=>{
 					<a href="/willowlight/library">Willowlight Stat Blocks</a>
 					<a href="/besm/library">BESM Characters</a>
 					<a href="/willowlight-character/library">Willowlight Characters</a>
+					<a href="/playtest">Playtest Table</a>
 					<a href="/vault">The Vault</a>
 					<a href="/changelog">Changelog</a>
 					<a href="/faq">FAQ</a>

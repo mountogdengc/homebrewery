@@ -31,6 +31,7 @@ import WillowlightCharacterSharePage from './pages/willowlightCharacterSharePage
 // Lazy-load BESM pages — keeps ~500KB of data libraries out of the main bundle
 const BesmBuilderPage = lazy(()=>import('./pages/besmBuilder/besmBuilderPage.jsx'));
 const BesmLibraryPage = lazy(()=>import('./pages/besmLibraryPage/besmLibraryPage.jsx'));
+const BesmStatblockSharePage = lazy(()=>import('./pages/besmStatblockSharePage/besmStatblockSharePage.jsx'));
 
 const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
@@ -90,6 +91,7 @@ const Homebrew = (props)=>{
 					<Route path='/besm/new' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading BESM Builder...</div>}><WithRoute el={BesmBuilderPage} /></Suspense>} />
 					<Route path='/besm/edit/:id' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading BESM Builder...</div>}><WithRoute el={BesmBuilderPage} besmCharacter={props.besmCharacter} /></Suspense>} />
 					<Route path='/besm/library' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading...</div>}><WithRoute el={BesmLibraryPage} /></Suspense>} />
+					<Route path='/besm/share/:id' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading...</div>}><WithRoute el={BesmStatblockSharePage} besmCharacter={props.besmCharacter} /></Suspense>} />
 					<Route path='/brp/new' element={<WithRoute el={BrpStatblockEditorPage} />} />
 					<Route path='/brp/edit/:id' element={<WithRoute el={BrpStatblockEditorPage} brpStatblock={props.brpStatblock} />} />
 					<Route path='/brp/share/:id' element={<WithRoute el={BrpStatblockSharePage} brpStatblock={props.brpStatblock} />} />

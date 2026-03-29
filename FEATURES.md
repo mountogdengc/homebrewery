@@ -5,10 +5,11 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 ---
 
 ## BESM Builder
-- [ ] BESM stat block renderer — compact stat block view for saved characters (like the InDesign Corpse Light/Spectral Warrior format), embeddable in brews via `{{besm-statblock:shareId}}`
+- [x] BESM stat block renderer — compact stat block view for saved characters (like the InDesign Corpse Light/Spectral Warrior format), embeddable in brews via `{{besm-statblock:shareId}}`
 - [ ] Dedicated fields for plot hooks (currently stored in notes as stopgap)
-- [ ] Derived values (HP, EP, ACV, DCV) not recalculating on AI-generated character load — investigate builder initialization
-- [ ] "View as Stat Block" button on the character builder page
+- [x] Derived values (HP, EP, ACV, DCV) not recalculating on AI-generated character load — fixed: builder now pushes recalculated values on initial load, renderer recomputes from stats when DB values are zero
+- [x] "View as Stat Block" button on the character builder page
+- [ ] BESM character sheet PDF — replacement for current PDF export with derived values and full layout
 
 ## Willowlight Engine
 - [ ] Willowlight character sheet print/PDF layout
@@ -44,23 +45,56 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 
 ## Playtest Tool
 
-- [ ] Willowlight Engine playtest table — integrated GM tool for running sessions
-- [ ] Three-panel layout: Party (left), Character Detail (center), Encounters (right)
-- [ ] Party cards with health track boxes (Vitality/Willpower/Composure), Luck, Corruption
-- [ ] Enemy cards with tier system: Mook (group size pips), Elite, Boss, Legend
-- [ ] Dice roller with 2d6+Luck die, attribute/skill/TN config
-- [ ] Luck swap mechanic — player can swap luck die with a result die (costs a luck token)
-- [ ] SG Taint swap mechanic — SG can force a swap (increases taint pool, adds corruption)
-- [ ] Roll log with character attribution
-- [ ] Bottom tabs: Dice Roller, Party Management (anchor, connections, secrets, downtime), Storyguide (tides, SG notes)
-- [ ] Tides tracker with pip-based progress tracks
+- [x] Willowlight Engine playtest table — integrated GM tool for running sessions
+- [x] Three-panel layout: Party (left), Character Detail (center), Encounters (right)
+- [x] Party cards with health track boxes (Vitality/Willpower/Composure), Luck, Corruption
+- [x] Enemy cards with tier system: Mook (group size pips), Elite, Boss, Legend
+- [x] Dice roller with 2d6+Luck die, attribute/skill/TN config
+- [x] Luck swap mechanic — player can swap luck die with a result die (costs a luck token)
+- [x] SG Taint swap mechanic — SG can force a swap (increases taint pool, adds corruption)
+- [x] Roll log with character attribution
+- [x] Bottom tabs: Dice Roller, Party Management (anchor, connections, secrets, downtime), Storyguide (tides, SG notes)
+- [x] Tides tracker with pip-based progress tracks
+- [x] First draft HTML/JS prototype exists (see conversation history for full code)
+- [x] Roll against target NPC — select enemy + domain, auto-populate TN for attack or defense
+- [x] NPCs have offensive TN (player defends) and defensive TN (player attacks) per domain
+- [x] Playtest tool accessible from landing page card and `/playtest` route
+- [x] Home link in top bar to return to landing page
 - [ ] Import characters from saved Willowlight character sheets
-- [ ] First draft HTML/JS prototype exists (see conversation history for full code)
+
+### Session Management
+- [ ] Sessions are named and have a system type (Willowlight, 5e, BRP, BESM)
+- [ ] Session metadata: name, system, brief description, long-form description, created/modified timestamps
+- [ ] Save/load sessions to database — full state (party, enemies, tides, taint, notes, settings)
+- [ ] Roll logs are retained per session and reviewable on load
+- [ ] Load screen: list of saved sessions showing name, system, date/time, brief description
+- [ ] Multiple sessions can exist side-by-side (e.g. different playtest scenarios for the same system)
+
+## Playtest Tool — Other Systems
+- [ ] D&D 5e playtest table — initiative tracker, HP/AC, roll d20 vs AC/DC, condition tracking
+- [ ] BRP playtest table — skill rolls (d100 vs skill%), hit location, resistance table
+- [ ] BESM playtest table — 2d6 roll-under stats, combat value rolls, energy point tracking
+- [ ] System-agnostic playtest features — shared timer, turn order, generic notes
+- [ ] System-specific modules: each system defines its own dice mechanics, stat shapes, track types, and roll interpretation — the playtest shell loads the right module based on session system type
+
+### Analytics & Balance Testing
+- [ ] Roll analytics panel — aggregate stats from session roll log (success/cost/fail rates per character, per domain, per enemy)
+- [ ] Margin tracking — average roll margin above/below TN, broken down by domain and skill tier
+- [ ] Aspect/edge usage tracking — tag rolls with which aspect or edge was invoked, show frequency and impact on outcomes
+- [ ] Before/after comparison — show how success rates shift when a specific aspect or edge is active vs not
+- [ ] Damage efficiency — rolls-to-drop per enemy tier, broken down by attacker and domain
+- [ ] AI balance analysis — send session stats + roll log + character data to LLM for interpretive feedback (toggle local LLM vs Claude API, reuses existing AI generation infrastructure)
+
+## Playtest Tool — Open Questions
+These need design decisions before implementation:
+- Is the playtest tool solo-GM-only, or should players have a view (e.g. share link showing their character + dice)?
+- Should enemy/NPC stat blocks be saveable/loadable from a library (like character sheets)?
 
 ## Landing Page / Navigation
 - [ ] Per-row quick-create buttons on landing page
 - [ ] Recent items section on landing page
 - [ ] Replace Homebrewery/NaturalCrit branding in top menu bar with better UX
+- [ ] Standardize navigation buttons across all tools — consistent home/back button, save/load, library link in the same position and style on every tool page
 
 ## Infrastructure
 - [ ] Cover logo positioning still has column-layout issues in some cases

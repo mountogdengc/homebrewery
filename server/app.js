@@ -61,6 +61,11 @@ export default async function createApp(vite) {
 
 	app.set('trust proxy', 1 /* number of proxies between user and server */);
 
+	// Standalone prototypes — must be before Vite middleware (see TROUBLESHOOTING.md)
+	app.get('/playtest', (req, res)=>{
+		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-playtest.html'));
+	});
+
 	if(vite) {
 		app.use(vite.middlewares);
 	}
@@ -568,6 +573,7 @@ export default async function createApp(vite) {
 	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
 	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 
+
 	//Serve bookmarklet script with injected base URL
 	app.get('/statblock-bookmarklet.js', (req, res)=>{
 		const filePath = `${process.cwd()}/client/homebrew/pages/statblockImportPage/bookmarklet-ddb.js`;
@@ -646,6 +652,23 @@ export default async function createApp(vite) {
 		req.ogMeta = { ...defaultMetaTags,
 			title       : `Editing: ${req.besmCharacter.name || 'BESM Character'}`,
 			description : 'Edit a BESM 4th Edition character'
+		};
+		return next();
+	}));
+
+	//BESM Character Share (Stat Block View)
+	app.get('/besm/share/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: BesmCharacterModel } = await import('./besm-character.model.js');
+		let bc;
+		try {
+			bc = await BesmCharacterModel.get({ shareId: req.params.id });
+		} catch (e) {
+			return res.status(404).send('BESM character not found');
+		}
+		req.besmCharacter = bc.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : req.besmCharacter.name || 'BESM Character',
+			description : 'BESM 4th Edition stat block'
 		};
 		return next();
 	}));

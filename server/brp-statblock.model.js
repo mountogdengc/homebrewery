@@ -73,7 +73,6 @@ BrpStatblockSchema.statics.increaseView = async function(query) {
 // INDEXES
 
 BrpStatblockSchema.index({ name: 'text' });
-BrpStatblockSchema.index({ category: 1 });
 BrpStatblockSchema.index({ updatedAt: -1 });
 
 const BrpStatblock = mongoose.model('BrpStatblock', BrpStatblockSchema);

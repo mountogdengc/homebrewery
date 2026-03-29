@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Willowlight Engine — Playtest Table</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Fira+Mono:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
 
@@ -60,6 +61,13 @@
     justify-content: space-between;
     min-height: 36px;
   }
+  .home-link {
+    color: var(--text-dim); font-size: 14px; text-decoration: none;
+    display: flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .home-link:hover { color: var(--gold); background: var(--bg-card); }
   .top-bar h1 {
     font-family: 'Cinzel', serif;
     font-size: 14px;
@@ -368,7 +376,7 @@
   }
   .enemy-stat-label {
     font-family: 'Fira Mono', monospace; font-size: 10px; text-transform: uppercase;
-    color: var(--text-dim); width: 60px; flex-shrink: 0;
+    color: var(--text-dim); width: 48px; flex-shrink: 0;
   }
   .enemy-stat-val { color: var(--text); font-size: 12px; }
   .enemy-trait {
@@ -729,6 +737,7 @@
 
 <!-- TOP BAR -->
 <div class="top-bar">
+  <a href="/" class="home-link" title="Back to Homebrewery"><i class="fas fa-home"></i></a>
   <h1>Willowlight Engine</h1>
   <div class="taint-display">
     <label>SG TAINT</label>
@@ -807,7 +816,22 @@
         <option value="0" selected>None (+0)</option>
       </select>
       <label>TN</label>
-      <input type="number" id="rollTN" value="12" min="6" max="20">
+      <input type="number" id="rollTN" value="12" min="2" max="30">
+    </div>
+    <div class="roll-config" style="margin-top: 4px;">
+      <label>Target</label>
+      <select id="rollTarget" onchange="onTargetChange()">
+        <option value="">— Manual TN —</option>
+      </select>
+      <select id="rollAction" onchange="onTargetChange()">
+        <option value="attack">Attack (vs Def TN)</option>
+        <option value="defend">Defend (vs Atk TN)</option>
+      </select>
+      <select id="rollDomain" onchange="onTargetChange()">
+        <option value="physical">Physical</option>
+        <option value="mental">Mental</option>
+        <option value="social">Social</option>
+      </select>
     </div>
     <div id="swapArea"></div>
   </div>
@@ -988,14 +1012,18 @@ const characters = [
 const enemies = [
   {
     tier: "mook", name: "City Watch Patrol",
-    tn: 10, threshold: 2, size: 4, sizeLeft: 4,
+    atkTN: { physical: 10, mental: 8, social: 9 },
+    defTN: { physical: 10, mental: 8, social: 9 },
+    threshold: 2, size: 4, sizeLeft: 4,
     scale: "Phys 3 / Soc 3 / Ment 2",
     trait: "Shield Wall — when 3+ members remain, melee attacks against the group suffer +1 TN",
     goal: "Detain suspects and escort to the magistrate."
   },
   {
     tier: "mook", name: "Pale Vanguard Scouts",
-    tn: 9, threshold: 2, size: 3, sizeLeft: 3,
+    atkTN: { physical: 9, mental: 7, social: 7 },
+    defTN: { physical: 9, mental: 7, social: 7 },
+    threshold: 2, size: 3, sizeLeft: 3,
     scale: "Phys 3 / Soc 2 / Ment 2",
     trait: "Unnerving — characters who first encounter them roll Composure vs TN 10 or gain Tier 1 Shaken",
     goal: "Probe defenses and report back."
@@ -1003,7 +1031,8 @@ const enemies = [
   {
     tier: "elite", name: "Harvel Doss",
     subtitle: "Regional Merchant",
-    tn: { physical: 10, mental: 12, social: 14 },
+    atkTN: { physical: 8, mental: 11, social: 13 },
+    defTN: { physical: 10, mental: 12, social: 14 },
     scale: "Phys 3 / Soc 5 / Ment 4",
     health: { composure: { max: 5, current: 5 } },
     traits: [
@@ -1015,7 +1044,8 @@ const enemies = [
   {
     tier: "boss", name: "Mayor Aldous Fenn",
     subtitle: "Voice of Goldenfields",
-    tn: { physical: 8, mental: 12, social: 16 },
+    atkTN: { physical: 7, mental: 11, social: 15 },
+    defTN: { physical: 8, mental: 12, social: 16 },
     scale: "Phys 3 / Soc 6 / Ment 4",
     health: {
       vitality: { max: 4, current: 4 },
@@ -1032,7 +1062,8 @@ const enemies = [
   {
     tier: "legend", name: "The Pale Shepherd",
     subtitle: "That Which Guides the Dead",
-    tn: { physical: 14, mental: 16, social: 12 },
+    atkTN: { physical: 13, mental: 15, social: 11 },
+    defTN: { physical: 14, mental: 16, social: 12 },
     scale: "Phys 5 / Soc 4 / Ment 6",
     health: {
       vitality: { max: 8, current: 8 },
@@ -1203,17 +1234,14 @@ function toggleBox(charIdx, trackKey, boxIdx) {
 function renderEnemies() {
   const list = document.getElementById('enemyList');
   list.innerHTML = enemies.map((e, i) => renderEnemyCard(e, i)).join('');
+  if (document.getElementById('rollTarget')) populateTargetDropdown();
 }
 
 function renderEnemyCard(e, i) {
   const tierClass = `tier-${e.tier}`;
   const tierLabel = e.tier.charAt(0).toUpperCase() + e.tier.slice(1);
-  let quickTN = '';
-  if (typeof e.tn === 'number') {
-    quickTN = `TN ${e.tn}`;
-  } else if (e.tn) {
-    quickTN = `TN ${Math.max(e.tn.physical, e.tn.mental, e.tn.social)}`;
-  }
+  const maxDef = Math.max(e.defTN.physical, e.defTN.mental, e.defTN.social);
+  const quickTN = `DEF ${maxDef}`;
 
   return `<div class="enemy-card" id="enemy-${i}">
     <div class="enemy-card-header" onclick="toggleEnemy(${i})">
@@ -1237,7 +1265,8 @@ function renderEnemyDetail(e, i) {
   if (e.subtitle) html += `<div style="font-style:italic;color:var(--text-dim);margin-bottom:6px">${e.subtitle}</div>`;
 
   if (e.tier === 'mook') {
-    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">TN</span><span class="enemy-stat-val">${e.tn} (drops by 1 per member lost)</span></div>`;
+    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Atk TN</span><span class="enemy-stat-val">Phys ${e.atkTN.physical} / Ment ${e.atkTN.mental} / Soc ${e.atkTN.social}</span></div>`;
+    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Def TN</span><span class="enemy-stat-val">Phys ${e.defTN.physical} / Ment ${e.defTN.mental} / Soc ${e.defTN.social} (−1 per member lost)</span></div>`;
     html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Thresh</span><span class="enemy-stat-val">${e.threshold}</span></div>`;
     html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Scale</span><span class="enemy-stat-val">${e.scale}</span></div>`;
     html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Size</span><span class="enemy-stat-val">`;
@@ -1249,9 +1278,8 @@ function renderEnemyDetail(e, i) {
     if (e.trait) html += `<div class="enemy-trait"><span class="enemy-trait-name">Trait:</span> ${e.trait}</div>`;
   } else {
     // Elite, Boss, Legend
-    if (typeof e.tn === 'object') {
-      html += `<div class="enemy-stat-row"><span class="enemy-stat-label">TN</span><span class="enemy-stat-val">Phys ${e.tn.physical} / Ment ${e.tn.mental} / Soc ${e.tn.social}</span></div>`;
-    }
+    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Atk TN</span><span class="enemy-stat-val">Phys ${e.atkTN.physical} / Ment ${e.atkTN.mental} / Soc ${e.atkTN.social}</span></div>`;
+    html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Def TN</span><span class="enemy-stat-val">Phys ${e.defTN.physical} / Ment ${e.defTN.mental} / Soc ${e.defTN.social}</span></div>`;
     html += `<div class="enemy-stat-row"><span class="enemy-stat-label">Scale</span><span class="enemy-stat-val">${e.scale}</span></div>`;
 
     if (e.health) {
@@ -1536,8 +1564,11 @@ function updateResultDisplay() {
   else { outcome = 'Failure'; outcomeClass = 'outcome-fail'; }
 
   document.getElementById('resultTotal').textContent = total;
+  const targetIdx = document.getElementById('rollTarget') ? document.getElementById('rollTarget').value : '';
+  const targetLabel = targetIdx !== '' ? ` vs ${enemies[parseInt(targetIdx)].name}` : '';
+  const actionLabel = targetIdx !== '' ? (document.getElementById('rollAction').value === 'attack' ? ' ATK' : ' DEF') : '';
   document.getElementById('resultBreakdown').textContent =
-    `(${r.d1}+${r.d2}) + ${r.attr}attr + ${r.skill}skill [Luck: ${r.d3}] vs TN ${r.tn}`;
+    `(${r.d1}+${r.d2}) + ${r.attr}attr + ${r.skill}skill [Luck: ${r.d3}] vs TN ${r.tn}${actionLabel}${targetLabel}`;
 
   let outcomeHTML = `<div class="result-outcome ${outcomeClass}">${outcome}</div>`;
   if (isComplication) {
@@ -1569,9 +1600,18 @@ function logRoll() {
 
   rollCount++;
   const charName = selectedChar !== null ? characters[selectedChar].name : 'Unknown';
+  const targetIdx = document.getElementById('rollTarget').value;
+  const action = document.getElementById('rollAction').value;
+  const domain = document.getElementById('rollDomain').value;
+  const targetName = targetIdx !== '' ? enemies[parseInt(targetIdx)].name : null;
   const logEntry = document.createElement('div');
   logEntry.className = 'log-entry';
-  let logText = `#${rollCount} <span class="log-char">${charName}</span> → <span class="log-result">${total}</span> vs TN ${r.tn}`;
+  let logText = `#${rollCount} <span class="log-char">${charName}</span>`;
+  if (targetName) {
+    const domainShort = domain.slice(0, 4).toUpperCase();
+    logText += ` ${action === 'attack' ? '→' : '←'} ${targetName} [${domainShort}]`;
+  }
+  logText += ` <span class="log-result">${total}</span> vs TN ${r.tn}`;
   if (r.swapped === 'luck') logText += ` <span style="color:var(--luck-color)">[LCK]</span>`;
   if (r.swapped === 'taint') logText += ` <span style="color:var(--corruption-color)">[TAINT]</span>`;
   if (isCrit) logText += ` <span class="log-crit">CRIT</span>`;
@@ -1790,10 +1830,41 @@ function addEnemy() {
   alert('Enemy creation form would open here.\n\nSelect tier (Mook/Elite/Boss/Legend) and fill in the appropriate stat block fields.');
 }
 
+// === TARGET SELECTION ===
+function populateTargetDropdown() {
+  const sel = document.getElementById('rollTarget');
+  sel.innerHTML = '<option value="">— Manual TN —</option>';
+  enemies.forEach((e, i) => {
+    sel.innerHTML += `<option value="${i}">${e.name}</option>`;
+  });
+}
+
+function onTargetChange() {
+  const targetIdx = document.getElementById('rollTarget').value;
+  if (targetIdx === '') return; // Manual TN mode, don't override
+
+  const enemy = enemies[parseInt(targetIdx)];
+  const action = document.getElementById('rollAction').value;
+  const domain = document.getElementById('rollDomain').value;
+
+  // Attack → player rolls vs enemy's defTN; Defend → player rolls vs enemy's atkTN
+  const tnSource = action === 'attack' ? enemy.defTN : enemy.atkTN;
+  let tn = tnSource[domain];
+
+  // Mook TN penalty for lost members
+  if (enemy.tier === 'mook' && action === 'attack') {
+    const lost = enemy.size - enemy.sizeLeft;
+    tn = Math.max(2, tn - lost);
+  }
+
+  document.getElementById('rollTN').value = tn;
+}
+
 // === INIT ===
 document.getElementById('sessionDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 renderParty();
 renderEnemies();
+populateTargetDropdown();
 // Auto-select first character
 selectChar(0);
 </script>
