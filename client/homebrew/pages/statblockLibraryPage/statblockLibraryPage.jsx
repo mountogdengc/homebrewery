@@ -110,8 +110,15 @@ const StatblockLibraryPage = ()=>{
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/statblock/new'; }}>
 						New Stat Block
 					</Nav.item>
+					<Nav.item icon="fas fa-paste" onClick={()=>setShowImportBox(!showImportBox)}>
+						Paste Import
+					</Nav.item>
+					<Nav.item icon="fas fa-download" href="/statblock/import">
+						D&D Beyond
+					</Nav.item>
 				</Nav.section>
 				<Nav.section>
+					{importStatus && <Nav.item color="green">{importStatus}</Nav.item>}
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>
@@ -119,17 +126,6 @@ const StatblockLibraryPage = ()=>{
 			<div className="libraryContent">
 				<div className="libraryHeader">
 					<h1>Your Stat Blocks <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
-					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-						{importStatus && <span style={{ color: '#4caf50', fontSize: '13px' }}>{importStatus}</span>}
-						<button className="newButton" style={{ background: '#2e7d32', border: 'none', cursor: 'pointer' }}
-							onClick={()=>setShowImportBox(!showImportBox)}>
-							<i className="fas fa-paste" /> Paste Import
-						</button>
-						<a href="/statblock/import" className="newButton" style={{ background: '#1565c0' }}>
-							<i className="fas fa-download" /> D&D Beyond
-						</a>
-						<a href="/statblock/new" className="newButton">+ New Stat Block</a>
-					</div>
 				</div>
 
 				<div className="filterBar">

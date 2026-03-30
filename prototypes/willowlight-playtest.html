@@ -350,6 +350,7 @@
     transition: border-color 0.15s;
   }
   .enemy-card:hover { border-color: var(--border-light); }
+  .enemy-card:hover .char-remove { opacity: 1; }
   .enemy-card.expanded { border-color: var(--red); }
   .enemy-card-header {
     display: flex; align-items: center; justify-content: space-between;
@@ -1348,6 +1349,7 @@ function renderEnemyCard(e, i) {
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span class="enemy-quick-tn">${quickTN}</span>
+        <button class="char-remove" onclick="event.stopPropagation(); removeEnemy(${i})" title="Remove">&times;</button>
         <span class="expand-arrow">▶</span>
       </div>
     </div>
@@ -2128,8 +2130,147 @@ function removeCharacter(index) {
   markDirty();
 }
 
+function removeEnemy(index) {
+  if (!confirm(`Remove ${enemies[index].name}?`)) return;
+  enemies.splice(index, 1);
+  renderEnemies();
+  populateTargetDropdown();
+  markDirty();
+}
+
+// === ENEMY IMPORT ===
+
+let enemyImportCache = null;
+
 function addEnemy() {
-  alert('Enemy creation form would open here.\n\nSelect tier (Mook/Elite/Boss/Legend) and fill in the appropriate stat block fields.');
+  document.getElementById('enemyImportModal').classList.add('open');
+  document.getElementById('enemyImportSearch').value = '';
+  fetchEnemyImportList();
+}
+
+function closeEnemyImportModal() {
+  document.getElementById('enemyImportModal').classList.remove('open');
+}
+
+async function fetchEnemyImportList(search = '') {
+  const listEl = document.getElementById('enemyImportList');
+  listEl.innerHTML = '<div class="import-loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    const query = new URLSearchParams({ count: 100 });
+    if (search) query.set('search', search);
+    const res = await fetch('/api/willowlight-bestiaries?' + query.toString());
+    if (!res.ok) throw new Error('Failed to load');
+    const data = await res.json();
+    enemyImportCache = data.entries || [];
+    renderEnemyImportList(enemyImportCache);
+  } catch (err) {
+    listEl.innerHTML = '<div class="import-empty">Could not load bestiary. Are you logged in?</div>';
+  }
+}
+
+function filterEnemyImportList() {
+  const q = document.getElementById('enemyImportSearch').value.toLowerCase();
+  if (!enemyImportCache) return;
+  const filtered = q ? enemyImportCache.filter(e => (e.name || '').toLowerCase().includes(q)) : enemyImportCache;
+  renderEnemyImportList(filtered);
+}
+
+function renderEnemyImportList(items) {
+  const listEl = document.getElementById('enemyImportList');
+  const tierColors = { mook: '#5a8a4a', elite: '#4a7a9b', boss: '#b34040', legend: '#7a5a9b' };
+  if (!items || items.length === 0) {
+    listEl.innerHTML = '<div class="import-empty">No bestiary entries found.</div>';
+    return;
+  }
+  listEl.innerHTML = items.map(e =>
+    `<div class="import-item" onclick="importEnemy('${e.shareId}')">
+      <div>
+        <div class="import-item-name">${esc(e.name || 'Untitled')}</div>
+        <div class="import-item-meta">${e.subtitle ? esc(e.subtitle) + ' · ' : ''}${esc(e.tier || 'mook')}</div>
+      </div>
+      <span style="background:${tierColors[e.tier] || '#555'};color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600;text-transform:uppercase">${esc(e.tier || 'mook')}</span>
+    </div>`
+  ).join('');
+}
+
+async function importEnemy(shareId) {
+  try {
+    const res = await fetch('/api/willowlight-bestiary/' + shareId);
+    if (!res.ok) throw new Error('Not found');
+    const entry = await res.json();
+    const mapped = mapBestiaryToPlaytest(entry);
+    enemies.push(mapped);
+    closeEnemyImportModal();
+    renderEnemies();
+    populateTargetDropdown();
+    markDirty();
+  } catch (err) {
+    alert('Failed to import enemy: ' + err.message);
+  }
+}
+
+function mapBestiaryToPlaytest(entry) {
+  const tier = entry.tier || 'mook';
+  const base = {
+    tier: tier,
+    name: entry.name || 'Unnamed',
+    atkTN: entry.atkTN || { mental: 8, physical: 8, social: 8 },
+    defTN: entry.defTN || { mental: 8, physical: 8, social: 8 },
+    scale: `Ment ${entry.scale?.mental || 0} / Phys ${entry.scale?.physical || 0} / Soc ${entry.scale?.social || 0}`,
+    goal: entry.goal || ''
+  };
+
+  if (tier === 'mook') {
+    base.threshold = entry.threshold || 2;
+    base.size = entry.size || 3;
+    base.sizeLeft = entry.size || 3;
+    base.trait = entry.trait || '';
+  } else {
+    base.subtitle = entry.subtitle || '';
+    base.traits = (entry.traits || []).map(t => ({ name: t.name || '', desc: t.desc || '' }));
+
+    // Build health object with current = max
+    const health = {};
+    if (tier === 'elite') {
+      // Elite gets one track — use composure if set, otherwise first non-zero
+      const comp = entry.health?.composure || 0;
+      if (comp) health.composure = { max: comp, current: comp };
+    } else {
+      // Boss/Legend get all tracks
+      if (entry.health?.willpower) health.willpower = { max: entry.health.willpower, current: entry.health.willpower };
+      if (entry.health?.vitality)  health.vitality  = { max: entry.health.vitality,  current: entry.health.vitality };
+      if (entry.health?.composure) health.composure = { max: entry.health.composure, current: entry.health.composure };
+    }
+    base.health = health;
+  }
+
+  return base;
+}
+
+function addBlankEnemy() {
+  const name = prompt('Enemy name:');
+  if (!name) return;
+  const tier = prompt('Tier (mook/elite/boss/legend):', 'mook') || 'mook';
+  const enemy = {
+    tier: tier, name: name,
+    atkTN: { mental: 8, physical: 8, social: 8 },
+    defTN: { mental: 8, physical: 8, social: 8 },
+    scale: 'Ment 3 / Phys 3 / Soc 3',
+    goal: ''
+  };
+  if (tier === 'mook') {
+    enemy.threshold = 2; enemy.size = 3; enemy.sizeLeft = 3; enemy.trait = '';
+  } else {
+    enemy.subtitle = ''; enemy.traits = [];
+    enemy.health = tier === 'elite'
+      ? { composure: { max: 5, current: 5 } }
+      : { willpower: { max: 5, current: 5 }, vitality: { max: 5, current: 5 }, composure: { max: 5, current: 5 } };
+  }
+  enemies.push(enemy);
+  closeEnemyImportModal();
+  renderEnemies();
+  populateTargetDropdown();
+  markDirty();
 }
 
 // === TARGET SELECTION ===
@@ -2387,6 +2528,26 @@ if (characters.length > 0) selectChar(0);
     <div class="modal-footer">
       <button class="modal-btn modal-btn-primary" onclick="newSession()"><i class="fas fa-plus"></i> New Session</button>
       <button class="modal-btn modal-btn-secondary" onclick="closeSessionModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ENEMY IMPORT MODAL -->
+<div class="modal-overlay" id="enemyImportModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Add Enemy</h2>
+      <button class="modal-close" onclick="closeEnemyImportModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input class="modal-search" id="enemyImportSearch" type="text" placeholder="Search bestiary..." oninput="filterEnemyImportList()">
+      <div class="import-list" id="enemyImportList">
+        <div class="import-loading">Loading...</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-secondary" onclick="addBlankEnemy()">+ Blank Enemy</button>
+      <button class="modal-btn modal-btn-secondary" onclick="closeEnemyImportModal()">Cancel</button>
     </div>
   </div>
 </div>

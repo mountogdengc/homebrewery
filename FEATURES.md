@@ -95,12 +95,12 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 ## Playtest Tool — Open Questions
 These need design decisions before implementation:
 - Is the playtest tool solo-GM-only, or should players have a view (e.g. share link showing their character + dice)?
-- Should enemy/NPC stat blocks be saveable/loadable from a library (like character sheets)?
+- [x] Should enemy/NPC stat blocks be saveable/loadable from a library (like character sheets)? — YES: Willowlight Bestiary added with full CRUD, tier-adaptive editor, library, and import into playtest tool
 
 ## Landing Page / Navigation
 - [ ] Per-row quick-create buttons on landing page
 - [ ] Recent items section on landing page
-- [ ] Replace Homebrewery/NaturalCrit branding in top menu bar with better UX
+- [x] Replace Homebrewery/NaturalCrit branding in top menu bar with better UX — rebranded to MOGC, removed NaturalCrit/Patreon/version/help links
 - [ ] Standardize navigation buttons across all tools — consistent home/back button, save/load, library link in the same position and style on every tool page
 - [x] Landing page cards for character tools should link to library, not blank new — new character button is already on the library page
 - [x] Consider the same library-first pattern for stat block tools — done: all homepage cards now link to system libraries

@@ -82,27 +82,28 @@ const WillowlightLibraryPage = ()=>{
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/willowlight/new'; }}>
 						New Character
 					</Nav.item>
+					<Nav.item icon="fas fa-skull-crossbones" onClick={()=>{ window.location.href = '/willowlight/bestiary'; }}>
+						Bestiary
+					</Nav.item>
 					<Nav.item icon="fas fa-print" onClick={()=>{ window.open('/willowlight/sheet', '_blank'); }}>
 						Blank Sheet
+					</Nav.item>
+					<Nav.item icon="fas fa-paste" onClick={()=>setShowImportBox(!showImportBox)}>
+						Paste Import
 					</Nav.item>
 					<Nav.item icon="fas fa-dice-d20" onClick={()=>{ window.location.href = '/playtest'; }}>
 						Playtest
 					</Nav.item>
 				</Nav.section>
-				<Nav.section><AccountNavItem /></Nav.section>
+				<Nav.section>
+					{status && <Nav.item color="green">{status}</Nav.item>}
+					<AccountNavItem />
+				</Nav.section>
 			</Navbar>
 
 			<div className="libraryContent">
 				<div className="libraryHeader">
 					<h1>Willowlight Engine <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
-					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-						{status && <span style={{ color: '#4caf50', fontSize: '13px' }}>{status}</span>}
-						<button className="newButton" style={{ background: '#2e7d32', border: 'none', cursor: 'pointer' }}
-							onClick={()=>setShowImportBox(!showImportBox)}>
-							<i className="fas fa-paste" /> Paste Import
-						</button>
-						<a href="/willowlight/new" className="newButton">+ New Character</a>
-					</div>
 				</div>
 
 				<div className="filterBar">

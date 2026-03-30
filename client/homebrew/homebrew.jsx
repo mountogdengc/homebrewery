@@ -24,6 +24,8 @@ import BrpStatblockSharePage from './pages/brpStatblockSharePage/brpStatblockSha
 import WillowlightEditorPage from './pages/willowlightEditorPage/willowlightEditorPage.jsx';
 import WillowlightLibraryPage from './pages/willowlightLibraryPage/willowlightLibraryPage.jsx';
 import WillowlightSharePage from './pages/willowlightSharePage/willowlightSharePage.jsx';
+import WillowlightBestiaryEditorPage from './pages/willowlightBestiaryEditorPage/willowlightBestiaryEditorPage.jsx';
+import WillowlightBestiaryLibraryPage from './pages/willowlightBestiaryLibraryPage/willowlightBestiaryLibraryPage.jsx';
 
 // Lazy-load BESM pages — keeps ~500KB of data libraries out of the main bundle
 const BesmBuilderPage = lazy(()=>import('./pages/besmBuilder/besmBuilderPage.jsx'));
@@ -97,6 +99,9 @@ const Homebrew = (props)=>{
 					<Route path='/willowlight/edit/:id' element={<WithRoute el={WillowlightEditorPage} willowlightCharacter={props.willowlightCharacter} />} />
 					<Route path='/willowlight/share/:id' element={<WithRoute el={WillowlightSharePage} willowlightCharacter={props.willowlightCharacter} />} />
 					<Route path='/willowlight/library' element={<WithRoute el={WillowlightLibraryPage} />} />
+					<Route path='/willowlight/bestiary/new' element={<WithRoute el={WillowlightBestiaryEditorPage} />} />
+					<Route path='/willowlight/bestiary/edit/:id' element={<WithRoute el={WillowlightBestiaryEditorPage} willowlightBestiary={props.willowlightBestiary} />} />
+					<Route path='/willowlight/bestiary' element={<WithRoute el={WillowlightBestiaryLibraryPage} />} />
 					<Route path='/statblock/new' element={<WithRoute el={StatblockEditorPage} />} />
 					<Route path='/statblock/edit/:id' element={<WithRoute el={StatblockEditorPage} statblock={props.statblock} />} />
 					<Route path='/statblock/share/:id' element={<WithRoute el={StatblockSharePage} statblock={props.statblock} />} />

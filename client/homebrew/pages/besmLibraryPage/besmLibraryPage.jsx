@@ -105,8 +105,12 @@ const BesmLibraryPage = ()=>{
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/besm/new'; }}>
 						New Character
 					</Nav.item>
+					<Nav.item icon="fas fa-paste" onClick={()=>setShowImportBox(!showImportBox)}>
+						Import JSON
+					</Nav.item>
 				</Nav.section>
 				<Nav.section>
+					{importStatus && <Nav.item color="green">{importStatus}</Nav.item>}
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>
@@ -114,14 +118,6 @@ const BesmLibraryPage = ()=>{
 			<div className="libraryContent">
 				<div className="libraryHeader">
 					<h1>Your BESM Characters <span style={{ color: '#888', fontSize: '14px', fontWeight: 400 }}>({total})</span></h1>
-					<div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-						{importStatus && <span style={{ color: '#4caf50', fontSize: '13px' }}>{importStatus}</span>}
-						<button className="newButton" style={{ background: '#4a3a7a', border: 'none', cursor: 'pointer' }}
-							onClick={()=>setShowImportBox(!showImportBox)}>
-							<i className="fas fa-paste" /> Import JSON
-						</button>
-						<a href="/besm/new" className="newButton">+ New Character</a>
-					</div>
 				</div>
 
 				<div className="filterBar">

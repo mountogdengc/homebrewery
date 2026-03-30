@@ -23,6 +23,7 @@ import statblockApi                from './statblock.api.js';
 import besmCharacterApi            from './besm-character.api.js';
 import brpStatblockApi             from './brp-statblock.api.js';
 import willowlightApi              from './willowlight.api.js';
+import willowlightBestiaryApi      from './willowlight-bestiary.api.js';
 import playtestSessionApi          from './playtest-session.api.js';
 import aiApi                       from './ai.api.js';
 import GoogleActions               from './googleActions.js';
@@ -141,6 +142,7 @@ export default async function createApp(vite) {
 	app.use(besmCharacterApi);
 	app.use(brpStatblockApi);
 	app.use(willowlightApi);
+	app.use(willowlightBestiaryApi);
 	app.use(playtestSessionApi);
 	app.use(aiApi);
 
@@ -775,6 +777,36 @@ export default async function createApp(vite) {
 		return next();
 	});
 
+	//Willowlight Bestiary - New
+	app.get('/willowlight/bestiary/new', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Willowlight Bestiary Editor',
+			description : 'Create a Willowlight Engine enemy'
+		};
+		return next();
+	});
+
+	//Willowlight Bestiary - Edit
+	app.get('/willowlight/bestiary/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: BestiaryModel } = await import('./willowlight-bestiary.model.js');
+		const entry = await BestiaryModel.get({ editId: req.params.id });
+		req.willowlightBestiary = entry.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `Editing: ${req.willowlightBestiary.name || 'Willowlight Enemy'}`,
+			description : 'Edit a Willowlight Engine enemy'
+		};
+		return next();
+	}));
+
+	//Willowlight Bestiary Library
+	app.get('/willowlight/bestiary', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Willowlight Bestiary',
+			description : 'Browse your Willowlight Engine enemies and creatures'
+		};
+		return next();
+	});
+
 	//Vault Page
 	app.get('/vault', asyncHandler(async(req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
@@ -818,7 +850,8 @@ export default async function createApp(vite) {
 			userStatblocks         : req.userStatblocks,
 			besmCharacter          : req.besmCharacter,
 			brpStatblock           : req.brpStatblock,
-			willowlightCharacter   : req.willowlightCharacter
+			willowlightCharacter   : req.willowlightCharacter,
+			willowlightBestiary    : req.willowlightBestiary
 		};
 
 		const ogTags = [];

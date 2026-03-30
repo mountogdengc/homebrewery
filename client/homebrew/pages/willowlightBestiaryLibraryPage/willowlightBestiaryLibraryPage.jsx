@@ -1,128 +1,125 @@
 import '../statblockLibraryPage/statblockLibraryPage.less';
 import React, { useState, useEffect, useCallback } from 'react';
 import request from '../../utils/request-middleware.js';
-import { CREATURE_CATEGORIES } from '@shared/brpStatblock/constants.js';
+import { TIER_LABELS } from '@shared/willowlight/bestiarySchema.js';
 
 import Nav            from '@navbar/nav.jsx';
 import Navbar         from '@navbar/navbar.jsx';
 import AccountNavItem from '@navbar/account.navitem.jsx';
 
-const BrpStatblockLibraryPage = ()=>{
-	const [statblocks, setStatblocks] = useState([]);
+const WillowlightBestiaryLibraryPage = ()=>{
+	const [entries, setEntries] = useState([]);
 	const [page, setPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(0);
 	const [total, setTotal] = useState(0);
 	const [search, setSearch] = useState('');
-	const [categoryFilter, setCategoryFilter] = useState('');
 	const [loading, setLoading] = useState(true);
-	const [importStatus, setImportStatus] = useState(null);
+	const [status, setStatus] = useState(null);
 	const [showImportBox, setShowImportBox] = useState(false);
 	const [importText, setImportText] = useState('');
 
-	const fetchStatblocks = useCallback(async ()=>{
+	const fetchEntries = useCallback(async ()=>{
 		setLoading(true);
 		try {
 			const query = new URLSearchParams({ page, count: 24 });
 			if(search) query.set('search', search);
-			if(categoryFilter) query.set('category', categoryFilter);
-
-			const res = await request.get(`/api/brp-statblocks?${query.toString()}`);
-			setStatblocks(res.body.statblocks);
+			const res = await request.get(`/api/willowlight-bestiaries?${query.toString()}`);
+			setEntries(res.body.entries);
 			setTotalPages(res.body.totalPages);
 			setTotal(res.body.total);
 		} catch (err) {
-			console.error('Failed to fetch BRP stat blocks:', err);
-			setStatblocks([]);
+			console.error('Failed to fetch:', err);
+			setEntries([]);
 		} finally {
 			setLoading(false);
 		}
-	}, [page, search, categoryFilter]);
+	}, [page, search]);
 
-	useEffect(()=>{ fetchStatblocks(); }, [fetchStatblocks]);
-	useEffect(()=>{ setPage(1); }, [search, categoryFilter]);
+	useEffect(()=>{ fetchEntries(); }, [fetchEntries]);
+	useEffect(()=>{ setPage(1); }, [search]);
 
 	const handleDelete = async (e, editId, name)=>{
 		e.stopPropagation();
 		if(!confirm(`Delete "${name || 'Untitled'}"?`)) return;
-		try {
-			await request.delete(`/api/brp-statblock/${editId}`);
-			fetchStatblocks();
-		} catch (err) {
-			console.error('Delete failed:', err);
-		}
+		try { await request.delete(`/api/willowlight-bestiary/${editId}`); fetchEntries(); }
+		catch (err) { console.error('Delete failed:', err); }
 	};
 
 	const handleImportSubmit = async ()=>{
 		if(!importText.trim()) return;
 		let data;
 		try { data = JSON.parse(importText); } catch (e) {
-			setImportStatus('Invalid JSON');
-			setTimeout(()=>setImportStatus(null), 3000);
-			return;
+			setStatus('Invalid JSON'); setTimeout(()=>setStatus(null), 3000); return;
 		}
 		const items = Array.isArray(data) ? data : [data];
 		let imported = 0;
 		for (const item of items) {
 			delete item.editId; delete item.shareId; delete item.id; delete item._id;
-			try { await request.post('/api/brp-statblock').send(item); imported++; }
-			catch (err) { console.error('Import failed for', item.name, err); }
+			try { await request.post('/api/willowlight-bestiary').send(item); imported++; }
+			catch (err) { console.error('Import failed:', err); }
 		}
-		setImportStatus(`Imported ${imported} stat block${imported !== 1 ? 's' : ''}`);
-		setTimeout(()=>setImportStatus(null), 3000);
-		setImportText('');
-		setShowImportBox(false);
-		fetchStatblocks();
+		setStatus(`Imported ${imported} entr${imported !== 1 ? 'ies' : 'y'}`);
+		setTimeout(()=>setStatus(null), 3000);
+		setImportText(''); setShowImportBox(false); fetchEntries();
 	};
 
 	const handleDuplicate = async (e, shareId)=>{
 		e.stopPropagation();
 		try {
-			const res = await request.get(`/api/brp-statblock/${shareId}`);
-			const sb = res.body;
-			delete sb.editId; delete sb.shareId; delete sb.createdAt; delete sb.updatedAt;
-			sb.name = `${sb.name || 'Untitled'} (Copy)`;
-			const saved = await request.post('/api/brp-statblock').send(sb);
-			window.location.href = `/brp/edit/${saved.body.editId}`;
-		} catch (err) {
-			console.error('Duplicate failed:', err);
-		}
+			const res = await request.get(`/api/willowlight-bestiary/${shareId}`);
+			const entry = res.body;
+			delete entry.editId; delete entry.shareId; delete entry.createdAt; delete entry.updatedAt;
+			entry.name = `${entry.name || 'Untitled'} (Copy)`;
+			const saved = await request.post('/api/willowlight-bestiary').send(entry);
+			window.location.href = `/willowlight/bestiary/edit/${saved.body.editId}`;
+		} catch (err) { console.error('Duplicate failed:', err); }
+	};
+
+	const tierBadge = (tier)=>{
+		const colors = { mook: '#5a8a4a', elite: '#4a7a9b', boss: '#b34040', legend: '#7a5a9b' };
+		return <span style={{
+			background: colors[tier] || '#555', color: '#fff', fontSize: '10px',
+			padding: '1px 6px', borderRadius: '3px', fontWeight: 600, textTransform: 'uppercase'
+		}}>{TIER_LABELS[tier] || tier}</span>;
 	};
 
 	return (
 		<div className="statblockLibraryPage">
 			<Navbar>
 				<Nav.section>
-					<Nav.item color="orange">BRP</Nav.item>
-					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/brp/new'; }}>
-						New Stat Block
+					<Nav.item color="blue">Willowlight Bestiary</Nav.item>
+					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/willowlight/bestiary/new'; }}>
+						New Enemy
+					</Nav.item>
+					<Nav.item icon="fas fa-th-list" onClick={()=>{ window.location.href = '/willowlight/library'; }}>
+						Characters
 					</Nav.item>
 					<Nav.item icon="fas fa-paste" onClick={()=>setShowImportBox(!showImportBox)}>
 						Paste Import
 					</Nav.item>
+					<Nav.item icon="fas fa-dice-d20" onClick={()=>{ window.location.href = '/playtest'; }}>
+						Playtest
+					</Nav.item>
 				</Nav.section>
 				<Nav.section>
-					{importStatus && <Nav.item color="green">{importStatus}</Nav.item>}
+					{status && <Nav.item color="green">{status}</Nav.item>}
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>
 
 			<div className="libraryContent">
 				<div className="libraryHeader">
-					<h1>Your BRP Stat Blocks <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
+					<h1>Willowlight Bestiary <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
 				</div>
 
 				<div className="filterBar">
 					<input type="text" placeholder="Search by name..." value={search}
 						onChange={(e)=>setSearch(e.target.value)} />
-					<select value={categoryFilter} onChange={(e)=>setCategoryFilter(e.target.value)}>
-						<option value="">All Categories</option>
-						{CREATURE_CATEGORIES.map((c)=><option key={c} value={c}>{c}</option>)}
-					</select>
 				</div>
 
 				{showImportBox && (
 					<div style={{ background: '#252538', border: '1px solid #3a3a54', borderRadius: '6px', padding: '12px', marginBottom: '16px' }}>
-						<p style={{ color: '#aaa', fontSize: '13px', margin: '0 0 8px' }}>Paste BRP stat block JSON:</p>
+						<p style={{ color: '#aaa', fontSize: '13px', margin: '0 0 8px' }}>Paste enemy JSON:</p>
 						<textarea value={importText} onChange={(e)=>setImportText(e.target.value)}
 							placeholder='Paste JSON here...'
 							style={{ width: '100%', minHeight: '100px', background: '#1e1e2e', border: '1px solid #3a3a54', borderRadius: '4px', color: '#e0e0f0', padding: '8px', fontFamily: 'monospace', fontSize: '12px', resize: 'vertical' }} />
@@ -135,34 +132,29 @@ const BrpStatblockLibraryPage = ()=>{
 
 				{loading ? (
 					<div className="emptyState"><i className="fas fa-spinner fa-spin" /> Loading...</div>
-				) : statblocks.length === 0 ? (
+				) : entries.length === 0 ? (
 					<div className="emptyState">
-						{search || categoryFilter ? 'No stat blocks match your filters.' : 'No BRP stat blocks yet. Click "+ New BRP Stat Block" to create one.'}
+						{search ? 'No enemies match your search.' : 'No bestiary entries yet. Click "+ New Enemy" to create one.'}
 					</div>
 				) : (
 					<>
 						<div className="statblockGrid">
-							{statblocks.map((sb)=>(
-								<div className="statblockCard" key={sb.editId}
-									onClick={()=>{ window.location.href = `/brp/edit/${sb.editId}`; }}>
+							{entries.map((e)=>(
+								<div className="statblockCard" key={e.editId}
+									onClick={()=>{ window.location.href = `/willowlight/bestiary/edit/${e.editId}`; }}>
 									<div className="cardHeader">
-										<h3 className="cardName">{sb.name || 'Untitled'}</h3>
+										<h3 className="cardName">{e.name || 'Untitled'}</h3>
+										{tierBadge(e.tier)}
 									</div>
-									<div className="cardMeta">{sb.category}{sb.subtype ? ` (${sb.subtype})` : ''}</div>
-									{sb.tags && sb.tags.length > 0 && (
+									{e.subtitle && <div className="cardMeta">{e.subtitle}</div>}
+									{e.tags && e.tags.length > 0 && (
 										<div className="cardTags">
-											{sb.tags.map((tag, i)=><span className="tag" key={i}>{tag}</span>)}
+											{e.tags.map((tag, i)=><span className="tag" key={i}>{tag}</span>)}
 										</div>
 									)}
 									<div className="cardActions">
-										<button onClick={(e)=>{
-											e.stopPropagation();
-											navigator.clipboard.writeText('{{brp-statblock:' + sb.shareId + '}}');
-											setImportStatus('Copied embed for ' + (sb.name || 'Untitled'));
-											setTimeout(()=>setImportStatus(null), 2000);
-										}}><i className="fas fa-code" /> Embed</button>
-										<button onClick={(e)=>handleDuplicate(e, sb.shareId)}><i className="fas fa-copy" /> Duplicate</button>
-										<button onClick={(e)=>handleDelete(e, sb.editId, sb.name)}><i className="fas fa-trash" /> Delete</button>
+										<button onClick={(ev)=>handleDuplicate(ev, e.shareId)}><i className="fas fa-copy" /> Duplicate</button>
+										<button onClick={(ev)=>handleDelete(ev, e.editId, e.name)}><i className="fas fa-trash" /> Delete</button>
 									</div>
 								</div>
 							))}
@@ -182,4 +174,4 @@ const BrpStatblockLibraryPage = ()=>{
 	);
 };
 
-export default BrpStatblockLibraryPage;
+export default WillowlightBestiaryLibraryPage;
