@@ -91,6 +91,15 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 - [x] Two-variable sweep — heat map showing any metric (success%, failure%, crit%, etc.) across two variables; red-gold-green color scale with per-cell tooltips
 - [x] Scenario snapshots — save named snapshots of rules+party+enemies, load to restore, compare two snapshots side-by-side with SVG chart showing success/failure curves across TN range
 
+### Playtest UX Overhaul
+- [ ] Help file / guide for the simulation tools (quick sim, sweep, heat map, snapshots)
+- [ ] Move bottom toolbar to fixed bottom position; open sections as flyout panels instead of pushing content (buttons stay in place)
+- [ ] Convert PC and NPC side panels to flyout windows; free up center view for a dashboard with heat maps, bar graphs, and live analytics
+- [ ] Conflict simulation buttons on bottom toolbar — Physical, Mental, Social, Mixed — run a simulated multi-round combat between party and enemies using the current rules config
+  - Mixed mode: each character uses their strongest conflict domain
+  - Show round-by-round breakdown, average rounds to resolve, casualty rates
+  - Later: scenario presets per conflict type (e.g. court battle with leverage/knowledge modifiers, ambush with surprise round, siege with scale advantages)
+
 ### Analytics & Balance Testing
 - [ ] Roll analytics panel — aggregate stats from session roll log (success/cost/fail rates per character, per domain, per enemy)
 - [ ] Margin tracking — average roll margin above/below TN, broken down by domain and skill tier
