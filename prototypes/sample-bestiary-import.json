@@ -1,0 +1,68 @@
+[
+  {
+    "name": "City Watch Patrol",
+    "tier": "mook",
+    "atkTN": { "mental": 8, "physical": 10, "social": 9 },
+    "defTN": { "mental": 8, "physical": 10, "social": 9 },
+    "scale": { "mental": 2, "physical": 3, "social": 3 },
+    "threshold": 2,
+    "size": 4,
+    "trait": "Shield Wall — when 3+ members remain, melee attacks against the group suffer +1 TN",
+    "goal": "Detain suspects and escort to the magistrate."
+  },
+  {
+    "name": "Pale Vanguard Scouts",
+    "tier": "mook",
+    "atkTN": { "mental": 7, "physical": 9, "social": 7 },
+    "defTN": { "mental": 7, "physical": 9, "social": 7 },
+    "scale": { "mental": 2, "physical": 3, "social": 2 },
+    "threshold": 2,
+    "size": 3,
+    "trait": "Unnerving — characters who first encounter them roll Composure vs TN 10 or gain Tier 1 Shaken",
+    "goal": "Probe defenses and report back."
+  },
+  {
+    "name": "Harvel Doss",
+    "subtitle": "Regional Merchant",
+    "tier": "elite",
+    "atkTN": { "mental": 11, "physical": 8, "social": 13 },
+    "defTN": { "mental": 12, "physical": 10, "social": 14 },
+    "scale": { "mental": 4, "physical": 3, "social": 5 },
+    "health": { "willpower": 0, "vitality": 0, "composure": 5 },
+    "traits": [
+      { "name": "Patient", "desc": "Never deploys leverage immediately. Waits one round before using any leverage he holds." },
+      { "name": "Good Accounts", "desc": "Once per scene, produces specific financial information functioning as Major leverage on anyone who owes debts in the region." }
+    ],
+    "goal": "Establish that the Dragon Flagon property is commercially viable for redevelopment."
+  },
+  {
+    "name": "Mayor Aldous Fenn",
+    "subtitle": "Voice of Goldenfields",
+    "tier": "boss",
+    "atkTN": { "mental": 11, "physical": 7, "social": 15 },
+    "defTN": { "mental": 12, "physical": 8, "social": 16 },
+    "scale": { "mental": 4, "physical": 3, "social": 6 },
+    "health": { "willpower": 5, "vitality": 4, "composure": 7 },
+    "traits": [
+      { "name": "Institutional Weight", "desc": "While Mayor, all Social attacks against him in Goldenfields suffer +2 TN." },
+      { "name": "Never Says Anything Actionable", "desc": "His attacks never generate evidence usable against him." },
+      { "name": "Harvel in the Back", "desc": "When Harvel Doss is present, Social Scale treated as 7." }
+    ],
+    "goal": "Remain the unchallenged voice of Goldenfields. Will concede tactical ground but not structural authority."
+  },
+  {
+    "name": "The Pale Shepherd",
+    "subtitle": "That Which Guides the Dead",
+    "tier": "legend",
+    "atkTN": { "mental": 15, "physical": 13, "social": 11 },
+    "defTN": { "mental": 16, "physical": 14, "social": 12 },
+    "scale": { "mental": 6, "physical": 5, "social": 4 },
+    "health": { "willpower": 9, "vitality": 8, "composure": 6 },
+    "traits": [
+      { "name": "Death Does Not Apply", "desc": "Cannot be reduced below 1 Vitality by physical means alone. Must be unbound first (Mental extended challenge, track 8)." },
+      { "name": "Whisper Walk", "desc": "Can appear in any location where the dead are unburied. No movement required." },
+      { "name": "The Flock Answers", "desc": "Once per round, may summon a Pale Vanguard Scouts mook group (Size 3) at Near range." }
+    ],
+    "goal": "Reclaim the valley's dead. Not malicious — operates on an ancient covenant. Will negotiate if approached through the correct rites."
+  }
+]

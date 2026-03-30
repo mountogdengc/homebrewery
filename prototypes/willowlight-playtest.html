@@ -1242,6 +1242,10 @@ let sessionDirty = false;    // unsaved changes flag
 let autoSaveTimer = null;
 
 const characters = [
+/* Sample characters removed — import from library via Party toolbar button */
+];
+
+const _REMOVED_SAMPLE_CHARS = [
   {
     name: "Royce Stout",
     subtitle: "The Penitent Defector",
@@ -1337,6 +1341,10 @@ const characters = [
 ];
 
 const enemies = [
+/* Sample enemies removed — import from library via Enemies toolbar button */
+];
+
+const _REMOVED_SAMPLE_ENEMIES = [
   {
     tier: "mook", name: "City Watch Patrol",
     atkTN: { physical: 10, mental: 8, social: 9 },
@@ -1404,7 +1412,7 @@ const enemies = [
     ],
     goal: "Reclaim the valley's dead. Not malicious — operates on an ancient covenant. Will negotiate if approached through the correct rites."
   }
-];
+]; // end _REMOVED_SAMPLE_ENEMIES
 
 // === RENDERING ===
 
@@ -2039,7 +2047,7 @@ function togglePanel(name) {
 function switchBottomTab(tab) { togglePanel(tab); }
 
 // === PARTY ANCHOR ===
-let partyAnchor = { name: "The Old Mill at Briarford", desc: "The crumbling mill where the party first gathered — it grounds them to one another." };
+let partyAnchor = { name: '', desc: '' };
 
 function editAnchor() {
   const name = prompt('Anchor name:', partyAnchor.name);
@@ -2159,10 +2167,7 @@ function renderPartyTab() {
 }
 
 // === TIDES ===
-let tides = [
-  { name: "The Pale Advance", desc: "The Pale Shepherd's forces push toward the city gates.", progress: 2, max: 6 },
-  { name: "Civic Unrest", desc: "Citizens grow restless as food supplies dwindle.", progress: 1, max: 4 }
-];
+let tides = [];
 
 function renderTides() {
   const el = document.getElementById('tidesList');
@@ -3842,11 +3847,12 @@ function newSession() {
 // === INIT ===
 renderEnemies();
 populateTargetDropdown();
-// Show first character in center
-if (characters.length > 0) {
-  selectedChar = 0;
-  renderCharDetail(characters[0]);
-}
+// Empty state on fresh load
+document.getElementById('centerContent').innerHTML = `
+  <div class="empty-state">
+    Welcome to the Playtest Table
+    <span class="hint">Import characters and enemies from your library using the toolbar below</span>
+  </div>`;
 </script>
 
 <!-- SESSION LIST MODAL -->
