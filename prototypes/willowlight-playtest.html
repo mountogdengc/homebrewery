@@ -904,7 +904,9 @@
   </div>
 </div>
 
-<!-- FLYOUT PANELS (moved into bottom-tabs on init) -->
+<!-- BOTTOM TOOLBAR -->
+<div class="bottom-tabs">
+<div class="flyout-container">
 
   <!-- FLYOUT: PARTY -->
   <div class="flyout-overlay" id="flyout-party">
@@ -1250,16 +1252,14 @@
     </div>
   </div>
 
-<!-- BOTTOM TOOLBAR -->
-<div class="bottom-tabs">
-  <div class="flyout-container" id="flyoutContainer"></div>
+</div> <!-- /flyout-container -->
   <button class="bottom-tab" data-flyout="party" onclick="toggleFlyout('party')"><i class="fas fa-users"></i> Party</button>
   <button class="bottom-tab" data-flyout="enemies" onclick="toggleFlyout('enemies')"><i class="fas fa-skull"></i> Enemies</button>
   <button class="bottom-tab" data-flyout="dice" onclick="toggleFlyout('dice')"><i class="fas fa-dice"></i> Dice</button>
   <button class="bottom-tab" data-flyout="partymgmt" onclick="toggleFlyout('partymgmt')"><i class="fas fa-address-book"></i> Party Mgmt</button>
   <button class="bottom-tab" data-flyout="sg" onclick="toggleFlyout('sg')"><i class="fas fa-book-open"></i> Storyguide</button>
   <button class="bottom-tab" data-flyout="rules" onclick="toggleFlyout('rules')"><i class="fas fa-cog"></i> Rules</button>
-</div>
+</div> <!-- /bottom-tabs -->
 
 <script>
 // === RULES CONFIG ===
@@ -3566,12 +3566,6 @@ function newSession() {
 }
 
 // === INIT ===
-// Move flyout panels into the container inside bottom-tabs
-const flyoutTarget = document.getElementById('flyoutContainer');
-document.querySelectorAll('.flyout-overlay').forEach(el => {
-  flyoutTarget.appendChild(el);
-});
-
 renderEnemies();
 populateTargetDropdown();
 // Show first character detail in center if available
