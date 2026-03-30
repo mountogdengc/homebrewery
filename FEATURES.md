@@ -93,8 +93,9 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 
 ### Playtest UX Overhaul
 - [ ] Help file / guide for the simulation tools (quick sim, sweep, heat map, snapshots)
-- [ ] Move bottom toolbar to fixed bottom position; open sections as flyout panels instead of pushing content (buttons stay in place)
-- [ ] Convert PC and NPC side panels to flyout windows; free up center view for a dashboard with heat maps, bar graphs, and live analytics
+- [x] Move bottom toolbar to fixed bottom position; open sections as flyout panels instead of pushing content (buttons stay in place)
+- [x] Convert PC and NPC side panels to flyout windows; center view now full-width for character detail / future dashboard
+- [ ] Center dashboard view — replace character detail with a full analytics dashboard (heat maps, bar graphs, party summary, live stats)
 - [ ] Conflict simulation buttons on bottom toolbar — Physical, Mental, Social, Mixed — run a simulated multi-round combat between party and enemies using the current rules config
   - Mixed mode: each character uses their strongest conflict domain
   - Show round-by-round breakdown, average rounds to resolve, casualty rates
