@@ -105,9 +105,26 @@
     background: var(--bg-darkest);
   }
 
-  /* === SIDE PANELS (hidden — accessed via toolbar) === */
-  .party-panel, .enemy-panel {
-    display: none;
+  /* === LEFT PANEL: PARTY === */
+  .party-panel {
+    width: 260px;
+    min-width: 260px;
+    background: var(--bg-dark);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* === RIGHT PANEL: ENEMIES === */
+  .enemy-panel {
+    width: 280px;
+    min-width: 280px;
+    background: var(--bg-dark);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
   .panel-header {
     font-family: 'Cinzel', serif;
@@ -320,7 +337,7 @@
   }
   .identity-name { font-family: 'Cinzel', serif; font-size: 15px; color: var(--text-bright); }
 
-  /* enemy-panel hidden via .party-panel, .enemy-panel rule above */
+  /* enemy-panel styles defined above */
   .enemy-list {
     flex: 1;
     overflow-y: auto;
@@ -874,8 +891,6 @@
 
 <!-- BOTTOM TOOLBAR -->
 <div class="bottom-tabs">
-  <button class="bottom-tab" onclick="togglePanel('chars')"><i class="fas fa-users"></i> Party</button>
-  <button class="bottom-tab" onclick="togglePanel('enemies')"><i class="fas fa-skull"></i> Enemies</button>
   <button class="bottom-tab" onclick="togglePanel('dice')"><i class="fas fa-dice"></i> Dice</button>
   <button class="bottom-tab" onclick="togglePanel('party')"><i class="fas fa-address-book"></i> Party Mgmt</button>
   <button class="bottom-tab" onclick="togglePanel('sg')"><i class="fas fa-book-open"></i> Storyguide</button>
@@ -885,24 +900,6 @@
   <button class="bottom-tab" onclick="runConflict('physical')"><i class="fas fa-fist-raised"></i> Physical</button>
   <button class="bottom-tab" onclick="runConflict('social')"><i class="fas fa-comments"></i> Social</button>
   <button class="bottom-tab" onclick="runConflict('mixed')"><i class="fas fa-random"></i> Mixed</button>
-</div>
-
-<!-- PARTY PANEL -->
-<div class="bottom-tab-content" id="tab-chars" style="flex-direction:column;padding:12px;">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-    <span style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);">Party</span>
-    <button class="add-btn" style="margin:0;padding:4px 10px;" onclick="addCharacter()">+ Add Character</button>
-  </div>
-  <div id="partyList" style="display:flex;flex-direction:column;gap:6px;"></div>
-</div>
-
-<!-- ENEMIES PANEL -->
-<div class="bottom-tab-content" id="tab-enemies" style="flex-direction:column;padding:12px;">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-    <span style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);">Encounters</span>
-    <button class="add-btn" style="margin:0;padding:4px 10px;" onclick="addEnemy()">+ Add Enemy</button>
-  </div>
-  <div id="enemyList" style="display:flex;flex-direction:column;gap:6px;"></div>
 </div>
 
 <!-- DICE ROLLER TAB -->
@@ -1462,8 +1459,6 @@ function selectChar(index) {
   selectedChar = index;
   renderParty();
   renderCharDetail(characters[index]);
-  // Close the party panel flyout
-  if (activePanel === 'chars') togglePanel('chars');
 }
 
 function renderCharDetail(c) {
@@ -3845,14 +3840,19 @@ function newSession() {
 }
 
 // === INIT ===
+renderParty();
 renderEnemies();
 populateTargetDropdown();
-// Empty state on fresh load
-document.getElementById('centerContent').innerHTML = `
-  <div class="empty-state">
-    Welcome to the Playtest Table
-    <span class="hint">Import characters and enemies from your library using the toolbar below</span>
-  </div>`;
+if (characters.length > 0) {
+  selectedChar = 0;
+  renderCharDetail(characters[0]);
+} else {
+  document.getElementById('centerContent').innerHTML = `
+    <div class="empty-state">
+      Welcome to the Playtest Table
+      <span class="hint">Import characters and enemies using the + buttons on the side panels</span>
+    </div>`;
+}
 </script>
 
 <!-- SESSION LIST MODAL -->
