@@ -102,16 +102,18 @@
     flex: 1;
     display: flex;
     overflow: hidden;
-    position: relative;
     background: var(--bg-darkest);
   }
 
   /* === FLYOUT PANELS === */
+  .flyout-container {
+    position: relative;
+    z-index: 50;
+  }
   .flyout-overlay {
     display: none;
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    z-index: 50;
     max-height: 70vh;
     background: var(--bg-dark);
     border-top: 2px solid var(--gold-dim);
@@ -889,8 +891,6 @@
 
 <!-- MAIN AREA -->
 <div class="main-area">
-
-  <!-- CENTER: DASHBOARD -->
   <div class="center-panel">
     <div class="center-content" id="centerContent">
       <div class="empty-state">
@@ -899,6 +899,10 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- FLYOUT PANELS (positioned over main-area) -->
+<div class="flyout-container">
 
   <!-- FLYOUT: PARTY -->
   <div class="flyout-overlay" id="flyout-party">
@@ -1244,7 +1248,7 @@
     </div>
   </div>
 
-</div> <!-- /main-area -->
+</div> <!-- /flyout-container -->
 
 <!-- BOTTOM TOOLBAR (fixed at bottom) -->
 <div class="bottom-tabs">
