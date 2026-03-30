@@ -107,8 +107,9 @@
 
   /* === FLYOUT PANELS === */
   .flyout-container {
-    position: relative;
-    height: 0;
+    position: absolute;
+    bottom: 100%;
+    left: 0; right: 0;
     z-index: 50;
   }
   .flyout-overlay {
@@ -642,7 +643,6 @@
     gap: 0;
     flex-shrink: 0;
     position: relative;
-    z-index: 51;
   }
   .bottom-tab {
     font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px;
@@ -904,8 +904,7 @@
   </div>
 </div>
 
-<!-- FLYOUT PANELS (positioned over main-area) -->
-<div class="flyout-container">
+<!-- FLYOUT PANELS (moved into bottom-tabs on init) -->
 
   <!-- FLYOUT: PARTY -->
   <div class="flyout-overlay" id="flyout-party">
@@ -1251,10 +1250,9 @@
     </div>
   </div>
 
-</div> <!-- /flyout-container -->
-
-<!-- BOTTOM TOOLBAR (fixed at bottom) -->
+<!-- BOTTOM TOOLBAR -->
 <div class="bottom-tabs">
+  <div class="flyout-container" id="flyoutContainer"></div>
   <button class="bottom-tab" data-flyout="party" onclick="toggleFlyout('party')"><i class="fas fa-users"></i> Party</button>
   <button class="bottom-tab" data-flyout="enemies" onclick="toggleFlyout('enemies')"><i class="fas fa-skull"></i> Enemies</button>
   <button class="bottom-tab" data-flyout="dice" onclick="toggleFlyout('dice')"><i class="fas fa-dice"></i> Dice</button>
@@ -3568,6 +3566,12 @@ function newSession() {
 }
 
 // === INIT ===
+// Move flyout panels into the container inside bottom-tabs
+const flyoutTarget = document.getElementById('flyoutContainer');
+document.querySelectorAll('.flyout-overlay').forEach(el => {
+  flyoutTarget.appendChild(el);
+});
+
 renderEnemies();
 populateTargetDropdown();
 // Show first character detail in center if available
