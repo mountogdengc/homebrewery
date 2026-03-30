@@ -874,6 +874,7 @@
   <button class="bottom-tab active" onclick="switchBottomTab('dice')">Dice Roller</button>
   <button class="bottom-tab" onclick="switchBottomTab('party')">Party</button>
   <button class="bottom-tab" onclick="switchBottomTab('sg')">Storyguide</button>
+  <button class="bottom-tab" onclick="switchBottomTab('rules')">Rules</button>
 </div>
 
 <!-- DICE ROLLER TAB -->
@@ -1000,7 +1001,70 @@
   </div>
 </div>
 
+<!-- RULES TAB -->
+<div class="bottom-panel bottom-tab-content" id="tab-rules">
+  <div style="display:flex;gap:12px;height:100%;overflow:hidden;">
+
+    <!-- Left: Rule Config -->
+    <div style="flex:1;overflow-y:auto;padding-right:8px;">
+      <div class="mgmt-section-title">Rule Configuration <button class="add-inline-btn" onclick="resetRules()">Reset to Defaults</button></div>
+      <div id="rulesEditor"></div>
+      <div style="margin-top:8px;">
+        <div class="mgmt-section-title">Change Log</div>
+        <div id="rulesChangeLog" style="max-height:150px;overflow-y:auto;font-size:11px;font-family:'Fira Mono',monospace;color:var(--text-dim);"></div>
+      </div>
+    </div>
+
+    <!-- Right: Quick Sim -->
+    <div style="flex:1;overflow-y:auto;border-left:1px solid var(--border);padding-left:12px;">
+      <div class="mgmt-section-title">Quick Sim</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+        <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+          Attr <input type="number" id="simAttr" value="2" min="0" max="5" style="width:45px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:12px;font-family:'Fira Mono',monospace;text-align:center;">
+        </label>
+        <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+          Skill <select id="simSkill" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:11px;font-family:'Fira Mono',monospace;">
+            <option value="3">Vocation (+3)</option>
+            <option value="2">Interest (+2)</option>
+            <option value="1">Hobby (+1)</option>
+            <option value="0" selected>None (+0)</option>
+          </select>
+        </label>
+        <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+          TN <input type="number" id="simTN" value="10" min="2" max="30" style="width:45px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:12px;font-family:'Fira Mono',monospace;text-align:center;">
+        </label>
+        <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+          Rolls <input type="number" id="simCount" value="1000" min="10" max="100000" step="100" style="width:70px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:12px;font-family:'Fira Mono',monospace;text-align:center;">
+        </label>
+        <button onclick="runQuickSim()" style="background:var(--gold-dim);color:var(--bg-darkest);border:none;padding:4px 14px;border-radius:3px;cursor:pointer;font-family:'Fira Mono',monospace;font-size:11px;font-weight:700;">Run Sim</button>
+      </div>
+      <div id="simResults" style="font-family:'Fira Mono',monospace;font-size:12px;"></div>
+      <div id="simChart" style="margin-top:8px;"></div>
+    </div>
+
+  </div>
+</div>
+
 <script>
+// === RULES CONFIG ===
+const DEFAULT_RULES = {
+  healthTrackBase  : 3,    // Health boxes = base + anchor attribute
+  successMargin    : 0,    // Success if total >= TN + this
+  successPlusMargin: 2,    // Success+ if total >= TN + this
+  costMargin       : 2,    // At Cost if total >= TN - this (and below success)
+  critValue        : 6,    // Crit when both result dice equal this
+  compThreshold    : 3,    // Complication when result dice sum <= this
+  mookTNPenalty    : 1,    // TN reduction per mook member lost
+  diceCount        : 2,    // Number of result dice
+  diceSides        : 6,    // Sides per die
+  luckDie          : true, // Whether a luck die is rolled
+  vocBonus         : 3,    // Vocation skill tier bonus
+  intBonus         : 2,    // Interest skill tier bonus
+  hobBonus         : 1     // Hobby skill tier bonus
+};
+
+let rules = JSON.parse(JSON.stringify(DEFAULT_RULES));
+
 // === DATA ===
 let taintPool = 0;
 let selectedChar = null;
@@ -1226,7 +1290,7 @@ function selectChar(index) {
 }
 
 function renderCharDetail(c) {
-  const defTN = (anchor) => 8 + anchor;
+  // PCs don't have static defense TNs — they make active defense rolls vs enemy atkTN
   const center = document.getElementById('centerContent');
   center.innerHTML = `
     <div class="detail-view">
@@ -1271,9 +1335,9 @@ function renderCharDetail(c) {
       <div class="detail-section">
         <div class="detail-section-title">Health Tracks</div>
         <div class="detail-tracks">
-          ${renderDetailTrack('Willpower', 'ment', c.tracks.willpower, defTN(c.attrs.mental.Resolve), 'willpower', characters.indexOf(c))}
-          ${renderDetailTrack('Vitality', 'phys', c.tracks.vitality, defTN(c.attrs.physical.Endurance), 'vitality', characters.indexOf(c))}
-          ${renderDetailTrack('Composure', 'soc', c.tracks.composure, defTN(c.attrs.social.Command), 'composure', characters.indexOf(c))}
+          ${renderDetailTrack('Willpower', 'ment', c.tracks.willpower, 'willpower', characters.indexOf(c))}
+          ${renderDetailTrack('Vitality', 'phys', c.tracks.vitality, 'vitality', characters.indexOf(c))}
+          ${renderDetailTrack('Composure', 'soc', c.tracks.composure, 'composure', characters.indexOf(c))}
         </div>
       </div>
 
@@ -1303,7 +1367,7 @@ function renderCharDetail(c) {
   `;
 }
 
-function renderDetailTrack(name, domain, track, defTN, trackKey, charIdx) {
+function renderDetailTrack(name, domain, track, trackKey, charIdx) {
   let boxes = '';
   for (let j = 0; j < track.max; j++) {
     boxes += `<div class="detail-track-box ${domain} ${j < track.current ? 'filled' : ''}" onclick="toggleBox(${charIdx},'${trackKey}',${j})"></div>`;
@@ -1311,7 +1375,7 @@ function renderDetailTrack(name, domain, track, defTN, trackKey, charIdx) {
   return `<div class="detail-track-row">
     <span class="detail-track-label" style="color: var(--${domain}-color)">${name}</span>
     <div class="detail-track-boxes">${boxes}</div>
-    <span class="detail-track-tn">DEF ${defTN}</span>
+    <span class="detail-track-tn">${track.current}/${track.max}</span>
   </div>`;
 }
 
@@ -1455,9 +1519,9 @@ function rollDice() {
   document.getElementById('rollBtn').disabled = true;
 
   setTimeout(() => {
-    const d1 = Math.floor(Math.random() * 6) + 1;
-    const d2 = Math.floor(Math.random() * 6) + 1;
-    const d3 = Math.floor(Math.random() * 6) + 1;
+    const d1 = Math.floor(Math.random() * rules.diceSides) + 1;
+    const d2 = Math.floor(Math.random() * rules.diceSides) + 1;
+    const d3 = Math.floor(Math.random() * rules.diceSides) + 1;
 
     currentRoll = {
       d1, d2, d3,
@@ -1653,14 +1717,14 @@ function updateResultDisplay() {
 
   const total = r.d1 + r.d2 + r.attr + r.skill;
   const resultDiceTotal = r.d1 + r.d2;
-  const isCrit = (r.d1 === 6 && r.d2 === 6);
-  const isComplication = (resultDiceTotal <= 3);
+  const isCrit = (r.d1 === rules.critValue && r.d2 === rules.critValue);
+  const isComplication = (resultDiceTotal <= rules.compThreshold);
 
   let outcome = '';
   let outcomeClass = '';
-  if (total >= r.tn + 2) { outcome = isCrit ? 'CRITICAL SUCCESS+' : 'Success Plus'; outcomeClass = 'outcome-crit'; }
-  else if (total >= r.tn) { outcome = isCrit ? 'CRITICAL SUCCESS' : 'Success'; outcomeClass = isCrit ? 'outcome-crit' : 'outcome-success'; }
-  else if (total >= r.tn - 2) { outcome = 'Success at Cost'; outcomeClass = 'outcome-cost'; }
+  if (total >= r.tn + rules.successPlusMargin) { outcome = isCrit ? 'CRITICAL SUCCESS+' : 'Success Plus'; outcomeClass = 'outcome-crit'; }
+  else if (total >= r.tn + rules.successMargin) { outcome = isCrit ? 'CRITICAL SUCCESS' : 'Success'; outcomeClass = isCrit ? 'outcome-crit' : 'outcome-success'; }
+  else if (total >= r.tn - rules.costMargin) { outcome = 'Success at Cost'; outcomeClass = 'outcome-cost'; }
   else { outcome = 'Failure'; outcomeClass = 'outcome-fail'; }
 
   document.getElementById('resultTotal').textContent = total;
@@ -1689,13 +1753,13 @@ function logRoll() {
   const r = currentRoll;
   const total = r.d1 + r.d2 + r.attr + r.skill;
   const resultDiceTotal = r.d1 + r.d2;
-  const isCrit = (r.d1 === 6 && r.d2 === 6);
-  const isComplication = (resultDiceTotal <= 3);
+  const isCrit = (r.d1 === rules.critValue && r.d2 === rules.critValue);
+  const isComplication = (resultDiceTotal <= rules.compThreshold);
 
   let outcome = '';
-  if (total >= r.tn + 2) outcome = isCrit ? 'Crit+' : 'Success+';
-  else if (total >= r.tn) outcome = isCrit ? 'Crit' : 'Success';
-  else if (total >= r.tn - 2) outcome = 'At Cost';
+  if (total >= r.tn + rules.successPlusMargin) outcome = isCrit ? 'Crit+' : 'Success+';
+  else if (total >= r.tn + rules.successMargin) outcome = isCrit ? 'Crit' : 'Success';
+  else if (total >= r.tn - rules.costMargin) outcome = 'At Cost';
   else outcome = 'Failure';
 
   rollCount++;
@@ -1720,6 +1784,16 @@ function logRoll() {
 function renderRollLogEntry(entry) {
   const logEntry = document.createElement('div');
   logEntry.className = 'log-entry';
+
+  // Config change entries render differently
+  if (entry.type === 'config') {
+    logEntry.style.borderLeft = '2px solid var(--gold-dim)';
+    logEntry.innerHTML = `#${entry.num} <span style="color:var(--gold)">⚙ ${entry.outcome}</span>`;
+    const log = document.getElementById('rollLog');
+    log.insertBefore(logEntry, log.firstChild);
+    return;
+  }
+
   let logText = `#${entry.num} <span class="log-char">${entry.char}</span>`;
   if (entry.target) {
     const domainShort = (entry.domain || '').slice(0, 4).toUpperCase();
@@ -1766,12 +1840,13 @@ function switchBottomTab(tab) {
   document.querySelectorAll('.bottom-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.bottom-tab-content').forEach(t => t.classList.remove('active'));
   document.getElementById(`tab-${tab}`).classList.add('active');
+  const tabLabels = { dice: 'dice', party: 'party', sg: 'story', rules: 'rules' };
   document.querySelectorAll('.bottom-tab').forEach(t => {
-    if (t.textContent.toLowerCase().includes(tab === 'dice' ? 'dice' : tab === 'party' ? 'party' : 'story')) t.classList.add('active');
+    if (t.textContent.toLowerCase().includes(tabLabels[tab])) t.classList.add('active');
   });
-  // Render content when switching
   if (tab === 'party') renderPartyTab();
   if (tab === 'sg') renderSGTab();
+  if (tab === 'rules') renderRulesTab();
 }
 
 // === PARTY ANCHOR ===
@@ -2029,7 +2104,7 @@ async function importCharacter(shareId) {
 
 function mapWillowlightToPlaytest(ch) {
   const attrs = ch.attributes || {};
-  const getTrackBoxes = (base, val) => base + (val || 0);
+  const getTrackBoxes = (base, val) => (base ?? rules.healthTrackBase) + (val || 0);
 
   // Format skill list with bonus
   const fmtSkills = (list, bonus) => (list || []).map(s => s.name ? `${s.name} (+${bonus})` : '').filter(Boolean);
@@ -2297,10 +2372,253 @@ function onTargetChange() {
   // Mook TN penalty for lost members
   if (enemy.tier === 'mook' && action === 'attack') {
     const lost = enemy.size - enemy.sizeLeft;
-    tn = Math.max(2, tn - lost);
+    tn = Math.max(2, tn - (lost * rules.mookTNPenalty));
   }
 
   document.getElementById('rollTN').value = tn;
+}
+
+// === RULES CONFIG UI ===
+
+let rulesChangeLog = []; // { timestamp, key, label, from, to }
+
+const RULES_FIELDS = [
+  { key: 'healthTrackBase',   label: 'Health Track Base',         desc: 'Health boxes = this + anchor attribute' },
+  { key: 'successMargin',     label: 'Success Margin',            desc: 'Success when total >= TN + this' },
+  { key: 'successPlusMargin', label: 'Success+ Margin',           desc: 'Success+ when total >= TN + this' },
+  { key: 'costMargin',        label: 'At Cost Range',             desc: 'At Cost when total >= TN - this' },
+  { key: 'critValue',         label: 'Crit Die Value',            desc: 'Crit when both result dice equal this' },
+  { key: 'compThreshold',     label: 'Complication Threshold',    desc: 'Complication when result dice sum <= this' },
+  { key: 'mookTNPenalty',     label: 'Mook TN Penalty / Member',  desc: 'TN reduction per mook member lost' },
+  { key: 'diceCount',         label: 'Result Dice Count',         desc: 'Number of result dice rolled' },
+  { key: 'diceSides',         label: 'Die Sides',                 desc: 'Number of sides per die' },
+  { key: 'vocBonus',          label: 'Vocation Bonus',            desc: 'Skill bonus for Vocation tier' },
+  { key: 'intBonus',          label: 'Interest Bonus',            desc: 'Skill bonus for Interest tier' },
+  { key: 'hobBonus',          label: 'Hobby Bonus',               desc: 'Skill bonus for Hobby tier' }
+];
+
+function renderRulesTab() {
+  const editor = document.getElementById('rulesEditor');
+  editor.innerHTML = RULES_FIELDS.map(f => {
+    const val = rules[f.key];
+    const def = DEFAULT_RULES[f.key];
+    const changed = val !== def;
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;padding:4px 6px;background:${changed ? 'rgba(201,168,76,0.08)' : 'transparent'};border-radius:3px;">
+      <label style="min-width:200px;font-size:12px;color:var(--text);font-weight:600;">${f.label}</label>
+      <input type="number" value="${val}" style="width:60px;background:var(--bg-card);border:1px solid ${changed ? 'var(--gold-dim)' : 'var(--border)'};color:var(--text);padding:3px 6px;border-radius:3px;font-size:12px;font-family:'Fira Mono',monospace;text-align:center;"
+        onchange="updateRule('${f.key}', '${f.label}', Number(this.value))">
+      <span style="font-size:10px;color:var(--text-dim);flex:1;">${f.desc}${changed ? ' <span style=color:var(--gold-dim)>(default: ' + def + ')</span>' : ''}</span>
+    </div>`;
+  }).join('');
+
+  renderRulesChangeLog();
+}
+
+function updateRule(key, label, newValue) {
+  const oldValue = rules[key];
+  if (oldValue === newValue) return;
+  rules[key] = newValue;
+
+  // Log the change
+  const entry = {
+    timestamp: new Date().toLocaleTimeString(),
+    key, label,
+    from: oldValue,
+    to: newValue
+  };
+  rulesChangeLog.push(entry);
+
+  // Also add to the roll log so it's interspersed with rolls
+  rollCount++;
+  const logEntry = {
+    num: rollCount, type: 'config',
+    char: 'RULES', target: null,
+    action: 'config', domain: '',
+    total: 0, tn: 0, d1: 0, d2: 0, d3: 0,
+    attr: 0, skill: 0, swapped: null,
+    outcome: `${label}: ${oldValue} → ${newValue}`,
+    isCrit: false, isComplication: false,
+    configChange: { key, label, from: oldValue, to: newValue }
+  };
+  rollLogData.unshift(logEntry);
+
+  // Render config change in DOM roll log
+  const logEl = document.createElement('div');
+  logEl.className = 'log-entry';
+  logEl.style.borderLeft = '2px solid var(--gold-dim)';
+  logEl.innerHTML = `#${rollCount} <span style="color:var(--gold)">⚙ ${label}:</span> ${oldValue} → <strong>${newValue}</strong>`;
+  const log = document.getElementById('rollLog');
+  log.insertBefore(logEl, log.firstChild);
+
+  // Re-render the rules panel and character detail (TNs may have changed)
+  renderRulesTab();
+  if (selectedChar !== null) renderCharDetail(characters[selectedChar]);
+  markDirty();
+}
+
+function resetRules() {
+  if (!confirm('Reset all rules to defaults?')) return;
+  const changes = [];
+  for (const f of RULES_FIELDS) {
+    if (rules[f.key] !== DEFAULT_RULES[f.key]) {
+      changes.push({ key: f.key, label: f.label, from: rules[f.key], to: DEFAULT_RULES[f.key] });
+    }
+  }
+  if (changes.length === 0) return;
+
+  rules = JSON.parse(JSON.stringify(DEFAULT_RULES));
+
+  // Log all resets
+  rollCount++;
+  const summary = changes.map(c => `${c.label}: ${c.from}→${c.to}`).join(', ');
+  rulesChangeLog.push({ timestamp: new Date().toLocaleTimeString(), key: '*', label: 'Reset to Defaults', from: '', to: '' });
+  rollLogData.unshift({
+    num: rollCount, type: 'config',
+    char: 'RULES', target: null,
+    action: 'config', domain: '',
+    total: 0, tn: 0, d1: 0, d2: 0, d3: 0,
+    attr: 0, skill: 0, swapped: null,
+    outcome: `Reset to defaults (${summary})`,
+    isCrit: false, isComplication: false
+  });
+  const logEl = document.createElement('div');
+  logEl.className = 'log-entry';
+  logEl.style.borderLeft = '2px solid var(--gold-dim)';
+  logEl.innerHTML = `#${rollCount} <span style="color:var(--gold)">⚙ Reset to Defaults</span>`;
+  document.getElementById('rollLog').insertBefore(logEl, document.getElementById('rollLog').firstChild);
+
+  renderRulesTab();
+  if (selectedChar !== null) renderCharDetail(characters[selectedChar]);
+  markDirty();
+}
+
+function renderRulesChangeLog() {
+  const el = document.getElementById('rulesChangeLog');
+  if (rulesChangeLog.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-dim);font-style:italic;padding:4px;">No changes yet</div>';
+    return;
+  }
+  el.innerHTML = rulesChangeLog.map(c =>
+    `<div style="padding:2px 0;border-bottom:1px solid var(--border);">
+      <span style="color:var(--text-dim)">${c.timestamp}</span>
+      <span style="color:var(--gold)">${c.label}</span>
+      ${c.from !== '' ? `${c.from} → <strong style="color:var(--text)">${c.to}</strong>` : ''}
+    </div>`
+  ).join('');
+}
+
+// === QUICK SIM ENGINE ===
+
+function simulateRolls(attr, skill, tn, count) {
+  const results = { successPlus: 0, success: 0, cost: 0, failure: 0, crit: 0, complication: 0 };
+  const totals = []; // for histogram
+
+  for (let i = 0; i < count; i++) {
+    // Roll result dice
+    let diceSum = 0;
+    const dice = [];
+    for (let d = 0; d < rules.diceCount; d++) {
+      const val = Math.floor(Math.random() * rules.diceSides) + 1;
+      dice.push(val);
+      diceSum += val;
+    }
+    const total = diceSum + attr + skill;
+    totals.push(total);
+
+    // Crit: all dice equal critValue
+    const isCrit = dice.every(d => d === rules.critValue);
+    // Complication: dice sum <= threshold
+    const isComp = diceSum <= rules.compThreshold;
+
+    if (isCrit) results.crit++;
+    if (isComp) results.complication++;
+
+    if (total >= tn + rules.successPlusMargin) results.successPlus++;
+    else if (total >= tn + rules.successMargin) results.success++;
+    else if (total >= tn - rules.costMargin) results.cost++;
+    else results.failure++;
+  }
+
+  return { results, totals, count };
+}
+
+function runQuickSim() {
+  const attr = parseInt(document.getElementById('simAttr').value) || 0;
+  const skill = parseInt(document.getElementById('simSkill').value) || 0;
+  const tn = parseInt(document.getElementById('simTN').value) || 10;
+  const count = Math.min(100000, Math.max(10, parseInt(document.getElementById('simCount').value) || 1000));
+
+  const { results, totals } = simulateRolls(attr, skill, tn, count);
+  const pct = (n) => ((n / count) * 100).toFixed(1);
+
+  // Summary
+  const totalSuccess = results.successPlus + results.success + results.crit;
+  document.getElementById('simResults').innerHTML = `
+    <div style="margin-bottom:6px;color:var(--text-bright);">
+      <strong>${count.toLocaleString()}</strong> rolls · Attr ${attr} + Skill ${skill} vs TN ${tn}
+      · <span style="color:var(--green-bright)">${pct(totalSuccess + results.cost)}% any success</span>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <div><span style="color:var(--green-bright)">&#9632;</span> Success+: <strong>${pct(results.successPlus)}%</strong> <span style="color:var(--text-dim)">(${results.successPlus})</span></div>
+      <div><span style="color:var(--green)">&#9632;</span> Success: <strong>${pct(results.success)}%</strong> <span style="color:var(--text-dim)">(${results.success})</span></div>
+      <div><span style="color:var(--gold)">&#9632;</span> At Cost: <strong>${pct(results.cost)}%</strong> <span style="color:var(--text-dim)">(${results.cost})</span></div>
+      <div><span style="color:var(--red)">&#9632;</span> Failure: <strong>${pct(results.failure)}%</strong> <span style="color:var(--text-dim)">(${results.failure})</span></div>
+      <div><span style="color:var(--blue-bright)">&#9632;</span> Crit: <strong>${pct(results.crit)}%</strong></div>
+      <div><span style="color:var(--purple-bright)">&#9632;</span> Complication: <strong>${pct(results.complication)}%</strong></div>
+    </div>
+  `;
+
+  // Render chart
+  renderSimChart(totals, tn, count);
+}
+
+function renderSimChart(totals, tn, count) {
+  const chartEl = document.getElementById('simChart');
+
+  // Build histogram buckets
+  const min = Math.min(...totals);
+  const max = Math.max(...totals);
+  const buckets = {};
+  for (let v = min; v <= max; v++) buckets[v] = 0;
+  for (const t of totals) buckets[t]++;
+
+  const maxCount = Math.max(...Object.values(buckets));
+  const barHeight = 120;
+  const barWidth = Math.max(12, Math.min(28, Math.floor(400 / (max - min + 1))));
+
+  let barsHtml = '';
+  for (let v = min; v <= max; v++) {
+    const c = buckets[v] || 0;
+    const h = maxCount > 0 ? Math.round((c / maxCount) * barHeight) : 0;
+    const pct = ((c / count) * 100).toFixed(1);
+
+    // Color based on outcome at this total
+    let color;
+    if (v >= tn + rules.successPlusMargin) color = 'var(--green-bright)';
+    else if (v >= tn + rules.successMargin) color = 'var(--green)';
+    else if (v >= tn - rules.costMargin) color = 'var(--gold)';
+    else color = 'var(--red)';
+
+    barsHtml += `<div style="display:flex;flex-direction:column;align-items:center;gap:1px;" title="Total ${v}: ${c} rolls (${pct}%)">
+      <div style="font-size:8px;color:var(--text-dim);">${pct}%</div>
+      <div style="width:${barWidth}px;height:${h}px;background:${color};border-radius:2px 2px 0 0;min-height:1px;"></div>
+      <div style="font-size:9px;color:var(--text-dim);${v === tn ? 'color:var(--text-bright);font-weight:700;' : ''}">${v}</div>
+    </div>`;
+  }
+
+  // TN marker line
+  chartEl.innerHTML = `
+    <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">Distribution of totals (TN ${tn} marked)</div>
+    <div style="display:flex;align-items:flex-end;gap:1px;padding:4px 0;overflow-x:auto;">
+      ${barsHtml}
+    </div>
+    <div style="display:flex;gap:12px;font-size:9px;color:var(--text-dim);margin-top:4px;">
+      <span><span style="color:var(--green-bright)">&#9632;</span> Success+</span>
+      <span><span style="color:var(--green)">&#9632;</span> Success</span>
+      <span><span style="color:var(--gold)">&#9632;</span> At Cost</span>
+      <span><span style="color:var(--red)">&#9632;</span> Failure</span>
+    </div>
+  `;
 }
 
 // === SESSION MANAGEMENT ===
@@ -2328,7 +2646,9 @@ function getSessionState() {
     rollLog: rollLogData,
     tides: tides,
     partyAnchor: partyAnchor,
-    sgNotes: document.getElementById('sgNotes')?.value || ''
+    sgNotes: document.getElementById('sgNotes')?.value || '',
+    rules: rules,
+    rulesChangeLog: rulesChangeLog
   };
 }
 
@@ -2351,6 +2671,14 @@ function loadSessionState(data) {
   (data.tides || []).forEach(t => tides.push(t));
 
   partyAnchor = data.partyAnchor || { name: '', desc: '' };
+
+  // Restore rules config
+  if (data.rules) {
+    rules = { ...JSON.parse(JSON.stringify(DEFAULT_RULES)), ...data.rules };
+  } else {
+    rules = JSON.parse(JSON.stringify(DEFAULT_RULES));
+  }
+  rulesChangeLog = data.rulesChangeLog || [];
 
   const sgNotesEl = document.getElementById('sgNotes');
   if (sgNotesEl) sgNotesEl.value = data.sgNotes || '';
@@ -2493,6 +2821,8 @@ function newSession() {
   document.getElementById('rollLog').innerHTML = '';
   tides.length = 0;
   partyAnchor = { name: '', desc: '' };
+  rules = JSON.parse(JSON.stringify(DEFAULT_RULES));
+  rulesChangeLog = [];
   const sgNotesEl = document.getElementById('sgNotes');
   if (sgNotesEl) sgNotesEl.value = '';
   renderParty();

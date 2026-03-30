@@ -431,7 +431,6 @@ function fieldValShort(label, value) {
 }
 
 function getTrackBoxes(base, attrVal) { return base + (attrVal || 0); }
-function getDefTN(attrVal) { return 8 + (attrVal || 0); }
 
 const AFFLICTION_LIST = ['terrified','discredited','stunned','prone','blinded','disoriented','restrained','slowed','disarmed','dying'];
 
@@ -528,7 +527,6 @@ function renderPage1(ch) {
   function healthPanel(label, base, attrKey, formula, overrideKey) {
     const attrVal = attrs[attrKey] || 0;
     const totalBoxes = ch[overrideKey] ?? getTrackBoxes(base, attrVal);
-    const defTN = isBlankSheet ? '' : String(getDefTN(attrVal));
     // Split into tiers of 3/3/remaining
     const t1 = Math.min(totalBoxes, 3);
     const t2 = Math.min(Math.max(totalBoxes - 3, 0), 3);
@@ -542,8 +540,6 @@ function renderPage1(ch) {
       ${t1 > 0 ? `<div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;"><span class="sub-label" style="width:22px;">T1</span>${boxes(t1)}</div>` : ''}
       ${t2 > 0 ? `<div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;"><span class="sub-label" style="width:22px;">T2</span>${boxes(t2)}</div>` : ''}
       ${t3 > 0 ? `<div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;"><span class="sub-label" style="width:22px;">T3</span>${boxes(t3)}</div>` : ''}
-      ${fieldValShort('Defense TN', defTN)}
-      <div style="font-size:6pt; color:#888;">8 + ${label === 'Vitality' ? 'Endurance' : label === 'Willpower' ? 'Resolve' : 'Command'}</div>
     </div>`;
   }
 

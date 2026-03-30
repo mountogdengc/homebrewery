@@ -16,8 +16,10 @@ const PlaytestSessionSchema = mongoose.Schema({
 	taintPool  : { type: Number, default: 0 },
 	rollLog    : [mongoose.Schema.Types.Mixed],
 	tides      : [mongoose.Schema.Types.Mixed],
-	partyAnchor : { type: mongoose.Schema.Types.Mixed, default: ()=>({ name: '', desc: '' }) },
-	sgNotes    : { type: String, default: '' },
+	partyAnchor    : { type: mongoose.Schema.Types.Mixed, default: ()=>({ name: '', desc: '' }) },
+	sgNotes        : { type: String, default: '' },
+	rules          : { type: mongoose.Schema.Types.Mixed, default: ()=>({}) },
+	rulesChangeLog : [mongoose.Schema.Types.Mixed],
 
 	// Timestamps
 	createdAt : { type: Date, default: Date.now, index: true },

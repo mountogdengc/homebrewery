@@ -84,6 +84,13 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 - [ ] System-agnostic playtest features — shared timer, turn order, generic notes
 - [ ] System-specific modules: each system defines its own dice mechanics, stat shapes, track types, and roll interpretation — the playtest shell loads the right module based on session system type
 
+### Rules Config & Simulation
+- [x] Configurable rules engine — 13 tunable parameters (health base, success/cost/crit thresholds, dice, skill bonuses) with change log interspersed in roll log
+- [x] Quick Sim — run N rolls (up to 100k) with given attr/skill/TN, shows outcome distribution percentages and color-coded histogram chart
+- [ ] Parameter sweep — pick a variable, set range + step, run sims at each step, line chart of outcomes
+- [ ] Two-variable sweep — heat map for e.g. TN base vs health base
+- [ ] Scenario snapshots — save party+enemies+rules state, compare side-by-side under different configs
+
 ### Analytics & Balance Testing
 - [ ] Roll analytics panel — aggregate stats from session roll log (success/cost/fail rates per character, per domain, per enemy)
 - [ ] Margin tracking — average roll margin above/below TN, broken down by domain and skill tier

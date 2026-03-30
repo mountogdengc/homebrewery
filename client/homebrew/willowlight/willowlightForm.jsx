@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import {
 	ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS, ALL_ATTRIBUTES,
 	ATTACK_DOMAINS, DOMAIN_LABELS,
-	HEALTH_TRACKS, getTrackBoxes, getDefTN
+	HEALTH_TRACKS, getTrackBoxes
 } from '@shared/willowlight/constants.js';
 
 const WillowlightForm = ({ character, onChange })=>{
@@ -155,12 +155,11 @@ const WillowlightForm = ({ character, onChange })=>{
 		{HEALTH_TRACKS.map((track)=>{
 			const attrVal = attrs[track.baseAttr] || 0;
 			const derived = getTrackBoxes(track.base, attrVal);
-			const defTN = getDefTN(attrVal);
 			const overrideKey = `${track.key}Override`;
 			return <div key={track.key} style={{ marginBottom: '8px', padding: '6px 8px', background: '#252538', borderRadius: '4px' }}>
 				<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 					<span style={{ color: '#c0c0d8', fontWeight: 600, fontSize: '13px' }}>{track.label}</span>
-					<span style={{ color: '#666', fontSize: '12px' }}>{derived} boxes | DEF TN {defTN}</span>
+					<span style={{ color: '#666', fontSize: '12px' }}>{derived} boxes</span>
 				</div>
 				<label style={{ marginTop: '4px' }}>
 					<span>Override Boxes</span>

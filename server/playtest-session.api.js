@@ -21,7 +21,7 @@ const requireAuth = (req, res)=>{
 	return true;
 };
 
-const MIXED_FIELDS = ['characters', 'enemies', 'rollLog', 'tides', 'partyAnchor'];
+const MIXED_FIELDS = ['characters', 'enemies', 'rollLog', 'tides', 'partyAnchor', 'rules', 'rulesChangeLog'];
 
 router.use('/api/playtest-session', dbCheck);
 

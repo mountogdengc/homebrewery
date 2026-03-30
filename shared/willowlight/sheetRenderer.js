@@ -4,7 +4,7 @@
 import {
 	ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS,
 	HEALTH_TRACKS, DOMAIN_LABELS,
-	getTrackBoxes, getDefTN
+	getTrackBoxes
 } from './constants.js';
 
 const esc = (s)=>(s ?? '').toString()
@@ -66,8 +66,6 @@ function renderHealthTracks(sb) {
 		const boxes = track.key === 'vitality' ? (sb.vitalityOverride ?? getTrackBoxes(track.base, attrVal))
 			: track.key === 'willpower' ? (sb.willpowerOverride ?? getTrackBoxes(track.base, attrVal))
 				: (sb.composureOverride ?? getTrackBoxes(track.base, attrVal));
-		const defTN = getDefTN(attrVal);
-
 		let boxHtml = '';
 		for (let i = 0; i < boxes; i++) {
 			boxHtml += '<span class="wl-health-box"></span>';
@@ -76,7 +74,7 @@ function renderHealthTracks(sb) {
 		return `<div class="wl-health-track">
 			<div class="wl-track-header">
 				<span class="wl-track-name">${track.label}</span>
-				<span class="wl-track-def">DEF TN ${defTN}</span>
+				<span class="wl-track-def">${boxes} boxes</span>
 			</div>
 			<div class="wl-track-boxes">${boxHtml}</div>
 		</div>`;
