@@ -87,9 +87,9 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 ### Rules Config & Simulation
 - [x] Configurable rules engine — 13 tunable parameters (health base, success/cost/crit thresholds, dice, skill bonuses) with change log interspersed in roll log
 - [x] Quick Sim — run N rolls (up to 100k) with given attr/skill/TN, shows outcome distribution percentages and color-coded histogram chart
-- [ ] Parameter sweep — pick a variable, set range + step, run sims at each step, line chart of outcomes
-- [ ] Two-variable sweep — heat map for e.g. TN base vs health base
-- [ ] Scenario snapshots — save party+enemies+rules state, compare side-by-side under different configs
+- [x] Parameter sweep — sweep any roll parameter (attr, skill, TN) or rule config variable across a range; SVG line chart shows outcome percentages at each step
+- [x] Two-variable sweep — heat map showing any metric (success%, failure%, crit%, etc.) across two variables; red-gold-green color scale with per-cell tooltips
+- [x] Scenario snapshots — save named snapshots of rules+party+enemies, load to restore, compare two snapshots side-by-side with SVG chart showing success/failure curves across TN range
 
 ### Analytics & Balance Testing
 - [ ] Roll analytics panel — aggregate stats from session roll log (success/cost/fail rates per character, per domain, per enemy)

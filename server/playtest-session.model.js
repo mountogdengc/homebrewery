@@ -20,6 +20,7 @@ const PlaytestSessionSchema = mongoose.Schema({
 	sgNotes        : { type: String, default: '' },
 	rules          : { type: mongoose.Schema.Types.Mixed, default: ()=>({}) },
 	rulesChangeLog : [mongoose.Schema.Types.Mixed],
+	snapshots      : [mongoose.Schema.Types.Mixed],
 
 	// Timestamps
 	createdAt : { type: Date, default: Date.now, index: true },

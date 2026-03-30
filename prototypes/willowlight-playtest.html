@@ -1040,6 +1040,129 @@
       </div>
       <div id="simResults" style="font-family:'Fira Mono',monospace;font-size:12px;"></div>
       <div id="simChart" style="margin-top:8px;"></div>
+
+      <!-- Parameter Sweep -->
+      <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">
+        <div class="mgmt-section-title">Parameter Sweep</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            Sweep
+            <select id="sweepVar" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:11px;font-family:'Fira Mono',monospace;" onchange="onSweepVarChange()">
+              <optgroup label="Roll Parameters">
+                <option value="attr">Attribute</option>
+                <option value="skill">Skill Bonus</option>
+                <option value="tn" selected>Target Number</option>
+              </optgroup>
+              <optgroup label="Rule Config" id="sweepRuleOptions"></optgroup>
+            </select>
+          </label>
+          <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            From <input type="number" id="sweepFrom" value="6" style="width:45px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:12px;font-family:'Fira Mono',monospace;text-align:center;">
+          </label>
+          <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            To <input type="number" id="sweepTo" value="16" style="width:45px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:12px;font-family:'Fira Mono',monospace;text-align:center;">
+          </label>
+          <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            Step <input type="number" id="sweepStep" value="1" min="1" style="width:40px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:12px;font-family:'Fira Mono',monospace;text-align:center;">
+          </label>
+          <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            Rolls/step <input type="number" id="sweepRolls" value="1000" min="10" max="10000" step="100" style="width:60px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:12px;font-family:'Fira Mono',monospace;text-align:center;">
+          </label>
+          <button onclick="runSweep()" style="background:var(--gold-dim);color:var(--bg-darkest);border:none;padding:4px 14px;border-radius:3px;cursor:pointer;font-family:'Fira Mono',monospace;font-size:11px;font-weight:700;">Sweep</button>
+        </div>
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:6px;">
+          Fixed: Attr <input type="number" id="sweepFixedAttr" value="2" min="0" max="5" style="width:35px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;font-family:'Fira Mono',monospace;text-align:center;">
+          Skill <input type="number" id="sweepFixedSkill" value="0" min="0" max="3" style="width:35px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;font-family:'Fira Mono',monospace;text-align:center;">
+          TN <input type="number" id="sweepFixedTN" value="10" min="2" max="30" style="width:35px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;font-family:'Fira Mono',monospace;text-align:center;">
+          <span style="color:var(--text-dim);font-style:italic;">(used when not the swept variable)</span>
+        </div>
+        <div id="sweepResults" style="font-family:'Fira Mono',monospace;font-size:12px;"></div>
+        <div id="sweepChart" style="margin-top:8px;"></div>
+      </div>
+
+      <!-- Two-Variable Sweep -->
+      <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">
+        <div class="mgmt-section-title">Two-Variable Sweep</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+          <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            X-Axis
+            <select id="heat2dX" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:10px;font-family:'Fira Mono',monospace;">
+              <optgroup label="Roll Parameters">
+                <option value="attr">Attribute</option>
+                <option value="skill">Skill Bonus</option>
+                <option value="tn" selected>Target Number</option>
+              </optgroup>
+              <optgroup label="Rule Config" id="heat2dXRuleOpts"></optgroup>
+            </select>
+          </label>
+          <label style="font-size:10px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            <input type="number" id="heat2dXFrom" value="6" style="width:35px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;text-align:center;">
+            to <input type="number" id="heat2dXTo" value="16" style="width:35px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;text-align:center;">
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+          <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            Y-Axis
+            <select id="heat2dY" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:10px;font-family:'Fira Mono',monospace;">
+              <optgroup label="Roll Parameters">
+                <option value="attr" selected>Attribute</option>
+                <option value="skill">Skill Bonus</option>
+                <option value="tn">Target Number</option>
+              </optgroup>
+              <optgroup label="Rule Config" id="heat2dYRuleOpts"></optgroup>
+            </select>
+          </label>
+          <label style="font-size:10px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            <input type="number" id="heat2dYFrom" value="0" style="width:35px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;text-align:center;">
+            to <input type="number" id="heat2dYTo" value="5" style="width:35px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;text-align:center;">
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;align-items:center;">
+          <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            Metric
+            <select id="heat2dMetric" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:10px;font-family:'Fira Mono',monospace;">
+              <option value="anySuccess">Any Success %</option>
+              <option value="successPlus">Success+ %</option>
+              <option value="failure">Failure %</option>
+              <option value="cost">At Cost %</option>
+              <option value="crit">Crit %</option>
+              <option value="complication">Complication %</option>
+            </select>
+          </label>
+          <label style="font-size:11px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+            Rolls <input type="number" id="heat2dRolls" value="500" min="10" max="5000" step="100" style="width:50px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;text-align:center;">
+          </label>
+          <span style="font-size:10px;color:var(--text-dim);">
+            Fixed: Attr <input type="number" id="heat2dFixedAttr" value="2" min="0" max="5" style="width:30px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;text-align:center;">
+            Skill <input type="number" id="heat2dFixedSkill" value="0" min="0" max="3" style="width:30px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;text-align:center;">
+            TN <input type="number" id="heat2dFixedTN" value="10" min="2" max="30" style="width:30px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;text-align:center;">
+          </span>
+          <button onclick="runHeatMap()" style="background:var(--gold-dim);color:var(--bg-darkest);border:none;padding:4px 14px;border-radius:3px;cursor:pointer;font-family:'Fira Mono',monospace;font-size:11px;font-weight:700;">Heat Map</button>
+        </div>
+        <div id="heatMapChart" style="margin-top:8px;"></div>
+      </div>
+
+      <!-- Scenario Snapshots -->
+      <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">
+        <div class="mgmt-section-title">Scenario Snapshots</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <button onclick="saveSnapshot()" style="background:var(--gold-dim);color:var(--bg-darkest);border:none;padding:4px 14px;border-radius:3px;cursor:pointer;font-family:'Fira Mono',monospace;font-size:11px;font-weight:700;"><i class="fas fa-camera"></i> Save Snapshot</button>
+        </div>
+        <div id="snapshotList" style="font-family:'Fira Mono',monospace;font-size:11px;"></div>
+        <div style="margin-top:8px;">
+          <div class="mgmt-section-title">Compare Snapshots</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px;">
+            <select id="compareA" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:10px;font-family:'Fira Mono',monospace;"></select>
+            <span style="color:var(--text-dim);">vs</span>
+            <select id="compareB" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:3px;border-radius:3px;font-size:10px;font-family:'Fira Mono',monospace;"></select>
+            <label style="font-size:10px;color:var(--text-dim);font-family:'Fira Mono',monospace;">
+              Rolls <input type="number" id="compareRolls" value="1000" min="10" max="10000" step="100" style="width:55px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:2px;border-radius:3px;font-size:10px;text-align:center;">
+            </label>
+            <button onclick="compareSnapshots()" style="background:var(--gold-dim);color:var(--bg-darkest);border:none;padding:4px 14px;border-radius:3px;cursor:pointer;font-family:'Fira Mono',monospace;font-size:11px;font-weight:700;">Compare</button>
+          </div>
+          <div id="compareResults" style="font-family:'Fira Mono',monospace;font-size:12px;"></div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -2398,6 +2521,7 @@ const RULES_FIELDS = [
 ];
 
 function renderRulesTab() {
+  populateSweepRuleOptions();
   const editor = document.getElementById('rulesEditor');
   editor.innerHTML = RULES_FIELDS.map(f => {
     const val = rules[f.key];
@@ -2621,6 +2745,488 @@ function renderSimChart(totals, tn, count) {
   `;
 }
 
+// === PARAMETER SWEEP ===
+
+function populateSweepRuleOptions() {
+  const opts = RULES_FIELDS.map(f =>
+    `<option value="rule:${f.key}">${f.label}</option>`
+  ).join('');
+  ['sweepRuleOptions', 'heat2dXRuleOpts', 'heat2dYRuleOpts'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = opts;
+  });
+}
+
+function onSweepVarChange() {
+  const v = document.getElementById('sweepVar').value;
+  // Set sensible defaults for the range
+  if (v === 'tn') { setVal('sweepFrom', 6); setVal('sweepTo', 18); setVal('sweepStep', 1); }
+  else if (v === 'attr') { setVal('sweepFrom', 0); setVal('sweepTo', 5); setVal('sweepStep', 1); }
+  else if (v === 'skill') { setVal('sweepFrom', 0); setVal('sweepTo', 3); setVal('sweepStep', 1); }
+  else if (v.startsWith('rule:')) {
+    const key = v.slice(5);
+    const cur = rules[key];
+    setVal('sweepFrom', Math.max(0, cur - 3));
+    setVal('sweepTo', cur + 3);
+    setVal('sweepStep', 1);
+  }
+  function setVal(id, v) { document.getElementById(id).value = v; }
+}
+
+function runSweep() {
+  const sweepVar = document.getElementById('sweepVar').value;
+  const from = parseInt(document.getElementById('sweepFrom').value);
+  const to = parseInt(document.getElementById('sweepTo').value);
+  const step = Math.max(1, parseInt(document.getElementById('sweepStep').value));
+  const rollsPerStep = Math.min(10000, Math.max(10, parseInt(document.getElementById('sweepRolls').value) || 1000));
+
+  const fixedAttr = parseInt(document.getElementById('sweepFixedAttr').value) || 0;
+  const fixedSkill = parseInt(document.getElementById('sweepFixedSkill').value) || 0;
+  const fixedTN = parseInt(document.getElementById('sweepFixedTN').value) || 10;
+
+  const isRule = sweepVar.startsWith('rule:');
+  const ruleKey = isRule ? sweepVar.slice(5) : null;
+  const savedRuleValue = isRule ? rules[ruleKey] : null;
+
+  const steps = [];
+  for (let v = from; v <= to; v += step) steps.push(v);
+  if (steps.length === 0) return;
+
+  const data = []; // { value, successPlus%, success%, cost%, failure%, crit%, comp% }
+
+  for (const value of steps) {
+    let attr = fixedAttr, skill = fixedSkill, tn = fixedTN;
+
+    if (sweepVar === 'attr') attr = value;
+    else if (sweepVar === 'skill') skill = value;
+    else if (sweepVar === 'tn') tn = value;
+    else if (isRule) rules[ruleKey] = value;
+
+    const { results, count } = simulateRolls(attr, skill, tn, rollsPerStep);
+    const pct = (n) => (n / count) * 100;
+
+    data.push({
+      value,
+      successPlus: pct(results.successPlus),
+      success: pct(results.success),
+      cost: pct(results.cost),
+      failure: pct(results.failure),
+      crit: pct(results.crit),
+      complication: pct(results.complication),
+      anySuccess: pct(results.successPlus + results.success)
+    });
+  }
+
+  // Restore rule if we modified it
+  if (isRule) rules[ruleKey] = savedRuleValue;
+
+  // Get label for the swept variable
+  let varLabel = sweepVar;
+  if (sweepVar === 'attr') varLabel = 'Attribute';
+  else if (sweepVar === 'skill') varLabel = 'Skill Bonus';
+  else if (sweepVar === 'tn') varLabel = 'Target Number';
+  else if (isRule) varLabel = RULES_FIELDS.find(f => f.key === ruleKey)?.label || ruleKey;
+
+  renderSweepChart(data, varLabel, rollsPerStep);
+}
+
+function renderSweepChart(data, varLabel, rollsPerStep) {
+  const chartEl = document.getElementById('sweepChart');
+  const resultsEl = document.getElementById('sweepResults');
+
+  resultsEl.innerHTML = `<div style="color:var(--text-dim);margin-bottom:4px;">Sweeping <strong style="color:var(--text)">${varLabel}</strong> from ${data[0].value} to ${data[data.length-1].value} · ${rollsPerStep.toLocaleString()} rolls per step</div>`;
+
+  const chartHeight = 140;
+  const chartWidth = Math.max(400, data.length * 50);
+  const stepWidth = Math.floor(chartWidth / data.length);
+
+  const lines = [
+    { key: 'anySuccess', label: 'Success (all)', color: 'var(--green)' },
+    { key: 'successPlus', label: 'Success+', color: 'var(--green-bright)' },
+    { key: 'cost', label: 'At Cost', color: 'var(--gold)' },
+    { key: 'failure', label: 'Failure', color: 'var(--red)' },
+    { key: 'crit', label: 'Crit', color: 'var(--blue-bright)' },
+    { key: 'complication', label: 'Complication', color: 'var(--purple-bright)' }
+  ];
+
+  // SVG line chart
+  const svgWidth = data.length * stepWidth;
+  const pad = { left: 35, right: 10, top: 10, bottom: 25 };
+  const plotW = svgWidth - pad.left - pad.right;
+  const plotH = chartHeight - pad.top - pad.bottom;
+
+  const xScale = (i) => pad.left + (i / (data.length - 1 || 1)) * plotW;
+  const yScale = (pct) => pad.top + plotH - (pct / 100) * plotH;
+
+  let svg = `<svg width="${svgWidth}" height="${chartHeight}" style="font-family:'Fira Mono',monospace;">`;
+
+  // Grid lines at 25% intervals
+  for (const pct of [0, 25, 50, 75, 100]) {
+    const y = yScale(pct);
+    svg += `<line x1="${pad.left}" y1="${y}" x2="${svgWidth - pad.right}" y2="${y}" stroke="var(--border)" stroke-width="0.5"/>`;
+    svg += `<text x="${pad.left - 4}" y="${y + 3}" text-anchor="end" fill="var(--text-dim)" font-size="8">${pct}%</text>`;
+  }
+
+  // X-axis labels
+  data.forEach((d, i) => {
+    const x = xScale(i);
+    svg += `<text x="${x}" y="${chartHeight - 4}" text-anchor="middle" fill="var(--text-dim)" font-size="9">${d.value}</text>`;
+  });
+
+  // Draw lines
+  for (const line of lines) {
+    const points = data.map((d, i) => `${xScale(i)},${yScale(d[line.key])}`).join(' ');
+    svg += `<polyline points="${points}" fill="none" stroke="${line.color}" stroke-width="1.5" stroke-linejoin="round"/>`;
+    // Dots at each point
+    data.forEach((d, i) => {
+      svg += `<circle cx="${xScale(i)}" cy="${yScale(d[line.key])}" r="2.5" fill="${line.color}">
+        <title>${line.label}: ${d[line.key].toFixed(1)}% at ${varLabel}=${d.value}</title>
+      </circle>`;
+    });
+  }
+
+  svg += '</svg>';
+
+  // Legend
+  const legend = lines.map(l =>
+    `<span style="margin-right:10px;"><span style="color:${l.color}">&#9644;</span> ${l.label}</span>`
+  ).join('');
+
+  chartEl.innerHTML = `
+    <div style="overflow-x:auto;">${svg}</div>
+    <div style="font-size:9px;color:var(--text-dim);margin-top:4px;">${legend}</div>
+  `;
+}
+
+// === TWO-VARIABLE HEAT MAP ===
+
+function runHeatMap() {
+  const xVar = document.getElementById('heat2dX').value;
+  const yVar = document.getElementById('heat2dY').value;
+  if (xVar === yVar) { alert('X and Y axes must be different variables.'); return; }
+
+  const xFrom = parseInt(document.getElementById('heat2dXFrom').value);
+  const xTo = parseInt(document.getElementById('heat2dXTo').value);
+  const yFrom = parseInt(document.getElementById('heat2dYFrom').value);
+  const yTo = parseInt(document.getElementById('heat2dYTo').value);
+  const rollsPer = Math.min(5000, Math.max(10, parseInt(document.getElementById('heat2dRolls').value) || 500));
+  const metric = document.getElementById('heat2dMetric').value;
+
+  const fixedAttr = parseInt(document.getElementById('heat2dFixedAttr').value) || 0;
+  const fixedSkill = parseInt(document.getElementById('heat2dFixedSkill').value) || 0;
+  const fixedTN = parseInt(document.getElementById('heat2dFixedTN').value) || 10;
+
+  const xSteps = [];
+  for (let v = xFrom; v <= xTo; v++) xSteps.push(v);
+  const ySteps = [];
+  for (let v = yFrom; v <= yTo; v++) ySteps.push(v);
+
+  if (xSteps.length === 0 || ySteps.length === 0) return;
+
+  const isXRule = xVar.startsWith('rule:');
+  const isYRule = yVar.startsWith('rule:');
+  const xRuleKey = isXRule ? xVar.slice(5) : null;
+  const yRuleKey = isYRule ? yVar.slice(5) : null;
+  const savedXRule = isXRule ? rules[xRuleKey] : null;
+  const savedYRule = isYRule ? rules[yRuleKey] : null;
+
+  // grid[yIdx][xIdx] = percentage
+  const grid = [];
+  for (let yi = 0; yi < ySteps.length; yi++) {
+    grid[yi] = [];
+    for (let xi = 0; xi < xSteps.length; xi++) {
+      let attr = fixedAttr, skill = fixedSkill, tn = fixedTN;
+
+      // Apply X variable
+      if (xVar === 'attr') attr = xSteps[xi];
+      else if (xVar === 'skill') skill = xSteps[xi];
+      else if (xVar === 'tn') tn = xSteps[xi];
+      else if (isXRule) rules[xRuleKey] = xSteps[xi];
+
+      // Apply Y variable
+      if (yVar === 'attr') attr = ySteps[yi];
+      else if (yVar === 'skill') skill = ySteps[yi];
+      else if (yVar === 'tn') tn = ySteps[yi];
+      else if (isYRule) rules[yRuleKey] = ySteps[yi];
+
+      const { results, count } = simulateRolls(attr, skill, tn, rollsPer);
+      const pct = (n) => (n / count) * 100;
+
+      let val;
+      if (metric === 'anySuccess') val = pct(results.successPlus + results.success);
+      else if (metric === 'successPlus') val = pct(results.successPlus);
+      else if (metric === 'failure') val = pct(results.failure);
+      else if (metric === 'cost') val = pct(results.cost);
+      else if (metric === 'crit') val = pct(results.crit);
+      else if (metric === 'complication') val = pct(results.complication);
+      else val = pct(results.successPlus + results.success);
+
+      grid[yi][xi] = val;
+    }
+  }
+
+  // Restore rules
+  if (isXRule) rules[xRuleKey] = savedXRule;
+  if (isYRule) rules[yRuleKey] = savedYRule;
+
+  const getLabel = (v) => {
+    if (v === 'attr') return 'Attribute';
+    if (v === 'skill') return 'Skill';
+    if (v === 'tn') return 'TN';
+    if (v.startsWith('rule:')) return RULES_FIELDS.find(f => f.key === v.slice(5))?.label || v.slice(5);
+    return v;
+  };
+
+  const metricLabels = {
+    anySuccess: 'Any Success %', successPlus: 'Success+ %', failure: 'Failure %',
+    cost: 'At Cost %', crit: 'Crit %', complication: 'Complication %'
+  };
+
+  renderHeatMap(grid, xSteps, ySteps, getLabel(xVar), getLabel(yVar), metricLabels[metric] || metric, rollsPer);
+}
+
+function renderHeatMap(grid, xSteps, ySteps, xLabel, yLabel, metricLabel, rollsPer) {
+  const el = document.getElementById('heatMapChart');
+  const cellSize = 36;
+  const labelPad = 50;
+
+  // Color scale: red (0%) → gold (50%) → green (100%)
+  function heatColor(pct) {
+    if (pct <= 50) {
+      const t = pct / 50;
+      const r = Math.round(179 + (201 - 179) * t);
+      const g = Math.round(64 + (168 - 64) * t);
+      const b = Math.round(64 + (76 - 64) * t);
+      return `rgb(${r},${g},${b})`;
+    } else {
+      const t = (pct - 50) / 50;
+      const r = Math.round(201 - (201 - 90) * t);
+      const g = Math.round(168 - (168 - 138) * t);
+      const b = Math.round(76 - (76 - 74) * t);
+      return `rgb(${r},${g},${b})`;
+    }
+  }
+
+  let html = `<div style="font-size:10px;color:var(--text-dim);margin-bottom:6px;"><strong style="color:var(--text)">${metricLabel}</strong> — ${xLabel} (x) vs ${yLabel} (y) · ${rollsPer} rolls/cell</div>`;
+
+  // Table
+  html += '<div style="overflow-x:auto;"><table style="border-collapse:collapse;font-family:\'Fira Mono\',monospace;font-size:10px;">';
+
+  // Header row (x labels)
+  html += `<tr><td style="padding:2px 4px;color:var(--text-dim);text-align:right;font-size:9px;">${yLabel}\\${xLabel}</td>`;
+  for (const x of xSteps) {
+    html += `<td style="padding:2px;text-align:center;color:var(--text-dim);font-size:9px;min-width:${cellSize}px;">${x}</td>`;
+  }
+  html += '</tr>';
+
+  // Data rows (y-axis is top=high, bottom=low for natural reading)
+  for (let yi = ySteps.length - 1; yi >= 0; yi--) {
+    html += `<tr><td style="padding:2px 4px;text-align:right;color:var(--text-dim);font-size:9px;">${ySteps[yi]}</td>`;
+    for (let xi = 0; xi < xSteps.length; xi++) {
+      const val = grid[yi][xi];
+      const bg = heatColor(val);
+      const textColor = val > 60 || val < 20 ? '#fff' : '#1a1a1a';
+      html += `<td style="padding:2px;text-align:center;background:${bg};color:${textColor};font-size:9px;font-weight:600;min-width:${cellSize}px;height:${cellSize - 8}px;border:1px solid var(--bg-darkest);" title="${xLabel}=${xSteps[xi]}, ${yLabel}=${ySteps[yi]}: ${val.toFixed(1)}%">${val.toFixed(0)}</td>`;
+    }
+    html += '</tr>';
+  }
+
+  html += '</table></div>';
+
+  // Legend
+  html += '<div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:9px;color:var(--text-dim);">';
+  html += '<span>0%</span>';
+  for (let p = 0; p <= 100; p += 5) {
+    html += `<span style="display:inline-block;width:8px;height:10px;background:${heatColor(p)};"></span>`;
+  }
+  html += '<span>100%</span>';
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+// === SCENARIO SNAPSHOTS ===
+
+let snapshots = []; // { name, timestamp, rules, characters, enemies }
+
+function saveSnapshot() {
+  const name = prompt('Snapshot name:', `Snapshot ${snapshots.length + 1}`);
+  if (!name) return;
+  snapshots.push({
+    name,
+    timestamp: new Date().toLocaleTimeString(),
+    rules: JSON.parse(JSON.stringify(rules)),
+    characters: JSON.parse(JSON.stringify(characters)),
+    enemies: JSON.parse(JSON.stringify(enemies))
+  });
+  renderSnapshotList();
+  markDirty();
+}
+
+function loadSnapshot(idx) {
+  const snap = snapshots[idx];
+  if (!snap) return;
+  if (!confirm(`Load snapshot "${snap.name}"? This will replace current rules, party, and enemies.`)) return;
+
+  rules = JSON.parse(JSON.stringify(snap.rules));
+  characters.length = 0;
+  snap.characters.forEach(c => characters.push(JSON.parse(JSON.stringify(c))));
+  enemies.length = 0;
+  snap.enemies.forEach(e => enemies.push(JSON.parse(JSON.stringify(e))));
+
+  renderParty();
+  renderEnemies();
+  populateTargetDropdown();
+  if (characters.length > 0) selectChar(0);
+  renderRulesTab();
+
+  // Log it
+  rollCount++;
+  rollLogData.unshift({
+    num: rollCount, type: 'config', char: 'SNAPSHOT', target: null,
+    action: 'config', domain: '', total: 0, tn: 0, d1: 0, d2: 0, d3: 0,
+    attr: 0, skill: 0, swapped: null,
+    outcome: `Loaded snapshot: ${snap.name}`,
+    isCrit: false, isComplication: false
+  });
+  const logEl = document.createElement('div');
+  logEl.className = 'log-entry';
+  logEl.style.borderLeft = '2px solid var(--gold-dim)';
+  logEl.innerHTML = `#${rollCount} <span style="color:var(--gold)">📸 Loaded snapshot: ${snap.name}</span>`;
+  document.getElementById('rollLog').insertBefore(logEl, document.getElementById('rollLog').firstChild);
+  markDirty();
+}
+
+function deleteSnapshot(idx) {
+  if (!confirm(`Delete snapshot "${snapshots[idx].name}"?`)) return;
+  snapshots.splice(idx, 1);
+  renderSnapshotList();
+  markDirty();
+}
+
+function renderSnapshotList() {
+  const el = document.getElementById('snapshotList');
+  if (snapshots.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-dim);font-style:italic;">No snapshots saved</div>';
+  } else {
+    el.innerHTML = snapshots.map((s, i) => {
+      const rulesDiff = RULES_FIELDS.filter(f => s.rules[f.key] !== DEFAULT_RULES[f.key]);
+      const diffStr = rulesDiff.length > 0
+        ? rulesDiff.map(f => `${f.label}: ${s.rules[f.key]}`).join(', ')
+        : 'default rules';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 6px;margin-bottom:2px;background:var(--bg-card);border:1px solid var(--border);border-radius:3px;">
+        <div>
+          <strong style="color:var(--text-bright)">${s.name}</strong>
+          <span style="color:var(--text-dim);font-size:10px;margin-left:6px;">${s.timestamp} · ${s.characters.length} chars · ${s.enemies.length} enemies</span>
+          <div style="font-size:9px;color:var(--text-dim);margin-top:1px;">${diffStr}</div>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <button onclick="loadSnapshot(${i})" style="background:none;border:1px solid var(--border);color:var(--text-dim);padding:2px 8px;border-radius:3px;cursor:pointer;font-size:10px;" title="Load">Load</button>
+          <button onclick="deleteSnapshot(${i})" style="background:none;border:1px solid var(--border);color:var(--red);padding:2px 6px;border-radius:3px;cursor:pointer;font-size:10px;" title="Delete">&times;</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Update compare dropdowns
+  const opts = snapshots.map((s, i) => `<option value="${i}">${s.name}</option>`).join('');
+  const aEl = document.getElementById('compareA');
+  const bEl = document.getElementById('compareB');
+  if (aEl) aEl.innerHTML = opts || '<option value="">No snapshots</option>';
+  if (bEl) bEl.innerHTML = opts || '<option value="">No snapshots</option>';
+}
+
+function compareSnapshots() {
+  const aIdx = parseInt(document.getElementById('compareA').value);
+  const bIdx = parseInt(document.getElementById('compareB').value);
+  if (isNaN(aIdx) || isNaN(bIdx) || !snapshots[aIdx] || !snapshots[bIdx]) {
+    alert('Select two snapshots to compare.'); return;
+  }
+  const rollsPer = Math.min(10000, Math.max(10, parseInt(document.getElementById('compareRolls').value) || 1000));
+
+  const snapA = snapshots[aIdx];
+  const snapB = snapshots[bIdx];
+
+  // Run sims with each snapshot's rules across a TN sweep
+  const savedRules = JSON.parse(JSON.stringify(rules));
+  const tnRange = [];
+  for (let tn = 6; tn <= 18; tn++) tnRange.push(tn);
+
+  // Use average attr from each snapshot's characters, or fixed 2
+  const avgAttr = (chars) => {
+    if (!chars || chars.length === 0) return 2;
+    let sum = 0, count = 0;
+    chars.forEach(c => {
+      if (c.attrs) {
+        for (const domain of Object.values(c.attrs)) {
+          for (const val of Object.values(domain)) { sum += val; count++; }
+        }
+      }
+    });
+    return count > 0 ? Math.round(sum / count) : 2;
+  };
+
+  const runWithSnap = (snap) => {
+    rules = JSON.parse(JSON.stringify(snap.rules));
+    const attr = avgAttr(snap.characters);
+    return tnRange.map(tn => {
+      const { results, count } = simulateRolls(attr, 0, tn, rollsPer);
+      const pct = (n) => (n / count) * 100;
+      return { tn, anySuccess: pct(results.successPlus + results.success), failure: pct(results.failure), cost: pct(results.cost) };
+    });
+  };
+
+  const dataA = runWithSnap(snapA);
+  const dataB = runWithSnap(snapB);
+  rules = savedRules; // restore
+
+  // Render comparison chart
+  const el = document.getElementById('compareResults');
+  const chartHeight = 140;
+  const pad = { left: 35, right: 10, top: 10, bottom: 25 };
+  const svgWidth = tnRange.length * 40;
+  const plotW = svgWidth - pad.left - pad.right;
+  const plotH = chartHeight - pad.top - pad.bottom;
+  const xScale = (i) => pad.left + (i / (tnRange.length - 1 || 1)) * plotW;
+  const yScale = (pct) => pad.top + plotH - (pct / 100) * plotH;
+
+  let svg = `<svg width="${svgWidth}" height="${chartHeight}" style="font-family:'Fira Mono',monospace;">`;
+  for (const pct of [0, 25, 50, 75, 100]) {
+    const y = yScale(pct);
+    svg += `<line x1="${pad.left}" y1="${y}" x2="${svgWidth - pad.right}" y2="${y}" stroke="var(--border)" stroke-width="0.5"/>`;
+    svg += `<text x="${pad.left - 4}" y="${y + 3}" text-anchor="end" fill="var(--text-dim)" font-size="8">${pct}%</text>`;
+  }
+  tnRange.forEach((tn, i) => {
+    svg += `<text x="${xScale(i)}" y="${chartHeight - 4}" text-anchor="middle" fill="var(--text-dim)" font-size="9">${tn}</text>`;
+  });
+
+  // Snap A lines (solid)
+  const pointsA = dataA.map((d, i) => `${xScale(i)},${yScale(d.anySuccess)}`).join(' ');
+  svg += `<polyline points="${pointsA}" fill="none" stroke="var(--green)" stroke-width="2"/>`;
+  const pointsAf = dataA.map((d, i) => `${xScale(i)},${yScale(d.failure)}`).join(' ');
+  svg += `<polyline points="${pointsAf}" fill="none" stroke="var(--red)" stroke-width="2"/>`;
+
+  // Snap B lines (dashed)
+  const pointsB = dataB.map((d, i) => `${xScale(i)},${yScale(d.anySuccess)}`).join(' ');
+  svg += `<polyline points="${pointsB}" fill="none" stroke="var(--green-bright)" stroke-width="2" stroke-dasharray="4,3"/>`;
+  const pointsBf = dataB.map((d, i) => `${xScale(i)},${yScale(d.failure)}`).join(' ');
+  svg += `<polyline points="${pointsBf}" fill="none" stroke="var(--red-bright)" stroke-width="2" stroke-dasharray="4,3"/>`;
+
+  svg += '</svg>';
+
+  el.innerHTML = `
+    <div style="margin-bottom:4px;font-size:11px;">
+      <span style="color:var(--green)">&#9644;</span> <strong>${snapA.name}</strong> Success
+      &nbsp; <span style="color:var(--red)">&#9644;</span> Failure
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <span style="color:var(--green-bright)">┅</span> <strong>${snapB.name}</strong> Success
+      &nbsp; <span style="color:var(--red-bright)">┅</span> Failure
+    </div>
+    <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">Success % and Failure % across TN 6–18 · ${rollsPer} rolls/point · Using avg party attribute</div>
+    <div style="overflow-x:auto;">${svg}</div>
+  `;
+}
+
 // === SESSION MANAGEMENT ===
 
 function markDirty() {
@@ -2648,7 +3254,8 @@ function getSessionState() {
     partyAnchor: partyAnchor,
     sgNotes: document.getElementById('sgNotes')?.value || '',
     rules: rules,
-    rulesChangeLog: rulesChangeLog
+    rulesChangeLog: rulesChangeLog,
+    snapshots: snapshots
   };
 }
 
@@ -2679,6 +3286,7 @@ function loadSessionState(data) {
     rules = JSON.parse(JSON.stringify(DEFAULT_RULES));
   }
   rulesChangeLog = data.rulesChangeLog || [];
+  snapshots = data.snapshots || [];
 
   const sgNotesEl = document.getElementById('sgNotes');
   if (sgNotesEl) sgNotesEl.value = data.sgNotes || '';
@@ -2823,6 +3431,7 @@ function newSession() {
   partyAnchor = { name: '', desc: '' };
   rules = JSON.parse(JSON.stringify(DEFAULT_RULES));
   rulesChangeLog = [];
+  snapshots = [];
   const sgNotesEl = document.getElementById('sgNotes');
   if (sgNotesEl) sgNotesEl.value = '';
   renderParty();
