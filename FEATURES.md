@@ -96,10 +96,10 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 - [x] Move bottom toolbar to fixed bottom position; open sections as flyout panels instead of pushing content (buttons stay in place)
 - [x] Convert PC and NPC side panels to flyout windows; center view now full-width for character detail / future dashboard
 - [ ] Center dashboard view — replace character detail with a full analytics dashboard (heat maps, bar graphs, party summary, live stats)
-- [ ] Conflict simulation buttons on bottom toolbar — Physical, Mental, Social, Mixed — run a simulated multi-round combat between party and enemies using the current rules config
-  - Mixed mode: each character uses their strongest conflict domain
-  - Show round-by-round breakdown, average rounds to resolve, casualty rates
-  - Later: scenario presets per conflict type (e.g. court battle with leverage/knowledge modifiers, ambush with surprise round, siege with scale advantages)
+- [x] Conflict simulation buttons on bottom toolbar — Physical, Mental, Social, Mixed — run N simulated multi-round combats between party and enemies using current rules config
+  - [x] Mixed mode: each character uses their strongest conflict domain
+  - [x] Results: win/loss/stalemate rates, avg rounds, per-character damage dealt/taken/KO rates, per-enemy damage taken/defeated rates
+  - [ ] Later: scenario presets per conflict type (e.g. court battle with leverage/knowledge modifiers, ambush with surprise round, siege with scale advantages)
 
 ### Analytics & Balance Testing
 - [ ] Roll analytics panel — aggregate stats from session roll log (success/cost/fail rates per character, per domain, per enemy)
