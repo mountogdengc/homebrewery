@@ -107,10 +107,7 @@
 
   /* === FLYOUT PANELS === */
   .flyout-container {
-    position: absolute;
-    bottom: 100%;
-    left: 0; right: 0;
-    z-index: 50;
+    /* positioned via .bottom-tabs > .flyout-container rule */
   }
   .flyout-overlay {
     display: none;
@@ -637,12 +634,19 @@
   /* Bottom Toolbar — fixed at bottom */
   .bottom-tabs {
     display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
     background: var(--bg-darkest);
     border-top: 2px solid var(--border);
     padding: 0 8px;
     gap: 0;
     flex-shrink: 0;
     position: relative;
+  }
+  .bottom-tabs > .flyout-container {
+    position: absolute;
+    bottom: 100%;
+    left: 0; right: 0;
   }
   .bottom-tab {
     font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px;
