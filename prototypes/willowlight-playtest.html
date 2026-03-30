@@ -107,8 +107,11 @@
 
   /* === FLYOUT PANELS === */
   .flyout-container {
-    position: relative;
+    position: fixed;
+    bottom: 38px; /* height of bottom-tabs */
+    left: 0; right: 0;
     z-index: 50;
+    pointer-events: none;
   }
   .flyout-overlay {
     display: none;
@@ -119,6 +122,7 @@
     border-top: 2px solid var(--gold-dim);
     box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
     overflow: hidden;
+    pointer-events: auto;
   }
   .flyout-overlay.open { display: flex; flex-direction: column; }
   .flyout-header {
