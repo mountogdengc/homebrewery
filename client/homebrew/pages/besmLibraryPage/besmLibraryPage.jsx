@@ -100,7 +100,6 @@ const BesmLibraryPage = ()=>{
 	return (
 		<div className="besmLibraryPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item color="purple">BESM 4e</Nav.item>
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/besm/new'; }}>

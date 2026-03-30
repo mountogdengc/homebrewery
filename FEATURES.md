@@ -67,15 +67,15 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 - [x] NPCs have offensive TN (player defends) and defensive TN (player attacks) per domain
 - [x] Playtest tool accessible from landing page card and `/playtest` route
 - [x] Home link in top bar to return to landing page
-- [ ] Import characters from saved Willowlight character sheets
+- [x] Import characters from saved Willowlight character sheets — modal fetches from library API, maps schema to playtest format; also supports blank character creation and removal
 
 ### Session Management
-- [ ] Sessions are named and have a system type (Willowlight, 5e, BRP, BESM)
-- [ ] Session metadata: name, system, brief description, long-form description, created/modified timestamps
-- [ ] Save/load sessions to database — full state (party, enemies, tides, taint, notes, settings)
-- [ ] Roll logs are retained per session and reviewable on load
-- [ ] Load screen: list of saved sessions showing name, system, date/time, brief description
-- [ ] Multiple sessions can exist side-by-side (e.g. different playtest scenarios for the same system)
+- [x] Sessions are named and have a system type (Willowlight, 5e, BRP, BESM)
+- [x] Session metadata: name, system, brief description, long-form description, created/modified timestamps
+- [x] Save/load sessions to database — full state (party, enemies, tides, taint, notes, settings)
+- [x] Roll logs are retained per session and reviewable on load
+- [x] Load screen: list of saved sessions showing name, system, date/time, brief description
+- [x] Multiple sessions can exist side-by-side (e.g. different playtest scenarios for the same system)
 
 ## Playtest Tool — Other Systems
 - [ ] D&D 5e playtest table — initiative tracker, HP/AC, roll d20 vs AC/DC, condition tracking

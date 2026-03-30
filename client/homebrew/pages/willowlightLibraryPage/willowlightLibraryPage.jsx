@@ -77,11 +77,13 @@ const WillowlightLibraryPage = ()=>{
 	return (
 		<div className="statblockLibraryPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item color="blue">Willowlight Engine</Nav.item>
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/willowlight/new'; }}>
 						New Character
+					</Nav.item>
+					<Nav.item icon="fas fa-print" onClick={()=>{ window.open('/willowlight/sheet', '_blank'); }}>
+						Blank Sheet
 					</Nav.item>
 					<Nav.item icon="fas fa-dice-d20" onClick={()=>{ window.location.href = '/playtest'; }}>
 						Playtest

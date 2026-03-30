@@ -27,7 +27,6 @@ const BrpStatblockSharePage = (props)=>{
 	return (
 		<div className="brpStatblockEditorPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item color="orange">{statblock.name || 'BRP Stat Block'}</Nav.item>
 				</Nav.section>

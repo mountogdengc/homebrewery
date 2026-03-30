@@ -154,7 +154,6 @@ const WillowlightEditorPage = (props)=>{
 	return (
 		<div className="willowlightEditorPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item className="statblockTitle" color="blue">
 						{character.name || 'New Willowlight Character'}

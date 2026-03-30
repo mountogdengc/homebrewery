@@ -18,7 +18,6 @@ const StatblockImportPage = ()=>{
 	return (
 		<div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item color="purple">D&D Beyond Importer</Nav.item>
 				</Nav.section>

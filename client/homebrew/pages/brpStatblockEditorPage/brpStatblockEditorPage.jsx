@@ -141,7 +141,6 @@ const BrpStatblockEditorPage = (props)=>{
 	return (
 		<div className="brpStatblockEditorPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item className="statblockTitle" color="orange">
 						{statblock.name || 'New BRP Stat Block'}

@@ -145,7 +145,17 @@
     align-items: center;
     padding: 8px 10px 4px;
     gap: 10px;
+    position: relative;
   }
+  .char-remove {
+    position: absolute; top: 4px; right: 4px;
+    background: none; border: none; color: var(--text-dim);
+    font-size: 14px; cursor: pointer; padding: 2px 5px;
+    border-radius: 3px; opacity: 0; transition: opacity 0.15s;
+    line-height: 1;
+  }
+  .char-card:hover .char-remove { opacity: 1; }
+  .char-remove:hover { color: var(--red-bright); background: rgba(179,64,64,0.15); }
   .char-portrait {
     width: 48px; height: 48px;
     border-radius: 4px;
@@ -731,6 +741,82 @@
     transition: all 0.15s;
   }
   .add-btn:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+
+  /* === IMPORT MODAL === */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.7); align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg-panel); border: 1px solid var(--border-light);
+    border-radius: 8px; width: 480px; max-height: 80vh;
+    display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .modal-header {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-header h2 {
+    font-family: 'Cinzel', serif; font-size: 14px; color: var(--gold);
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .modal-close {
+    background: none; border: none; color: var(--text-dim); font-size: 18px;
+    cursor: pointer; padding: 4px 8px;
+  }
+  .modal-close:hover { color: var(--red-bright); }
+  .modal-body { padding: 12px 16px; overflow-y: auto; flex: 1; }
+  .modal-search {
+    width: 100%; padding: 6px 10px; margin-bottom: 10px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text); border-radius: 4px; font-size: 13px;
+    font-family: 'EB Garamond', serif;
+  }
+  .modal-search::placeholder { color: var(--text-dim); }
+  .modal-search:focus { outline: none; border-color: var(--gold-dim); }
+  .import-list { display: flex; flex-direction: column; gap: 4px; }
+  .import-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 10px; background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 4px; cursor: pointer; transition: all 0.15s;
+  }
+  .import-item:hover { border-color: var(--gold-dim); background: var(--bg-card-hover); }
+  .import-item-name { font-weight: 600; color: var(--text-bright); font-size: 13px; }
+  .import-item-meta { font-size: 11px; color: var(--text-dim); font-family: 'Fira Mono', monospace; }
+  .import-empty { color: var(--text-dim); text-align: center; padding: 20px; font-style: italic; }
+  .import-loading { color: var(--gold-dim); text-align: center; padding: 20px; }
+  .modal-footer {
+    padding: 10px 16px; border-top: 1px solid var(--border);
+    display: flex; gap: 8px; justify-content: flex-end;
+  }
+  .modal-btn {
+    padding: 6px 16px; border-radius: 4px; cursor: pointer;
+    font-family: 'Fira Mono', monospace; font-size: 11px; border: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .modal-btn-primary { background: var(--gold-dim); color: var(--bg-darkest); border-color: var(--gold-dim); }
+  .modal-btn-primary:hover { background: var(--gold); }
+  .modal-btn-secondary { background: none; color: var(--text-dim); }
+  .modal-btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+  /* === SESSION CONTROLS === */
+  .session-controls {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .session-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-dim);
+    padding: 3px 10px; cursor: pointer; border-radius: 3px;
+    font-family: 'Fira Mono', monospace; font-size: 10px;
+    display: flex; align-items: center; gap: 4px; transition: all 0.15s;
+  }
+  .session-btn:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+  .session-btn.saving { color: var(--green); border-color: var(--green); }
+  .session-name-display {
+    font-family: 'Fira Mono', monospace; font-size: 11px; color: var(--text);
+    max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .session-unsaved { color: var(--gold-dim); font-size: 10px; font-family: 'Fira Mono', monospace; }
 </style>
 </head>
 <body>
@@ -745,7 +831,12 @@
     <span class="taint-val" id="taintVal">0</span>
     <button class="taint-btn" onclick="adjustTaint(1)">+</button>
   </div>
-  <div class="session-info">Playtest Session — <span id="sessionDate"></span></div>
+  <div class="session-controls">
+    <button class="session-btn" onclick="openSessionList()" title="Load Session"><i class="fas fa-folder-open"></i> Sessions</button>
+    <button class="session-btn" onclick="saveSession()" id="saveBtn" title="Save"><i class="fas fa-save"></i> Save</button>
+    <span class="session-name-display" id="sessionNameDisplay">Unsaved Session</span>
+    <span class="session-unsaved" id="unsavedIndicator"></span>
+  </div>
 </div>
 
 <!-- MAIN AREA -->
@@ -902,7 +993,7 @@
 
     <div class="sg-notes-section">
       <div class="mgmt-section-title">SG Notes</div>
-      <textarea class="sg-notes-textarea" id="sgNotes" placeholder="Session notes, reminders, scene plans..."></textarea>
+      <textarea class="sg-notes-textarea" id="sgNotes" placeholder="Session notes, reminders, scene plans..." oninput="markDirty()"></textarea>
     </div>
 
   </div>
@@ -913,6 +1004,10 @@
 let taintPool = 0;
 let selectedChar = null;
 let rollCount = 0;
+let rollLogData = [];       // structured roll log entries for persistence
+let currentSessionId = null; // ID of loaded session
+let sessionDirty = false;    // unsaved changes flag
+let autoSaveTimer = null;
 
 const characters = [
   {
@@ -922,11 +1017,11 @@ const characters = [
     conviction: "Survival",
     path: "Stewardship",
     attrs: {
-      physical: { Might: 3, Reflex: 2, Endurance: 2 },
       mental: { Reason: 1, Guile: 2, Resolve: 2 },
+      physical: { Might: 3, Reflex: 2, Endurance: 2 },
       social: { Influence: 1, Poise: 1, Command: 2 }
     },
-    tracks: { vitality: { max: 5, current: 5 }, willpower: { max: 5, current: 5 }, composure: { max: 5, current: 5 } },
+    tracks: { willpower: { max: 5, current: 5 }, vitality: { max: 5, current: 5 }, composure: { max: 5, current: 5 } },
     luck: { max: 1, current: 1 },
     corruption: 0,
     vocation: "Combat Veteran (+3)",
@@ -945,11 +1040,11 @@ const characters = [
     conviction: "Justice",
     path: "Defiance",
     attrs: {
-      physical: { Might: 1, Reflex: 2, Endurance: 1 },
       mental: { Reason: 2, Guile: 3, Resolve: 2 },
+      physical: { Might: 1, Reflex: 2, Endurance: 1 },
       social: { Influence: 2, Poise: 2, Command: 1 }
     },
-    tracks: { vitality: { max: 4, current: 4 }, willpower: { max: 5, current: 5 }, composure: { max: 4, current: 4 } },
+    tracks: { willpower: { max: 5, current: 5 }, vitality: { max: 4, current: 4 }, composure: { max: 4, current: 4 } },
     luck: { max: 1, current: 1 },
     corruption: 0,
     vocation: "Intelligence Operative (+3)",
@@ -968,11 +1063,11 @@ const characters = [
     conviction: "Freedom",
     path: "Wandering",
     attrs: {
-      physical: { Might: 1, Reflex: 1, Endurance: 1 },
       mental: { Reason: 3, Guile: 2, Resolve: 3 },
+      physical: { Might: 1, Reflex: 1, Endurance: 1 },
       social: { Influence: 2, Poise: 1, Command: 1 }
     },
-    tracks: { vitality: { max: 4, current: 4 }, willpower: { max: 6, current: 6 }, composure: { max: 4, current: 4 } },
+    tracks: { willpower: { max: 6, current: 6 }, vitality: { max: 4, current: 4 }, composure: { max: 4, current: 4 } },
     luck: { max: 1, current: 1 },
     corruption: 0,
     vocation: "Arcane Scholar (+3)",
@@ -991,11 +1086,11 @@ const characters = [
     conviction: "Devotion",
     path: "Leadership",
     attrs: {
-      physical: { Might: 2, Reflex: 1, Endurance: 2 },
       mental: { Reason: 2, Guile: 1, Resolve: 1 },
+      physical: { Might: 2, Reflex: 1, Endurance: 2 },
       social: { Influence: 3, Poise: 2, Command: 2 }
     },
-    tracks: { vitality: { max: 5, current: 5 }, willpower: { max: 4, current: 4 }, composure: { max: 5, current: 5 } },
+    tracks: { willpower: { max: 4, current: 4 }, vitality: { max: 5, current: 5 }, composure: { max: 5, current: 5 } },
     luck: { max: 1, current: 1 },
     corruption: 0,
     vocation: "Diplomat (+3)",
@@ -1091,10 +1186,11 @@ function renderParty() {
           <div class="char-name">${c.name}</div>
           <div class="char-subtitle">${c.subtitle}</div>
         </div>
+        <button class="char-remove" onclick="event.stopPropagation(); removeCharacter(${i})" title="Remove">&times;</button>
       </div>
       <div class="char-tracks">
-        ${renderMiniTrack('VIT', 'phys', c.tracks.vitality)}
         ${renderMiniTrack('WIL', 'ment', c.tracks.willpower)}
+        ${renderMiniTrack('VIT', 'phys', c.tracks.vitality)}
         ${renderMiniTrack('COM', 'soc', c.tracks.composure)}
       </div>
       <div class="char-quick">
@@ -1151,15 +1247,15 @@ function renderCharDetail(c) {
         <div class="detail-section-title">Attributes</div>
         <div class="attr-grid">
           <div class="attr-domain">
-            <div class="attr-domain-title phys">Physical</div>
-            ${Object.entries(c.attrs.physical).map(([k,v]) =>
-              `<div class="attr-row"><span class="a-name ${k==='Endurance'?'anchor':''}">${k}</span><span class="a-val">${v}</span></div>`
-            ).join('')}
-          </div>
-          <div class="attr-domain">
             <div class="attr-domain-title ment">Mental</div>
             ${Object.entries(c.attrs.mental).map(([k,v]) =>
               `<div class="attr-row"><span class="a-name ${k==='Resolve'?'anchor':''}">${k}</span><span class="a-val">${v}</span></div>`
+            ).join('')}
+          </div>
+          <div class="attr-domain">
+            <div class="attr-domain-title phys">Physical</div>
+            ${Object.entries(c.attrs.physical).map(([k,v]) =>
+              `<div class="attr-row"><span class="a-name ${k==='Endurance'?'anchor':''}">${k}</span><span class="a-val">${v}</span></div>`
             ).join('')}
           </div>
           <div class="attr-domain">
@@ -1174,8 +1270,8 @@ function renderCharDetail(c) {
       <div class="detail-section">
         <div class="detail-section-title">Health Tracks</div>
         <div class="detail-tracks">
-          ${renderDetailTrack('Vitality', 'phys', c.tracks.vitality, defTN(c.attrs.physical.Endurance), 'vitality', characters.indexOf(c))}
           ${renderDetailTrack('Willpower', 'ment', c.tracks.willpower, defTN(c.attrs.mental.Resolve), 'willpower', characters.indexOf(c))}
+          ${renderDetailTrack('Vitality', 'phys', c.tracks.vitality, defTN(c.attrs.physical.Endurance), 'vitality', characters.indexOf(c))}
           ${renderDetailTrack('Composure', 'soc', c.tracks.composure, defTN(c.attrs.social.Command), 'composure', characters.indexOf(c))}
         </div>
       </div>
@@ -1227,6 +1323,7 @@ function toggleBox(charIdx, trackKey, boxIdx) {
   }
   renderParty();
   renderCharDetail(characters[charIdx]);
+  markDirty();
 }
 
 // === ENEMIES ===
@@ -1317,8 +1414,8 @@ function toggleMook(enemyIdx, pipIdx) {
     e.sizeLeft = pipIdx + 1;
   }
   renderEnemies();
-  // Re-expand the card
   document.getElementById(`enemy-${enemyIdx}`).classList.add('expanded');
+  markDirty();
 }
 
 function toggleEnemyTrack(enemyIdx, trackKey, boxIdx) {
@@ -1330,6 +1427,7 @@ function toggleEnemyTrack(enemyIdx, trackKey, boxIdx) {
   }
   renderEnemies();
   document.getElementById(`enemy-${enemyIdx}`).classList.add('expanded');
+  markDirty();
 }
 
 // === DICE ROLLER ===
@@ -1604,22 +1702,44 @@ function logRoll() {
   const action = document.getElementById('rollAction').value;
   const domain = document.getElementById('rollDomain').value;
   const targetName = targetIdx !== '' ? enemies[parseInt(targetIdx)].name : null;
+
+  // Store structured data for persistence
+  rollLogData.unshift({
+    num: rollCount, char: charName, target: targetName,
+    action, domain, total, tn: r.tn, d1: r.d1, d2: r.d2, d3: r.d3,
+    attr: r.attr, skill: r.skill, swapped: r.swapped,
+    outcome, isCrit, isComplication
+  });
+
+  renderRollLogEntry(rollLogData[0]);
+  markDirty();
+}
+
+function renderRollLogEntry(entry) {
   const logEntry = document.createElement('div');
   logEntry.className = 'log-entry';
-  let logText = `#${rollCount} <span class="log-char">${charName}</span>`;
-  if (targetName) {
-    const domainShort = domain.slice(0, 4).toUpperCase();
-    logText += ` ${action === 'attack' ? '→' : '←'} ${targetName} [${domainShort}]`;
+  let logText = `#${entry.num} <span class="log-char">${entry.char}</span>`;
+  if (entry.target) {
+    const domainShort = (entry.domain || '').slice(0, 4).toUpperCase();
+    logText += ` ${entry.action === 'attack' ? '→' : '←'} ${entry.target} [${domainShort}]`;
   }
-  logText += ` <span class="log-result">${total}</span> vs TN ${r.tn}`;
-  if (r.swapped === 'luck') logText += ` <span style="color:var(--luck-color)">[LCK]</span>`;
-  if (r.swapped === 'taint') logText += ` <span style="color:var(--corruption-color)">[TAINT]</span>`;
-  if (isCrit) logText += ` <span class="log-crit">CRIT</span>`;
-  if (isComplication) logText += ` <span class="log-comp">COMP</span>`;
-  logText += ` — ${outcome}`;
+  logText += ` <span class="log-result">${entry.total}</span> vs TN ${entry.tn}`;
+  if (entry.swapped === 'luck') logText += ` <span style="color:var(--luck-color)">[LCK]</span>`;
+  if (entry.swapped === 'taint') logText += ` <span style="color:var(--corruption-color)">[TAINT]</span>`;
+  if (entry.isCrit) logText += ` <span class="log-crit">CRIT</span>`;
+  if (entry.isComplication) logText += ` <span class="log-comp">COMP</span>`;
+  logText += ` — ${entry.outcome}`;
   logEntry.innerHTML = logText;
   const log = document.getElementById('rollLog');
   log.insertBefore(logEntry, log.firstChild);
+}
+
+function rebuildRollLogDOM() {
+  document.getElementById('rollLog').innerHTML = '';
+  // Render in reverse so newest is on top
+  for (let i = rollLogData.length - 1; i >= 0; i--) {
+    renderRollLogEntry(rollLogData[i]);
+  }
 }
 
 function clearDieClasses() {
@@ -1636,6 +1756,7 @@ function clearDieClasses() {
 function adjustTaint(delta) {
   taintPool = Math.max(0, taintPool + delta);
   document.getElementById('taintVal').textContent = taintPool;
+  markDirty();
 }
 
 // === BOTTOM TAB SWITCHING ===
@@ -1662,6 +1783,7 @@ function editAnchor() {
   partyAnchor.name = name;
   partyAnchor.desc = desc;
   renderPartyTab();
+  markDirty();
 }
 
 // === CONNECTIONS ===
@@ -1694,11 +1816,13 @@ function addConnection() {
   if (!characters[charIdx].connections) characters[charIdx].connections = [];
   characters[charIdx].connections.push({ name, desc });
   renderPartyTab();
+  markDirty();
 }
 
 function removeConnection(charIdx, connIdx) {
   characters[charIdx].connections.splice(connIdx, 1);
   renderPartyTab();
+  markDirty();
 }
 
 // === SECRETS ===
@@ -1727,11 +1851,13 @@ function addSecret() {
   if (!characters[charIdx].secrets) characters[charIdx].secrets = [];
   characters[charIdx].secrets.push({ text });
   renderPartyTab();
+  markDirty();
 }
 
 function removeSecret(charIdx, secretIdx) {
   characters[charIdx].secrets.splice(secretIdx, 1);
   renderPartyTab();
+  markDirty();
 }
 
 // === DOWNTIME ===
@@ -1754,6 +1880,7 @@ function renderDowntime() {
 
 function setDowntime(charIdx, activity) {
   characters[charIdx].downtime = activity;
+  markDirty();
 }
 
 // === PARTY TAB RENDER ===
@@ -1800,6 +1927,7 @@ function toggleTidePip(tideIdx, pipIdx) {
     t.progress = pipIdx + 1;
   }
   renderTides();
+  markDirty();
 }
 
 function addTide() {
@@ -1810,11 +1938,13 @@ function addTide() {
   const max = parseInt(maxStr) || 6;
   tides.push({ name, desc, progress: 0, max });
   renderSGTab();
+  markDirty();
 }
 
 function removeTide(idx) {
   tides.splice(idx, 1);
   renderSGTab();
+  markDirty();
 }
 
 // === SG TAB RENDER ===
@@ -1822,10 +1952,182 @@ function renderSGTab() {
   renderTides();
 }
 
-// === PLACEHOLDERS ===
+// === CHARACTER IMPORT ===
+
+let importCache = null; // cached list from API
+
 function addCharacter() {
-  alert('Character creation form would open here.\n\nIn the full app, this would be your split-pane form + preview pattern with fields for attributes, skills, edges, etc.');
+  document.getElementById('importModal').classList.add('open');
+  document.getElementById('importSearch').value = '';
+  fetchImportList();
 }
+
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('open');
+}
+
+async function fetchImportList(search = '') {
+  const listEl = document.getElementById('importList');
+  listEl.innerHTML = '<div class="import-loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    const query = new URLSearchParams({ count: 100 });
+    if (search) query.set('search', search);
+    const res = await fetch('/api/willowlights?' + query.toString());
+    if (!res.ok) throw new Error('Failed to load');
+    const data = await res.json();
+    importCache = data.characters || [];
+    renderImportList(importCache);
+  } catch (err) {
+    listEl.innerHTML = '<div class="import-empty">Could not load characters. Are you logged in?</div>';
+  }
+}
+
+function filterImportList() {
+  const q = document.getElementById('importSearch').value.toLowerCase();
+  if (!importCache) return;
+  const filtered = q ? importCache.filter(c => (c.name || '').toLowerCase().includes(q)) : importCache;
+  renderImportList(filtered);
+}
+
+function renderImportList(items) {
+  const listEl = document.getElementById('importList');
+  if (!items || items.length === 0) {
+    listEl.innerHTML = '<div class="import-empty">No saved characters found.</div>';
+    return;
+  }
+  listEl.innerHTML = items.map(c =>
+    `<div class="import-item" onclick="importCharacter('${c.shareId}')">
+      <div>
+        <div class="import-item-name">${esc(c.name || 'Untitled')}</div>
+        <div class="import-item-meta">${esc([c.conviction, c.path].filter(Boolean).join(' — '))}</div>
+      </div>
+      ${c.player ? `<div class="import-item-meta">${esc(c.player)}</div>` : ''}
+    </div>`
+  ).join('');
+}
+
+function esc(s) { return (s ?? '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function importCharacter(shareId) {
+  try {
+    const res = await fetch('/api/willowlight/' + shareId);
+    if (!res.ok) throw new Error('Not found');
+    const ch = await res.json();
+    const mapped = mapWillowlightToPlaytest(ch);
+    characters.push(mapped);
+    closeImportModal();
+    renderParty();
+    populateTargetDropdown();
+    selectChar(characters.length - 1);
+    markDirty();
+  } catch (err) {
+    alert('Failed to import character: ' + err.message);
+  }
+}
+
+function mapWillowlightToPlaytest(ch) {
+  const attrs = ch.attributes || {};
+  const getTrackBoxes = (base, val) => base + (val || 0);
+
+  // Format skill list with bonus
+  const fmtSkills = (list, bonus) => (list || []).map(s => s.name ? `${s.name} (+${bonus})` : '').filter(Boolean);
+
+  // Format dot-rated items
+  const fmtDotList = (list) => (list || []).map(item => {
+    const d = item.dots || 0;
+    return item.name ? `${item.name} (${'•'.repeat(d)})` : '';
+  }).filter(Boolean);
+
+  // Format aspects with linked attribute
+  const fmtAspects = (list) => (list || []).map(item => {
+    const d = item.dots || 0;
+    return item.name ? `${item.name} ${'•'.repeat(d)}` : '';
+  }).filter(Boolean);
+
+  const vocName = ch.vocation?.name || '';
+  const vocBonus = ch.vocation?.bonus || 3;
+
+  return {
+    name: ch.name || 'Unnamed',
+    subtitle: ch.shortDescription || '',
+    icon: '⬡',
+    conviction: ch.conviction || '',
+    path: ch.path || '',
+    attrs: {
+      mental:   { Reason: attrs.reason || 0, Guile: attrs.guile || 0, Resolve: attrs.resolve || 0 },
+      physical: { Might: attrs.might || 0, Reflex: attrs.reflex || 0, Endurance: attrs.endurance || 0 },
+      social:   { Influence: attrs.influence || 0, Poise: attrs.poise || 0, Command: attrs.command || 0 }
+    },
+    tracks: {
+      willpower: { max: ch.willpowerOverride ?? getTrackBoxes(3, attrs.resolve || 0), current: ch.willpowerOverride ?? getTrackBoxes(3, attrs.resolve || 0) },
+      vitality:  { max: ch.vitalityOverride ?? getTrackBoxes(3, attrs.endurance || 0), current: ch.vitalityOverride ?? getTrackBoxes(3, attrs.endurance || 0) },
+      composure: { max: ch.composureOverride ?? getTrackBoxes(3, attrs.command || 0), current: ch.composureOverride ?? getTrackBoxes(3, attrs.command || 0) }
+    },
+    luck: { max: ch.luckRating || 1, current: ch.luckTokens ?? ch.luckRating ?? 1 },
+    corruption: ch.corruption || 0,
+    vocation: vocName ? `${vocName} (+${vocBonus})` : '',
+    interests: fmtSkills(ch.interests, 2),
+    hobbies: fmtSkills(ch.hobbies, 1),
+    edges: fmtDotList(ch.edges),
+    aspects: fmtAspects(ch.aspects),
+    connections: (ch.contacts || []).map(c => ({
+      name: c.name || '',
+      desc: [c.type, c.relationship, c.note].filter(Boolean).join(' — ')
+    })),
+    secrets: (ch.secrets || []).map(s => ({ text: s.name || '' })),
+    downtime: ch.downtime || ''
+  };
+}
+
+function addBlankCharacter() {
+  const name = prompt('Character name:');
+  if (!name) return;
+  characters.push({
+    name: name,
+    subtitle: '',
+    icon: '⬡',
+    conviction: '',
+    path: '',
+    attrs: {
+      mental:   { Reason: 1, Guile: 1, Resolve: 1 },
+      physical: { Might: 1, Reflex: 1, Endurance: 1 },
+      social:   { Influence: 1, Poise: 1, Command: 1 }
+    },
+    tracks: {
+      willpower: { max: 4, current: 4 },
+      vitality:  { max: 4, current: 4 },
+      composure: { max: 4, current: 4 }
+    },
+    luck: { max: 1, current: 1 },
+    corruption: 0,
+    vocation: '',
+    interests: [],
+    hobbies: [],
+    edges: [],
+    aspects: [],
+    connections: [],
+    secrets: [],
+    downtime: ''
+  });
+  closeImportModal();
+  renderParty();
+  selectChar(characters.length - 1);
+  markDirty();
+}
+
+function removeCharacter(index) {
+  if (!confirm(`Remove ${characters[index].name} from party?`)) return;
+  characters.splice(index, 1);
+  if (selectedChar >= characters.length) selectedChar = Math.max(0, characters.length - 1);
+  renderParty();
+  if (characters.length > 0) {
+    renderCharDetail(characters[selectedChar]);
+  } else {
+    document.getElementById('centerContent').innerHTML = '<div class="empty-state">No characters in party</div>';
+  }
+  markDirty();
+}
+
 function addEnemy() {
   alert('Enemy creation form would open here.\n\nSelect tier (Mook/Elite/Boss/Legend) and fill in the appropriate stat block fields.');
 }
@@ -1860,13 +2162,254 @@ function onTargetChange() {
   document.getElementById('rollTN').value = tn;
 }
 
+// === SESSION MANAGEMENT ===
+
+function markDirty() {
+  sessionDirty = true;
+  document.getElementById('unsavedIndicator').textContent = '●';
+  // Auto-save after 5s of inactivity if we have a session
+  clearTimeout(autoSaveTimer);
+  if (currentSessionId) {
+    autoSaveTimer = setTimeout(()=>saveSession(), 5000);
+  }
+}
+
+function markClean() {
+  sessionDirty = false;
+  document.getElementById('unsavedIndicator').textContent = '';
+}
+
+function getSessionState() {
+  return {
+    characters: characters,
+    enemies: enemies,
+    taintPool: taintPool,
+    rollLog: rollLogData,
+    tides: tides,
+    partyAnchor: partyAnchor,
+    sgNotes: document.getElementById('sgNotes')?.value || ''
+  };
+}
+
+function loadSessionState(data) {
+  // Replace global state
+  characters.length = 0;
+  (data.characters || []).forEach(c => characters.push(c));
+
+  enemies.length = 0;
+  (data.enemies || []).forEach(e => enemies.push(e));
+
+  taintPool = data.taintPool || 0;
+  document.getElementById('taintVal').textContent = taintPool;
+
+  rollLogData = data.rollLog || [];
+  rollCount = rollLogData.length > 0 ? Math.max(...rollLogData.map(r => r.num)) : 0;
+  rebuildRollLogDOM();
+
+  tides.length = 0;
+  (data.tides || []).forEach(t => tides.push(t));
+
+  partyAnchor = data.partyAnchor || { name: '', desc: '' };
+
+  const sgNotesEl = document.getElementById('sgNotes');
+  if (sgNotesEl) sgNotesEl.value = data.sgNotes || '';
+
+  // Re-render everything
+  renderParty();
+  renderEnemies();
+  populateTargetDropdown();
+  renderTides();
+  selectedChar = null;
+  if (characters.length > 0) selectChar(0);
+  else document.getElementById('centerContent').innerHTML = '<div class="empty-state">No characters in party</div>';
+}
+
+async function saveSession() {
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.classList.add('saving');
+  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+  const state = getSessionState();
+
+  try {
+    if (currentSessionId) {
+      // Update existing
+      const res = await fetch('/api/playtest-session/' + currentSessionId, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+      });
+      if (!res.ok) throw new Error('Save failed');
+    } else {
+      // Create new — prompt for name
+      const name = prompt('Session name:', 'Playtest ' + new Date().toLocaleDateString());
+      if (!name) {
+        saveBtn.classList.remove('saving');
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> Save';
+        return;
+      }
+      const res = await fetch('/api/playtest-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, system: 'willowlight', ...state })
+      });
+      if (!res.ok) throw new Error('Save failed');
+      const saved = await res.json();
+      currentSessionId = saved.sessionId;
+      document.getElementById('sessionNameDisplay').textContent = name;
+    }
+    markClean();
+  } catch (err) {
+    alert('Failed to save: ' + err.message);
+  } finally {
+    saveBtn.classList.remove('saving');
+    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save';
+  }
+}
+
+function openSessionList() {
+  document.getElementById('sessionModal').classList.add('open');
+  fetchSessionList();
+}
+
+function closeSessionModal() {
+  document.getElementById('sessionModal').classList.remove('open');
+}
+
+async function fetchSessionList() {
+  const listEl = document.getElementById('sessionList');
+  listEl.innerHTML = '<div class="import-loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    const res = await fetch('/api/playtest-sessions?system=willowlight');
+    if (!res.ok) throw new Error('Failed to load');
+    const data = await res.json();
+    renderSessionList(data.sessions || []);
+  } catch (err) {
+    listEl.innerHTML = '<div class="import-empty">Could not load sessions. Are you logged in?</div>';
+  }
+}
+
+function renderSessionList(sessions) {
+  const listEl = document.getElementById('sessionList');
+  if (!sessions || sessions.length === 0) {
+    listEl.innerHTML = '<div class="import-empty">No saved sessions.</div>';
+    return;
+  }
+  listEl.innerHTML = sessions.map(s => {
+    const date = new Date(s.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const isActive = s.sessionId === currentSessionId;
+    return `<div class="import-item" style="${isActive ? 'border-color: var(--gold-dim);' : ''}" onclick="loadSession('${s.sessionId}')">
+      <div>
+        <div class="import-item-name">${esc(s.name || 'Untitled')}${isActive ? ' <span style="color:var(--gold-dim)">●</span>' : ''}</div>
+        <div class="import-item-meta">${date}${s.description ? ' — ' + esc(s.description) : ''}</div>
+      </div>
+      <button class="modal-close" onclick="event.stopPropagation(); deleteSession('${s.sessionId}', '${esc(s.name)}')" title="Delete" style="font-size:14px;">&times;</button>
+    </div>`;
+  }).join('');
+}
+
+async function loadSession(sessionId) {
+  if (sessionDirty && !confirm('You have unsaved changes. Discard them?')) return;
+  try {
+    const res = await fetch('/api/playtest-session/' + sessionId);
+    if (!res.ok) throw new Error('Failed to load');
+    const data = await res.json();
+    currentSessionId = data.sessionId;
+    document.getElementById('sessionNameDisplay').textContent = data.name || 'Unnamed Session';
+    loadSessionState(data);
+    markClean();
+    closeSessionModal();
+  } catch (err) {
+    alert('Failed to load session: ' + err.message);
+  }
+}
+
+async function deleteSession(sessionId, name) {
+  if (!confirm(`Delete session "${name}"?`)) return;
+  try {
+    const res = await fetch('/api/playtest-session/' + sessionId, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Delete failed');
+    if (currentSessionId === sessionId) {
+      currentSessionId = null;
+      document.getElementById('sessionNameDisplay').textContent = 'Unsaved Session';
+    }
+    fetchSessionList();
+  } catch (err) {
+    alert('Failed to delete: ' + err.message);
+  }
+}
+
+function newSession() {
+  if (sessionDirty && !confirm('You have unsaved changes. Start a new session?')) return;
+  currentSessionId = null;
+  document.getElementById('sessionNameDisplay').textContent = 'Unsaved Session';
+  characters.length = 0;
+  enemies.length = 0;
+  taintPool = 0;
+  document.getElementById('taintVal').textContent = 0;
+  rollLogData = [];
+  rollCount = 0;
+  document.getElementById('rollLog').innerHTML = '';
+  tides.length = 0;
+  partyAnchor = { name: '', desc: '' };
+  const sgNotesEl = document.getElementById('sgNotes');
+  if (sgNotesEl) sgNotesEl.value = '';
+  renderParty();
+  renderEnemies();
+  populateTargetDropdown();
+  renderTides();
+  selectedChar = null;
+  document.getElementById('centerContent').innerHTML = '<div class="empty-state">New session — add characters to begin</div>';
+  markClean();
+  closeSessionModal();
+}
+
 // === INIT ===
-document.getElementById('sessionDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 renderParty();
 renderEnemies();
 populateTargetDropdown();
 // Auto-select first character
-selectChar(0);
+if (characters.length > 0) selectChar(0);
 </script>
+
+<!-- SESSION LIST MODAL -->
+<div class="modal-overlay" id="sessionModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Sessions</h2>
+      <button class="modal-close" onclick="closeSessionModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="import-list" id="sessionList">
+        <div class="import-loading">Loading...</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-primary" onclick="newSession()"><i class="fas fa-plus"></i> New Session</button>
+      <button class="modal-btn modal-btn-secondary" onclick="closeSessionModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Add Character</h2>
+      <button class="modal-close" onclick="closeImportModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input class="modal-search" id="importSearch" type="text" placeholder="Search saved characters..." oninput="filterImportList()">
+      <div class="import-list" id="importList">
+        <div class="import-loading">Loading...</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-secondary" onclick="addBlankCharacter()">+ Blank Character</button>
+      <button class="modal-btn modal-btn-secondary" onclick="closeImportModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

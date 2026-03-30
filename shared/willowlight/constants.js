@@ -1,8 +1,8 @@
 // ── Willowlight Engine Constants ──────────────────────────────────────
 
 export const ATTRIBUTE_GROUPS = {
-	physical : { label: 'Physical', attrs: ['might', 'reflex', 'endurance'] },
 	mental   : { label: 'Mental',   attrs: ['reason', 'guile', 'resolve'] },
+	physical : { label: 'Physical', attrs: ['might', 'reflex', 'endurance'] },
 	social   : { label: 'Social',   attrs: ['influence', 'poise', 'command'] }
 };
 
@@ -19,8 +19,8 @@ export const ATTRIBUTE_LABELS = {
 };
 
 export const ALL_ATTRIBUTES = [
-	'might', 'reflex', 'endurance',
 	'reason', 'guile', 'resolve',
+	'might', 'reflex', 'endurance',
 	'influence', 'poise', 'command'
 ];
 
@@ -40,8 +40,8 @@ export const SKILL_TIERS = [
 
 // Health track definitions
 export const HEALTH_TRACKS = [
-	{ key: 'vitality',  label: 'Vitality',  baseAttr: 'endurance', base: 3 },
 	{ key: 'willpower', label: 'Willpower', baseAttr: 'resolve',   base: 3 },
+	{ key: 'vitality',  label: 'Vitality',  baseAttr: 'endurance', base: 3 },
 	{ key: 'composure', label: 'Composure', baseAttr: 'command',   base: 3 }
 ];
 

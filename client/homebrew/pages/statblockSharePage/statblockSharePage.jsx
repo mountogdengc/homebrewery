@@ -28,7 +28,6 @@ const StatblockSharePage = (props)=>{
 	return (
 		<div className="statblockEditorPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item color="purple">
 						{statblock.name || 'Stat Block'}

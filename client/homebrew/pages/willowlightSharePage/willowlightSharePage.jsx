@@ -29,7 +29,6 @@ const WillowlightSharePage = (props)=>{
 	return (
 		<div className="willowlightEditorPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item color="blue">{character.name || 'Willowlight Character'}</Nav.item>
 				</Nav.section>

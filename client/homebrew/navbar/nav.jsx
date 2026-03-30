@@ -16,10 +16,9 @@ const Nav = {
 		}
 	}),
 	logo : function(){
-		return <a className='navLogo' href='https://www.naturalcrit.com'>
-			<NaturalCritIcon />
+		return <a className='navLogo' href='/'>
 			<span className='name'>
-				Natural<span className='crit'>Crit</span>
+				MOGC
 			</span>
 		</a>;
 	},

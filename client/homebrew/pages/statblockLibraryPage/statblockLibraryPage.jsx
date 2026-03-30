@@ -105,7 +105,6 @@ const StatblockLibraryPage = ()=>{
 	return (
 		<div className="statblockLibraryPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item color="purple">D&amp;D 5e</Nav.item>
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/statblock/new'; }}>

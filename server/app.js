@@ -23,6 +23,7 @@ import statblockApi                from './statblock.api.js';
 import besmCharacterApi            from './besm-character.api.js';
 import brpStatblockApi             from './brp-statblock.api.js';
 import willowlightApi              from './willowlight.api.js';
+import playtestSessionApi          from './playtest-session.api.js';
 import aiApi                       from './ai.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
@@ -66,6 +67,9 @@ export default async function createApp(vite) {
 	});
 	app.get('/besm/sheet/:id', (req, res)=>{
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/besm-character-sheet-dynamic.html'));
+	});
+	app.get('/willowlight/sheet', (req, res)=>{
+		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-dynamic.html'));
 	});
 	app.get('/willowlight/sheet/:id', (req, res)=>{
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-dynamic.html'));
@@ -137,6 +141,7 @@ export default async function createApp(vite) {
 	app.use(besmCharacterApi);
 	app.use(brpStatblockApi);
 	app.use(willowlightApi);
+	app.use(playtestSessionApi);
 	app.use(aiApi);
 
 	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');

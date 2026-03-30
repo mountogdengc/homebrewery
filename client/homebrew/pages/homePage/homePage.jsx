@@ -19,7 +19,6 @@ import Navbar                    from '@navbar/navbar.jsx';
 import NewBrewItem               from '@navbar/newbrew.navitem.jsx';
 import AccountNavItem            from '@navbar/account.navitem.jsx';
 import ErrorNavItem              from '@navbar/error-navitem.jsx';
-import HelpNavItem               from '@navbar/help.navitem.jsx';
 import VaultNavItem              from '@navbar/vault.navitem.jsx';
 import PrintNavItem              from '@navbar/print.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
@@ -183,7 +182,6 @@ const HomePage =(props)=>{
 					: renderSaveButton()}
 				<NewBrewItem />
 				<PrintNavItem />
-				<HelpNavItem />
 				<VaultNavItem />
 				<RecentNavItem />
 				<AccountNavItem />

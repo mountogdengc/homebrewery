@@ -26,7 +26,6 @@ const BesmStatblockSharePage = (props)=>{
 	return (
 		<div className="statblockEditorPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<Nav.item color="pink">{character.name || 'BESM Stat Block'}</Nav.item>
 				</Nav.section>

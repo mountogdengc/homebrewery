@@ -142,6 +142,7 @@
     align-items: baseline;
     gap: 4px;
     margin-bottom: 2px;
+    flex: 1;
   }
 
   .field-label {
@@ -420,11 +421,13 @@ function boxes(count, filled = 0, size = '') {
 }
 
 function fieldVal(label, value) {
-  return `<div class="field-row"><span class="field-label">${label}</span><div class="field-value">${esc(value)}</div></div>`;
+  const display = esc(value) || '&nbsp;';
+  return `<div class="field-row"><span class="field-label">${label}</span><div class="field-value">${display}</div></div>`;
 }
 
 function fieldValShort(label, value) {
-  return `<div class="field-row"><span class="field-label">${label}</span><div class="field-value-short">${esc(value)}</div></div>`;
+  const display = esc(value) || '&nbsp;';
+  return `<div class="field-row"><span class="field-label">${label}</span><div class="field-value-short">${display}</div></div>`;
 }
 
 function getTrackBoxes(base, attrVal) { return base + (attrVal || 0); }
@@ -480,8 +483,8 @@ function renderPage1(ch) {
     <div class="panel">
       <div class="section-label">Attributes</div>
       <div class="attr-grid">
-        ${attrDomain('Physical', ['might','reflex','endurance'], 2, 1, 'physical')}
         ${attrDomain('Mental', ['reason','guile','resolve'], 2, 1, 'mental')}
+        ${attrDomain('Physical', ['might','reflex','endurance'], 2, 1, 'physical')}
         ${attrDomain('Social', ['influence','poise','command'], 2, 1, 'social')}
       </div>
       <div style="font-size:6pt; color:#888; margin-top:2px;">☆ = Anchor attribute · (init) = governs initiative in that domain</div>
@@ -520,10 +523,12 @@ function renderPage1(ch) {
     </div>`;
 
   // Health Tracks
+  const isBlankSheet = !ch.name;
+
   function healthPanel(label, base, attrKey, formula, overrideKey) {
     const attrVal = attrs[attrKey] || 0;
     const totalBoxes = ch[overrideKey] ?? getTrackBoxes(base, attrVal);
-    const defTN = getDefTN(attrVal);
+    const defTN = isBlankSheet ? '' : String(getDefTN(attrVal));
     // Split into tiers of 3/3/remaining
     const t1 = Math.min(totalBoxes, 3);
     const t2 = Math.min(Math.max(totalBoxes - 3, 0), 3);
@@ -537,7 +542,7 @@ function renderPage1(ch) {
       ${t1 > 0 ? `<div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;"><span class="sub-label" style="width:22px;">T1</span>${boxes(t1)}</div>` : ''}
       ${t2 > 0 ? `<div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;"><span class="sub-label" style="width:22px;">T2</span>${boxes(t2)}</div>` : ''}
       ${t3 > 0 ? `<div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;"><span class="sub-label" style="width:22px;">T3</span>${boxes(t3)}</div>` : ''}
-      ${fieldValShort('Defense TN', String(defTN))}
+      ${fieldValShort('Defense TN', defTN)}
       <div style="font-size:6pt; color:#888;">8 + ${label === 'Vitality' ? 'Endurance' : label === 'Willpower' ? 'Resolve' : 'Command'}</div>
     </div>`;
   }
@@ -553,8 +558,8 @@ function renderPage1(ch) {
     <div class="panel">
       <div class="section-label">Health Tracks</div>
       <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
-        ${healthPanel('Vitality', 3, 'endurance', '3 + Endurance', 'vitalityOverride')}
         ${healthPanel('Willpower', 3, 'resolve', '3 + Resolve', 'willpowerOverride')}
+        ${healthPanel('Vitality', 3, 'endurance', '3 + Endurance', 'vitalityOverride')}
         ${healthPanel('Composure', 3, 'command', '3 + Command', 'composureOverride')}
       </div>
       <div style="margin-top:4px;">
@@ -649,7 +654,7 @@ function renderPage1(ch) {
 
   return `
     <div class="page">
-      <div class="page-title">Willowlight Engine <span>Character Sheet — Page 1</span></div>
+      <div class="page-title">Willowlight Engine</div>
       <div class="row" style="gap:6px;">
         <div class="col flex-2" style="gap:5px;">
           ${identity}
@@ -815,7 +820,7 @@ function renderPage2(ch) {
 
   return `
     <div class="page">
-      <div class="page-title">Willowlight Engine <span>Character Sheet — Page 2</span></div>
+      <div class="page-title">Willowlight Engine</div>
       <div class="row" style="gap:6px; height: calc(100% - 28px);">
         <div class="col flex-3" style="gap:5px;">
           ${connections}
@@ -832,12 +837,39 @@ function renderPage2(ch) {
     </div>`;
 }
 
+// ── BLANK CHARACTER DEFAULTS ──
+function blankCharacter() {
+  return {
+    name: '', player: '', conviction: '', path: '',
+    shortDescription: '', description: '', source: '',
+    age: '', gender: '', height: '', weight: '',
+    attributes: { might: 1, reflex: 1, endurance: 1, reason: 1, guile: 1, resolve: 1, influence: 1, poise: 1, command: 1 },
+    scale: { physical: '', mental: '', social: '' },
+    vocation: { name: '', bonus: 0 }, domainFocus: '',
+    interests: [], hobbies: [],
+    vitalityOverride: 8, willpowerOverride: 8, composureOverride: 8,
+    attacks: [], edges: [], aspects: [], burdens: [],
+    luckRating: 1, luckTokens: 3, corruption: 0, hearthTrigger: '',
+    unspentXP: 0, totalXP: 0, xpSpent: 0, sessionXP: 0,
+    wealthPoints: 0, lifestyle: 0, downtime: '',
+    convictionMilestones: [{ text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }],
+    pathMilestones: [{ text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }],
+    contacts: [], afflictions: {}, equipment: [], secrets: [], notes: ''
+  };
+}
+
 // ── LOAD & RENDER ──
 async function loadCharacter() {
   const pathParts = window.location.pathname.split('/');
   const shareId = pathParts[pathParts.length - 1];
+
+  // Blank sheet mode — no ID
   if (!shareId || shareId === 'sheet') {
-    document.getElementById('loading').textContent = 'No character ID provided. Use /willowlight/sheet/<shareId>';
+    const ch = blankCharacter();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('toolbar-title').textContent = 'Blank Character Sheet';
+    document.getElementById('sheet-content').style.display = '';
+    document.getElementById('sheet-content').innerHTML = renderPage1(ch) + renderPage2(ch);
     return;
   }
 

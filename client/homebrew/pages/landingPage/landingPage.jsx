@@ -4,23 +4,20 @@ import React from 'react';
 import Nav            from '@navbar/nav.jsx';
 import Navbar         from '@navbar/navbar.jsx';
 import AccountNavItem from '@navbar/account.navitem.jsx';
-import HelpNavItem    from '@navbar/help.navitem.jsx';
 
 const LandingPage = ()=>{
 	return (
 		<div className="landingPage">
 			<Navbar>
-				<Nav.logo />
 				<Nav.section>
 					<AccountNavItem />
-					<HelpNavItem />
 				</Nav.section>
 			</Navbar>
 
 			<div className="landingContent">
 				<div className="landingTitle">
-					<h1><strong>The Homebrewery</strong> Toolkit</h1>
-					<p>Create authentic-looking homebrew content for tabletop RPGs</p>
+					<h1><strong>Mount Ogden</strong> Gaming Company Toolkit</h1>
+					<p>Build characters, stat blocks, and adventures for any tabletop RPG</p>
 				</div>
 
 				{/* ── Game Systems (alphabetical) ──────────────────────── */}
