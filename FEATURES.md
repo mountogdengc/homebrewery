@@ -92,7 +92,7 @@ Planned features, improvements, and ideas. Items are roughly grouped by area. Ch
 - [x] Scenario snapshots — save named snapshots of rules+party+enemies, load to restore, compare two snapshots side-by-side with SVG chart showing success/failure curves across TN range
 
 ### Playtest UX Overhaul
-- [ ] Help file / guide for the simulation tools (quick sim, sweep, heat map, snapshots)
+- [x] Help file / guide for the simulation tools — Help button in toolbar opens comprehensive guide covering all panels, dice mechanics, sim tools, conflict sim, sessions
 - [x] Move bottom toolbar to fixed bottom position; open sections as flyout panels instead of pushing content (buttons stay in place)
 - [x] Convert PC and NPC side panels to flyout windows; center view now full-width for character detail / future dashboard
 - [ ] Center dashboard view — replace character detail with a full analytics dashboard (heat maps, bar graphs, party summary, live stats)

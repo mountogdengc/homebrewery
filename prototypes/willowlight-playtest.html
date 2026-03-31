@@ -895,6 +895,7 @@
   <button class="bottom-tab" onclick="togglePanel('party')"><i class="fas fa-address-book"></i> Party Mgmt</button>
   <button class="bottom-tab" onclick="togglePanel('sg')"><i class="fas fa-book-open"></i> Storyguide</button>
   <button class="bottom-tab" onclick="togglePanel('rules')"><i class="fas fa-cog"></i> Rules</button>
+  <button class="bottom-tab" onclick="togglePanel('help')"><i class="fas fa-question-circle"></i> Help</button>
   <span style="flex:1;"></span>
   <button class="bottom-tab" style="border-left:1px solid var(--border);" data-conflict="mental" onclick="onConflictClick('mental')"><i class="fas fa-brain"></i> Mental</button>
   <button class="bottom-tab" data-conflict="physical" onclick="onConflictClick('physical')"><i class="fas fa-fist-raised"></i> Physical</button>
@@ -1207,6 +1208,92 @@
     </div>
   </div>
   <div id="conflictResults" style="font-family:'Fira Mono',monospace;font-size:12px;overflow-y:auto;"></div>
+</div>
+
+<!-- HELP PANEL -->
+<div class="bottom-tab-content" id="tab-help" style="flex-direction:column;padding:16px 24px;max-height:70vh;overflow-y:auto;">
+  <div style="max-width:900px;margin:0 auto;font-size:13px;line-height:1.7;color:var(--text);">
+
+    <h2 style="font-family:'Cinzel',serif;font-size:16px;color:var(--gold);margin-bottom:12px;letter-spacing:2px;">PLAYTEST TABLE GUIDE</h2>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">LAYOUT</h3>
+    <p><strong style="color:var(--text-bright);">Side Panels</strong> — Party (left) and Encounters (right) are always visible. Click a character card to view their full stats in the center. Click <strong>+ Add Character</strong> or <strong>+ Add Enemy</strong> to import from your library or create a blank entry. Hover over a card to reveal the <strong>&times;</strong> remove button.</p>
+    <p><strong style="color:var(--text-bright);">Center View</strong> — Shows the selected character's attributes, health tracks, skills, edges, and aspects. Click health track boxes to toggle damage.</p>
+    <p><strong style="color:var(--text-bright);">Bottom Toolbar</strong> — Opens flyout panels above the main area. Click a button to open its panel; click again to close. Only one panel is open at a time.</p>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">DICE ROLLER</h3>
+    <p>Rolls <strong>2d6 + Attribute + Skill</strong> vs a Target Number. Select an enemy target to auto-populate the TN from their attack or defense stats.</p>
+    <p><strong style="color:var(--luck-color);">Luck Swap</strong> — After rolling, if the active character has Luck tokens, you can click a result die to swap it with the Luck die. Costs 1 Luck token.</p>
+    <p><strong style="color:var(--corruption-color);">Taint Swap</strong> — The Storyguide can spend Taint to force a die swap on the player. Increases corruption.</p>
+    <p><strong>Outcomes:</strong></p>
+    <ul style="margin:4px 0 8px 20px;color:var(--text-dim);">
+      <li><span style="color:var(--green-bright);">Success+</span> — Total &ge; TN + success plus margin</li>
+      <li><span style="color:var(--green);">Success</span> — Total &ge; TN</li>
+      <li><span style="color:var(--gold);">At Cost</span> — Total &ge; TN &minus; cost margin (succeed but with a consequence)</li>
+      <li><span style="color:var(--red);">Failure</span> — Total &lt; TN &minus; cost margin</li>
+      <li><span style="color:var(--green-bright);">Crit</span> — Both result dice show the crit value (default: 6)</li>
+      <li><span style="color:var(--purple-bright);">Complication</span> — Result dice sum &le; complication threshold (default: 3)</li>
+    </ul>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">PARTY MANAGEMENT</h3>
+    <p><strong style="color:var(--text-bright);">Anchor</strong> — A shared party-level narrative element (a place, object, or bond). Click Edit to change it.</p>
+    <p><strong style="color:var(--text-bright);">Connections</strong> — NPCs linked to characters. Add connections per character.</p>
+    <p><strong style="color:var(--text-bright);">Secrets</strong> — Character secrets tracked for narrative play.</p>
+    <p><strong style="color:var(--text-bright);">Downtime</strong> — Set each character's current downtime activity.</p>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">STORYGUIDE</h3>
+    <p><strong style="color:var(--text-bright);">Tides</strong> — Narrative progress tracks for ongoing threats, opportunities, or events. Click pips to advance them. Add as many as you need.</p>
+    <p><strong style="color:var(--text-bright);">SG Notes</strong> — Free-text area for session notes, scene plans, and reminders.</p>
+    <p><strong style="color:var(--text-bright);">Taint Pool</strong> — The SG's corruption resource, tracked in the top bar. Spend it to force die swaps on players.</p>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">RULES CONFIG</h3>
+    <p>The <strong>Rules</strong> tab lets you change any core mechanical parameter. Changes take effect immediately for all rolls and simulations. Every change is logged in both the Rules change log and the main roll log, so you can see exactly when a rule changed relative to actual play.</p>
+    <p><strong>Parameters you can tune:</strong> health track base, success/cost/crit thresholds, complication threshold, mook TN penalty per lost member, dice count and sides, skill tier bonuses.</p>
+    <p>Click <strong>Reset to Defaults</strong> to revert all changes.</p>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">QUICK SIM</h3>
+    <p>In the Rules tab, the <strong>Quick Sim</strong> section lets you run up to 100,000 simulated rolls with a given Attribute, Skill, and TN. Results show:</p>
+    <ul style="margin:4px 0 8px 20px;color:var(--text-dim);">
+      <li>Outcome percentages (Success+, Success, At Cost, Failure)</li>
+      <li>Crit and Complication rates</li>
+      <li>A color-coded histogram of roll totals — green for successes, gold for at-cost, red for failures</li>
+    </ul>
+    <p>Use this to answer questions like <em>"What are the odds of hitting TN 14 with Attribute 3 and no skill?"</em></p>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">PARAMETER SWEEP</h3>
+    <p>Sweep a single variable (Attribute, Skill, TN, or any rule parameter) across a range while holding the others fixed. Produces a <strong>line chart</strong> showing how all six outcome rates change across the sweep.</p>
+    <p>Use this to answer questions like <em>"How does success rate change as TN goes from 6 to 18?"</em> or <em>"What happens if I increase the complication threshold from 3 to 5?"</em></p>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">TWO-VARIABLE SWEEP (HEAT MAP)</h3>
+    <p>Pick two different variables for X and Y axes, choose a metric to visualize, and get a color-coded grid showing the result at every combination. Colors range from <span style="color:var(--red);">red (0%)</span> through <span style="color:var(--gold);">gold (50%)</span> to <span style="color:var(--green);">green (100%)</span>.</p>
+    <p>Use this to answer questions like <em>"At what Attribute/TN combinations does the party have a 50%+ success rate?"</em></p>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">SCENARIO SNAPSHOTS</h3>
+    <p>Save the current <strong>rules + party + enemies</strong> as a named snapshot. You can:</p>
+    <ul style="margin:4px 0 8px 20px;color:var(--text-dim);">
+      <li><strong>Load</strong> a snapshot to restore that exact state</li>
+      <li><strong>Compare</strong> two snapshots — runs the same TN sweep under both configs and shows success/failure curves side-by-side</li>
+    </ul>
+    <p>Workflow: save a snapshot, tweak rules, save another snapshot, then compare them to see the impact of your changes.</p>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">CONFLICT SIMULATION</h3>
+    <p>The four buttons on the right side of the toolbar — <strong>Mental, Physical, Social, Mixed</strong> — run a full multi-round combat simulation between the current party and all enemies.</p>
+    <p><strong>How it works:</strong></p>
+    <ul style="margin:4px 0 8px 20px;color:var(--text-dim);">
+      <li>Each round, every alive PC attacks a random alive enemy (rolling vs their defense TN)</li>
+      <li>Success = 1 damage to the enemy's relevant health track. At Cost = mutual damage. Failure = the enemy deals 1 damage to the PC.</li>
+      <li>Each alive enemy then counterattacks a random alive PC (PC rolls defense vs enemy's attack TN)</li>
+      <li>Combat ends when one side is eliminated or max rounds reached (stalemate)</li>
+      <li><strong>Mixed</strong> mode: each PC uses their strongest attribute domain</li>
+    </ul>
+    <p><strong>Results show:</strong> Party/Enemy/Stalemate win rates, average rounds, per-character damage dealt/taken/KO rates, per-enemy damage taken/defeated rates.</p>
+    <p>Adjust the <strong>Simulations</strong> count (default 100) and <strong>Max Rounds</strong> (default 20) in the conflict results panel header.</p>
+
+    <h3 style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);margin:16px 0 6px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px;">SESSIONS</h3>
+    <p>Use the <strong>Sessions</strong> and <strong>Save</strong> buttons in the top bar to persist your playtest state. Everything is saved: party, enemies, health tracks, tides, taint, roll log, rules config, SG notes, and snapshots.</p>
+    <p>Sessions auto-save after 5 seconds of inactivity when loaded. The <strong>&bull;</strong> indicator shows unsaved changes.</p>
+
+  </div>
 </div>
 
 <script>
