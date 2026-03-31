@@ -231,7 +231,7 @@ function renderWide(sb) {
 
 	return `<div class="statblock statblock--wide">
 		<div class="sb-header">
-			<h1 class="sb-name">${esc(sb.name || 'Unnamed Creature')}</h1>
+			<h2 class="sb-name">${esc(sb.name || 'Unnamed Creature')}</h2>
 			<p class="sb-subtitle">${esc(p.fullSubtitle)}</p>
 		</div>
 		<div class="sb-rule sb-rule--thick"></div>
@@ -262,7 +262,7 @@ function renderNarrow(sb) {
 
 	return `<div class="statblock statblock--narrow">
 		<div class="sb-header">
-			<h1 class="sb-name">${esc(sb.name || 'Unnamed Creature')}</h1>
+			<h2 class="sb-name">${esc(sb.name || 'Unnamed Creature')}</h2>
 			<p class="sb-subtitle">${esc(p.fullSubtitle)}</p>
 		</div>
 		<div class="sb-rule sb-rule--thick"></div>
