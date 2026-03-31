@@ -896,10 +896,10 @@
   <button class="bottom-tab" onclick="togglePanel('sg')"><i class="fas fa-book-open"></i> Storyguide</button>
   <button class="bottom-tab" onclick="togglePanel('rules')"><i class="fas fa-cog"></i> Rules</button>
   <span style="flex:1;"></span>
-  <button class="bottom-tab" style="border-left:1px solid var(--border);" onclick="runConflict('mental')"><i class="fas fa-brain"></i> Mental</button>
-  <button class="bottom-tab" onclick="runConflict('physical')"><i class="fas fa-fist-raised"></i> Physical</button>
-  <button class="bottom-tab" onclick="runConflict('social')"><i class="fas fa-comments"></i> Social</button>
-  <button class="bottom-tab" onclick="runConflict('mixed')"><i class="fas fa-random"></i> Mixed</button>
+  <button class="bottom-tab" style="border-left:1px solid var(--border);" data-conflict="mental" onclick="onConflictClick('mental')"><i class="fas fa-brain"></i> Mental</button>
+  <button class="bottom-tab" data-conflict="physical" onclick="onConflictClick('physical')"><i class="fas fa-fist-raised"></i> Physical</button>
+  <button class="bottom-tab" data-conflict="social" onclick="onConflictClick('social')"><i class="fas fa-comments"></i> Social</button>
+  <button class="bottom-tab" data-conflict="mixed" onclick="onConflictClick('mixed')"><i class="fas fa-random"></i> Mixed</button>
 </div>
 
 <!-- DICE ROLLER TAB -->
@@ -3340,6 +3340,19 @@ function resolveOutcome(total, tn) {
   return 'failure';
 }
 
+let lastConflictMode = null;
+
+function onConflictClick(mode) {
+  // If the same conflict button is clicked while panel is open, close it
+  if (activePanel === 'conflict' && lastConflictMode === mode) {
+    togglePanel('conflict'); // toggles off
+    lastConflictMode = null;
+    return;
+  }
+  lastConflictMode = mode;
+  runConflict(mode);
+}
+
 function runConflict(mode) {
   if (characters.length === 0 || enemies.length === 0) {
     alert('Need at least one character and one enemy to simulate a conflict.');
@@ -3386,8 +3399,17 @@ function runConflict(mode) {
   const domainLabel = mode === 'mixed' ? 'Mixed (best per char)' : mode.charAt(0).toUpperCase() + mode.slice(1);
   renderConflictResults(domainLabel, simCount, partyWins, enemyWins, draws, avgRounds, charStats, enemyStats);
 
-  // Open the conflict panel
-  togglePanel('conflict');
+  // Always open the conflict panel (don't toggle off)
+  // Close any other panel first
+  document.querySelectorAll('.bottom-tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.bottom-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-conflict').classList.add('active');
+  activePanel = 'conflict';
+
+  // Highlight the clicked conflict button
+  document.querySelectorAll('.bottom-tab[data-conflict]').forEach(t => {
+    t.classList.toggle('active', t.dataset.conflict === mode);
+  });
 }
 
 function simulateConflict(mode, maxRounds) {
