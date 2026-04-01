@@ -5,6 +5,8 @@ import { nanoid }     from 'nanoid';
 import { ProceduralImage } from './procedural-image.model.js';
 import { getGenerator } from '../shared/procedural/generatorBase.js';
 import { SealGenerator } from '../shared/procedural/generators/sealGenerator.js';
+import { AdventureIconGenerator } from '../shared/procedural/generators/adventureIconGenerator.js';
+import { HeraldryGenerator } from '../shared/procedural/generators/heraldryGenerator.js';
 import { registerGenerator } from '../shared/procedural/generatorBase.js';
 import dbCheck        from './middleware/dbCheck.js';
 
@@ -12,6 +14,8 @@ const router = express.Router();
 
 // Register generators
 registerGenerator(new SealGenerator());
+registerGenerator(new AdventureIconGenerator());
+registerGenerator(new HeraldryGenerator());
 
 const sanitize = (image)=>{
 	image._id = undefined;

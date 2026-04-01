@@ -29,6 +29,11 @@ import WillowlightBestiaryLibraryPage from './pages/willowlightBestiaryLibraryPa
 import ProceduralImageLibraryPage from './pages/proceduralImageLibraryPage/proceduralImageLibraryPage.jsx';
 import ProceduralSealEditorPage from './pages/proceduralSealEditorPage/proceduralSealEditorPage.jsx';
 import ProceduralSealSharePage from './pages/proceduralSealSharePage/proceduralSealSharePage.jsx';
+import ProceduralIconEditorPage from './pages/proceduralIconEditorPage/proceduralIconEditorPage.jsx';
+import ProceduralIconSharePage from './pages/proceduralIconSharePage/proceduralIconSharePage.jsx';
+import ProceduralHeraldryEditorPage from './pages/proceduralHeraldryEditorPage/proceduralHeraldryEditorPage.jsx';
+import ProceduralHeraldrySharePage from './pages/proceduralHeraldrySharePage/proceduralHeraldrySharePage.jsx';
+import ProceduralIconSharePage from './pages/proceduralIconSharePage/proceduralIconSharePage.jsx';
 
 // Lazy-load BESM pages — keeps ~500KB of data libraries out of the main bundle
 const BesmBuilderPage = lazy(()=>import('./pages/besmBuilder/besmBuilderPage.jsx'));
@@ -94,6 +99,14 @@ const Homebrew = (props)=>{
 					<Route path='/seal/edit/:id' element={<WithRoute el={ProceduralSealEditorPage} />} />
 					<Route path='/seal/share/:id' element={<WithRoute el={ProceduralSealSharePage} />} />
 					<Route path='/seal/library' element={<WithRoute el={ProceduralImageLibraryPage} />} />
+					<Route path='/icon/new' element={<WithRoute el={ProceduralIconEditorPage} />} />
+					<Route path='/icon/edit/:id' element={<WithRoute el={ProceduralIconEditorPage} />} />
+					<Route path='/icon/share/:id' element={<WithRoute el={ProceduralIconSharePage} />} />
+					<Route path='/icon/library' element={<WithRoute el={ProceduralImageLibraryPage} />} />
+					<Route path='/heraldry/new' element={<WithRoute el={ProceduralHeraldryEditorPage} />} />
+					<Route path='/heraldry/edit/:id' element={<WithRoute el={ProceduralHeraldryEditorPage} />} />
+					<Route path='/heraldry/share/:id' element={<WithRoute el={ProceduralHeraldrySharePage} />} />
+					<Route path='/heraldry/library' element={<WithRoute el={ProceduralImageLibraryPage} />} />
 					<Route path='/besm/new' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading BESM Builder...</div>}><WithRoute el={BesmBuilderPage} /></Suspense>} />
 					<Route path='/besm/edit/:id' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading BESM Builder...</div>}><WithRoute el={BesmBuilderPage} besmCharacter={props.besmCharacter} /></Suspense>} />
 					<Route path='/besm/library' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading...</div>}><WithRoute el={BesmLibraryPage} /></Suspense>} />
