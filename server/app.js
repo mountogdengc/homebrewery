@@ -818,6 +818,62 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
+	// ── Seal Pages ──────────────────────────────────────
+
+	//Seal Library
+	app.get('/seal/library', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Wax Seal Library',
+			description : 'Browse your procedurally generated wax seals'
+		};
+		return next();
+	});
+
+	//Seal Editor - New
+	app.get('/seal/new', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Create Wax Seal',
+			description : 'Design a procedural wax seal'
+		};
+		return next();
+	});
+
+	//Seal Editor - Edit
+	app.get('/seal/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { ProceduralImage } = await import('./procedural-image.model.js');
+		try {
+			const seal = await ProceduralImage.get({ editId: req.params.id });
+			req.ogMeta = { ...defaultMetaTags,
+				title       : `Editing Seal: ${seal.name || 'Untitled'}`,
+				description : 'Edit a procedural wax seal'
+			};
+		} catch (err) {
+			req.ogMeta = { ...defaultMetaTags,
+				title       : 'Seal Not Found',
+				description : 'This seal could not be found'
+			};
+		}
+		return next();
+	}));
+
+	//Seal Share Page
+	app.get('/seal/share/:id', asyncHandler(async (req, res, next)=>{
+		try {
+			const { ProceduralImage } = await import('./procedural-image.model.js');
+			const seal = await ProceduralImage.get({ shareId: req.params.id });
+			req.ogMeta = { ...defaultMetaTags,
+				title       : seal.name || 'Wax Seal',
+				description : seal.description || 'A procedural wax seal'
+			};
+		} catch (err) {
+			req.ogMeta = { ...defaultMetaTags,
+				title       : 'Seal Not Found',
+				description : 'This seal could not be found'
+			};
+		}
+		return next();
+	}));
+
 	//Send rendered page
 	app.use(asyncHandler(async (req, res, next)=>{
 		if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
