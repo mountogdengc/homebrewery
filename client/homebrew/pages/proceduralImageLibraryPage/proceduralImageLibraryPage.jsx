@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import './proceduralImageLibraryPage.less';
+import Nav from '@navbar/nav.jsx';
+import Navbar from '@navbar/navbar.jsx';
+import AccountNavItem from '@navbar/account.navitem.jsx';
 
 const ProceduralImageLibraryPage = (props)=>{
 	const navigate = useNavigate();
@@ -101,6 +104,18 @@ const ProceduralImageLibraryPage = (props)=>{
 
 	return (
 		<div className='procedural-image-library-page'>
+			<Navbar>
+				<Nav.section>
+					<Nav.item color='purple' icon='fas fa-ring'>Procedural Images</Nav.item>
+					<Nav.item icon='fas fa-plus' onClick={()=>navigate(`/seal/new`)}>
+						New Seal
+					</Nav.item>
+				</Nav.section>
+				<Nav.section>
+					<AccountNavItem />
+				</Nav.section>
+			</Navbar>
+
 			<div className='library-header'>
 				<h1>{currentTypeLabel} Library</h1>
 				<button

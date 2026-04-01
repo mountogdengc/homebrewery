@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import './proceduralSealSharePage.less';
+import Nav from '@navbar/nav.jsx';
+import Navbar from '@navbar/navbar.jsx';
+import AccountNavItem from '@navbar/account.navitem.jsx';
 
 const ProceduralSealSharePage = (props)=>{
 	const { id } = useParams();
@@ -67,6 +70,18 @@ const ProceduralSealSharePage = (props)=>{
 
 	return (
 		<div className='seal-share-page'>
+			<Navbar>
+				<Nav.section>
+					<Nav.item color='purple' icon='fas fa-ring'>Wax Seal</Nav.item>
+					<Nav.item icon='fas fa-home' href='/seal/library'>
+						Library
+					</Nav.item>
+				</Nav.section>
+				<Nav.section>
+					<AccountNavItem />
+				</Nav.section>
+			</Navbar>
+
 			<div className='share-header'>
 				<h1>{seal.name}</h1>
 				{seal.description && <p className='description'>{seal.description}</p>}

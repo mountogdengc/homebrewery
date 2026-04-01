@@ -3,6 +3,9 @@ import { useNavigate, useParams } from 'react-router';
 import './proceduralSealEditorPage.less';
 import SealForm from './sealForm.jsx';
 import SealPreview from './sealPreview.jsx';
+import Nav from '@navbar/nav.jsx';
+import Navbar from '@navbar/navbar.jsx';
+import AccountNavItem from '@navbar/account.navitem.jsx';
 
 const ProceduralSealEditorPage = (props)=>{
 	const navigate = useNavigate();
@@ -144,6 +147,18 @@ const ProceduralSealEditorPage = (props)=>{
 
 	return (
 		<div className='seal-editor-page'>
+			<Navbar>
+				<Nav.section>
+					<Nav.item color='purple' icon='fas fa-ring'>Wax Seal Editor</Nav.item>
+					<Nav.item icon='fas fa-arrow-left' onClick={()=>navigate('/seal/library')}>
+						Library
+					</Nav.item>
+				</Nav.section>
+				<Nav.section>
+					<AccountNavItem />
+				</Nav.section>
+			</Navbar>
+
 			<div className='editor-header'>
 				<div className='header-left'>
 					<button
