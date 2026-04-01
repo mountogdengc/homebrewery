@@ -928,6 +928,60 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
+	//Heraldry Library
+	app.get('/heraldry/library', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Heraldry Library',
+			description : 'Browse your procedurally generated heraldic shields'
+		};
+		return next();
+	});
+
+	//Heraldry Editor - New
+	app.get('/heraldry/new', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Create Heraldry',
+			description : 'Design a procedural heraldic shield'
+		};
+		return next();
+	});
+
+	//Heraldry Editor - Edit
+	app.get('/heraldry/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { ProceduralImage } = await import('./procedural-image.model.js');
+		try {
+			const heraldry = await ProceduralImage.get({ editId: req.params.id });
+			req.ogMeta = { ...defaultMetaTags,
+				title       : `Editing Heraldry: ${heraldry.name || 'Untitled'}`,
+				description : 'Edit a procedural heraldic shield'
+			};
+		} catch (err) {
+			req.ogMeta = { ...defaultMetaTags,
+				title       : 'Heraldry Not Found',
+				description : 'This heraldry could not be found'
+			};
+		}
+		return next();
+	}));
+
+	//Heraldry Share Page
+	app.get('/heraldry/share/:id', asyncHandler(async (req, res, next)=>{
+		try {
+			const { ProceduralImage } = await import('./procedural-image.model.js');
+			const heraldry = await ProceduralImage.get({ shareId: req.params.id });
+			req.ogMeta = { ...defaultMetaTags,
+				title       : heraldry.name || 'Heraldic Shield',
+				description : heraldry.description || 'A procedural heraldic shield'
+			};
+		} catch (err) {
+			req.ogMeta = { ...defaultMetaTags,
+				title       : 'Heraldry Not Found',
+				description : 'This heraldry could not be found'
+			};
+		}
+		return next();
+	}));
+
 	//Send rendered page
 	app.use(asyncHandler(async (req, res, next)=>{
 		if(!req.route) return res.redirect('/'); // Catch-all for invalid routes

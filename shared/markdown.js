@@ -523,6 +523,13 @@ const Markdown = {
 				return `<div class="icon-embed${sizeClass}" data-icon-id="${id}"></div>`;
 			});
 
+		// Heraldry embeds: {{heraldry:shareId}} or {{heraldry:shareId|size:large}}
+		rawBrewText = rawBrewText.replace(/\{\{heraldry:([a-zA-Z0-9_-]+)(?:\|size:(\w+))?\}\}/g,
+			(match, id, size)=>{
+				const sizeClass = size === 'large' ? ' heraldry-embed--large' : size === 'small' ? ' heraldry-embed--small' : '';
+				return `<div class="heraldry-embed${sizeClass}" data-heraldry-id="${id}"></div>`;
+			});
+
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
