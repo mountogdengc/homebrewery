@@ -33,7 +33,6 @@ import ProceduralIconEditorPage from './pages/proceduralIconEditorPage/procedura
 import ProceduralIconSharePage from './pages/proceduralIconSharePage/proceduralIconSharePage.jsx';
 import ProceduralHeraldryEditorPage from './pages/proceduralHeraldryEditorPage/proceduralHeraldryEditorPage.jsx';
 import ProceduralHeraldrySharePage from './pages/proceduralHeraldrySharePage/proceduralHeraldrySharePage.jsx';
-import ProceduralIconSharePage from './pages/proceduralIconSharePage/proceduralIconSharePage.jsx';
 
 // Lazy-load BESM pages — keeps ~500KB of data libraries out of the main bundle
 const BesmBuilderPage = lazy(()=>import('./pages/besmBuilder/besmBuilderPage.jsx'));
