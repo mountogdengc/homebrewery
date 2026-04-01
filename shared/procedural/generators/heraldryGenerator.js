@@ -67,7 +67,7 @@ export class HeraldryGenerator extends ProceduralImageGenerator {
 		const finalConfig = this.mergeConfig(config.templateName, config.customizations || {});
 		const rng = createRandom(seed);
 
-		const canvas = this._createCanvas(size, size);
+		const canvas = await this._createCanvas(size, size);
 		const ctx = canvas.getContext('2d');
 
 		// Draw background

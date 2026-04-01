@@ -61,7 +61,7 @@ export const HERALDRY_TEMPLATES = {
 
 	dragon_slayer: {
 		name: 'Dragon Slayer',
-		description: 'Legendary hero's sigil with dragon imagery',
+		description: "Legendary hero's sigil with dragon imagery",
 		shieldShape: 'heater',
 		divisions: 'simple',
 		baseColor: '#333333',

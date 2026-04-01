@@ -93,6 +93,34 @@ export class ProceduralImageGenerator {
 	getDescription() {
 		throw new Error(`${this.type}Generator must implement getDescription()`);
 	}
+
+	/**
+	 * Create a canvas element (browser or Node)
+	 */
+	async _createCanvas(width, height) {
+		if (typeof document !== 'undefined') {
+			const canvas = document.createElement('canvas');
+			canvas.width = width;
+			canvas.height = height;
+			return canvas;
+		}
+		try {
+			const { Canvas } = await import('canvas');
+			return new Canvas(width, height);
+		} catch (err) {
+			throw new Error('Canvas library not available. Install "canvas" package for server-side rendering.');
+		}
+	}
+
+	/**
+	 * Convert canvas to base64 PNG
+	 */
+	_canvasToBase64(canvas) {
+		if (typeof canvas.toDataURL === 'function') {
+			return canvas.toDataURL('image/png');
+		}
+		return canvas.toBuffer('image/png').toString('base64');
+	}
 }
 
 /**

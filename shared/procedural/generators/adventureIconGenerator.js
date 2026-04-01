@@ -74,7 +74,7 @@ export class AdventureIconGenerator extends ProceduralImageGenerator {
 		const rng = createRandom(seed);
 
 		// Create canvas
-		const canvas = this._createCanvas(size, size);
+		const canvas = await this._createCanvas(size, size);
 		const ctx = canvas.getContext('2d');
 
 		// Draw icon components
@@ -90,7 +90,7 @@ export class AdventureIconGenerator extends ProceduralImageGenerator {
 		return this._canvasToBase64(canvas);
 	}
 
-	_createCanvas(width, height) {
+	async _createCanvas(width, height) {
 		// Browser environment
 		if (typeof document !== 'undefined') {
 			const canvas = document.createElement('canvas');
