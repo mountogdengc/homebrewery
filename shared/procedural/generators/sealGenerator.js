@@ -84,7 +84,7 @@ export class SealGenerator extends ProceduralImageGenerator {
 		const rng = createRandom(seed);
 
 		// Create canvas (browser vs node)
-		const canvas = this._createCanvas(size, size);
+		const canvas = await this._createCanvas(size, size);
 		const ctx = canvas.getContext('2d');
 
 		// Draw seal components
@@ -99,7 +99,7 @@ export class SealGenerator extends ProceduralImageGenerator {
 		return this._canvasToBase64(canvas);
 	}
 
-	_createCanvas(width, height) {
+	async _createCanvas(width, height) {
 		// Browser environment
 		if (typeof document !== 'undefined') {
 			const canvas = document.createElement('canvas');

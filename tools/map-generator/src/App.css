@@ -3,6 +3,10 @@
 
 .app-header        { background: #16213e; padding: 10px 20px; display: flex; align-items: center;
                      gap: 20px; border-bottom: 1px solid #0f3460; flex-shrink: 0; }
+.home-link         { color: #999; font-size: 1rem; text-decoration: none; padding: 4px 8px;
+                     border-radius: 3px; transition: all 0.15s; display: flex; align-items: center; }
+.home-link:hover   { color: #e0c87a; background: #0f3460; }
+
 .app-header h1     { font-size: 1rem; color: #e0c87a; font-weight: 600;
                      white-space: nowrap; letter-spacing: 0.05em; }
 
