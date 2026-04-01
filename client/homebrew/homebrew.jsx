@@ -26,6 +26,9 @@ import WillowlightLibraryPage from './pages/willowlightLibraryPage/willowlightLi
 import WillowlightSharePage from './pages/willowlightSharePage/willowlightSharePage.jsx';
 import WillowlightBestiaryEditorPage from './pages/willowlightBestiaryEditorPage/willowlightBestiaryEditorPage.jsx';
 import WillowlightBestiaryLibraryPage from './pages/willowlightBestiaryLibraryPage/willowlightBestiaryLibraryPage.jsx';
+import ProceduralImageLibraryPage from './pages/proceduralImageLibraryPage/proceduralImageLibraryPage.jsx';
+import ProceduralSealEditorPage from './pages/proceduralSealEditorPage/proceduralSealEditorPage.jsx';
+import ProceduralSealSharePage from './pages/proceduralSealSharePage/proceduralSealSharePage.jsx';
 
 // Lazy-load BESM pages — keeps ~500KB of data libraries out of the main bundle
 const BesmBuilderPage = lazy(()=>import('./pages/besmBuilder/besmBuilderPage.jsx'));
@@ -87,6 +90,10 @@ const Homebrew = (props)=>{
 		<Router>
 			<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
+					<Route path='/seal/new' element={<WithRoute el={ProceduralSealEditorPage} />} />
+					<Route path='/seal/edit/:id' element={<WithRoute el={ProceduralSealEditorPage} />} />
+					<Route path='/seal/share/:id' element={<WithRoute el={ProceduralSealSharePage} />} />
+					<Route path='/seal/library' element={<WithRoute el={ProceduralImageLibraryPage} />} />
 					<Route path='/besm/new' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading BESM Builder...</div>}><WithRoute el={BesmBuilderPage} /></Suspense>} />
 					<Route path='/besm/edit/:id' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading BESM Builder...</div>}><WithRoute el={BesmBuilderPage} besmCharacter={props.besmCharacter} /></Suspense>} />
 					<Route path='/besm/library' element={<Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: '#e93a7d', fontSize: '1.2rem' }}>Loading...</div>}><WithRoute el={BesmLibraryPage} /></Suspense>} />
