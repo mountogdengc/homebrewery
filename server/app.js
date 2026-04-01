@@ -874,6 +874,60 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
+	//Icon Library
+	app.get('/icon/library', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Adventure Icon Library',
+			description : 'Browse your procedurally generated adventure icons'
+		};
+		return next();
+	});
+
+	//Icon Editor - New
+	app.get('/icon/new', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Create Adventure Icon',
+			description : 'Design a procedural adventure icon'
+		};
+		return next();
+	});
+
+	//Icon Editor - Edit
+	app.get('/icon/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { ProceduralImage } = await import('./procedural-image.model.js');
+		try {
+			const icon = await ProceduralImage.get({ editId: req.params.id });
+			req.ogMeta = { ...defaultMetaTags,
+				title       : `Editing Icon: ${icon.name || 'Untitled'}`,
+				description : 'Edit a procedural adventure icon'
+			};
+		} catch (err) {
+			req.ogMeta = { ...defaultMetaTags,
+				title       : 'Icon Not Found',
+				description : 'This icon could not be found'
+			};
+		}
+		return next();
+	}));
+
+	//Icon Share Page
+	app.get('/icon/share/:id', asyncHandler(async (req, res, next)=>{
+		try {
+			const { ProceduralImage } = await import('./procedural-image.model.js');
+			const icon = await ProceduralImage.get({ shareId: req.params.id });
+			req.ogMeta = { ...defaultMetaTags,
+				title       : icon.name || 'Adventure Icon',
+				description : icon.description || 'A procedural adventure icon'
+			};
+		} catch (err) {
+			req.ogMeta = { ...defaultMetaTags,
+				title       : 'Icon Not Found',
+				description : 'This icon could not be found'
+			};
+		}
+		return next();
+	}));
+
 	//Send rendered page
 	app.use(asyncHandler(async (req, res, next)=>{
 		if(!req.route) return res.redirect('/'); // Catch-all for invalid routes

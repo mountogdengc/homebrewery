@@ -516,6 +516,13 @@ const Markdown = {
 				return `<div class="insignia-embed${sizeClass}" data-insignia-id="${id}"></div>`;
 			});
 
+		// Icon embeds: {{icon:shareId}} or {{icon:shareId|size:large}}
+		rawBrewText = rawBrewText.replace(/\{\{icon:([a-zA-Z0-9_-]+)(?:\|size:(\w+))?\}\}/g,
+			(match, id, size)=>{
+				const sizeClass = size === 'large' ? ' icon-embed--large' : size === 'small' ? ' icon-embed--small' : '';
+				return `<div class="icon-embed${sizeClass}" data-icon-id="${id}"></div>`;
+			});
+
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
