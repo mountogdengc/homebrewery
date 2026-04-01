@@ -102,6 +102,7 @@
     "core-js": "^3.47.0",
     "cors": "^2.8.5",
     "create-react-class": "^15.7.0",
+    "d3-delaunay": "^6.0.4",
     "dedent": "^1.7.1",
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
@@ -137,6 +138,7 @@
     "react-frame-component": "^5.2.7",
     "react-router": "^7.13.1",
     "sanitize-filename": "1.6.3",
+    "simplex-noise": "^4.0.3",
     "superagent": "^10.2.1",
     "uuid": "^13.0.0"
   },

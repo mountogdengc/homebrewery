@@ -90,6 +90,30 @@ const LandingPage = ()=>{
 							</p>
 						</a>
 
+						<a className="toolCard" href="/handout">
+							<div className="toolIcon">
+								<i className="fas fa-envelope-open-text" />
+							</div>
+							<h3 className="toolName">Handout Generator</h3>
+							<p className="toolDesc">
+								Create in-world handouts like letters, journal entries,
+								official writs, tavern notices, and parchment lists
+								with live preview and print support.
+							</p>
+						</a>
+
+						<a className="toolCard" href="/mapgen">
+							<div className="toolIcon">
+								<i className="fas fa-mountain" />
+							</div>
+							<h3 className="toolName">Map Generator</h3>
+							<p className="toolDesc">
+								Generate procedural outdoor encounter maps with
+								configurable terrain, rock outcroppings, and boulders.
+								Export as SVG for use in your brews.
+							</p>
+						</a>
+
 						<a className="toolCard" href="/playtest">
 							<div className="toolIcon">
 								<i className="fas fa-dice-d20" />
@@ -110,6 +134,8 @@ const LandingPage = ()=>{
 					<a href="/statblock/library">D&amp;D 5e</a>
 					<a href="/willowlight/library">Willowlight</a>
 					<a href="/new">Brew Editor</a>
+					<a href="/handout">Handout Generator</a>
+					<a href="/mapgen">Map Generator</a>
 					<a href="/playtest">Playtest Table</a>
 					<a href="/vault">The Vault</a>
 					<a href="/changelog">Changelog</a>

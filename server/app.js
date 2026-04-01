@@ -76,6 +76,21 @@ export default async function createApp(vite) {
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-dynamic.html'));
 	});
 
+	// Handout Generator — built Vite app served as static assets
+	app.use('/handout', express.static(path.resolve(process.cwd(), 'prototypes/handout')));
+	app.get('/handout/{*path}', (req, res)=>{
+		res.sendFile(path.resolve(process.cwd(), 'prototypes/handout/index.html'));
+	});
+
+	// Map Generator — built Vite app served as static assets
+	app.get('/mapgen', (req, res)=>{
+		res.sendFile(path.resolve(process.cwd(), 'prototypes/mapgen/index.html'));
+	});
+	app.use('/mapgen', express.static(path.resolve(process.cwd(), 'prototypes/mapgen')));
+	app.get('/mapgen/{*path}', (req, res)=>{
+		res.sendFile(path.resolve(process.cwd(), 'prototypes/mapgen/index.html'));
+	});
+
 	if(vite) {
 		app.use(vite.middlewares);
 	}

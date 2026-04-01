@@ -16,6 +16,8 @@ import V3_Journal       from '@themes/V3/Journal/snippets.js';
 import V3_Blank         from '@themes/V3/Blank/snippets.js';
 import V3_DungeonCraftAL from '@themes/V3/DungeonCraftAL/snippets.js';
 
+import ConverterPanel from '../../components/markdownConverter/converterPanel.jsx';
+
 const ThemeSnippets = {
 	Legacy_5ePHB     : Legacy5ePHB,
 	V3_5ePHB         : V3_5ePHB,
@@ -57,12 +59,13 @@ const Snippetbar = createReactClass({
 
 	getInitialState : function() {
 		return {
-			renderer      : this.props.renderer,
-			themeSelector : false,
-			snippets      : [],
-			showHistory   : false,
-			historyExists : false,
-			historyItems  : []
+			renderer       : this.props.renderer,
+			themeSelector  : false,
+			showConverter  : false,
+			snippets       : [],
+			showHistory    : false,
+			historyExists  : false,
+			historyItems   : []
 		};
 	},
 
@@ -243,6 +246,13 @@ const Snippetbar = createReactClass({
 						<i className='fas fa-redo' />
 					</div>
 				</div>
+				<div className='converterTool'>
+					<div className='editorTool active'
+						onClick={()=>this.setState({ showConverter: true })}
+						title='Markdown Converter' >
+						<i className='fas fa-exchange-alt' />
+					</div>
+				</div>
 				<div className='codeTools'>
 					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
 						onClick={this.props.foldCode} >
@@ -286,6 +296,10 @@ const Snippetbar = createReactClass({
 		return <div className='snippetBar'>
 			{this.renderSnippetGroups()}
 			{this.renderEditorButtons()}
+			{this.state.showConverter && <ConverterPanel
+				onConvert={(text)=>this.props.onInject(text)}
+				onClose={()=>this.setState({ showConverter: false })}
+			/>}
 		</div>;
 	}
 });
