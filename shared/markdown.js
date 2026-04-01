@@ -502,6 +502,20 @@ const Markdown = {
 				return `<div class="statblock-embed${wideClass}" data-statblock-id="${id}" data-statblock-layout="${mode}"></div>`;
 			});
 
+		// Seal embeds: {{seal:shareId}} or {{seal:shareId|size:large}}
+		rawBrewText = rawBrewText.replace(/\{\{seal:([a-zA-Z0-9_-]+)(?:\|size:(\w+))?\}\}/g,
+			(match, id, size)=>{
+				const sizeClass = size === 'large' ? ' seal-embed--large' : size === 'small' ? ' seal-embed--small' : '';
+				return `<div class="seal-embed${sizeClass}" data-seal-id="${id}"></div>`;
+			});
+
+		// Insignia embeds: {{insignia:shareId}} or {{insignia:shareId|size:large}}
+		rawBrewText = rawBrewText.replace(/\{\{insignia:([a-zA-Z0-9_-]+)(?:\|size:(\w+))?\}\}/g,
+			(match, id, size)=>{
+				const sizeClass = size === 'large' ? ' insignia-embed--large' : size === 'small' ? ' insignia-embed--small' : '';
+				return `<div class="insignia-embed${sizeClass}" data-insignia-id="${id}"></div>`;
+			});
+
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);

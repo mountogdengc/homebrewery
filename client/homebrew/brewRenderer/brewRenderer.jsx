@@ -338,6 +338,7 @@ const BrewRenderer = (props)=>{
 
 	// Stat block embed rendering — fetch data and inject HTML into placeholders
 	const statblockCache = useRef({});
+	const proceduralImageCache = useRef({});
 
 	const processStatblockEmbeds = useCallback(()=>{
 		const iframeDoc = document.getElementById('BrewRenderer')?.contentDocument;
@@ -380,18 +381,81 @@ const BrewRenderer = (props)=>{
 		}
 	}, []);
 
+	const processProceduralImageEmbeds = useCallback(()=>{
+		const iframeDoc = document.getElementById('BrewRenderer')?.contentDocument;
+		if(!iframeDoc) return;
+
+		// Handle all procedural image types: seals, insignias, etc.
+		const types = ['seal', 'insignia', 'heraldry', 'icon'];
+
+		types.forEach((type)=>{
+			const embeds = iframeDoc.querySelectorAll(`.${type}-embed:not([data-loaded])`);
+			if(embeds.length === 0) return;
+
+			const idsToFetch = [];
+			embeds.forEach((el)=>{
+				const id = el.getAttribute(`data-${type}-id`);
+				if(id && !proceduralImageCache.current[id]) idsToFetch.push({ id, type });
+			});
+
+			const fillEmbeds = ()=>{
+				embeds.forEach((el)=>{
+					const id = el.getAttribute(`data-${type}-id`);
+					const img = proceduralImageCache.current[id];
+					if(img) {
+						const sizeClass = el.className.match(new RegExp(`${type}-embed--(\\w+)`))?.[1] || '';
+						const sizeMap = {
+							small: '256px',
+							large: '512px'
+						};
+						const size = sizeMap[sizeClass] || '300px';
+						el.innerHTML = `<img src="/api/procedural-image/${id}/render?size=${parseInt(size)}" alt="Procedural image" style="max-width:100%;height:auto;border-radius:4px;" />`;
+						el.setAttribute('data-loaded', 'true');
+					} else {
+						el.innerHTML = `<div style="color:#999;padding:8px;font-style:italic;">Image not found</div>`;
+						el.setAttribute('data-loaded', 'true');
+					}
+				});
+			};
+
+			if(idsToFetch.length > 0) {
+				// Fetch image metadata for each type
+				Promise.all(idsToFetch.map(({ id })=>
+					fetch(`/api/procedural-image/share/${id}`)
+						.then((res)=>res.ok ? res.json() : null)
+						.catch(()=>null)
+				)).then((results)=>{
+					idsToFetch.forEach(({ id }, idx)=>{
+						if(results[idx]) {
+							proceduralImageCache.current[id] = results[idx];
+						}
+					});
+					fillEmbeds();
+				});
+			} else {
+				fillEmbeds();
+			}
+		});
+	}, []);
+
 	// Run on render and watch for new embeds via MutationObserver
 	useEffect(()=>{
 		if(!state.isMounted) return;
 
-		const timer = setTimeout(processStatblockEmbeds, 200);
+		const timer = setTimeout(()=>{
+			processStatblockEmbeds();
+			processProceduralImageEmbeds();
+		}, 200);
 
-		// Watch iframe for new statblock-embed elements
+		// Watch iframe for new embed elements
 		const iframeDoc = document.getElementById('BrewRenderer')?.contentDocument;
 		if(!iframeDoc) return ()=>clearTimeout(timer);
 
 		const observer = new MutationObserver(()=>{
-			setTimeout(processStatblockEmbeds, 100);
+			setTimeout(()=>{
+				processStatblockEmbeds();
+				processProceduralImageEmbeds();
+			}, 100);
 		});
 		observer.observe(iframeDoc.body, { childList: true, subtree: true });
 
@@ -399,7 +463,7 @@ const BrewRenderer = (props)=>{
 			clearTimeout(timer);
 			observer.disconnect();
 		};
-	}, [renderedPages, state.isMounted]);
+	}, [renderedPages, state.isMounted, processStatblockEmbeds, processProceduralImageEmbeds]);
 
 	return (
 		<>

@@ -26,6 +26,7 @@ import willowlightApi              from './willowlight.api.js';
 import willowlightBestiaryApi      from './willowlight-bestiary.api.js';
 import playtestSessionApi          from './playtest-session.api.js';
 import aiApi                       from './ai.api.js';
+import proceduralImageApi          from './procedural-image.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
@@ -160,6 +161,7 @@ export default async function createApp(vite) {
 	app.use(willowlightBestiaryApi);
 	app.use(playtestSessionApi);
 	app.use(aiApi);
+	app.use(proceduralImageApi);
 
 	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 	const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
