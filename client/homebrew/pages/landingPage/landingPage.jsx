@@ -52,11 +52,23 @@ const LandingPage = ()=>{
 							<div className="toolIcon">
 								<i className="fas fa-dragon" />
 							</div>
-							<h3 className="toolName">D&amp;D 5e</h3>
+							<h3 className="toolName">D&amp;D 5e (2024)</h3>
 							<p className="toolDesc">
 								Build monster and NPC stat blocks with a form-based
 								editor, live preview, and AI generation. Save to your
 								library and embed directly in your brews.
+							</p>
+						</a>
+
+						<a className="toolCard" href="/palladium/library">
+							<div className="toolIcon">
+								<i className="fas fa-skull-crossbones" />
+							</div>
+							<h3 className="toolName">Palladium</h3>
+							<p className="toolDesc">
+								Build stat blocks for Rifts, Palladium Fantasy RPG,
+								and TMNT &amp; Other Strangeness. Supports MDC/SDC,
+								magic, psionics, and mutant animals.
 							</p>
 						</a>
 
@@ -132,6 +144,7 @@ const LandingPage = ()=>{
 					<a href="/besm/library">BESM 4e</a>
 					<a href="/brp/library">BRP</a>
 					<a href="/statblock/library">D&amp;D 5e</a>
+					<a href="/palladium/library">Palladium</a>
 					<a href="/willowlight/library">Willowlight</a>
 					<a href="/new">Brew Editor</a>
 					<a href="/handout">Handout Generator</a>
