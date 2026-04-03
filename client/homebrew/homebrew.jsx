@@ -21,6 +21,9 @@ import StatblockImportPage from './pages/statblockImportPage/statblockImportPage
 import BrpStatblockEditorPage from './pages/brpStatblockEditorPage/brpStatblockEditorPage.jsx';
 import BrpStatblockLibraryPage from './pages/brpStatblockLibraryPage/brpStatblockLibraryPage.jsx';
 import BrpStatblockSharePage from './pages/brpStatblockSharePage/brpStatblockSharePage.jsx';
+import PalladiumStatblockEditorPage from './pages/palladiumStatblockEditorPage/palladiumStatblockEditorPage.jsx';
+import PalladiumStatblockLibraryPage from './pages/palladiumStatblockLibraryPage/palladiumStatblockLibraryPage.jsx';
+import PalladiumStatblockSharePage from './pages/palladiumStatblockSharePage/palladiumStatblockSharePage.jsx';
 import WillowlightEditorPage from './pages/willowlightEditorPage/willowlightEditorPage.jsx';
 import WillowlightLibraryPage from './pages/willowlightLibraryPage/willowlightLibraryPage.jsx';
 import WillowlightSharePage from './pages/willowlightSharePage/willowlightSharePage.jsx';
@@ -114,6 +117,10 @@ const Homebrew = (props)=>{
 					<Route path='/brp/edit/:id' element={<WithRoute el={BrpStatblockEditorPage} brpStatblock={props.brpStatblock} />} />
 					<Route path='/brp/share/:id' element={<WithRoute el={BrpStatblockSharePage} brpStatblock={props.brpStatblock} />} />
 					<Route path='/brp/library' element={<WithRoute el={BrpStatblockLibraryPage} />} />
+					<Route path='/palladium/new' element={<WithRoute el={PalladiumStatblockEditorPage} />} />
+					<Route path='/palladium/edit/:id' element={<WithRoute el={PalladiumStatblockEditorPage} palladiumStatblock={props.palladiumStatblock} />} />
+					<Route path='/palladium/share/:id' element={<WithRoute el={PalladiumStatblockSharePage} palladiumStatblock={props.palladiumStatblock} />} />
+					<Route path='/palladium/library' element={<WithRoute el={PalladiumStatblockLibraryPage} />} />
 					<Route path='/willowlight/new' element={<WithRoute el={WillowlightEditorPage} />} />
 					<Route path='/willowlight/edit/:id' element={<WithRoute el={WillowlightEditorPage} willowlightCharacter={props.willowlightCharacter} />} />
 					<Route path='/willowlight/share/:id' element={<WithRoute el={WillowlightSharePage} willowlightCharacter={props.willowlightCharacter} />} />

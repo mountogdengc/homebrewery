@@ -1,0 +1,268 @@
+// ── Palladium Megaversal Statblock Styles ─────────────────────────────
+
+// Statblock visual rendering
+.pal-statblock {
+	font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	background: #1c1c2e;
+	color: #e0ddd5;
+	padding: 16px 20px;
+	max-width: 520px;
+	margin: 20px auto;
+	border: 2px solid #5a4a3a;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+
+	&.pal-wide {
+		max-width: 820px;
+	}
+
+	// Game-specific accent colors
+	&.pal-game-rifts {
+		border-color: #2a7acc;
+		.pal-name, .pal-section-title, .pal-attr-label, .pal-derived-label { color: #4a9eef; }
+		.pal-divider { background: linear-gradient(to right, transparent, #2a7acc, transparent); }
+		.pal-game-badge { background: #2a7acc; }
+		.pal-weapons th, .pal-armor th { background: #2a7acc; }
+	}
+
+	&.pal-game-palladiumfantasy {
+		border-color: #8b6914;
+		.pal-name, .pal-section-title, .pal-attr-label, .pal-derived-label { color: #d4a832; }
+		.pal-divider { background: linear-gradient(to right, transparent, #8b6914, transparent); }
+		.pal-game-badge { background: #8b6914; }
+		.pal-weapons th, .pal-armor th { background: #8b6914; }
+	}
+
+	&.pal-game-tmnt {
+		border-color: #2a8c3e;
+		.pal-name, .pal-section-title, .pal-attr-label, .pal-derived-label { color: #4cc96a; }
+		.pal-divider { background: linear-gradient(to right, transparent, #2a8c3e, transparent); }
+		.pal-game-badge { background: #2a8c3e; }
+		.pal-weapons th, .pal-armor th { background: #2a8c3e; }
+	}
+}
+
+.pal-header {
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+.pal-game-badge {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 1.5px;
+	color: #fff;
+	background: #555;
+	padding: 2px 10px;
+	border-radius: 3px;
+	margin-bottom: 6px;
+}
+
+.pal-name {
+	font-size: 22px;
+	font-weight: 700;
+	color: #e0c080;
+	font-variant: small-caps;
+	letter-spacing: 1px;
+}
+
+.pal-subtitle {
+	font-size: 12px;
+	font-style: italic;
+	color: #a0a0a0;
+	margin-top: 2px;
+}
+
+.pal-alignment {
+	font-size: 11px;
+	color: #888;
+	margin-top: 2px;
+}
+
+.pal-divider {
+	height: 2px;
+	background: linear-gradient(to right, transparent, #5a4a3a, transparent);
+	margin: 8px 0;
+}
+
+// Attributes table
+.pal-attrs {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 8px 0;
+
+	td {
+		text-align: center;
+		padding: 4px 2px;
+	}
+
+	.pal-attr-label {
+		font-size: 11px;
+		font-weight: 700;
+		color: #e0c080;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+
+	.pal-attr-value {
+		font-size: 18px;
+		font-weight: 700;
+		color: #e0ddd5;
+	}
+}
+
+// Derived values
+.pal-derived {
+	width: 100%;
+	margin: 4px 0;
+
+	.pal-derived-label {
+		font-weight: 600;
+		color: #e0c080;
+		font-size: 13px;
+		padding: 2px 8px 2px 0;
+		width: 140px;
+	}
+
+	.pal-derived-value {
+		font-size: 13px;
+		color: #e0ddd5;
+		padding: 2px 0;
+	}
+}
+
+// Sections
+.pal-section {
+	margin: 8px 0;
+}
+
+.pal-section-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #e0c080;
+	border-bottom: 1px solid #5a4a3a;
+	margin-bottom: 4px;
+	padding-bottom: 2px;
+	font-variant: small-caps;
+	letter-spacing: 0.5px;
+}
+
+// Skills
+.pal-skill-list {
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.pal-skill {
+	white-space: nowrap;
+}
+
+// Movement
+.pal-movement {
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+// Weapons & Armor tables
+.pal-weapons, .pal-armor {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12px;
+	margin-top: 4px;
+
+	th {
+		background: #5a4a3a;
+		color: #f4e8d1;
+		padding: 3px 6px;
+		text-align: left;
+		font-weight: 600;
+		font-size: 11px;
+	}
+
+	td {
+		padding: 3px 6px;
+		border-bottom: 1px solid #3a3a4a;
+	}
+
+	tr:last-child td {
+		border-bottom: none;
+	}
+}
+
+// Spells / Magic
+.pal-spell {
+	font-size: 13px;
+	margin: 2px 0;
+	line-height: 1.4;
+}
+
+// Psionics
+.pal-psionic {
+	font-size: 13px;
+	margin: 2px 0;
+	line-height: 1.4;
+}
+
+// Abilities
+.pal-ability {
+	font-size: 13px;
+	margin: 4px 0;
+	line-height: 1.4;
+}
+
+// TMNT Mutations
+.pal-mutation-info {
+	font-size: 13px;
+	margin-bottom: 6px;
+	color: #c0c0c0;
+}
+
+.pal-mutation {
+	font-size: 13px;
+	margin: 2px 0;
+	line-height: 1.4;
+}
+
+// Equipment & Notes
+.pal-equipment {
+	font-size: 13px;
+	line-height: 1.4;
+	white-space: pre-wrap;
+}
+
+.pal-description {
+	font-size: 13px;
+	font-style: italic;
+	color: #b0aaa0;
+	line-height: 1.4;
+}
+
+.pal-notes {
+	font-size: 13px;
+	font-style: italic;
+	color: #b0aaa0;
+	line-height: 1.4;
+}
+
+// ── Palladium Editor Page Styles ─────────────────────────────────────
+
+.palladiumStatblockEditorPage {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+
+	.content {
+		flex: 1;
+		overflow: hidden;
+	}
+}
+
+.palladiumStatblockPreview {
+	padding: 20px;
+	overflow-y: auto;
+	height: 100%;
+	background: #1a1a2a;
+}
+
+// ── Palladium Form uses same .statblockForm styles from statblock.less ──
