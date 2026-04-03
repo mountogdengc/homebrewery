@@ -1,5 +1,6 @@
+import { renderRichText } from '../../utils/richText'
+
 export default function OfficialWrit({ data }) {
-  const paragraphs = data.body.split('\n\n').filter(Boolean)
 
   return (
     <div style={{
@@ -37,12 +38,7 @@ export default function OfficialWrit({ data }) {
       )}
 
       <div style={{ textAlign: 'left' }}>
-        {paragraphs.map((p, i) => (
-          <p key={i} style={{ marginBottom: '12px', fontSize: '0.86rem',
-                              lineHeight: 1.65, textIndent: '1.5em' }}>
-            {p}
-          </p>
-        ))}
+        {renderRichText(data.body, { fontSize: '0.86rem', lineHeight: 1.65, textIndent: '1.5em' })}
       </div>
 
       <div style={{ width: '60%', height: '1px', background: '#8a7a50', margin: '20px auto 16px' }} />

@@ -157,3 +157,87 @@
 	text-align: center;
 	font-style: italic;
 }
+
+// ── AI Edit Modal extras ─────────────────────────────────────────────
+
+.aiEditModal {
+	width: 600px;
+}
+
+.aiEdit-selection {
+	margin-bottom: 12px;
+	label {
+		display: block;
+		color: #888;
+		font-size: 11px;
+		margin-bottom: 4px;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+	pre {
+		background: #252538;
+		border: 1px solid #3a3a54;
+		border-radius: 6px;
+		padding: 8px 10px;
+		color: #c0c0d0;
+		font-size: 12px;
+		max-height: 120px;
+		overflow-y: auto;
+		white-space: pre-wrap;
+		word-wrap: break-word;
+		margin: 0;
+	}
+}
+
+.aiEdit-presets {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 12px;
+}
+
+.aiEdit-preset {
+	background: #252538;
+	color: #c0c0d0;
+	border: 1px solid #3a3a54;
+	border-radius: 4px;
+	padding: 5px 10px;
+	font-size: 12px;
+	cursor: pointer;
+	transition: all 0.15s;
+
+	&:hover:not(:disabled) {
+		background: #3a3a54;
+		color: #e0d0f0;
+		border-color: #7c3aed;
+	}
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+}
+
+.aiEdit-preview {
+	margin-top: 12px;
+	label {
+		display: block;
+		color: #888;
+		font-size: 11px;
+		margin-bottom: 4px;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+	pre {
+		background: #1a2a1a;
+		border: 1px solid #2a4a2a;
+		border-radius: 6px;
+		padding: 8px 10px;
+		color: #a0d0a0;
+		font-size: 12px;
+		max-height: 200px;
+		overflow-y: auto;
+		white-space: pre-wrap;
+		word-wrap: break-word;
+		margin: 0 0 12px;
+	}
+}

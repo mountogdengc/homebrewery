@@ -1,6 +1,6 @@
-export default function Letter({ data }) {
-  const paragraphs = data.body.split('\n\n').filter(Boolean)
+import { renderRichText } from '../../utils/richText'
 
+export default function Letter({ data }) {
   return (
     <div style={{
       background: '#faf8f3',
@@ -20,9 +20,7 @@ export default function Letter({ data }) {
 
       <div style={{ marginBottom: '20px', fontSize: '0.93rem' }}>{data.recipient}</div>
 
-      {paragraphs.map((p, i) => (
-        <p key={i} style={{ marginBottom: '14px', fontSize: '0.9rem', textIndent: '1.6em' }}>{p}</p>
-      ))}
+      {renderRichText(data.body, { fontSize: '0.9rem', textIndent: '1.6em' })}
 
       <div style={{ marginTop: '32px' }}>
         <div style={{ fontSize: '0.87rem', marginBottom: '24px' }}>{data.closing}</div>

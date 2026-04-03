@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { SealGenerator } from '@shared/procedural/generators/sealGenerator.js';
+
+const sealGen = new SealGenerator();
 
 const SealPreview = (props)=>{
 	const { seal, size = 512 } = props;
@@ -17,26 +20,8 @@ const SealPreview = (props)=>{
 		setError(null);
 
 		try {
-			// For new seals without a shareId, we'll use a temporary ID based on seed
-			const tempId = seal.seed || 'preview';
-			const response = await fetch(
-				`/api/procedural-image/${tempId}/render?size=${size}`,
-				{
-					method: seal.editId ? 'GET' : 'POST',
-					headers: seal.editId ? {} : { 'Content-Type': 'application/json' },
-					...(seal.editId ? {} : { body: JSON.stringify(seal) })
-				}
-			);
-
-			if (response.ok) {
-				const blob = await response.blob();
-				const url = URL.createObjectURL(blob);
-				setImageUrl(url);
-			} else {
-				// Fallback: Try generating client-side with canvas
-				// This would require importing the seal generator
-				setError('Unable to generate preview');
-			}
+			const imageData = await sealGen.generate(seal.seed, seal, size);
+			setImageUrl(imageData);
 		} catch (err) {
 			console.error('Preview generation error:', err);
 			setError('Error generating preview');
@@ -89,8 +74,8 @@ const SealPreview = (props)=>{
 				<button
 					className='btn-small'
 					onClick={()=>{
-						if (imageUrl) {
-							navigator.clipboard.writeText(`{{seal:${seal.shareId || 'ID'}}}`);
+						if (seal.shareId) {
+							navigator.clipboard.writeText(`{{seal:${seal.shareId}}}`);
 							alert('Embed code copied!');
 						}
 					}}

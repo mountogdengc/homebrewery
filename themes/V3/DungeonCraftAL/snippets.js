@@ -234,6 +234,63 @@ export default [
 		]
 	},
 	{
+		// Override inherited Text Editor to remove Formatting (moved to Layout)
+		groupName : 'Text Editor',
+		icon      : 'fas fa-pencil-alt',
+		view      : 'text',
+		snippets  : [
+			{ name: 'Formatting', icon: 'fas fa-align-center' }, // no gen/subsnippets → filtered out
+		]
+	},
+	{
+		groupName : 'Layout',
+		icon      : 'fas fa-columns',
+		view      : 'text',
+		snippets  : [
+			{
+				name : 'Wide Block',
+				icon : 'fas fa-window-maximize',
+				gen  : dedent`\n{{wide
+					Content here spans both columns.
+					}}\n`
+			},
+			{
+				name : 'Tight',
+				icon : 'fas fa-compress-alt',
+				gen  : dedent`\n{{tight
+					Content with reduced top margin.
+					}}\n`
+			},
+			{
+				name        : 'Formatting',
+				icon        : 'fas fa-align-center',
+				subsnippets : [
+					{
+						name : 'Center Text',
+						icon : 'fas fa-align-center',
+						gen  : dedent`\n{{text-align:center
+							Your centered text here
+							}}\n`
+					},
+					{
+						name : 'Right Align Text',
+						icon : 'fas fa-align-right',
+						gen  : dedent`\n{{text-align:right
+							Your right-aligned text here
+							}}\n`
+					},
+					{
+						name : 'Justify Text',
+						icon : 'fas fa-align-justify',
+						gen  : dedent`\n{{text-align:justify
+							Your justified text here
+							}}\n`
+					},
+				]
+			},
+		]
+	},
+	{
 		groupName : 'Stat Blocks',
 		icon      : 'fas fa-dragon',
 		view      : 'text',

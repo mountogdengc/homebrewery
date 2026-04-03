@@ -1,0 +1,9 @@
+{
+	"name": "Random Map Generator",
+	"unique_id": "com.homebrewery.randommapgenerator",
+	"version": "0.1.0",
+	"author": "Homebrewery",
+	"dd_version": "1.1.0.0",
+	"description": "Procedurally generates random outdoor encounter maps with terrain, rocks, vegetation, and paths.",
+	"dependencies": []
+}

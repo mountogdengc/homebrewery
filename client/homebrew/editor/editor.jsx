@@ -9,6 +9,7 @@ import Markdown from '@shared/markdown.js';
 import CodeEditor from '../../components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
 import MetadataEditor from './metadataEditor/metadataEditor.jsx';
+import AiEditModal from '../../components/aiGenerate/aiEditModal.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
 
@@ -59,6 +60,8 @@ const Editor = createReactClass({
 			editorTheme      : this.props.editorTheme,
 			view             : 'text', //'text', 'style', 'meta', 'snippet'
 			snippetBarHeight : 26,
+			showAiEdit       : false,
+			aiEditSelection  : '',
 		};
 	},
 
@@ -162,6 +165,21 @@ const Editor = createReactClass({
 			}
 		}
 		this.codeEditor.current?.injectText(injectText, false);
+	},
+
+	handleAiEdit : function(){
+		const cm = this.codeEditor.current?.codeMirror;
+		if(!cm) return;
+		const selection = cm.getSelection();
+		if(!selection) return;
+		this.setState({ showAiEdit: true, aiEditSelection: selection });
+	},
+
+	handleAiEditApply : function(newText){
+		const cm = this.codeEditor.current?.codeMirror;
+		if(!cm) return;
+		cm.replaceSelection(newText, 'around');
+		cm.focus();
 	},
 
 	handleViewChange : function(newView){
@@ -595,6 +613,7 @@ const Editor = createReactClass({
 					view={this.state.view}
 					onViewChange={this.handleViewChange}
 					onInject={this.handleInject}
+					onAiEdit={this.handleAiEdit}
 					showEditButtons={this.props.showEditButtons}
 					renderer={this.props.renderer}
 					theme={this.props.brew.theme}
@@ -609,6 +628,12 @@ const Editor = createReactClass({
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}}
 					updateBrew={this.props.updateBrew}
 				/>
+
+				{this.state.showAiEdit && <AiEditModal
+					selectedText={this.state.aiEditSelection}
+					onApply={this.handleAiEditApply}
+					onClose={()=>this.setState({ showAiEdit: false })}
+				/>}
 
 				{this.renderEditor()}
 			</div>

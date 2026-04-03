@@ -216,16 +216,44 @@ router.get('/api/procedural-images', asyncHandler(async (req, res)=>{
 	});
 }));
 
-// RENDER (generate image)
+// RENDER PREVIEW (on-the-fly, no saved document needed)
+router.post('/api/procedural-image/:id/render', asyncHandler(async (req, res)=>{
+	const size = parseInt(req.query.size) || 512;
+	const data = req.body;
+
+	const generator = getGenerator(data.generatorType);
+	if (!generator) {
+		return res.status(400).send({ error: `Unknown generator type: ${data.generatorType}` });
+	}
+
+	try {
+		const imageData = await generator.generate(data.seed, data, size);
+		let base64Data = imageData;
+		if (imageData.startsWith('data:')) {
+			base64Data = imageData.split(',')[1];
+		}
+		res.setHeader('Content-Type', 'image/png');
+		res.setHeader('Cache-Control', 'no-cache');
+		res.send(Buffer.from(base64Data, 'base64'));
+	} catch (err) {
+		console.error('Preview render error:', err);
+		return res.status(500).send({ error: `Failed to render preview: ${err.message}` });
+	}
+}));
+
+// RENDER (generate image from saved document)
 router.get('/api/procedural-image/:id/render', asyncHandler(async (req, res)=>{
 	const shareId = req.params.id;
 	const size = parseInt(req.query.size) || 512;
 
-	// Find image (by shareId for public)
-	const image = await ProceduralImage.get({ shareId })
-		.catch(()=>{
-			throw { name: 'Not Found', message: 'Procedural image not found', status: 404 };
-		});
+	// Find image (try shareId first, then editId)
+	let image = await ProceduralImage.get({ shareId }).catch(()=>null);
+	if (!image) {
+		image = await ProceduralImage.get({ editId: shareId }).catch(()=>null);
+	}
+	if (!image) {
+		throw { name: 'Not Found', message: 'Procedural image not found', status: 404, originalUrl: req.originalUrl };
+	}
 
 	if (!image.published && (!req.account || !image.authors.includes(req.account.username))) {
 		return res.status(403).send({ error: 'This image is not public' });

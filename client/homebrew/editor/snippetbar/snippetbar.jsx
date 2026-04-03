@@ -42,6 +42,7 @@ const Snippetbar = createReactClass({
 			view              : 'text',
 			onViewChange      : ()=>{},
 			onInject          : ()=>{},
+			onAiEdit          : ()=>{},
 			onToggle          : ()=>{},
 			showEditButtons   : true,
 			renderer          : 'legacy',
@@ -170,8 +171,16 @@ const Snippetbar = createReactClass({
 		</div>;
 	},
 
+	// Groups promoted to the upper editor toolbar
+	promotedGroups : ['Text Editor', 'License', 'Images', 'Fonts'],
+
+	getSnippetsByView : function(){
+		return this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+	},
+
 	renderSnippetGroups : function(){
-		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		const snippets = this.getSnippetsByView()
+			.filter((g)=>!this.promotedGroups.includes(g.groupName));
 		if(snippets.length === 0) return null;
 
 		return <div className='snippets'>
@@ -187,6 +196,26 @@ const Snippetbar = createReactClass({
 				/>;
 			})
 			}
+		</div>;
+	},
+
+	renderPromotedGroups : function(){
+		const promoted = this.getSnippetsByView()
+			.filter((g)=>this.promotedGroups.includes(g.groupName));
+		if(promoted.length === 0) return null;
+
+		return <div className='promotedSnippets'>
+			{_.map(promoted, (snippetGroup)=>{
+				return <SnippetGroup
+					brew={this.props.brew}
+					groupName={snippetGroup.groupName}
+					icon={snippetGroup.icon}
+					snippets={snippetGroup.snippets}
+					key={snippetGroup.groupName}
+					onSnippetClick={this.handleSnippetClick}
+					cursorPos={this.props.cursorPos}
+				/>;
+			})}
 		</div>;
 	},
 
@@ -253,6 +282,13 @@ const Snippetbar = createReactClass({
 						<i className='fas fa-exchange-alt' />
 					</div>
 				</div>
+				<div className='aiTool'>
+					<div className='editorTool active'
+						onClick={this.props.onAiEdit}
+						title='AI Edit (select text first)' >
+						<i className='fas fa-magic' />
+					</div>
+				</div>
 				<div className='codeTools'>
 					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
 						onClick={this.props.foldCode} >
@@ -268,6 +304,8 @@ const Snippetbar = createReactClass({
 						{this.state.themeSelector && this.renderThemeSelector()}
 					</div>
 				</div></>}
+
+				{this.renderPromotedGroups()}
 
 				<div className='tabs'>
 					<div className={cx('text', { selected: this.props.view === 'text' })}

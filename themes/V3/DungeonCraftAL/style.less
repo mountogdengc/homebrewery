@@ -143,6 +143,16 @@
 		margin       : 10pt 0 4pt;
 	}
 
+	// Tighten gap when a table immediately follows a heading
+	:is(h1, h2, h3, h4, h5) + table { margin-top : 2pt; }
+
+	// Utility: pull element up to compensate for font intrinsic spacing
+	// Usage: {{tight\n ### Heading \n}}
+	.tight {
+		margin-top : -4pt !important;
+		> :first-child { margin-top : 0 !important; }
+	}
+
 	// ── Tables ───────────────────────────────────────────────────────────
 
 	table {
@@ -150,9 +160,11 @@
 		width           : 100%;
 		font-size       : 8.5pt;
 		border-collapse : collapse;
-		margin          : 8pt 0 13pt;
+		margin          : 4pt 0 4pt;
 		break-inside    : avoid;
-		& + * { margin-top : 13pt; }
+		& + * { margin-top : 4pt; }
+		& + h1, & + h2, & + h3, & + h4, & + h5 { margin-top : 2pt; }
+		& + blockquote { margin-top : 4pt; }
 		thead {
 			display     : table-row-group;
 			font-weight : bold;
@@ -199,13 +211,13 @@
 		line-height  : 1.4;
 		background   : var(--HB_Color_Accent);
 		padding      : 8pt;
-		margin       : 10pt 0;
+		margin       : 4pt 0;
 		break-inside : avoid;
 		border       : none;
 		border-image : none;
 		box-shadow   : none;
-		.page :where(&) { margin-top : 10pt; }
-		& + * { margin-top : 10pt; }
+		.page :where(&) { margin-top : 4pt; }
+		& + * { margin-top : 4pt; }
 		h5 {
 			.useHeadingFont();
 			font-size    : 10pt;
@@ -739,7 +751,7 @@
 
 // ── Wide Elements ────────────────────────────────────────────────────────
 
-.page .wide { margin-bottom : 13pt; }
+.page .wide { margin-bottom : 4pt; }
 
 // ── Legal Block ─────────────────────────────────────────────────────────
 // Positioned at the bottom of the page spanning full width, without using

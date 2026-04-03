@@ -1,3 +1,5 @@
+import { renderRichText } from '../../utils/richText'
+
 export default function TavernNotice({ data }) {
   return (
     <div style={{
@@ -26,8 +28,8 @@ export default function TavernNotice({ data }) {
       )}
 
       <div style={{ fontSize: '0.88rem', lineHeight: 1.65, textAlign: 'left',
-                    marginBottom: '12px', whiteSpace: 'pre-line' }}>
-        {data.body}
+                    marginBottom: '12px' }}>
+        {renderRichText(data.body)}
       </div>
 
       {data.reward && (

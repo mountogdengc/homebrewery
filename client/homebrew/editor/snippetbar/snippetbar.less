@@ -25,6 +25,17 @@
 
 		&:only-child {min-width   : unset; margin-left : auto;}
 
+		.promotedSnippets {
+			display     : flex;
+			align-items : center;
+			border-left : 1px solid #999;
+			.snippetBarButton {
+				padding : 0px 4px;
+				.groupName { display : none; }
+				i { margin-right : 0; }
+			}
+		}
+
 		>div {
 			display         : flex;
 			flex            : 1;
@@ -90,6 +101,11 @@
 						right : -1px;
 						& > .snippet { padding-right : 10px; }
 					}
+				}
+				&.aiEdit {
+					.tooltipLeft('AI Edit');
+					font-size : 0.75em;
+					color     : inherit;
 				}
 				&.editorTheme {
 					.tooltipLeft('Editor Themes');

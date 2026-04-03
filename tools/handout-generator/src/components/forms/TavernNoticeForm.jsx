@@ -13,7 +13,7 @@ export default function TavernNoticeForm({ data, onChange }) {
           <input className="form-input" value={data.subheadline} onChange={e => set('subheadline', e.target.value)} />
         </div>
         <div className="form-field">
-          <label className="form-label">Body</label>
+          <label className="form-label">Body <span className="form-hint">**bold** *italic* - bullets</span></label>
           <textarea className="form-textarea" value={data.body} onChange={e => set('body', e.target.value)} />
         </div>
         <div className="form-field">

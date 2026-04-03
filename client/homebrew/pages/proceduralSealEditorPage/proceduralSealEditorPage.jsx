@@ -26,6 +26,7 @@ const ProceduralSealEditorPage = (props)=>{
 			setSeal({
 				name: 'Untitled Seal',
 				description: '',
+				generatorType: 'seal',
 				templateName: 'simple_wax',
 				customizations: {},
 				seed: generateRandomSeed(),

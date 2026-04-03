@@ -1,7 +1,8 @@
+import { renderRichText } from '../../utils/richText'
+
 const LINE_H = 28
 
 export default function JournalEntry({ data }) {
-  const paragraphs = data.body.split('\n\n').filter(Boolean)
 
   return (
     <div style={{
@@ -30,9 +31,7 @@ export default function JournalEntry({ data }) {
         {data.location && <span>{data.location}</span>}
       </div>
 
-      {paragraphs.map((p, i) => (
-        <p key={i} style={{ marginBottom: `${LINE_H}px`, fontSize: '0.88rem' }}>{p}</p>
-      ))}
+      {renderRichText(data.body, { marginBottom: `${LINE_H}px`, fontSize: '0.88rem' })}
 
       {data.author && (
         <div style={{ textAlign: 'right', fontStyle: 'italic', fontSize: '0.83rem', color: '#6a5a30', marginTop: '8px' }}>

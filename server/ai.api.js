@@ -1,5 +1,6 @@
 import express      from 'express';
 import asyncHandler from 'express-async-handler';
+import Anthropic    from '@anthropic-ai/sdk';
 import config       from './config.js';
 
 const router = express.Router();
@@ -907,6 +908,40 @@ CONSTRAINTS
 		console.error('AI flavor generate error:', err);
 		res.status(502).send({ error: `AI flavor generation failed: ${err.message}` });
 	}
+}));
+
+// ── Claude API: text editing ────────────────────────────────────────
+
+const getAnthropicKey = ()=>config.get('anthropic_api_key') || process.env.ANTHROPIC_API_KEY;
+
+router.get('/api/ai/claude/status', asyncHandler(async (req, res)=>{
+	res.status(200).send({ available: !!getAnthropicKey() });
+}));
+
+router.post('/api/ai/claude/edit', asyncHandler(async (req, res)=>{
+	const apiKey = getAnthropicKey();
+	if(!apiKey) return res.status(503).send({ error: 'No Anthropic API key configured' });
+
+	const { text, instruction } = req.body;
+	if(!text || !instruction) return res.status(400).send({ error: 'text and instruction are required' });
+
+	const client = new Anthropic({ apiKey });
+
+	const systemPrompt = `You are an editor working on tabletop RPG adventure documents written in Homebrewery markdown. The user will give you a block of text and an editing instruction. Return ONLY the edited text — no explanations, no markdown code fences, no commentary. Preserve the original markdown formatting (headers, tables, bold, italic, {{}} blocks, etc.) unless the instruction specifically asks you to change formatting.`;
+
+	const message = await client.messages.create({
+		model      : 'claude-sonnet-4-20250514',
+		max_tokens : 4096,
+		system     : systemPrompt,
+		messages   : [
+			{ role: 'user', content: `## Instruction\n${instruction}\n\n## Text to edit\n${text}` }
+		]
+	});
+
+	const result = message.content?.[0]?.text;
+	if(!result) return res.status(502).send({ error: 'No content in Claude response' });
+
+	res.status(200).send({ result });
 }));
 
 export default router;

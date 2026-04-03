@@ -1,3 +1,5 @@
+import { renderRichText } from '../../utils/richText'
+
 const S = {
   wrapper: {
     background: 'linear-gradient(135deg, #f4e0b0 0%, #ede0c0 60%, #f0d8a8 100%)',
@@ -82,7 +84,7 @@ export default function ParchmentList({ data }) {
         </tbody>
       </table>
 
-      {data.footerNote && <div style={S.footer}>{data.footerNote}</div>}
+      {data.footerNote && <div style={S.footer}>{renderRichText(data.footerNote, { fontSize: '0.76rem' })}</div>}
     </div>
   )
 }

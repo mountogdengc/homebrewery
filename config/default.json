@@ -8,5 +8,6 @@
 	"publicUrl" : "https://homebrewery.naturalcrit.com",
 	"hb_images" : null,
 	"hb_fonts" : null,
-	"lm_studio_url" : "http://localhost:1234"
+	"lm_studio_url" : "http://localhost:1234",
+	"anthropic_api_key" : null
 }

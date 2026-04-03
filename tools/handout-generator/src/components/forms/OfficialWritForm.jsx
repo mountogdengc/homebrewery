@@ -20,7 +20,7 @@ export default function OfficialWritForm({ data, onChange }) {
       <div className="form-section">
         <div className="form-section-title">Body</div>
         <div className="form-field">
-          <label className="form-label">Text (blank line = new paragraph)</label>
+          <label className="form-label">Text <span className="form-hint">**bold** *italic* - bullets ∙ blank line = new ¶</span></label>
           <textarea className="form-textarea" style={{ minHeight: '160px' }}
             value={data.body} onChange={e => set('body', e.target.value)} />
         </div>

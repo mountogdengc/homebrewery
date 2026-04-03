@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { HeraldryGenerator } from '@shared/procedural/generators/heraldryGenerator.js';
+
+const heraldryGen = new HeraldryGenerator();
 
 const HeraldryPreview = (props)=>{
 	const { heraldry, size = 512 } = props;
@@ -17,23 +20,8 @@ const HeraldryPreview = (props)=>{
 		setError(null);
 
 		try {
-			const tempId = heraldry.seed || 'preview';
-			const response = await fetch(
-				`/api/procedural-image/${tempId}/render?size=${size}`,
-				{
-					method: heraldry.editId ? 'GET' : 'POST',
-					headers: heraldry.editId ? {} : { 'Content-Type': 'application/json' },
-					...(heraldry.editId ? {} : { body: JSON.stringify({ ...heraldry, generatorType: 'heraldry' }) })
-				}
-			);
-
-			if (response.ok) {
-				const blob = await response.blob();
-				const url = URL.createObjectURL(blob);
-				setImageUrl(url);
-			} else {
-				setError('Unable to generate preview');
-			}
+			const imageData = await heraldryGen.generate(heraldry.seed, heraldry, size);
+			setImageUrl(imageData);
 		} catch (err) {
 			console.error('Preview generation error:', err);
 			setError('Error generating preview');
@@ -86,8 +74,8 @@ const HeraldryPreview = (props)=>{
 				<button
 					className='btn-small'
 					onClick={()=>{
-						if (imageUrl) {
-							navigator.clipboard.writeText(`{{heraldry:${heraldry.shareId || 'ID'}}}`);
+						if (heraldry.shareId) {
+							navigator.clipboard.writeText(`{{heraldry:${heraldry.shareId}}}`);
 							alert('Embed code copied!');
 						}
 					}}

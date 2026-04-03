@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { AdventureIconGenerator } from '@shared/procedural/generators/adventureIconGenerator.js';
+
+const iconGen = new AdventureIconGenerator();
 
 const IconPreview = (props)=>{
 	const { icon, size = 512 } = props;
@@ -17,23 +20,8 @@ const IconPreview = (props)=>{
 		setError(null);
 
 		try {
-			const tempId = icon.seed || 'preview';
-			const response = await fetch(
-				`/api/procedural-image/${tempId}/render?size=${size}`,
-				{
-					method: icon.editId ? 'GET' : 'POST',
-					headers: icon.editId ? {} : { 'Content-Type': 'application/json' },
-					...(icon.editId ? {} : { body: JSON.stringify({ ...icon, generatorType: 'icon' }) })
-				}
-			);
-
-			if (response.ok) {
-				const blob = await response.blob();
-				const url = URL.createObjectURL(blob);
-				setImageUrl(url);
-			} else {
-				setError('Unable to generate preview');
-			}
+			const imageData = await iconGen.generate(icon.seed, icon, size);
+			setImageUrl(imageData);
 		} catch (err) {
 			console.error('Preview generation error:', err);
 			setError('Error generating preview');
@@ -86,8 +74,8 @@ const IconPreview = (props)=>{
 				<button
 					className='btn-small'
 					onClick={()=>{
-						if (imageUrl) {
-							navigator.clipboard.writeText(`{{icon:${icon.shareId || 'ID'}}}`);
+						if (icon.shareId) {
+							navigator.clipboard.writeText(`{{icon:${icon.shareId}}}`);
 							alert('Embed code copied!');
 						}
 					}}
