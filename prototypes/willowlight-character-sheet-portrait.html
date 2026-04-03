@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Willowlight Character Sheet (Portrait)</title>
+<style>
+  @page {
+    size: 8.5in 11in;
+    margin: 0.35in;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 8.5pt;
+    line-height: 1.3;
+    color: #1a1a1a;
+    background: #fff;
+  }
+
+  /* ---- Toolbar ---- */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: #1a1a2e;
+    color: #d4d4e8;
+    font-size: 10pt;
+  }
+
+  .toolbar a {
+    color: #a8d8ea;
+    text-decoration: none;
+    font-size: 10pt;
+  }
+  .toolbar a:hover { text-decoration: underline; }
+
+  .toolbar-title {
+    font-weight: 700;
+    font-size: 12pt;
+    flex: 1;
+  }
+
+  .toolbar .btn {
+    background: rgba(168,216,234,0.15);
+    border: 1px solid rgba(168,216,234,0.3);
+    color: #a8d8ea;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 9pt;
+  }
+  .toolbar .btn:hover { background: rgba(168,216,234,0.25); }
+
+  #loading {
+    text-align: center;
+    padding: 3rem;
+    color: #a8d8ea;
+    font-size: 14pt;
+  }
+
+  .page {
+    width: 7.8in;
+    height: 10.3in;
+    padding: 0.15in;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page:last-child { page-break-after: avoid; }
+
+  /* ---- Typography ---- */
+  .page-title {
+    font-size: 14pt;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 2.5px solid #1a1a1a;
+    padding-bottom: 2px;
+    margin-bottom: 6px;
+  }
+
+  .page-title span {
+    font-weight: 300;
+    font-size: 9pt;
+    letter-spacing: 0.04em;
+    margin-left: 8px;
+    text-transform: none;
+  }
+
+  .section-label {
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 1px 5px;
+    margin-bottom: 3px;
+    display: block;
+  }
+
+  .sub-label {
+    font-size: 7pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #555;
+  }
+
+  /* ---- Layout helpers ---- */
+  .row { display: flex; gap: 6px; }
+  .col { display: flex; flex-direction: column; gap: 4px; }
+  .flex-1 { flex: 1; }
+  .flex-2 { flex: 2; }
+  .flex-3 { flex: 3; }
+
+  /* ---- Panels ---- */
+  .panel {
+    border: 1px solid #999;
+    padding: 4px 5px;
+    border-radius: 2px;
+  }
+
+  .panel-light {
+    border: 1px solid #ccc;
+    padding: 3px 5px;
+    border-radius: 2px;
+    background: #fafafa;
+  }
+
+  /* ---- Fields ---- */
+  .field-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 2px;
+    flex: 1;
+  }
+
+  .field-label {
+    font-size: 7pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    color: #444;
+  }
+
+  .field-value {
+    flex: 1;
+    border-bottom: 1px solid #aaa;
+    min-width: 40px;
+    min-height: 14px;
+    font-size: 8.5pt;
+    padding: 0 2px;
+  }
+
+  .field-value-short {
+    width: 50px;
+    border-bottom: 1px solid #aaa;
+    min-height: 14px;
+    font-size: 8.5pt;
+    padding: 0 2px;
+    text-align: center;
+  }
+
+  /* ---- Dots ---- */
+  .dots {
+    display: inline-flex;
+    gap: 3px;
+    align-items: center;
+  }
+
+  .dot {
+    width: 11px;
+    height: 11px;
+    border: 1.5px solid #333;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot.filled {
+    background: #333;
+  }
+
+  .dot-sm {
+    width: 9px;
+    height: 9px;
+    border: 1.2px solid #333;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-sm.filled {
+    background: #333;
+  }
+
+  /* ---- Health boxes ---- */
+  .health-box {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid #333;
+    display: inline-block;
+    margin-right: 2px;
+  }
+
+  .health-box.filled {
+    background: rgba(0,0,0,0.15);
+  }
+
+  .health-box-sm {
+    width: 13px;
+    height: 13px;
+    border: 1.2px solid #333;
+    display: inline-block;
+    margin-right: 1px;
+  }
+
+  .health-box-sm.filled {
+    background: rgba(0,0,0,0.15);
+  }
+
+  /* ---- Attribute grid ---- */
+  .attr-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+  }
+
+  .attr-domain {
+    text-align: center;
+    padding: 2px 4px;
+    border: 1px solid #999;
+    border-radius: 2px;
+  }
+
+  .attr-domain-title {
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1px;
+  }
+
+  .attr-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5px 2px;
+  }
+
+  .attr-name {
+    font-size: 8pt;
+    font-weight: 500;
+  }
+
+  .attr-anchor {
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .attr-note {
+    font-size: 6pt;
+    color: #777;
+  }
+
+  /* ---- Write-in rows ---- */
+  .writein-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 3px;
+    min-height: 16px;
+  }
+
+  .writein-value {
+    flex: 1;
+    border-bottom: 1px solid #aaa;
+    min-height: 14px;
+    font-size: 8pt;
+    padding: 0 2px;
+  }
+
+  /* ---- Health track ---- */
+  .health-track {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+
+  /* ---- Connection card ---- */
+  .conn-card {
+    border: 1px solid #999;
+    padding: 4px 5px;
+    margin-bottom: 4px;
+    border-radius: 2px;
+  }
+
+  .conn-header {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+
+  /* ---- Secret card ---- */
+  .secret-card {
+    border: 1px solid #999;
+    padding: 4px 5px;
+    margin-bottom: 4px;
+    border-radius: 2px;
+  }
+
+  /* ---- Milestone checklist ---- */
+  .milestone-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  .check-box {
+    width: 10px;
+    height: 10px;
+    border: 1.2px solid #333;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+  }
+
+  /* ---- Notes area ---- */
+  .notes-lines {
+    width: 100%;
+  }
+
+  .note-line {
+    border-bottom: 1px solid #ccc;
+    height: 16px;
+    width: 100%;
+  }
+
+  .affliction-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 7pt;
+  }
+
+  .affliction-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  /* ---- Print ---- */
+  @media print {
+    body { background: none; }
+    .toolbar { display: none; }
+    .page { margin: 0; }
+  }
+
+  /* ---- Screen preview ---- */
+  @media screen {
+    body { background: #e0e0e0; padding: 0; }
+    .page {
+      background: #fff;
+      margin: 20px auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a href="/" style="font-size: 12pt; font-weight: 700;">Homebrewery</a>
+  <a id="back-to-edit" href="#" style="display:none;"><i class="fas fa-edit"></i> Edit Character</a>
+  <span class="toolbar-title" id="toolbar-title">Willowlight Character Sheet (Portrait)</span>
+  <button class="btn" onclick="window.print()">Print / PDF</button>
+</div>
+
+<div id="loading">Loading character...</div>
+<div id="sheet-content" style="display:none;"></div>
+
+<script>
+// ── HELPERS ──
+function esc(s) {
+  return (s ?? '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function dots(val, max = 5, size = '') {
+  const cls = size === 'sm' ? 'dot-sm' : 'dot';
+  let html = '<span class="dots">';
+  for (let i = 0; i < max; i++) {
+    html += `<span class="${cls}${i < val ? ' filled' : ''}"></span>`;
+  }
+  html += '</span>';
+  return html;
+}
+
+function boxes(count, filled = 0, size = '') {
+  const cls = size === 'sm' ? 'health-box-sm' : 'health-box';
+  let html = '';
+  for (let i = 0; i < count; i++) {
+    html += `<span class="${cls}${i < filled ? ' filled' : ''}"></span>`;
+  }
+  return html;
+}
+
+function fieldVal(label, value) {
+  const display = esc(value) || '&nbsp;';
+  return `<div class="field-row"><span class="field-label">${label}</span><div class="field-value">${display}</div></div>`;
+}
+
+function fieldValShort(label, value) {
+  const display = esc(value) || '&nbsp;';
+  return `<div class="field-row"><span class="field-label">${label}</span><div class="field-value-short">${display}</div></div>`;
+}
+
+function getTrackBoxes(base, attrVal) { return base + (attrVal || 0); }
+
+const AFFLICTION_LIST = ['terrified','discredited','stunned','prone','blinded','disoriented','restrained','slowed','disarmed','dying'];
+
+// ── RENDER PAGE 1 (Portrait) ──
+function renderPage1(ch) {
+  const attrs = ch.attributes || {};
+  const scale = ch.scale || {};
+
+  // Identity
+  const identity = `
+    <div class="panel">
+      <div class="section-label">Identity</div>
+      <div class="row" style="gap:8px; flex-wrap:wrap;">
+        ${fieldVal('Name', ch.name)}
+        ${fieldVal('Vocation', ch.vocation?.name || '')}
+      </div>
+      <div class="row" style="gap:8px; flex-wrap:wrap; margin-top:2px;">
+        ${fieldVal('Conviction', ch.conviction)}
+        ${fieldVal('Path', ch.path)}
+      </div>
+      <div class="row" style="gap:8px; flex-wrap:wrap; margin-top:2px;">
+        ${fieldVal('Age', ch.age)}
+        ${fieldVal('Gender', ch.gender)}
+        ${fieldVal('Height', ch.height)}
+        ${fieldVal('Weight', ch.weight)}
+      </div>
+      ${fieldVal('Description', ch.shortDescription || ch.description || '')}
+    </div>`;
+
+  // Attributes
+  function attrDomain(title, attrNames, anchorIdx, initIdx, scaleKey) {
+    let rows = '';
+    attrNames.forEach((a, i) => {
+      const labels = {might:'Might',reflex:'Reflex',endurance:'Endurance',reason:'Reason',guile:'Guile',resolve:'Resolve',influence:'Influence',poise:'Poise',command:'Command'};
+      const name = labels[a] || a;
+      const note = i === initIdx ? ' <span class="attr-note">(init)</span>' : '';
+      const cls = i === anchorIdx ? ' attr-anchor' : '';
+      rows += `<div class="attr-row"><span class="attr-name${cls}">${name}${i===anchorIdx?' ☆':''}${note}</span>${dots(attrs[a]||0)}</div>`;
+    });
+    const scaleVal = scale[scaleKey] || '';
+    rows += `<div class="attr-row" style="border-top:1px solid #ddd; margin-top:2px; padding-top:2px;">
+      <span class="attr-name" style="font-size:7pt; color:#666;">Scale</span>
+      ${scaleVal ? `<span style="font-size:7pt;">${esc(scaleVal)}</span>` : dots(0, 5, 'sm')}
+    </div>`;
+    return `<div class="attr-domain"><div class="attr-domain-title">${title}</div>${rows}</div>`;
+  }
+
+  const attributes = `
+    <div class="panel">
+      <div class="section-label">Attributes</div>
+      <div class="attr-grid">
+        ${attrDomain('Mental', ['reason','guile','resolve'], 2, 1, 'mental')}
+        ${attrDomain('Physical', ['might','reflex','endurance'], 2, 1, 'physical')}
+        ${attrDomain('Social', ['influence','poise','command'], 2, 1, 'social')}
+      </div>
+      <div style="font-size:6pt; color:#888; margin-top:2px;">☆ = Anchor attribute · (init) = governs initiative in that domain</div>
+    </div>`;
+
+  // Skills
+  const interests = (ch.interests||[]).map(s => esc(s.name)).filter(Boolean);
+  const hobbies = (ch.hobbies||[]).map(s => esc(s.name)).filter(Boolean);
+  const vocBonus = ch.vocation?.bonus ? ` +${ch.vocation.bonus}` : '';
+
+  const skills = `
+    <div class="panel">
+      <div class="section-label">Vocation · Interests · Hobbies</div>
+      <div class="row" style="gap:8px;">
+        <div style="flex:1;">
+          <div class="sub-label" style="margin-bottom:2px;">Vocation (Tier 3)</div>
+          <div class="writein-row"><div class="writein-value">${esc(ch.vocation?.name||'')}${vocBonus}</div></div>
+        </div>
+        <div style="flex:1;">
+          <div class="sub-label" style="margin-bottom:2px;">Domain Focus</div>
+          <div class="writein-row"><div class="writein-value">${esc(ch.domainFocus||'')}</div></div>
+        </div>
+      </div>
+      <div class="row" style="gap:8px; margin-top:2px;">
+        <div style="flex:1;">
+          <div class="sub-label" style="margin-bottom:2px;">Interests (Tier 2)</div>
+          ${interests.map(n => `<div class="writein-row"><div class="writein-value">${n}</div></div>`).join('')}
+          ${Array(Math.max(0, 4 - interests.length)).fill('<div class="writein-row"><div class="writein-value"></div></div>').join('')}
+        </div>
+        <div style="flex:1;">
+          <div class="sub-label" style="margin-bottom:2px;">Hobbies (Tier 1)</div>
+          ${hobbies.map(n => `<div class="writein-row"><div class="writein-value">${n}</div></div>`).join('')}
+          ${Array(Math.max(0, 4 - hobbies.length)).fill('<div class="writein-row"><div class="writein-value"></div></div>').join('')}
+        </div>
+      </div>
+    </div>`;
+
+  // Health Tracks
+  function healthPanel(label, base, attrKey, formula, overrideKey) {
+    const attrVal = attrs[attrKey] || 0;
+    const totalBoxes = ch[overrideKey] ?? getTrackBoxes(base, attrVal);
+    const t1 = Math.min(totalBoxes, 3);
+    const t2 = Math.min(Math.max(totalBoxes - 3, 0), 3);
+    const t3 = Math.max(totalBoxes - 6, 0);
+
+    return `<div class="panel-light">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
+        <span style="font-size:8.5pt; font-weight:700;">${label}</span>
+        <span class="sub-label">${formula}</span>
+      </div>
+      ${t1 > 0 ? `<div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;"><span class="sub-label" style="width:22px;">T1</span>${boxes(t1)}</div>` : ''}
+      ${t2 > 0 ? `<div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;"><span class="sub-label" style="width:22px;">T2</span>${boxes(t2)}</div>` : ''}
+      ${t3 > 0 ? `<div style="display:flex; align-items:center; gap:3px; margin-bottom:2px;"><span class="sub-label" style="width:22px;">T3</span>${boxes(t3)}</div>` : ''}
+    </div>`;
+  }
+
+  const afflictions = ch.afflictions || {};
+  const afflictionHtml = AFFLICTION_LIST.map(a => {
+    const checked = afflictions[a] ? '&#10003;' : '';
+    return `<span class="affliction-item"><span class="check-box" style="width:8px; height:8px;">${checked}</span> ${a.charAt(0).toUpperCase()+a.slice(1)}</span>`;
+  }).join(' ');
+
+  const healthTracks = `
+    <div class="panel">
+      <div class="section-label">Health Tracks</div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+        ${healthPanel('Willpower', 3, 'resolve', '3 + Resolve', 'willpowerOverride')}
+        ${healthPanel('Vitality', 3, 'endurance', '3 + Endurance', 'vitalityOverride')}
+        ${healthPanel('Composure', 3, 'command', '3 + Command', 'composureOverride')}
+      </div>
+      <div style="margin-top:4px;">
+        <div class="sub-label" style="margin-bottom:3px;">Afflictions &amp; Conditions</div>
+        <div class="affliction-row">${afflictionHtml}</div>
+        ${afflictions.other ? `<div class="writein-row" style="margin-top:3px;"><span class="field-label">Other</span><div class="writein-value">${esc(afflictions.other)}</div></div>` : ''}
+      </div>
+    </div>`;
+
+  // Edges
+  const edgeRows = (ch.edges||[]).map(e =>
+    `<div class="writein-row"><div class="writein-value">${esc(e.name)}</div>${dots(e.dots||0, 5, 'sm')}</div>`
+  ).join('');
+  const edgeBlanks = Array(Math.max(0, 6 - (ch.edges||[]).length)).fill(
+    `<div class="writein-row"><div class="writein-value"></div>${dots(0, 5, 'sm')}</div>`
+  ).join('');
+
+  const edges = `
+    <div class="panel">
+      <div class="section-label">Edges</div>
+      <div style="font-size:6.5pt; color:#777; margin-bottom:3px;">7 dots at creation · Fill dots to mark rating</div>
+      ${edgeRows}${edgeBlanks}
+    </div>`;
+
+  // Aspects & Burdens side by side
+  const aspectRows = (ch.aspects||[]).map(a =>
+    `<div class="writein-row"><div class="writein-value">${esc(a.name)}</div>${dots(a.dots||0, 5, 'sm')}</div>`
+  ).join('');
+  const aspectBlanks = Array(Math.max(0, 4 - (ch.aspects||[]).length)).fill(
+    `<div class="writein-row"><div class="writein-value"></div>${dots(0, 5, 'sm')}</div>`
+  ).join('');
+
+  const burdenRows = (ch.burdens||[]).map(b =>
+    `<div class="writein-row"><div class="writein-value">${esc(b.name)}</div>${dots(b.dots||0, 5, 'sm')}</div>`
+  ).join('');
+  const burdenBlanks = Array(Math.max(0, 4 - (ch.burdens||[]).length)).fill(
+    `<div class="writein-row"><div class="writein-value"></div>${dots(0, 5, 'sm')}</div>`
+  ).join('');
+
+  const aspectsBurdens = `
+    <div class="row" style="gap:6px;">
+      <div class="panel flex-1">
+        <div class="section-label">Aspects</div>
+        <div style="font-size:6.5pt; color:#777; margin-bottom:3px;">3 dots at creation</div>
+        ${aspectRows}${aspectBlanks}
+      </div>
+      <div class="panel flex-1">
+        <div class="section-label">Burdens</div>
+        <div style="font-size:6.5pt; color:#777; margin-bottom:3px;">3 dots at creation</div>
+        ${burdenRows}${burdenBlanks}
+      </div>
+    </div>`;
+
+  return `
+    <div class="page">
+      <div class="page-title">Willowlight Engine <span>${esc(ch.name || '')}</span></div>
+      <div class="col" style="gap:5px;">
+        ${identity}
+        ${attributes}
+        ${skills}
+        ${healthTracks}
+        ${edges}
+        ${aspectsBurdens}
+      </div>
+      <div style="position:absolute; bottom:4px; right:8px; font-size:6pt; color:#aaa;">Willowlight Engine &copy; Mount Ogden Gaming Company</div>
+    </div>`;
+}
+
+// ── RENDER PAGE 2 (Portrait) ──
+function renderPage2(ch) {
+  const attrs = ch.attributes || {};
+
+  // Luck & Resources
+  const luck = `
+    <div class="panel">
+      <div class="section-label">Luck &amp; Resources</div>
+      <div class="row" style="gap:10px;">
+        <div style="flex:1;">
+          <div class="sub-label" style="margin-bottom:2px;">Luck Rating</div>
+          <div style="display:flex; align-items:center; gap:4px;">${dots(ch.luckRating||0, 5)}</div>
+          <div class="sub-label" style="margin-top:4px; margin-bottom:2px;">Current Tokens</div>
+          <div style="display:flex; gap:3px;">${boxes(ch.luckTokens||5)}</div>
+        </div>
+        <div style="flex:1;">
+          ${fieldVal('Wealth', String(ch.wealthPoints||0))}
+          ${fieldVal('Downtime', ch.downtime||'')}
+          <div style="display:flex; align-items:center; gap:4px; margin-top:4px;">
+            <span class="field-label">Lifestyle</span>
+            ${dots(ch.lifestyle||0, 5, 'sm')}
+          </div>
+        </div>
+        <div style="flex:1;">
+          <div class="sub-label" style="margin-bottom:2px;">Session XP (max 3)</div>
+          <div style="display:flex; gap:3px;">${boxes(3, ch.sessionXP||0, 'sm')}</div>
+          ${fieldVal('Total XP', String(ch.totalXP||0))}
+          ${fieldVal('XP Spent', String(ch.xpSpent||0))}
+        </div>
+      </div>
+    </div>`;
+
+  // Corruption
+  const corruption = `
+    <div class="panel">
+      <div class="section-label">Corruption</div>
+      <div class="row" style="gap:10px; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="sub-label">Current</span>
+          ${boxes(10, ch.corruption||0, 'sm')}
+        </div>
+        <div style="flex:1;">${fieldVal('Hearth Trigger', ch.hearthTrigger||'')}</div>
+      </div>
+    </div>`;
+
+  // Milestones
+  function milestoneCol(title, milestones) {
+    const rows = (milestones||[]).map(m => {
+      const check = m.completed ? '&#10003;' : '';
+      return `<div class="milestone-row"><span class="check-box">${check}</span><div class="writein-value">${esc(m.text||'')}</div></div>`;
+    }).join('');
+    const blanks = Array(Math.max(0, 4 - (milestones||[]).length)).fill(
+      '<div class="milestone-row"><span class="check-box"></span><div class="writein-value"></div></div>'
+    ).join('');
+    return `<div style="flex:1;"><div class="sub-label" style="margin-bottom:3px;">${title}</div>${rows}${blanks}</div>`;
+  }
+
+  const milestones = `
+    <div class="panel">
+      <div class="section-label">Milestones</div>
+      <div class="row" style="gap:8px;">
+        ${milestoneCol('Conviction Milestones', ch.convictionMilestones)}
+        ${milestoneCol('Path Milestones', ch.pathMilestones)}
+      </div>
+    </div>`;
+
+  // Connections
+  const contactCards = (ch.contacts||[]).map(c => `
+    <div class="conn-card">
+      <div class="conn-header">
+        <span class="field-label">Name</span><div class="field-value" style="flex:2;">${esc(c.name)}</div>
+        <span class="field-label" style="margin-left:6px;">Type</span><div class="field-value" style="flex:1;">${esc(c.type||'')}</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+        <span class="sub-label">Rating</span>${dots(c.rating||0)}
+        <span class="sub-label" style="margin-left:8px;">Health</span>${boxes(5, 0, 'sm')}
+        <div style="flex:1;">${fieldVal('Notes', c.note||'')}</div>
+      </div>
+    </div>
+  `).join('');
+  const blankContacts = Array(Math.max(0, 3 - (ch.contacts||[]).length)).fill(`
+    <div class="conn-card">
+      <div class="conn-header">
+        <span class="field-label">Name</span><div class="field-value" style="flex:2;"></div>
+        <span class="field-label" style="margin-left:6px;">Type</span><div class="field-value" style="flex:1;"></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+        <span class="sub-label">Rating</span>${dots(0)}
+        <span class="sub-label" style="margin-left:8px;">Health</span>${boxes(5, 0, 'sm')}
+        <div style="flex:1;">${fieldVal('Notes', '')}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const connections = `
+    <div class="panel">
+      <div class="section-label">Connections</div>
+      <div style="font-size:6.5pt; color:#777; margin-bottom:4px;">Type: Contact / Ally / Rival / Retainer · Start with 2 free contacts at rating 2</div>
+      ${contactCards}${blankContacts}
+    </div>`;
+
+  // Secrets
+  const secretCards = (ch.secrets||[]).map(s => {
+    const spread = s.spread || [false,false,false];
+    return `
+      <div class="secret-card">
+        <div class="row" style="gap:8px; align-items:center;">
+          <div style="flex:2;">${fieldVal('Secret', s.name||'')}</div>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <span class="sub-label">Weight</span>${dots(s.weight||0, 3, 'sm')}
+          </div>
+          <div style="display:flex; align-items:center; gap:2px;">
+            <span class="health-box-sm${spread[0]?' filled':''}"></span><span style="font-size:6pt; color:#888;">W</span>
+            <span class="health-box-sm${spread[1]?' filled':''}" style="margin-left:2px;"></span><span style="font-size:6pt; color:#888;">S</span>
+            <span class="health-box-sm${spread[2]?' filled':''}" style="margin-left:2px;"></span><span style="font-size:6pt; color:#888;">E</span>
+          </div>
+        </div>
+        <div class="row" style="gap:8px; margin-top:2px;">
+          ${fieldVal('Contacts', s.contacts||'')}
+          ${fieldVal('Notes', s.containmentPlan||'')}
+        </div>
+      </div>`;
+  }).join('');
+  const blankSecrets = Array(Math.max(0, 2 - (ch.secrets||[]).length)).fill(`
+    <div class="secret-card">
+      <div class="row" style="gap:8px; align-items:center;">
+        <div style="flex:2;">${fieldVal('Secret', '')}</div>
+        <div style="display:flex; align-items:center; gap:4px;"><span class="sub-label">Weight</span>${dots(0, 3, 'sm')}</div>
+        <div style="display:flex; align-items:center; gap:2px;">
+          <span class="health-box-sm"></span><span style="font-size:6pt; color:#888;">W</span>
+          <span class="health-box-sm" style="margin-left:2px;"></span><span style="font-size:6pt; color:#888;">S</span>
+          <span class="health-box-sm" style="margin-left:2px;"></span><span style="font-size:6pt; color:#888;">E</span>
+        </div>
+      </div>
+      <div class="row" style="gap:8px; margin-top:2px;">
+        ${fieldVal('Contacts', '')}
+        ${fieldVal('Notes', '')}
+      </div>
+    </div>`).join('');
+
+  const secrets = `
+    <div class="panel">
+      <div class="section-label">Secrets</div>
+      <div style="font-size:6.5pt; color:#777; margin-bottom:4px;">Containment Cost = Weight + Spread (paid per arc)</div>
+      ${secretCards}${blankSecrets}
+    </div>`;
+
+  // Equipment
+  const equipItems = (ch.equipment||[]).map(item =>
+    `<div class="writein-row"><div class="writein-value">${esc(item.name||'')}</div></div>`
+  ).join('');
+  const equipBlanks = Array(Math.max(0, 8 - (ch.equipment||[]).length)).fill(
+    '<div class="writein-row"><div class="writein-value"></div></div>'
+  ).join('');
+
+  const equipment = `
+    <div class="panel">
+      <div class="section-label">Equipment &amp; Gear</div>
+      <div style="column-count:2; column-gap:8px;">
+        ${equipItems}${equipBlanks}
+      </div>
+    </div>`;
+
+  // Notes
+  const notesText = esc(ch.notes||'').replace(/\n/g, '<br>');
+  const noteLines = Array(6).fill('<div class="note-line"></div>').join('');
+  const notes = `
+    <div class="panel" style="flex:1;">
+      <div class="section-label">Notes</div>
+      ${ch.notes ? `<div style="font-size:7.5pt; padding:2px;">${notesText}</div>` : noteLines}
+    </div>`;
+
+  return `
+    <div class="page">
+      <div class="page-title">Willowlight Engine <span>${esc(ch.name || '')} — continued</span></div>
+      <div class="col" style="gap:5px; height: calc(100% - 28px);">
+        ${luck}
+        ${corruption}
+        ${milestones}
+        ${connections}
+        ${secrets}
+        ${equipment}
+        ${notes}
+      </div>
+      <div style="position:absolute; bottom:4px; right:8px; font-size:6pt; color:#aaa;">Willowlight Engine &copy; Mount Ogden Gaming Company</div>
+    </div>`;
+}
+
+// ── BLANK CHARACTER DEFAULTS ──
+function blankCharacter() {
+  return {
+    name: '', player: '', conviction: '', path: '',
+    shortDescription: '', description: '', source: '',
+    age: '', gender: '', height: '', weight: '',
+    attributes: { might: 1, reflex: 1, endurance: 1, reason: 1, guile: 1, resolve: 1, influence: 1, poise: 1, command: 1 },
+    scale: { physical: '', mental: '', social: '' },
+    vocation: { name: '', bonus: 0 }, domainFocus: '',
+    interests: [], hobbies: [],
+    vitalityOverride: 8, willpowerOverride: 8, composureOverride: 8,
+    attacks: [], edges: [], aspects: [], burdens: [],
+    luckRating: 1, luckTokens: 3, corruption: 0, hearthTrigger: '',
+    unspentXP: 0, totalXP: 0, xpSpent: 0, sessionXP: 0,
+    wealthPoints: 0, lifestyle: 0, downtime: '',
+    convictionMilestones: [{ text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }],
+    pathMilestones: [{ text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }],
+    contacts: [], afflictions: {}, equipment: [], secrets: [], notes: ''
+  };
+}
+
+// ── LOAD & RENDER ──
+async function loadCharacter() {
+  const pathParts = window.location.pathname.split('/');
+  const shareId = pathParts[pathParts.length - 1];
+
+  // Blank sheet mode — no ID
+  if (!shareId || shareId === 'portrait') {
+    const ch = blankCharacter();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('toolbar-title').textContent = 'Blank Character Sheet (Portrait)';
+    document.getElementById('sheet-content').style.display = '';
+    document.getElementById('sheet-content').innerHTML = renderPage1(ch) + renderPage2(ch);
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/willowlight/' + shareId);
+    if (!res.ok) throw new Error('Character not found');
+    const ch = await res.json();
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('toolbar-title').textContent = (ch.name || 'Willowlight Character Sheet') + ' (Portrait)';
+    document.getElementById('sheet-content').style.display = '';
+
+    if (ch.editId) {
+      const editLink = document.getElementById('back-to-edit');
+      editLink.href = '/willowlight/edit/' + ch.editId;
+      editLink.style.display = '';
+    }
+
+    document.getElementById('sheet-content').innerHTML = renderPage1(ch) + renderPage2(ch);
+  } catch (err) {
+    document.getElementById('loading').textContent = 'Error: ' + err.message;
+  }
+}
+
+loadCharacter();
+</script>
+</body>
+</html>

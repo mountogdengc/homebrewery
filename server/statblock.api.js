@@ -2,7 +2,10 @@ import _              from 'lodash';
 import express        from 'express';
 import asyncHandler   from 'express-async-handler';
 import { nanoid }     from 'nanoid';
-import { model as StatblockModel } from './statblock.model.js';
+import { model as StatblockModel }    from './statblock.model.js';
+import { model as WillowlightModel } from './willowlight.model.js';
+import { model as BrpModel }         from './brp-statblock.model.js';
+import { model as PalladiumModel }   from './palladium-statblock.model.js';
 import { render }     from '../shared/statblock/renderer.js';
 import dbCheck        from './middleware/dbCheck.js';
 
@@ -183,17 +186,36 @@ router.get('/api/statblocks', asyncHandler(async (req, res)=>{
 }));
 
 // Batch fetch stat blocks by shareIds (for embedding multiple in a brew)
+// Searches across all stat block collections (5e, Willowlight, BRP, Palladium)
 router.get('/api/statblocks/batch', asyncHandler(async (req, res)=>{
 	const ids = (req.query.ids || '').split(',').filter(Boolean).slice(0, 20);
 	if(ids.length === 0) {
 		return res.status(200).send({});
 	}
 
-	const statblocks = await StatblockModel.find({ shareId: { $in: ids } }).lean().exec();
+	const collections = [
+		{ model: StatblockModel,    system: '5e' },
+		{ model: WillowlightModel,  system: 'willowlight' },
+		{ model: BrpModel,          system: 'brp' },
+		{ model: PalladiumModel,    system: 'palladium' },
+	];
+
 	const result = {};
-	for (const sb of statblocks) {
-		sanitize(sb);
-		result[sb.shareId] = sb;
+	const remaining = new Set(ids);
+
+	for (const { model, system } of collections) {
+		if(remaining.size === 0) break;
+		try {
+			const found = await model.find({ shareId: { $in: [...remaining] } }).lean().exec();
+			for (const sb of found) {
+				sanitize(sb);
+				sb._system = system;
+				result[sb.shareId] = sb;
+				remaining.delete(sb.shareId);
+			}
+		} catch (err) {
+			console.warn(`Batch statblock: ${system} lookup failed:`, err.message);
+		}
 	}
 
 	res.status(200).send(result);

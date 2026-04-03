@@ -9,7 +9,7 @@ import Markdown from '@shared/markdown.js';
 import CodeEditor from '../../components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
 import MetadataEditor from './metadataEditor/metadataEditor.jsx';
-import AiEditModal from '../../components/aiGenerate/aiEditModal.jsx';
+import AiEditModal from '../components/aiGenerate/aiEditModal.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
 

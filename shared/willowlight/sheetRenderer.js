@@ -201,7 +201,26 @@ function renderSecrets(secrets) {
 	return `<div class="wl-section"><div class="wl-section-title">Secrets</div>${items}</div>`;
 }
 
-// ── Main render ───────────────────────────────────────────────────────
+// ── Shared header ────────────────────────────────────────────────────
+
+function renderHeader(ch) {
+	const name = esc(ch.name) || 'Unnamed';
+	const subtitle = [ch.conviction, ch.path].filter(Boolean).join(' \u2014 ');
+	let html = `<div class="wl-header"><div class="wl-name">${name}</div>`;
+	if(ch.player) html += `<div class="wl-player">Player: ${esc(ch.player)}</div>`;
+	if(subtitle) html += `<div class="wl-subtitle">${esc(subtitle)}</div>`;
+	if(ch.shortDescription) html += `<div class="wl-description">${esc(ch.shortDescription)}</div>`;
+	html += `</div>`;
+	return html;
+}
+
+function sheetClasses(layout, opts) {
+	const layoutClass = layout === 'wide' ? 'wl-wide' : 'wl-narrow';
+	const bwClass = opts.bw ? ' wl-bw' : '';
+	return `wl-statblock wl-character-sheet wl-sheet-portrait ${layoutClass}${bwClass}`;
+}
+
+// ── Main render (full sheet, landscape) ──────────────────────────────
 
 export function render(ch, layout = 'narrow', opts = {}) {
 	const name = esc(ch.name) || 'Unnamed';
@@ -237,6 +256,43 @@ export function render(ch, layout = 'narrow', opts = {}) {
 		html += `<div class="wl-section"><div class="wl-section-title">Notes</div><div class="wl-notes">${esc(ch.notes)}</div></div>`;
 	}
 
+	html += `</div>`;
+	return html;
+}
+
+// ── Portrait page 1: Stats ───────────────────────────────────────────
+
+export function renderPage1(ch, layout = 'narrow', opts = {}) {
+	let html = `<div class="${sheetClasses(layout, opts)}">`;
+	html += renderHeader(ch);
+	html += `<div class="wl-divider"></div>`;
+	html += renderAttributes(ch.attributes);
+	html += `<div class="wl-divider"></div>`;
+	html += renderScale(ch.scale);
+	html += renderHealthTracks(ch);
+	html += renderLuckCorruptionXP(ch);
+	html += renderWealth(ch);
+	html += renderSkills(ch);
+	html += renderAttacks(ch.attacks);
+	html += `</div>`;
+	return html;
+}
+
+// ── Portrait page 2: Narrative ───────────────────────────────────────
+
+export function renderPage2(ch, layout = 'narrow', opts = {}) {
+	let html = `<div class="${sheetClasses(layout, opts)}">`;
+	html += renderHeader(ch);
+	html += `<div class="wl-divider"></div>`;
+	html += renderDotList('Edges', ch.edges);
+	html += renderDotList('Aspects', ch.aspects);
+	html += renderDotList('Burdens', ch.burdens);
+	html += renderMilestones(ch);
+	html += renderContacts(ch.contacts);
+	html += renderSecrets(ch.secrets);
+	if(ch.notes) {
+		html += `<div class="wl-section"><div class="wl-section-title">Notes</div><div class="wl-notes">${esc(ch.notes)}</div></div>`;
+	}
 	html += `</div>`;
 	return html;
 }

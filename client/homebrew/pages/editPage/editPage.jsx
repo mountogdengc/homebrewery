@@ -33,6 +33,7 @@ import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
 import ShareNavItem              from '@navbar/share.navitem.jsx';
+import CloneNavItem              from '@navbar/clone.navitem.jsx';
 import LockNotification from './lockNotification/lockNotification.jsx';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
@@ -371,6 +372,7 @@ const EditPage = (props)=>{
 				<NewBrewItem />
 				<PrintNavItem />
 				<VaultNavItem />
+				<CloneNavItem brew={currentBrew} />
 				<ShareNavItem brew={currentBrew} />
 				<RecentNavItem brew={currentBrew} storageKey='edit' />
 				<AccountNavItem/>

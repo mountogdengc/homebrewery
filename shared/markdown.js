@@ -494,12 +494,27 @@ const Markdown = {
 
 		rawBrewText = rawBrewText.replace(/^\\column(?:break)?$/gm, `\n<div class='columnSplit'></div>\n`);
 
-		// Stat block embeds: {{statblock:shareId}} or {{statblock:shareId|wide}}
-		rawBrewText = rawBrewText.replace(/\{\{statblock:([a-zA-Z0-9_-]+)(?:\|(\w+))?\}\}/g,
-			(match, id, layout)=>{
-				const mode = layout === 'wide' ? 'wide' : 'narrow';
-				const wideClass = mode === 'wide' ? ' statblock-embed--wide' : '';
-				return `<div class="statblock-embed${wideClass}" data-statblock-id="${id}" data-statblock-layout="${mode}"></div>`;
+		// Willowlight character sheet embeds (portrait, split across pages):
+		// {{willowlight-sheet:ID|p1}}, {{willowlight-sheet:ID|p2,bw}}
+		// Must run BEFORE the general statblock regex (which would match "willowlight" prefix)
+		rawBrewText = rawBrewText.replace(/\{\{willowlight-sheet:([a-zA-Z0-9_-]+)(?:\|([\w,]+))?\}\}/g,
+			(match, id, opts)=>{
+				const options = (opts || '').split(',').filter(Boolean);
+				const page = options.includes('p2') ? 'p2' : 'p1';
+				const optsAttr = opts ? ` data-statblock-opts="${opts}"` : '';
+				return `<div class="statblock-embed statblock-embed--wide" data-statblock-id="${id}" data-statblock-system="willowlight-sheet" data-statblock-page="${page}"${optsAttr}></div>`;
+			});
+
+		// Stat block embeds: {{statblock:ID}}, {{statblock:ID|wide}},
+		// {{willowlight:ID|bw}}, {{brp:ID}}, {{palladium:ID}}, etc.
+		rawBrewText = rawBrewText.replace(/\{\{(statblock|willowlight|brp|palladium):([a-zA-Z0-9_-]+)(?:\|([\w,]+))?\}\}/g,
+			(match, system, id, opts)=>{
+				const options = (opts || '').split(',').filter(Boolean);
+				const layout = options.includes('wide') ? 'wide' : 'narrow';
+				const wideClass = layout === 'wide' ? ' statblock-embed--wide' : '';
+				const sysAttr = system === 'statblock' ? '' : ` data-statblock-system="${system}"`;
+				const optsAttr = opts ? ` data-statblock-opts="${opts}"` : '';
+				return `<div class="statblock-embed${wideClass}" data-statblock-id="${id}" data-statblock-layout="${layout}"${sysAttr}${optsAttr}></div>`;
 			});
 
 		// Seal embeds: {{seal:shareId}} or {{seal:shareId|size:large}}

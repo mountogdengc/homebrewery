@@ -20,7 +20,24 @@ import { printCurrentBrew } from '@shared/helpers.js';
 import HeaderNav from './headerNav/headerNav.jsx';
 import safeHTML from './safeHTML.js';
 import statblockStylesUrl from '../statblock/statblock.less?url';
-import { render as renderStatblock } from '@shared/statblock/renderer.js';
+import willowlightStylesUrl from '../willowlight/willowlight.less?url';
+import brpStylesUrl from '../brpStatblock/brpStatblock.less?url';
+import palladiumStylesUrl from '../palladiumStatblock/palladiumStatblock.less?url';
+import { render as render5eStatblock }         from '@shared/statblock/renderer.js';
+import { render as renderWillowlightStatblock } from '@shared/willowlight/statblockRenderer.js';
+import { renderPage1 as renderWlPortraitP1, renderPage2 as renderWlPortraitP2 } from '@shared/willowlight/portraitSheetRenderer.js';
+import { render as renderBrpStatblock }         from '@shared/brpStatblock/renderer.js';
+import { render as renderPalladiumStatblock }   from '@shared/palladiumStatblock/renderer.js';
+
+function renderStatblock(sb, layout, opts = {}) {
+	switch (sb._system) {
+		case 'willowlight':       return renderWillowlightStatblock(sb, layout, opts);
+		case 'willowlight-sheet': return (opts.page === 'p2' ? renderWlPortraitP2 : renderWlPortraitP1)(sb, layout, opts);
+		case 'brp':               return renderBrpStatblock(sb, layout);
+		case 'palladium':         return renderPalladiumStatblock(sb, layout);
+		default:                  return render5eStatblock(sb, layout);
+	}
+}
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
@@ -36,6 +53,9 @@ const INITIAL_CONTENT = dedent`
 	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
 	<link href="${headerNavStylesUrl}" rel="stylesheet" />
 	<link href="${statblockStylesUrl}" rel="stylesheet" />
+	<link href="${willowlightStylesUrl}" rel="stylesheet" />
+	<link href="${brpStylesUrl}" rel="stylesheet" />
+	<link href="${palladiumStylesUrl}" rel="stylesheet" />
 	<base target=_blank>
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
@@ -357,9 +377,17 @@ const BrewRenderer = (props)=>{
 			embeds.forEach((el)=>{
 				const id = el.getAttribute('data-statblock-id');
 				const layout = el.getAttribute('data-statblock-layout') || 'narrow';
+				const system = el.getAttribute('data-statblock-system');
+				const opts = (el.getAttribute('data-statblock-opts') || '').split(',').filter(Boolean);
 				const sb = statblockCache.current[id];
 				if(sb) {
-					el.innerHTML = renderStatblock(sb, layout);
+					// Prefer the system from the embed syntax, fall back to server-tagged _system
+					if(system) sb._system = system;
+					const renderOpts = {};
+					if(opts.includes('bw')) renderOpts.bw = true;
+					const page = el.getAttribute('data-statblock-page');
+					if(page) renderOpts.page = page;
+					el.innerHTML = renderStatblock(sb, layout, renderOpts);
 					el.setAttribute('data-loaded', 'true');
 				} else {
 					el.innerHTML = `<div style="color:#999;padding:8px;font-style:italic;">Stat block not found: ${id}</div>`;

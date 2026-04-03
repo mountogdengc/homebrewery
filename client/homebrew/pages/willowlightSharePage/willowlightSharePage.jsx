@@ -24,6 +24,16 @@ const WillowlightSharePage = (props)=>{
 		});
 	};
 
+	const [copiedSheet, setCopiedSheet] = useState(false);
+	const copySheetEmbed = ()=>{
+		const bwOpt = bw ? ',bw' : '';
+		const code = `{{willowlight-sheet:${character.shareId}|p1${bwOpt}}}\n\n\\page\n\n{{willowlight-sheet:${character.shareId}|p2${bwOpt}}}`;
+		navigator.clipboard.writeText(code).then(()=>{
+			setCopiedSheet(true);
+			setTimeout(()=>setCopiedSheet(false), 2000);
+		});
+	};
+
 	const PreviewComponent = viewMode === 'sheet' ? WillowlightSheetPreview : WillowlightStatblockPreview;
 
 	return (
@@ -46,11 +56,14 @@ const WillowlightSharePage = (props)=>{
 					<Nav.item icon={bw ? 'fas fa-palette' : 'fas fa-adjust'} onClick={()=>setBw((b)=>!b)}>
 						{bw ? 'Color' : 'B&W'}
 					</Nav.item>
-					{character.shareId && (
+					{character.shareId && <>
 						<Nav.item icon={copied ? 'fas fa-check' : 'fas fa-code'} onClick={copyEmbed}>
-							{copied ? 'Copied!' : 'Copy Embed'}
+							{copied ? 'Copied!' : 'Embed Statblock'}
 						</Nav.item>
-					)}
+						<Nav.item icon={copiedSheet ? 'fas fa-check' : 'fas fa-file-alt'} onClick={copySheetEmbed}>
+							{copiedSheet ? 'Copied!' : 'Embed Sheet (2 pages)'}
+						</Nav.item>
+					</>}
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>

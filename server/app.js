@@ -77,6 +77,12 @@ export default async function createApp(vite) {
 	app.get('/willowlight/sheet/:id', (req, res)=>{
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-dynamic.html'));
 	});
+	app.get('/willowlight/sheet-portrait', (req, res)=>{
+		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-portrait.html'));
+	});
+	app.get('/willowlight/sheet-portrait/:id', (req, res)=>{
+		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-portrait.html'));
+	});
 
 	// Handout Generator — built Vite app served as static assets
 	app.use('/handout', express.static(path.resolve(process.cwd(), 'prototypes/handout')));

@@ -138,6 +138,7 @@ const WillowlightEditorPage = (props)=>{
 	}, [character, conceptPrompt, isGeneratingFlavor, handleChange]);
 
 	const [copied, setCopied] = useState(false);
+	const [copiedSheet, setCopiedSheet] = useState(false);
 
 	const copyEmbed = ()=>{
 		if(!shareId) return;
@@ -146,6 +147,16 @@ const WillowlightEditorPage = (props)=>{
 		navigator.clipboard.writeText(code).then(()=>{
 			setCopied(true);
 			setTimeout(()=>setCopied(false), 2000);
+		});
+	};
+
+	const copySheetEmbed = ()=>{
+		if(!shareId) return;
+		const bwOpt = bw ? ',bw' : '';
+		const code = `{{willowlight-sheet:${shareId}|p1${bwOpt}}}\n\n\\page\n\n{{willowlight-sheet:${shareId}|p2${bwOpt}}}`;
+		navigator.clipboard.writeText(code).then(()=>{
+			setCopiedSheet(true);
+			setTimeout(()=>setCopiedSheet(false), 2000);
 		});
 	};
 
@@ -186,11 +197,14 @@ const WillowlightEditorPage = (props)=>{
 						</Nav.item>
 					)}
 
-					{shareId && (
+					{shareId && <>
 						<Nav.item icon={copied ? 'fas fa-check' : 'fas fa-code'} onClick={copyEmbed}>
-							{copied ? 'Copied!' : 'Copy Embed'}
+							{copied ? 'Copied!' : 'Embed Statblock'}
 						</Nav.item>
-					)}
+						<Nav.item icon={copiedSheet ? 'fas fa-check' : 'fas fa-file-alt'} onClick={copySheetEmbed}>
+							{copiedSheet ? 'Copied!' : 'Embed Sheet (2 pages)'}
+						</Nav.item>
+					</>}
 
 					{error && <Nav.item color="red">{error}</Nav.item>}
 

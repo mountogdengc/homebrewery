@@ -941,7 +941,13 @@ router.post('/api/ai/claude/edit', asyncHandler(async (req, res)=>{
 	const result = message.content?.[0]?.text;
 	if(!result) return res.status(502).send({ error: 'No content in Claude response' });
 
-	res.status(200).send({ result });
+	const usage = {
+		inputTokens  : message.usage?.input_tokens || 0,
+		outputTokens : message.usage?.output_tokens || 0,
+		model        : message.model || 'claude-sonnet-4-20250514',
+	};
+
+	res.status(200).send({ result, usage });
 }));
 
 export default router;

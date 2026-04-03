@@ -13,7 +13,7 @@
 	box-shadow: 0 4px 16px rgba(0,0,0,0.5), inset 0 0 30px rgba(74,111,165,0.1);
 
 	&.wl-wide {
-		max-width: 800px;
+		max-width: 100%;
 	}
 }
 
@@ -276,6 +276,16 @@
 	&.wl-wide {
 		max-width: 900px;
 	}
+
+	// Portrait layout — fits within a Homebrewery page (8.5x11)
+	&.wl-sheet-portrait {
+		max-width: 100%;
+		margin: 0;
+		padding: 12px 16px;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+	}
 }
 
 // Resources grid (luck, corruption, XP)
@@ -481,4 +491,276 @@
 			border-color: #a8d8ea;
 		}
 	}
+}
+
+// ── Portrait Character Sheet (wlp-) ──────────────────────────────────
+// Embedded portrait sheet styles — prefixed to avoid conflicts
+
+.wlp-sheet {
+	font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	font-size: 8.5pt;
+	line-height: 1.3;
+	color: #1a1a1a;
+	background: #fff;
+	padding: 0.15in;
+
+	// B&W mode
+	&.wlp-bw {
+		.wlp-section-label { background: #444; }
+		.wlp-dot.filled, .wlp-dot-sm.filled { background: #444; border-color: #444; }
+	}
+}
+
+.wlp-page-title {
+	font-size: 14pt;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	border-bottom: 2.5px solid #1a1a1a;
+	padding-bottom: 2px;
+	margin-bottom: 6px;
+
+	span {
+		font-weight: 300;
+		font-size: 9pt;
+		letter-spacing: 0.04em;
+		margin-left: 8px;
+		text-transform: none;
+	}
+}
+
+.wlp-section-label {
+	font-size: 8pt;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	background: #1a1a1a;
+	color: #fff;
+	padding: 1px 5px;
+	margin-bottom: 3px;
+	display: block;
+}
+
+.wlp-sub-label {
+	font-size: 7pt;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: #555;
+}
+
+// Layout
+.wlp-row { display: flex; gap: 6px; }
+.wlp-col { display: flex; flex-direction: column; gap: 4px; }
+
+// Panels
+.wlp-panel {
+	border: 1px solid #999;
+	padding: 4px 5px;
+	border-radius: 2px;
+}
+
+.wlp-panel-light {
+	border: 1px solid #ccc;
+	padding: 3px 5px;
+	border-radius: 2px;
+	background: #fafafa;
+}
+
+// Fields
+.wlp-field-row {
+	display: flex;
+	align-items: baseline;
+	gap: 4px;
+	margin-bottom: 2px;
+	flex: 1;
+}
+
+.wlp-field-label {
+	font-size: 7pt;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	white-space: nowrap;
+	color: #444;
+}
+
+.wlp-field-value {
+	flex: 1;
+	border-bottom: 1px solid #aaa;
+	min-width: 40px;
+	min-height: 14px;
+	font-size: 8.5pt;
+	padding: 0 2px;
+}
+
+.wlp-field-value-short {
+	width: 50px;
+	border-bottom: 1px solid #aaa;
+	min-height: 14px;
+	font-size: 8.5pt;
+	padding: 0 2px;
+	text-align: center;
+}
+
+// Dots
+.wlp-dots {
+	display: inline-flex;
+	gap: 3px;
+	align-items: center;
+}
+
+.wlp-dot {
+	width: 11px;
+	height: 11px;
+	border: 1.5px solid #333;
+	border-radius: 50%;
+	display: inline-block;
+	&.filled { background: #333; }
+}
+
+.wlp-dot-sm {
+	width: 9px;
+	height: 9px;
+	border: 1.2px solid #333;
+	border-radius: 50%;
+	display: inline-block;
+	&.filled { background: #333; }
+}
+
+// Health boxes
+.wlp-health-box {
+	width: 16px;
+	height: 16px;
+	border: 1.5px solid #333;
+	display: inline-block;
+	margin-right: 2px;
+	&.filled { background: rgba(0,0,0,0.15); }
+}
+
+.wlp-health-box-sm {
+	width: 13px;
+	height: 13px;
+	border: 1.2px solid #333;
+	display: inline-block;
+	margin-right: 1px;
+	&.filled { background: rgba(0,0,0,0.15); }
+}
+
+// Attribute grid
+.wlp-attr-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 4px;
+}
+
+.wlp-attr-domain {
+	text-align: center;
+	padding: 2px 4px;
+	border: 1px solid #999;
+	border-radius: 2px;
+}
+
+.wlp-attr-domain-title {
+	font-size: 7.5pt;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	margin-bottom: 2px;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 1px;
+}
+
+.wlp-attr-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1.5px 2px;
+}
+
+.wlp-attr-name {
+	font-size: 8pt;
+	font-weight: 500;
+}
+
+.wlp-attr-anchor {
+	font-weight: 700;
+	font-style: italic;
+}
+
+.wlp-attr-note {
+	font-size: 6pt;
+	color: #777;
+}
+
+// Write-in rows
+.wlp-writein-row {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-bottom: 3px;
+	min-height: 16px;
+}
+
+.wlp-writein-value {
+	flex: 1;
+	border-bottom: 1px solid #aaa;
+	min-height: 14px;
+	font-size: 8pt;
+	padding: 0 2px;
+}
+
+// Connection / secret cards
+.wlp-conn-card, .wlp-secret-card {
+	border: 1px solid #999;
+	padding: 4px 5px;
+	margin-bottom: 4px;
+	border-radius: 2px;
+}
+
+.wlp-conn-header {
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
+	margin-bottom: 2px;
+}
+
+// Milestones
+.wlp-milestone-row {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-bottom: 2px;
+}
+
+.wlp-check-box {
+	width: 10px;
+	height: 10px;
+	border: 1.2px solid #333;
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 8px;
+}
+
+// Notes
+.wlp-note-line {
+	border-bottom: 1px solid #ccc;
+	height: 16px;
+	width: 100%;
+}
+
+// Afflictions
+.wlp-affliction-row {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	font-size: 7pt;
+}
+
+.wlp-affliction-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
 }
