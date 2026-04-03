@@ -22,6 +22,7 @@ import vaultApi                    from './vault.api.js';
 import statblockApi                from './statblock.api.js';
 import besmCharacterApi            from './besm-character.api.js';
 import brpStatblockApi             from './brp-statblock.api.js';
+import palladiumStatblockApi       from './palladium-statblock.api.js';
 import willowlightApi              from './willowlight.api.js';
 import willowlightBestiaryApi      from './willowlight-bestiary.api.js';
 import playtestSessionApi          from './playtest-session.api.js';
@@ -157,6 +158,7 @@ export default async function createApp(vite) {
 	app.use(statblockApi);
 	app.use(besmCharacterApi);
 	app.use(brpStatblockApi);
+	app.use(palladiumStatblockApi);
 	app.use(willowlightApi);
 	app.use(willowlightBestiaryApi);
 	app.use(playtestSessionApi);
@@ -752,6 +754,48 @@ export default async function createApp(vite) {
 		return next();
 	});
 
+	//Palladium Stat Block Builder - New
+	app.get('/palladium/new', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Palladium Stat Block Builder',
+			description : 'Create a Palladium Megaversal stat block'
+		};
+		return next();
+	});
+
+	//Palladium Stat Block Builder - Edit
+	app.get('/palladium/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: PalladiumStatblockModel } = await import('./palladium-statblock.model.js');
+		const sb = await PalladiumStatblockModel.get({ editId: req.params.id });
+		req.palladiumStatblock = sb.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `Editing: ${req.palladiumStatblock.name || 'Palladium Stat Block'}`,
+			description : 'Edit a Palladium stat block'
+		};
+		return next();
+	}));
+
+	//Palladium Stat Block Share
+	app.get('/palladium/share/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: PalladiumStatblockModel } = await import('./palladium-statblock.model.js');
+		const sb = await PalladiumStatblockModel.get({ shareId: req.params.id });
+		req.palladiumStatblock = sb.toObject();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : req.palladiumStatblock.name || 'Palladium Stat Block',
+			description : `${req.palladiumStatblock.game} ${req.palladiumStatblock.category}`
+		};
+		return next();
+	}));
+
+	//Palladium Stat Block Library
+	app.get('/palladium/library', (req, res, next)=>{
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Palladium Stat Block Library',
+			description : 'Browse your Palladium stat blocks'
+		};
+		return next();
+	});
+
 	//Willowlight Builder - New
 	app.get('/willowlight/new', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
@@ -1031,6 +1075,7 @@ export default async function createApp(vite) {
 			userStatblocks         : req.userStatblocks,
 			besmCharacter          : req.besmCharacter,
 			brpStatblock           : req.brpStatblock,
+			palladiumStatblock     : req.palladiumStatblock,
 			willowlightCharacter   : req.willowlightCharacter,
 			willowlightBestiary    : req.willowlightBestiary
 		};
