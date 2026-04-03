@@ -1,6 +1,7 @@
 import EncounterGen        from './snippets/encounter.gen.js';
 import AdventureIntroGen   from './snippets/adventureIntro.gen.js';
 import MonsterBlock2024Gen from './snippets/monsterblock2024.gen.js';
+import TableOfContentsGen  from './snippets/tableOfContents.gen.js';
 import dedent              from 'dedent';
 
 export default [
@@ -31,6 +32,11 @@ export default [
 						## Section Title
 						\n`;
 				},
+			},
+			{
+				name : 'Table of Contents',
+				icon : 'fas fa-list-ol',
+				gen  : TableOfContentsGen,
 			},
 		]
 	},

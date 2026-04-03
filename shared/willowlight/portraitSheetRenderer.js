@@ -2,6 +2,24 @@
 // Renders a portrait (8.5x11) character sheet as two embeddable pages.
 // Ported from prototypes/willowlight-character-sheet-portrait.html
 
+export const BLANK_CHARACTER = {
+	name: '', player: '', conviction: '', path: '',
+	shortDescription: '', description: '', source: '',
+	age: '', gender: '', height: '', weight: '',
+	attributes: { might: 1, reflex: 1, endurance: 1, reason: 1, guile: 1, resolve: 1, influence: 1, poise: 1, command: 1 },
+	scale: { physical: '', mental: '', social: '' },
+	vocation: { name: '', bonus: 0 }, domainFocus: '',
+	interests: [], hobbies: [],
+	vitalityOverride: 8, willpowerOverride: 8, composureOverride: 8,
+	attacks: [], edges: [], aspects: [], burdens: [],
+	luckRating: 1, luckTokens: 3, corruption: 0, hearthTrigger: '',
+	unspentXP: 0, totalXP: 0, xpSpent: 0, sessionXP: 0,
+	wealthPoints: 0, lifestyle: 0, downtime: '',
+	convictionMilestones: [{ text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }],
+	pathMilestones: [{ text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }, { text: '', completed: false }],
+	contacts: [], afflictions: {}, equipment: [], secrets: [], notes: ''
+};
+
 const esc = (s)=>(s ?? '').toString()
 	.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 

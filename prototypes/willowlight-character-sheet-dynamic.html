@@ -389,6 +389,10 @@
   <a href="/" style="font-size: 12pt; font-weight: 700;">Homebrewery</a>
   <a id="back-to-edit" href="#" style="display:none;"><i class="fas fa-edit"></i> Edit Character</a>
   <span class="toolbar-title" id="toolbar-title">Willowlight Character Sheet</span>
+  <button class="btn" id="switch-orientation" onclick="switchOrientation()">Portrait</button>
+  <button class="btn" onclick="window.location.href='/willowlight/sheet'">Blank Sheet</button>
+  <button class="btn" id="btn-embed" style="display:none;" onclick="copyEmbed()">Embed Statblock</button>
+  <button class="btn" id="btn-embed-sheet" style="display:none;" onclick="copySheetEmbed()">Embed Sheet (2 pages)</button>
   <button class="btn" onclick="window.print()">Print / PDF</button>
 </div>
 
@@ -866,6 +870,8 @@ async function loadCharacter() {
     document.getElementById('toolbar-title').textContent = 'Blank Character Sheet';
     document.getElementById('sheet-content').style.display = '';
     document.getElementById('sheet-content').innerHTML = renderPage1(ch) + renderPage2(ch);
+    currentShareId = 'blank';
+    document.getElementById('btn-embed-sheet').style.display = '';
     return;
   }
 
@@ -884,10 +890,40 @@ async function loadCharacter() {
       editLink.style.display = '';
     }
 
+    currentShareId = ch.shareId || shareId;
+    document.getElementById('btn-embed').style.display = '';
+    document.getElementById('btn-embed-sheet').style.display = '';
+
     document.getElementById('sheet-content').innerHTML = renderPage1(ch) + renderPage2(ch);
   } catch (err) {
     document.getElementById('loading').textContent = 'Error: ' + err.message;
   }
+}
+
+function switchOrientation() {
+  const path = window.location.pathname;
+  const portraitPath = path.replace('/willowlight/sheet', '/willowlight/sheet-portrait');
+  window.location.href = portraitPath || '/willowlight/sheet-portrait';
+}
+
+let currentShareId = null;
+
+function copyEmbed() {
+  if (!currentShareId) return;
+  const code = `{{willowlight:${currentShareId}}}`;
+  navigator.clipboard.writeText(code);
+  const btn = document.getElementById('btn-embed');
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Embed Statblock'; }, 2000);
+}
+
+function copySheetEmbed() {
+  if (!currentShareId) return;
+  const code = `{{willowlight-sheet:${currentShareId}|p1}}\n\n\\\\page\n\n{{willowlight-sheet:${currentShareId}|p2}}`;
+  navigator.clipboard.writeText(code);
+  const btn = document.getElementById('btn-embed-sheet');
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Embed Sheet (2 pages)'; }, 2000);
 }
 
 loadCharacter();

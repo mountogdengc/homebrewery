@@ -88,6 +88,9 @@ const WillowlightLibraryPage = ()=>{
 					<Nav.item icon="fas fa-print" onClick={()=>{ window.open('/willowlight/sheet', '_blank'); }}>
 						Blank Sheet
 					</Nav.item>
+					<Nav.item icon="fas fa-file-alt" onClick={()=>{ window.open('/willowlight/sheet-portrait', '_blank'); }}>
+						Blank Portrait
+					</Nav.item>
 					<Nav.item icon="fas fa-paste" onClick={()=>setShowImportBox(!showImportBox)}>
 						Paste Import
 					</Nav.item>

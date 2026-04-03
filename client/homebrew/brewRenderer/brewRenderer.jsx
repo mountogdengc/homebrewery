@@ -25,7 +25,7 @@ import brpStylesUrl from '../brpStatblock/brpStatblock.less?url';
 import palladiumStylesUrl from '../palladiumStatblock/palladiumStatblock.less?url';
 import { render as render5eStatblock }         from '@shared/statblock/renderer.js';
 import { render as renderWillowlightStatblock } from '@shared/willowlight/statblockRenderer.js';
-import { renderPage1 as renderWlPortraitP1, renderPage2 as renderWlPortraitP2 } from '@shared/willowlight/portraitSheetRenderer.js';
+import { renderPage1 as renderWlPortraitP1, renderPage2 as renderWlPortraitP2, BLANK_CHARACTER as WL_BLANK } from '@shared/willowlight/portraitSheetRenderer.js';
 import { render as renderBrpStatblock }         from '@shared/brpStatblock/renderer.js';
 import { render as renderPalladiumStatblock }   from '@shared/palladiumStatblock/renderer.js';
 
@@ -370,7 +370,12 @@ const BrewRenderer = (props)=>{
 		const idsToFetch = [];
 		embeds.forEach((el)=>{
 			const id = el.getAttribute('data-statblock-id');
-			if(id && !statblockCache.current[id]) idsToFetch.push(id);
+			if(id === 'blank') {
+				// Pre-populate cache with blank character for sheet embeds
+				statblockCache.current['blank'] = { ...WL_BLANK };
+			} else if(id && !statblockCache.current[id]) {
+				idsToFetch.push(id);
+			}
 		});
 
 		const fillEmbeds = ()=>{
@@ -379,7 +384,7 @@ const BrewRenderer = (props)=>{
 				const layout = el.getAttribute('data-statblock-layout') || 'narrow';
 				const system = el.getAttribute('data-statblock-system');
 				const opts = (el.getAttribute('data-statblock-opts') || '').split(',').filter(Boolean);
-				const sb = statblockCache.current[id];
+				const sb = id === 'blank' ? { ...WL_BLANK } : statblockCache.current[id];
 				if(sb) {
 					// Prefer the system from the embed syntax, fall back to server-tagged _system
 					if(system) sb._system = system;
@@ -516,7 +521,17 @@ const BrewRenderer = (props)=>{
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
 				contentDidMount={frameDidMount}
-				onClick={(e)=>{emitClick(); handlePreviewClick(e);}}
+				onClick={(e)=>{
+				emitClick();
+				// Intercept internal anchor links (e.g. ToC #p30) — scroll within iframe instead of opening new window
+				const anchor = e.target.closest?.('a[href^="#"]');
+				if(anchor) {
+					e.preventDefault();
+					scrollToHash(anchor.getAttribute('href'));
+					return;
+				}
+				handlePreviewClick(e);
+			}}
 			>
 				<div className='brewRenderer'
 					onKeyDown={handleControlKeys}
