@@ -14,6 +14,7 @@ import Nav              from '@navbar/nav.jsx';
 import Navbar           from '@navbar/navbar.jsx';
 import AccountNavItem   from '@navbar/account.navitem.jsx';
 import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
+import { toFoundry, fromFoundry } from '@shared/willowlight/foundryConverter.js';
 
 const SAVE_TIMEOUT = 3000;
 
@@ -141,6 +142,33 @@ const WillowlightEditorPage = (props)=>{
 
 	const [copied, setCopied] = useState(false);
 	const [copiedSheet, setCopiedSheet] = useState(false);
+	const [showFoundryImport, setShowFoundryImport] = useState(false);
+	const [foundryImportText, setFoundryImportText] = useState('');
+
+	const exportFoundryJson = ()=>{
+		const foundryData = toFoundry(character);
+		const blob = new Blob([JSON.stringify(foundryData, null, 2)], { type: 'application/json' });
+		const link = document.createElement('a');
+		link.href = URL.createObjectURL(blob);
+		link.download = `${character.name || 'willowlight-character'}-foundry.json`;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		URL.revokeObjectURL(link.href);
+	};
+
+	const importFoundryJson = ()=>{
+		if(!foundryImportText.trim()) return;
+		try {
+			const data = JSON.parse(foundryImportText);
+			const converted = fromFoundry(data, character);
+			handleChange(converted);
+			setShowFoundryImport(false);
+			setFoundryImportText('');
+		} catch (e) {
+			alert(`Import failed: ${e.message}`);
+		}
+	};
 
 	const copyEmbed = ()=>{
 		if(!shareId) return;
@@ -213,6 +241,13 @@ const WillowlightEditorPage = (props)=>{
 						name={character.name || 'willowlight-export'}
 					/>}
 
+					<Nav.item icon="fas fa-download" onClick={exportFoundryJson}>
+						Export Foundry
+					</Nav.item>
+					<Nav.item icon="fas fa-upload" onClick={()=>setShowFoundryImport(!showFoundryImport)}>
+						Import Foundry
+					</Nav.item>
+
 					{error && <Nav.item color="red">{error}</Nav.item>}
 
 					<Nav.item className="save" icon={isSaving ? 'fas fa-spinner fa-spin' : 'fas fa-save'} onClick={save}>
@@ -222,6 +257,21 @@ const WillowlightEditorPage = (props)=>{
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>
+
+			{showFoundryImport && (
+				<div style={{ background: '#252538', border: '1px solid #3a3a54', padding: '12px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+					<textarea
+						value={foundryImportText}
+						onChange={(e)=>setFoundryImportText(e.target.value)}
+						placeholder="Paste Foundry VTT character JSON here..."
+						style={{ flex: 1, minHeight: '80px', background: '#1e1e2e', border: '1px solid #3a3a54', borderRadius: '4px', color: '#e0e0f0', padding: '8px', fontFamily: 'monospace', fontSize: '12px', resize: 'vertical' }}
+					/>
+					<div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+						<button style={{ background: '#2e7d32', color: '#fff', border: 'none', borderRadius: '4px', padding: '6px 12px', cursor: 'pointer' }} onClick={importFoundryJson}>Import</button>
+						<button style={{ background: '#3a3a54', color: '#aaa', border: 'none', borderRadius: '4px', padding: '6px 12px', cursor: 'pointer' }} onClick={()=>{ setShowFoundryImport(false); setFoundryImportText(''); }}>Cancel</button>
+					</div>
+				</div>
+			)}
 
 			<div className="content">
 				<SplitPane showDividerButtons={false}>

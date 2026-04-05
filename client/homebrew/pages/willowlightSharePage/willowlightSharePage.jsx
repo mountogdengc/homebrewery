@@ -8,6 +8,7 @@ import Nav              from '@navbar/nav.jsx';
 import Navbar           from '@navbar/navbar.jsx';
 import AccountNavItem   from '@navbar/account.navitem.jsx';
 import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
+import { toFoundry } from '@shared/willowlight/foundryConverter.js';
 
 const WillowlightSharePage = (props)=>{
 	const character = props.willowlightCharacter || {};
@@ -69,6 +70,19 @@ const WillowlightSharePage = (props)=>{
 						url={`/api/pdf/willowlight/${character.shareId}`}
 						name={character.name || 'willowlight-export'}
 					/>}
+					<Nav.item icon="fas fa-download" onClick={()=>{
+						const foundryData = toFoundry(character);
+						const blob = new Blob([JSON.stringify(foundryData, null, 2)], { type: 'application/json' });
+						const link = document.createElement('a');
+						link.href = URL.createObjectURL(blob);
+						link.download = `${character.name || 'willowlight-character'}-foundry.json`;
+						document.body.appendChild(link);
+						link.click();
+						document.body.removeChild(link);
+						URL.revokeObjectURL(link.href);
+					}}>
+						Export Foundry
+					</Nav.item>
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>
