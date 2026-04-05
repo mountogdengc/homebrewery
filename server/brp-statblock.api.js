@@ -4,6 +4,7 @@ import asyncHandler   from 'express-async-handler';
 import { nanoid }     from 'nanoid';
 import { model as BrpStatblockModel } from './brp-statblock.model.js';
 import { render }     from '../shared/brpStatblock/renderer.js';
+import { renderPage1, renderPage2 } from '../shared/brpStatblock/portraitSheetRenderer.js';
 import dbCheck        from './middleware/dbCheck.js';
 
 const router = express.Router();
@@ -71,6 +72,10 @@ router.put('/api/brp-statblock/:id', asyncHandler(async (req, res)=>{
 	sb.markModified('spells');
 	sb.markModified('traits');
 	sb.markModified('hitLocations');
+	sb.markModified('passions');
+	sb.markModified('allegiances');
+	sb.markModified('equipment');
+	sb.markModified('experienceChecks');
 
 	const saved = await sb.save()
 		.catch((err)=>{
@@ -117,6 +122,24 @@ router.get('/api/brp-statblock/render/:id', asyncHandler(async (req, res)=>{
 	res.status(200).send(html);
 }));
 
+// Render portrait sheet HTML (page 1 or page 2)
+router.get('/api/brp-statblock/sheet/:id', asyncHandler(async (req, res)=>{
+	const sb = await BrpStatblockModel.get({ shareId: req.params.id })
+		.catch(()=>{
+			throw { name: 'Not Found', message: 'BRP stat block not found', status: 404 };
+		});
+
+	const data = sb.toObject();
+	const page = req.query.page === 'p2' ? 'p2' : 'p1';
+	const layout = req.query.layout === 'wide' ? 'wide' : 'narrow';
+	const opts = { bw: req.query.bw === 'true' || req.query.bw === '1' };
+
+	const html = page === 'p2'
+		? renderPage2(data, layout, opts)
+		: renderPage1(data, layout, opts);
+	res.status(200).send(html);
+}));
+
 // Get by shareId
 router.get('/api/brp-statblock/:id', asyncHandler(async (req, res)=>{
 	const sb = await BrpStatblockModel.get({ shareId: req.params.id })
@@ -139,7 +162,7 @@ router.get('/api/brp-statblocks', asyncHandler(async (req, res)=>{
 	if(req.query.search) query.name = { $regex: req.query.search, $options: 'i' };
 	if(req.query.category) query.category = req.query.category;
 
-	const fields = ['name', 'category', 'subtype', 'tags', 'source',
+	const fields = ['name', 'category', 'subtype', 'characterType', 'tags', 'source',
 		'shareId', 'editId', 'authors', 'createdAt', 'updatedAt', 'views'];
 
 	const [statblocks, total] = await Promise.all([

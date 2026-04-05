@@ -2,9 +2,10 @@ import '../../besmStatblock/besmStatblock.less';
 import React, { useState } from 'react';
 import BesmStatblockPreview from '../../besmStatblock/besmStatblockPreview.jsx';
 
-import Nav            from '@navbar/nav.jsx';
-import Navbar         from '@navbar/navbar.jsx';
-import AccountNavItem from '@navbar/account.navitem.jsx';
+import Nav              from '@navbar/nav.jsx';
+import Navbar           from '@navbar/navbar.jsx';
+import AccountNavItem   from '@navbar/account.navitem.jsx';
+import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
 
 const BesmStatblockSharePage = (props)=>{
 	const character = props.besmCharacter || {};
@@ -44,6 +45,10 @@ const BesmStatblockSharePage = (props)=>{
 							{copied ? 'Copied!' : 'Copy Embed'}
 						</Nav.item>
 					)}
+					{character.shareId && <ExportPdfNavItem
+						url={`/api/pdf/besm/${character.shareId}`}
+						name={character.name || 'besm-export'}
+					/>}
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>

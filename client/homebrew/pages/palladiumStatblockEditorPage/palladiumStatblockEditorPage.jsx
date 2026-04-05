@@ -8,9 +8,10 @@ import SplitPane                  from '../../../components/splitPane/splitPane.
 import PalladiumStatblockForm     from '../../palladiumStatblock/palladiumStatblockForm.jsx';
 import PalladiumStatblockPreview  from '../../palladiumStatblock/palladiumStatblockPreview.jsx';
 
-import Nav             from '@navbar/nav.jsx';
-import Navbar          from '@navbar/navbar.jsx';
-import AccountNavItem  from '@navbar/account.navitem.jsx';
+import Nav              from '@navbar/nav.jsx';
+import Navbar           from '@navbar/navbar.jsx';
+import AccountNavItem   from '@navbar/account.navitem.jsx';
+import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
 
 const SAVE_TIMEOUT = 3000;
 
@@ -119,6 +120,11 @@ const PalladiumStatblockEditorPage = (props)=>{
 							{copied ? 'Copied!' : 'Copy Embed'}
 						</Nav.item>
 					)}
+
+					{shareId && <ExportPdfNavItem
+						url={`/api/pdf/palladium/${shareId}`}
+						name={statblock.name || 'palladium-export'}
+					/>}
 
 					{error && <Nav.item color="red">{error}</Nav.item>}
 

@@ -106,6 +106,7 @@ const BesmBuilderPage = (props)=>{
 	const [error, setError] = useState(null);
 	const saveTimeout = useRef(null);
 	const [conceptPrompt, setConceptPrompt] = useState('');
+	const [aiProvider, setAiProvider] = useState('lmstudio');
 	const [isGeneratingFlavor, setIsGeneratingFlavor] = useState(false);
 	const [flavorError, setFlavorError] = useState(null);
 
@@ -204,7 +205,7 @@ const BesmBuilderPage = (props)=>{
 
 		try {
 			const res = await request.post('/api/ai/generate/besm-flavor')
-				.send({ concept: conceptPrompt || character.name || 'BESM character', statBlock })
+				.send({ concept: conceptPrompt || character.name || 'BESM character', statBlock, provider: aiProvider === 'claude' ? 'claude' : undefined })
 				.timeout({ response: 180000 });
 
 			const flavor = res.body;
@@ -280,6 +281,8 @@ const BesmBuilderPage = (props)=>{
 					<AiGenerateButton
 						endpoint="/api/ai/generate/besm-character"
 						onGenerated={handleAiGenerate}
+						provider={aiProvider}
+						onProviderChange={setAiProvider}
 						buttonLabel="AI Generate"
 					/>
 					{character && character.attributes?.length > 0 && (
@@ -314,6 +317,29 @@ const BesmBuilderPage = (props)=>{
 							>
 								<i className="fas fa-id-card" /> Stat Block
 							</a>
+							<button
+								className="besm-back-link"
+								style={{ fontSize: '0.95rem', background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', fontFamily: 'inherit' }}
+								onClick={async ()=>{
+									try {
+										const res = await fetch(`/api/pdf/besm/${shareId}`);
+										if(!res.ok) throw new Error(`Export failed: ${res.status}`);
+										const blob = await res.blob();
+										const link = document.createElement('a');
+										link.href = URL.createObjectURL(blob);
+										link.download = `${character?.name || 'besm-export'}.pdf`;
+										document.body.appendChild(link);
+										link.click();
+										document.body.removeChild(link);
+										URL.revokeObjectURL(link.href);
+									} catch (err) {
+										console.error('PDF export failed:', err);
+										alert(`PDF export failed: ${err.message}`);
+									}
+								}}
+							>
+								<i className="far fa-file-pdf" /> Export PDF
+							</button>
 						</>
 					)}
 					{flavorError && (

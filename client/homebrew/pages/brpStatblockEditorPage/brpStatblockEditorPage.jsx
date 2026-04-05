@@ -7,11 +7,13 @@ import { createEmptyBrpStatblock } from '@shared/brpStatblock/schema.js';
 import SplitPane           from '../../../components/splitPane/splitPane.jsx';
 import BrpStatblockForm    from '../../brpStatblock/brpStatblockForm.jsx';
 import BrpStatblockPreview from '../../brpStatblock/brpStatblockPreview.jsx';
+import BrpSheetPreview     from '../../brpStatblock/brpSheetPreview.jsx';
 
 import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
 import Nav             from '@navbar/nav.jsx';
 import Navbar          from '@navbar/navbar.jsx';
 import AccountNavItem  from '@navbar/account.navitem.jsx';
+import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
 
 const SAVE_TIMEOUT = 3000;
 
@@ -22,12 +24,17 @@ const BrpStatblockEditorPage = (props)=>{
 	const [shareId, setShareId] = useState(props.brpStatblock?.shareId || null);
 	const [isSaving, setIsSaving] = useState(false);
 	const [layout, setLayout] = useState('narrow');
+	const [bw, setBw] = useState(false);
+	const [previewMode, setPreviewMode] = useState('statblock'); // 'statblock' or 'sheet'
 	const [hasChanges, setHasChanges] = useState(false);
 	const [error, setError] = useState(null);
 	const saveTimeout = useRef(null);
 	const [conceptPrompt, setConceptPrompt] = useState('');
+	const [aiProvider, setAiProvider] = useState('lmstudio');
 	const [isGeneratingFlavor, setIsGeneratingFlavor] = useState(false);
 	const [flavorError, setFlavorError] = useState(null);
+
+	const isCharacter = statblock.characterType === 'character';
 
 	const handleChange = useCallback((updated)=>{
 		setStatblock(updated);
@@ -95,7 +102,7 @@ const BrpStatblockEditorPage = (props)=>{
 
 		try {
 			const res = await request.post('/api/ai/generate/brp-flavor')
-				.send({ concept: conceptPrompt || statblock.name || 'BRP creature', statBlock: statblock })
+				.send({ concept: conceptPrompt || statblock.name || (isCharacter ? 'BRP character' : 'BRP creature'), statBlock: statblock, provider: aiProvider === 'claude' ? 'claude' : undefined })
 				.timeout({ response: 180000 });
 
 			const flavor = res.body;
@@ -104,6 +111,11 @@ const BrpStatblockEditorPage = (props)=>{
 			if(flavor.description) updated.description = flavor.description;
 			if(flavor.lore) updated.lore = flavor.lore;
 
+			// Character-specific flavor fields
+			if(flavor.appearance) updated.appearance = flavor.appearance;
+			if(flavor.personality) updated.personality = flavor.personality;
+			if(flavor.backstory) updated.background = flavor.backstory;
+
 			if(flavor.trait_flavor && updated.traits) {
 				for (const tf of flavor.trait_flavor) {
 					const trait = updated.traits.find((t)=>t.name?.toLowerCase() === tf.name?.toLowerCase());
@@ -111,9 +123,12 @@ const BrpStatblockEditorPage = (props)=>{
 				}
 			}
 
-			if(flavor.encounter_hooks && flavor.encounter_hooks.length > 0) {
-				const hookText = flavor.encounter_hooks.map((h)=>`${h.title}: ${h.description}`).join('\n\n');
-				updated.notes = (updated.notes ? updated.notes + '\n\n' : '') + '── Encounter Hooks ──\n\n' + hookText;
+			// Encounter hooks (creature) or plot hooks (character)
+			const hooks = flavor.encounter_hooks || flavor.plot_hooks;
+			if(hooks && hooks.length > 0) {
+				const label = isCharacter ? '── Plot Hooks ──' : '── Encounter Hooks ──';
+				const hookText = hooks.map((h)=>`${h.title}: ${h.description}`).join('\n\n');
+				updated.notes = (updated.notes ? updated.notes + '\n\n' : '') + label + '\n\n' + hookText;
 			}
 
 			handleChange(updated);
@@ -124,26 +139,41 @@ const BrpStatblockEditorPage = (props)=>{
 		} finally {
 			setIsGeneratingFlavor(false);
 		}
-	}, [statblock, conceptPrompt, isGeneratingFlavor, handleChange]);
+	}, [statblock, conceptPrompt, aiProvider, isCharacter, isGeneratingFlavor, handleChange]);
 
 	const [copied, setCopied] = useState(false);
-	const toggleLayout = ()=>setLayout((l)=>l === 'narrow' ? 'wide' : 'narrow');
+	const [copiedSheet, setCopiedSheet] = useState(false);
+
+	const titleLabel = isCharacter ? 'BRP Character' : 'BRP Stat Block';
 
 	const copyEmbed = ()=>{
 		if(!shareId) return;
-		const code = `{{brp-statblock:${shareId}}}`;
+		const opts = [layout === 'wide' ? 'wide' : '', bw ? 'bw' : ''].filter(Boolean).join(',');
+		const code = opts ? `{{brp:${shareId}|${opts}}}` : `{{brp:${shareId}}}`;
 		navigator.clipboard.writeText(code).then(()=>{
 			setCopied(true);
 			setTimeout(()=>setCopied(false), 2000);
 		});
 	};
 
+	const copySheetEmbed = ()=>{
+		if(!shareId) return;
+		const bwOpt = bw ? ',bw' : '';
+		const code = `{{brp-sheet:${shareId}|p1${bwOpt}}}\n\n\\page\n\n{{brp-sheet:${shareId}|p2${bwOpt}}}`;
+		navigator.clipboard.writeText(code).then(()=>{
+			setCopiedSheet(true);
+			setTimeout(()=>setCopiedSheet(false), 2000);
+		});
+	};
+
+	const PreviewComponent = previewMode === 'sheet' ? BrpSheetPreview : BrpStatblockPreview;
+
 	return (
 		<div className="brpStatblockEditorPage">
 			<Navbar>
 				<Nav.section>
 					<Nav.item className="statblockTitle" color="orange">
-						{statblock.name || 'New BRP Stat Block'}
+						{statblock.name || `New ${titleLabel}`}
 					</Nav.item>
 					<Nav.item icon="fas fa-th-list" onClick={()=>{ window.location.href = '/brp/library'; }}>
 						Library
@@ -152,18 +182,44 @@ const BrpStatblockEditorPage = (props)=>{
 
 				<Nav.section>
 					<Nav.item
-						className="layoutToggle"
-						icon={layout === 'narrow' ? 'fas fa-columns' : 'fas fa-align-justify'}
-						onClick={toggleLayout}
+						icon={previewMode === 'statblock' ? 'fas fa-id-card' : 'fas fa-file-alt'}
+						onClick={()=>setPreviewMode((m)=>m === 'statblock' ? 'sheet' : 'statblock')}
 					>
+						{previewMode === 'statblock' ? 'Sheet View' : 'Stat Block View'}
+					</Nav.item>
+
+					<Nav.item icon={layout === 'narrow' ? 'fas fa-columns' : 'fas fa-align-justify'}
+						onClick={()=>setLayout((l)=>l === 'narrow' ? 'wide' : 'narrow')}>
 						{layout === 'narrow' ? 'Wide' : 'Narrow'}
 					</Nav.item>
 
+					<Nav.item icon={bw ? 'fas fa-palette' : 'fas fa-adjust'} onClick={()=>setBw((b)=>!b)}>
+						{bw ? 'Color' : 'B&W'}
+					</Nav.item>
+
+					<Nav.item icon="fas fa-print" onClick={()=>window.print()}>
+						Print
+					</Nav.item>
+
 					{shareId && (
-						<Nav.item icon={copied ? 'fas fa-check' : 'fas fa-code'} onClick={copyEmbed}>
-							{copied ? 'Copied!' : 'Copy Embed'}
+						<Nav.item icon="fas fa-file-alt" onClick={()=>{ window.location.href = `/brp/sheet/${shareId}`; }}>
+							Character Sheet
 						</Nav.item>
 					)}
+
+					{shareId && <>
+						<Nav.item icon={copied ? 'fas fa-check' : 'fas fa-code'} onClick={copyEmbed}>
+							{copied ? 'Copied!' : 'Embed Statblock'}
+						</Nav.item>
+						<Nav.item icon={copiedSheet ? 'fas fa-check' : 'fas fa-file-alt'} onClick={copySheetEmbed}>
+							{copiedSheet ? 'Copied!' : 'Embed Sheet (2 pages)'}
+						</Nav.item>
+					</>}
+
+					{shareId && <ExportPdfNavItem
+						url={`/api/pdf/brp/${shareId}?view=${previewMode}`}
+						name={statblock.name || 'brp-export'}
+					/>}
 
 					{error && <Nav.item color="red">{error}</Nav.item>}
 
@@ -186,6 +242,9 @@ const BrpStatblockEditorPage = (props)=>{
 							<AiGenerateButton
 								endpoint="/api/ai/generate/brp-statblock"
 								onGenerated={handleAiGenerate}
+								provider={aiProvider}
+								onProviderChange={setAiProvider}
+								extraData={{ characterType: statblock.characterType }}
 							/>
 							{statblock.name && (
 								<button
@@ -204,7 +263,7 @@ const BrpStatblockEditorPage = (props)=>{
 						</div>
 						<BrpStatblockForm statblock={statblock} onChange={handleChange} />
 					</div>
-					<BrpStatblockPreview statblock={statblock} layout={layout} />
+					<PreviewComponent statblock={statblock} layout={layout} bw={bw} />
 				</SplitPane>
 			</div>
 		</div>

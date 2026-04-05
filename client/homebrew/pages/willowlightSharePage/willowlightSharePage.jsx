@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 import WillowlightStatblockPreview from '../../willowlight/willowlightStatblockPreview.jsx';
 import WillowlightSheetPreview     from '../../willowlight/willowlightSheetPreview.jsx';
 
-import Nav            from '@navbar/nav.jsx';
-import Navbar         from '@navbar/navbar.jsx';
-import AccountNavItem from '@navbar/account.navitem.jsx';
+import Nav              from '@navbar/nav.jsx';
+import Navbar           from '@navbar/navbar.jsx';
+import AccountNavItem   from '@navbar/account.navitem.jsx';
+import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
 
 const WillowlightSharePage = (props)=>{
 	const character = props.willowlightCharacter || {};
@@ -64,6 +65,10 @@ const WillowlightSharePage = (props)=>{
 							{copiedSheet ? 'Copied!' : 'Embed Sheet (2 pages)'}
 						</Nav.item>
 					</>}
+					{character.shareId && <ExportPdfNavItem
+						url={`/api/pdf/willowlight/${character.shareId}`}
+						name={character.name || 'willowlight-export'}
+					/>}
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>

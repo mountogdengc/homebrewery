@@ -2,9 +2,10 @@ import '../../statblock/statblock.less';
 import React, { useState } from 'react';
 import StatblockPreview from '../../statblock/statblockPreview.jsx';
 
-import Nav            from '@navbar/nav.jsx';
-import Navbar         from '@navbar/navbar.jsx';
-import AccountNavItem from '@navbar/account.navitem.jsx';
+import Nav              from '@navbar/nav.jsx';
+import Navbar           from '@navbar/navbar.jsx';
+import AccountNavItem   from '@navbar/account.navitem.jsx';
+import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
 
 const StatblockSharePage = (props)=>{
 	const statblock = props.statblock || {};
@@ -48,6 +49,10 @@ const StatblockSharePage = (props)=>{
 							{copied ? 'Copied!' : 'Copy Embed'}
 						</Nav.item>
 					)}
+					{statblock.shareId && <ExportPdfNavItem
+						url={`/api/pdf/statblock/${statblock.shareId}`}
+						name={statblock.name || 'statblock-export'}
+					/>}
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>

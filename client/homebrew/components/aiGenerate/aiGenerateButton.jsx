@@ -2,20 +2,38 @@ import './aiGenerate.less';
 import React, { useState, useEffect } from 'react';
 import request from '../../utils/request-middleware.js';
 
-const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate' })=>{
+const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate', provider: externalProvider, onProviderChange, extraData })=>{
 	const [showModal, setShowModal] = useState(false);
 	const [prompt, setPrompt] = useState('');
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [error, setError] = useState(null);
-	const [aiAvailable, setAiAvailable] = useState(null);
+	const [aiStatus, setAiStatus] = useState(null); // { available, lmStudio, claude }
+	const [internalProvider, setInternalProvider] = useState('lmstudio'); // 'lmstudio' or 'claude'
+
+	// Support controlled (external) or uncontrolled (internal) provider state
+	const provider = externalProvider ?? internalProvider;
+	const setProvider = (p)=>{
+		setInternalProvider(p);
+		if(onProviderChange) onProviderChange(p);
+	};
 
 	useEffect(()=>{
 		request.get('/api/ai/status')
-			.then((res)=>setAiAvailable(res.body.available))
-			.catch(()=>setAiAvailable(false));
+			.then((res)=>{
+				setAiStatus(res.body);
+				// Default to claude if LM Studio isn't available but Claude is
+				if(!res.body.lmStudio?.available && res.body.claude?.available) {
+					setProvider('claude');
+				}
+			})
+			.catch(()=>setAiStatus({ available: false }));
 	}, []);
 
-	if(aiAvailable === false || aiAvailable === null) return null;
+	if(!aiStatus || aiStatus.available === false) return null;
+
+	const lmAvailable = aiStatus.lmStudio?.available;
+	const claudeAvailable = aiStatus.claude?.available;
+	const bothAvailable = lmAvailable && claudeAvailable;
 
 	const handleGenerate = async ()=>{
 		if(!prompt.trim() || isGenerating) return;
@@ -23,8 +41,10 @@ const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate' }
 		setError(null);
 
 		try {
+			const body = { prompt: prompt.trim(), ...extraData };
+			if(provider === 'claude') body.provider = 'claude';
 			const res = await request.post(endpoint)
-				.send({ prompt: prompt.trim() })
+				.send(body)
 				.timeout({ response: 180000 });
 			res.body._conceptPrompt = prompt.trim();
 			onGenerated(res.body);
@@ -59,6 +79,31 @@ const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate' }
 							<button className="aiModal-close" onClick={()=>setShowModal(false)}>✕</button>
 						)}
 					</div>
+
+					{/* Provider toggle */}
+					{bothAvailable && (
+						<div className="aiModal-provider">
+							<button
+								className={`aiModal-providerBtn ${provider === 'lmstudio' ? 'active' : ''}`}
+								onClick={()=>setProvider('lmstudio')}
+								disabled={isGenerating}
+							>
+								<i className="fas fa-server" /> Local (LM Studio)
+							</button>
+							<button
+								className={`aiModal-providerBtn ${provider === 'claude' ? 'active' : ''}`}
+								onClick={()=>setProvider('claude')}
+								disabled={isGenerating}
+							>
+								<i className="fas fa-cloud" /> Claude API
+							</button>
+						</div>
+					)}
+					{!bothAvailable && claudeAvailable && !lmAvailable && (
+						<div className="aiModal-providerNote">
+							<i className="fas fa-cloud" /> Using Claude API
+						</div>
+					)}
 
 					<p className="aiModal-hint">
 						Describe what you want to create. The more detail, the better the result.
@@ -97,7 +142,9 @@ const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate' }
 
 					{isGenerating && (
 						<p className="aiModal-status">
-							This may take a minute depending on your model...
+							{provider === 'claude'
+								? 'Generating with Claude API...'
+								: 'This may take a minute depending on your model...'}
 						</p>
 					)}
 				</div>

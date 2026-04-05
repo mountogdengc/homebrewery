@@ -28,6 +28,7 @@ import willowlightBestiaryApi      from './willowlight-bestiary.api.js';
 import playtestSessionApi          from './playtest-session.api.js';
 import aiApi                       from './ai.api.js';
 import proceduralImageApi          from './procedural-image.api.js';
+import pdfApi                      from './pdf.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
@@ -170,6 +171,7 @@ export default async function createApp(vite) {
 	app.use(playtestSessionApi);
 	app.use(aiApi);
 	app.use(proceduralImageApi);
+	app.use(pdfApi);
 
 	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 	const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
@@ -747,6 +749,30 @@ export default async function createApp(vite) {
 		req.ogMeta = { ...defaultMetaTags,
 			title       : req.brpStatblock.name || 'BRP Stat Block',
 			description : `${req.brpStatblock.category} BRP creature`
+		};
+		return next();
+	}));
+
+	//BRP Blank Character Sheet
+	app.get('/brp/sheet/blank', (req, res, next)=>{
+		req.brpStatblock = null;
+		req.sheetView = true;
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'BRP Blank Character Sheet',
+			description : 'Printable blank BRP character sheet'
+		};
+		return next();
+	});
+
+	//BRP Character Sheet (portrait view)
+	app.get('/brp/sheet/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: BrpStatblockModel } = await import('./brp-statblock.model.js');
+		const sb = await BrpStatblockModel.get({ shareId: req.params.id });
+		req.brpStatblock = sb.toObject();
+		req.sheetView = true;
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `${req.brpStatblock.name || 'BRP'} — Character Sheet`,
+			description : `BRP character sheet for ${req.brpStatblock.name || 'character'}`
 		};
 		return next();
 	}));

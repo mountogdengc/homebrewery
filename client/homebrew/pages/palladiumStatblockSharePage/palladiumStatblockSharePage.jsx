@@ -3,9 +3,10 @@ import '../../statblock/statblock.less';
 import React, { useState } from 'react';
 import PalladiumStatblockPreview from '../../palladiumStatblock/palladiumStatblockPreview.jsx';
 
-import Nav            from '@navbar/nav.jsx';
-import Navbar         from '@navbar/navbar.jsx';
-import AccountNavItem from '@navbar/account.navitem.jsx';
+import Nav              from '@navbar/nav.jsx';
+import Navbar           from '@navbar/navbar.jsx';
+import AccountNavItem   from '@navbar/account.navitem.jsx';
+import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
 
 const PalladiumStatblockSharePage = (props)=>{
 	const statblock = props.palladiumStatblock || {};
@@ -41,6 +42,10 @@ const PalladiumStatblockSharePage = (props)=>{
 							{copied ? 'Copied!' : 'Copy Embed'}
 						</Nav.item>
 					)}
+					{statblock.shareId && <ExportPdfNavItem
+						url={`/api/pdf/palladium/${statblock.shareId}`}
+						name={statblock.name || 'palladium-export'}
+					/>}
 					<AccountNavItem />
 				</Nav.section>
 			</Navbar>

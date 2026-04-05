@@ -10,9 +10,10 @@ import WillowlightStatblockPreview from '../../willowlight/willowlightStatblockP
 import WillowlightSheetPreview     from '../../willowlight/willowlightSheetPreview.jsx';
 
 import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
-import Nav             from '@navbar/nav.jsx';
-import Navbar          from '@navbar/navbar.jsx';
-import AccountNavItem  from '@navbar/account.navitem.jsx';
+import Nav              from '@navbar/nav.jsx';
+import Navbar           from '@navbar/navbar.jsx';
+import AccountNavItem   from '@navbar/account.navitem.jsx';
+import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
 
 const SAVE_TIMEOUT = 3000;
 
@@ -29,6 +30,7 @@ const WillowlightEditorPage = (props)=>{
 	const [error, setError] = useState(null);
 	const saveTimeout = useRef(null);
 	const [conceptPrompt, setConceptPrompt] = useState('');
+	const [aiProvider, setAiProvider] = useState('lmstudio');
 	const [isGeneratingFlavor, setIsGeneratingFlavor] = useState(false);
 	const [flavorError, setFlavorError] = useState(null);
 
@@ -93,7 +95,7 @@ const WillowlightEditorPage = (props)=>{
 
 		try {
 			const res = await request.post('/api/ai/generate/willowlight-character-flavor')
-				.send({ concept: conceptPrompt || character.name || 'Willowlight character', statBlock: character })
+				.send({ concept: conceptPrompt || character.name || 'Willowlight character', statBlock: character, provider: aiProvider === 'claude' ? 'claude' : undefined })
 				.timeout({ response: 180000 });
 
 			const flavor = res.body;
@@ -206,6 +208,11 @@ const WillowlightEditorPage = (props)=>{
 						</Nav.item>
 					</>}
 
+					{shareId && <ExportPdfNavItem
+						url={`/api/pdf/willowlight/${shareId}`}
+						name={character.name || 'willowlight-export'}
+					/>}
+
 					{error && <Nav.item color="red">{error}</Nav.item>}
 
 					<Nav.item className="save" icon={isSaving ? 'fas fa-spinner fa-spin' : 'fas fa-save'} onClick={save}>
@@ -224,6 +231,8 @@ const WillowlightEditorPage = (props)=>{
 								endpoint="/api/ai/generate/willowlight-statblock"
 								onGenerated={handleAiGenerate}
 								buttonLabel="AI Generate"
+								provider={aiProvider}
+								onProviderChange={setAiProvider}
 							/>
 							{character.name && (
 								<button

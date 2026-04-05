@@ -7,6 +7,7 @@ import Nav from '@navbar/nav.jsx';
 import Navbar from '@navbar/navbar.jsx';
 import MetadataNav from '@navbar/metadata.navitem.jsx';
 import PrintNavItem from '@navbar/print.navitem.jsx';
+import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import Account from '@navbar/account.navitem.jsx';
@@ -78,6 +79,10 @@ const SharePage = (props)=>{
 					{brew.shareId && (
 						<>
 							<PrintNavItem />
+								<ExportPdfNavItem
+									url={`/api/pdf/brew/${processShareId()}`}
+									name={brew.title || 'brew-export'}
+								/>
 							<Nav.dropdown>
 								<Nav.item color='red' icon='fas fa-code'>
 									source

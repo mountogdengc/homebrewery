@@ -7,6 +7,9 @@ const BrpStatblockSchema = mongoose.Schema({
 	authors   : { type: [String], index: true },
 	published : { type: Boolean, default: false, index: true },
 
+	// Character type: 'creature' or 'character'
+	characterType : { type: String, default: 'creature', index: true },
+
 	// Identity
 	name        : { type: String, default: '', index: true },
 	category    : { type: String, default: 'Human', index: true },
@@ -14,6 +17,15 @@ const BrpStatblockSchema = mongoose.Schema({
 	description : { type: String, default: '' },
 	source      : { type: String, default: '' },
 	tags        : { type: [String], index: true },
+
+	// Character-specific identity
+	player      : { type: String, default: '' },
+	occupation  : { type: String, default: '' },
+	age         : { type: String, default: '' },
+	gender      : { type: String, default: '' },
+	nationality : { type: String, default: '' },
+	appearance  : { type: String, default: '' },
+	background  : { type: String, default: '' },
 
 	// Characteristics
 	characteristics : { type: mongoose.Schema.Types.Mixed, default: ()=>({
@@ -28,12 +40,26 @@ const BrpStatblockSchema = mongoose.Schema({
 	armorPoints         : { type: Number, default: 0 },
 	armorDescription    : { type: String, default: '' },
 
+	// Sanity
+	sanity    : { type: Number, default: null },
+	sanityMax : { type: Number, default: null },
+
 	// Skills, Weapons, Spells, Traits, Hit Locations
 	skills       : [mongoose.Schema.Types.Mixed],
 	weapons      : [mongoose.Schema.Types.Mixed],
 	spells       : [mongoose.Schema.Types.Mixed],
 	traits       : [mongoose.Schema.Types.Mixed],
 	hitLocations : [mongoose.Schema.Types.Mixed],
+
+	// Passions, Allegiances, Equipment
+	passions    : [mongoose.Schema.Types.Mixed],
+	allegiances : [mongoose.Schema.Types.Mixed],
+	equipment   : [mongoose.Schema.Types.Mixed],
+
+	// Wealth & Experience
+	wealth           : { type: String, default: '' },
+	experiencePoints : { type: Number, default: 0 },
+	experienceChecks : [String],
 
 	// Notes
 	notes : { type: String, default: '' },

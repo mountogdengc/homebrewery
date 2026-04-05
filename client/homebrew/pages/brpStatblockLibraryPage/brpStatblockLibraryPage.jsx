@@ -94,7 +94,10 @@ const BrpStatblockLibraryPage = ()=>{
 				<Nav.section>
 					<Nav.item color="orange">BRP</Nav.item>
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/brp/new'; }}>
-						New Stat Block
+						New Creature
+					</Nav.item>
+					<Nav.item icon="fas fa-user-plus" onClick={()=>{ window.location.href = '/brp/new?type=character'; }}>
+						New Character
 					</Nav.item>
 					<Nav.item icon="fas fa-paste" onClick={()=>setShowImportBox(!showImportBox)}>
 						Paste Import
@@ -108,7 +111,7 @@ const BrpStatblockLibraryPage = ()=>{
 
 			<div className="libraryContent">
 				<div className="libraryHeader">
-					<h1>Your BRP Stat Blocks <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
+					<h1>Your BRP Characters &amp; Stat Blocks <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
 				</div>
 
 				<div className="filterBar">
@@ -148,7 +151,12 @@ const BrpStatblockLibraryPage = ()=>{
 									<div className="cardHeader">
 										<h3 className="cardName">{sb.name || 'Untitled'}</h3>
 									</div>
-									<div className="cardMeta">{sb.category}{sb.subtype ? ` (${sb.subtype})` : ''}</div>
+									<div className="cardMeta">
+										{sb.characterType === 'character'
+											? <span style={{ color: '#c8a97a' }}>Character</span>
+											: <span>Creature</span>}
+										{' \u00b7 '}{sb.category}{sb.subtype ? ` (${sb.subtype})` : ''}
+									</div>
 									{sb.tags && sb.tags.length > 0 && (
 										<div className="cardTags">
 											{sb.tags.map((tag, i)=><span className="tag" key={i}>{tag}</span>)}

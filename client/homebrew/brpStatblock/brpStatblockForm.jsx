@@ -1,11 +1,15 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
 	CHARACTERISTICS, CHAR_LABELS, CREATURE_CATEGORIES,
 	SKILL_CATEGORIES, HIT_LOCATION_NAMES,
 	getDamageBonus, getHitPoints, getMagicPoints
 } from '@shared/brpStatblock/constants.js';
+import {
+	DEFAULT_SKILLS, buildSkillList, resolveBase, SKILL_CATEGORY_ORDER
+} from '@shared/brpStatblock/defaultSkills.js';
 
 const BrpStatblockForm = ({ statblock, onChange })=>{
+	const isCharacter = statblock.characterType === 'character';
 
 	const update = useCallback((path, value)=>{
 		const updated = JSON.parse(JSON.stringify(statblock));
@@ -82,16 +86,77 @@ const BrpStatblockForm = ({ statblock, onChange })=>{
 		onChange(updated);
 	};
 
+	// ── Skills: full list with train toggles (character mode) ──────
+	const fullSkillList = useMemo(()=>{
+		return buildSkillList(statblock.skills, chars);
+	}, [statblock.skills, chars]);
+
+	const toggleSkillTrained = useCallback((skillName, currentlyTrained)=>{
+		const updated = JSON.parse(JSON.stringify(statblock));
+		if(currentlyTrained) {
+			// Remove from trained skills
+			updated.skills = updated.skills.filter((s)=>s.name !== skillName);
+		} else {
+			// Add to trained skills with current base value
+			const def = DEFAULT_SKILLS.find((d)=>d.name === skillName);
+			const baseVal = def ? resolveBase(def.base, chars) : 0;
+			updated.skills.push({ name: skillName, value: baseVal, category: def?.category || '', trained: true });
+		}
+		onChange(updated);
+	}, [statblock, chars, onChange]);
+
+	const updateSkillValue = useCallback((skillName, newValue)=>{
+		const updated = JSON.parse(JSON.stringify(statblock));
+		const skill = updated.skills.find((s)=>s.name === skillName);
+		if(skill) {
+			skill.value = newValue;
+		} else {
+			// Auto-train when value is changed
+			const def = DEFAULT_SKILLS.find((d)=>d.name === skillName);
+			updated.skills.push({ name: skillName, value: newValue, category: def?.category || '', trained: true });
+		}
+		onChange(updated);
+	}, [statblock, chars, onChange]);
+
 	return <div className="statblockForm">
+		{/* ── Character Type Toggle ──────────────────────────────── */}
+		<div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+			<button
+				className={`addButton ${!isCharacter ? 'active' : ''}`}
+				style={{ flex: 1, background: !isCharacter ? '#4a3520' : '#2e3d4e', border: 'none', cursor: 'pointer', padding: '8px', fontSize: '13px', fontWeight: 600, color: '#f5e6c8' }}
+				onClick={()=>update('characterType', 'creature')}
+			>Creature / NPC</button>
+			<button
+				className={`addButton ${isCharacter ? 'active' : ''}`}
+				style={{ flex: 1, background: isCharacter ? '#4a3520' : '#2e3d4e', border: 'none', cursor: 'pointer', padding: '8px', fontSize: '13px', fontWeight: 600, color: '#f5e6c8' }}
+				onClick={()=>update('characterType', 'character')}
+			>Player Character</button>
+		</div>
+
 		{/* ── Identity ─────────────────────────────────────────────── */}
 		<h3>Identity</h3>
 		{field('Name', 'name')}
+		{isCharacter && field('Player', 'player')}
 		<div className="formRow">
+			{isCharacter ? field('Occupation', 'occupation') : null}
 			{field('Category', 'category', 'select', { options: CREATURE_CATEGORIES })}
 			{field('Subtype', 'subtype')}
 		</div>
 		{field('Description', 'description', 'textarea')}
 		{field('Source', 'source')}
+
+		{/* ── Character Demographics ───────────────────────────────── */}
+		{isCharacter && <>
+			<h3>Demographics</h3>
+			<div className="formRow">
+				{field('Age', 'age')}
+				{field('Gender', 'gender')}
+			</div>
+			<div className="formRow">
+				{field('Nationality', 'nationality')}
+			</div>
+			{field('Appearance', 'appearance', 'textarea')}
+		</>}
 
 		{/* ── Characteristics ──────────────────────────────────────── */}
 		<h3>Characteristics</h3>
@@ -136,26 +201,112 @@ const BrpStatblockForm = ({ statblock, onChange })=>{
 			{field('Armor Description', 'armorDescription')}
 		</div>
 
-		{/* ── Skills ───────────────────────────────────────────────── */}
-		<h3>Skills</h3>
-		{statblock.skills?.map((skill, idx)=>(
-			<div className="repeatItem" key={idx}>
-				<div className="repeatHeader">
-					<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Skill {idx + 1}</strong>
-					<div className="repeatControls">
-						<button onClick={()=>moveItem('skills', idx, -1)}>▲</button>
-						<button onClick={()=>moveItem('skills', idx, 1)}>▼</button>
-						<button onClick={()=>removeItem('skills', idx)}>✕</button>
-					</div>
-				</div>
-				<div className="formRow">
-					{field('Name', `skills.${idx}.name`)}
-					{field('Value %', `skills.${idx}.value`, 'number')}
-				</div>
-				{field('Category', `skills.${idx}.category`, 'select', { options: ['', ...SKILL_CATEGORIES] })}
+		{/* ── Sanity (character mode) ──────────────────────────────── */}
+		{isCharacter && <>
+			<div className="formRow" style={{ marginTop: '8px' }}>
+				<label>
+					<span>Sanity (auto: {(chars.pow || 0) * 5})</span>
+					<input type="number" value={statblock.sanity ?? ''}
+						placeholder={(chars.pow || 0) * 5}
+						onChange={(e)=>update('sanity', e.target.value === '' ? null : Number(e.target.value))} />
+				</label>
+				<label>
+					<span>Max Sanity</span>
+					<input type="number" value={statblock.sanityMax ?? ''}
+						placeholder="99"
+						onChange={(e)=>update('sanityMax', e.target.value === '' ? null : Number(e.target.value))} />
+				</label>
 			</div>
-		))}
-		<button className="addButton" onClick={()=>addItem('skills', { name: '', value: 0, category: '' })}>+ Add Skill</button>
+		</>}
+
+		{/* ── Skills ───────────────────────────────────────────────── */}
+		<h3>Skills {isCharacter && <span style={{ fontSize: '11px', color: '#888', fontWeight: 400 }}>(check to train, only trained show on stat block)</span>}</h3>
+
+		{isCharacter ? (
+			/* Character mode: show all default skills with train toggles */
+			<div className="skillGrid">
+				{SKILL_CATEGORY_ORDER.map((cat)=>{
+					const catSkills = fullSkillList.filter((s)=>s.category === cat);
+					if(catSkills.length === 0) return null;
+					return <div key={cat} className="skillCategory">
+						<div className="skillCatTitle">{cat}</div>
+						{catSkills.map((s)=>(
+							<div className="skillRow" key={s.name}>
+								<label className="skillCheck">
+									<input type="checkbox" checked={s.trained}
+										onChange={()=>toggleSkillTrained(s.name, s.trained)} />
+									<span className={s.trained ? 'trained' : ''}>{s.name}</span>
+								</label>
+								<span className="skillBase">({s.base})</span>
+								<input type="number" className="skillValue"
+									value={s.trained ? s.value : ''}
+									placeholder={s.base}
+									onChange={(e)=>{
+										const val = e.target.value === '' ? s.base : Number(e.target.value);
+										updateSkillValue(s.name, val);
+									}}
+									disabled={!s.trained}
+								/>
+								<span className="skillPct">%</span>
+							</div>
+						))}
+					</div>;
+				})}
+
+				{/* Custom skills not in default list */}
+				{fullSkillList.filter((s)=>!SKILL_CATEGORY_ORDER.includes(s.category) || !DEFAULT_SKILLS.find((d)=>d.name === s.name)).length > 0 && (
+					<div className="skillCategory">
+						<div className="skillCatTitle">Custom</div>
+						{fullSkillList.filter((s)=>!DEFAULT_SKILLS.find((d)=>d.name === s.name)).map((s, idx)=>(
+							<div className="skillRow" key={s.name || idx}>
+								<span className="skillCheck" style={{ flex: 1 }}>
+									<input type="checkbox" checked={true} disabled />
+									<span className="trained">{s.name}</span>
+								</span>
+								<input type="number" className="skillValue"
+									value={s.value}
+									onChange={(e)=>updateSkillValue(s.name, Number(e.target.value) || 0)}
+								/>
+								<span className="skillPct">%</span>
+								<button className="skillRemove" onClick={()=>{
+									const updated = JSON.parse(JSON.stringify(statblock));
+									updated.skills = updated.skills.filter((sk)=>sk.name !== s.name);
+									onChange(updated);
+								}}>✕</button>
+							</div>
+						))}
+					</div>
+				)}
+
+				<button className="addButton" onClick={()=>{
+					const name = prompt('Custom skill name:');
+					if(!name) return;
+					addItem('skills', { name, value: 0, category: '', trained: true });
+				}}>+ Add Custom Skill</button>
+			</div>
+		) : (
+			/* Creature mode: simple skill list (original behavior) */
+			<>
+				{statblock.skills?.map((skill, idx)=>(
+					<div className="repeatItem" key={idx}>
+						<div className="repeatHeader">
+							<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Skill {idx + 1}</strong>
+							<div className="repeatControls">
+								<button onClick={()=>moveItem('skills', idx, -1)}>▲</button>
+								<button onClick={()=>moveItem('skills', idx, 1)}>▼</button>
+								<button onClick={()=>removeItem('skills', idx)}>✕</button>
+							</div>
+						</div>
+						<div className="formRow">
+							{field('Name', `skills.${idx}.name`)}
+							{field('Value %', `skills.${idx}.value`, 'number')}
+						</div>
+						{field('Category', `skills.${idx}.category`, 'select', { options: ['', ...SKILL_CATEGORIES] })}
+					</div>
+				))}
+				<button className="addButton" onClick={()=>addItem('skills', { name: '', value: 0, category: '' })}>+ Add Skill</button>
+			</>
+		)}
 
 		{/* ── Weapons ──────────────────────────────────────────────── */}
 		<h3>Weapons</h3>
@@ -255,6 +406,86 @@ const BrpStatblockForm = ({ statblock, onChange })=>{
 				</button>
 			)}
 		</div>
+
+		{/* ── Passions (character mode) ─────────────────────────────── */}
+		{isCharacter && <>
+			<h3>Passions</h3>
+			{(statblock.passions || []).map((passion, idx)=>(
+				<div className="repeatItem" key={idx}>
+					<div className="repeatHeader">
+						<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Passion {idx + 1}</strong>
+						<div className="repeatControls">
+							<button onClick={()=>moveItem('passions', idx, -1)}>▲</button>
+							<button onClick={()=>moveItem('passions', idx, 1)}>▼</button>
+							<button onClick={()=>removeItem('passions', idx)}>✕</button>
+						</div>
+					</div>
+					<div className="formRow">
+						{field('Name', `passions.${idx}.name`)}
+						{field('Value %', `passions.${idx}.value`, 'number')}
+					</div>
+				</div>
+			))}
+			<button className="addButton" onClick={()=>addItem('passions', { name: '', value: 60 })}>+ Add Passion</button>
+		</>}
+
+		{/* ── Allegiances (character mode) ──────────────────────────── */}
+		{isCharacter && <>
+			<h3>Allegiances</h3>
+			{(statblock.allegiances || []).map((a, idx)=>(
+				<div className="repeatItem" key={idx}>
+					<div className="repeatHeader">
+						<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Allegiance {idx + 1}</strong>
+						<div className="repeatControls">
+							<button onClick={()=>moveItem('allegiances', idx, -1)}>▲</button>
+							<button onClick={()=>moveItem('allegiances', idx, 1)}>▼</button>
+							<button onClick={()=>removeItem('allegiances', idx)}>✕</button>
+						</div>
+					</div>
+					<div className="formRow">
+						{field('Name', `allegiances.${idx}.name`)}
+						{field('Value', `allegiances.${idx}.value`, 'number')}
+					</div>
+				</div>
+			))}
+			<button className="addButton" onClick={()=>addItem('allegiances', { name: '', value: 0 })}>+ Add Allegiance</button>
+		</>}
+
+		{/* ── Equipment (character mode) ────────────────────────────── */}
+		{isCharacter && <>
+			<h3>Equipment &amp; Gear</h3>
+			{field('Wealth', 'wealth')}
+			{(statblock.equipment || []).map((item, idx)=>(
+				<div className="repeatItem" key={idx}>
+					<div className="repeatHeader">
+						<strong style={{ color: '#f5e6c8', fontSize: '12px' }}>Item {idx + 1}</strong>
+						<div className="repeatControls">
+							<button onClick={()=>moveItem('equipment', idx, -1)}>▲</button>
+							<button onClick={()=>moveItem('equipment', idx, 1)}>▼</button>
+							<button onClick={()=>removeItem('equipment', idx)}>✕</button>
+						</div>
+					</div>
+					<div className="formRow">
+						{field('Name', `equipment.${idx}.name`)}
+						{field('Qty', `equipment.${idx}.quantity`, 'number')}
+					</div>
+					{field('Notes', `equipment.${idx}.notes`)}
+				</div>
+			))}
+			<button className="addButton" onClick={()=>addItem('equipment', { name: '', quantity: 1, notes: '' })}>+ Add Equipment</button>
+		</>}
+
+		{/* ── Experience (character mode) ───────────────────────────── */}
+		{isCharacter && <>
+			<h3>Experience</h3>
+			{field('Experience Points', 'experiencePoints', 'number')}
+		</>}
+
+		{/* ── Background (character mode) ──────────────────────────── */}
+		{isCharacter && <>
+			<h3>Background</h3>
+			{field('Background', 'background', 'textarea')}
+		</>}
 
 		{/* ── Notes ─────────────────────────────────────────────────── */}
 		<h3>Notes</h3>

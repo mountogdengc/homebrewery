@@ -116,6 +116,8 @@ const Homebrew = (props)=>{
 					<Route path='/brp/new' element={<WithRoute el={BrpStatblockEditorPage} />} />
 					<Route path='/brp/edit/:id' element={<WithRoute el={BrpStatblockEditorPage} brpStatblock={props.brpStatblock} />} />
 					<Route path='/brp/share/:id' element={<WithRoute el={BrpStatblockSharePage} brpStatblock={props.brpStatblock} />} />
+					<Route path='/brp/sheet/blank' element={<WithRoute el={BrpStatblockSharePage} brpStatblock={null} sheetView={true} />} />
+					<Route path='/brp/sheet/:id' element={<WithRoute el={BrpStatblockSharePage} brpStatblock={props.brpStatblock} sheetView={true} />} />
 					<Route path='/brp/library' element={<WithRoute el={BrpStatblockLibraryPage} />} />
 					<Route path='/palladium/new' element={<WithRoute el={PalladiumStatblockEditorPage} />} />
 					<Route path='/palladium/edit/:id' element={<WithRoute el={PalladiumStatblockEditorPage} palladiumStatblock={props.palladiumStatblock} />} />

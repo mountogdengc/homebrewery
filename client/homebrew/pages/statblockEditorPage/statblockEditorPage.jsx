@@ -9,9 +9,10 @@ import StatblockForm   from '../../statblock/statblockForm.jsx';
 import StatblockPreview from '../../statblock/statblockPreview.jsx';
 
 import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
-import Nav             from '@navbar/nav.jsx';
-import Navbar          from '@navbar/navbar.jsx';
-import AccountNavItem  from '@navbar/account.navitem.jsx';
+import Nav              from '@navbar/nav.jsx';
+import Navbar           from '@navbar/navbar.jsx';
+import AccountNavItem   from '@navbar/account.navitem.jsx';
+import ExportPdfNavItem from '@navbar/exportPdf.navitem.jsx';
 
 const SAVE_TIMEOUT = 3000;
 
@@ -26,6 +27,7 @@ const StatblockEditorPage = (props)=>{
 	const [error, setError] = useState(null);
 	const saveTimeout = useRef(null);
 	const [conceptPrompt, setConceptPrompt] = useState('');
+	const [aiProvider, setAiProvider] = useState('lmstudio');
 	const [isGeneratingFlavor, setIsGeneratingFlavor] = useState(false);
 	const [flavorError, setFlavorError] = useState(null);
 
@@ -97,7 +99,7 @@ const StatblockEditorPage = (props)=>{
 
 		try {
 			const res = await request.post('/api/ai/generate/statblock-flavor')
-				.send({ concept: conceptPrompt || statblock.name || 'D&D 5e creature', statBlock: statblock })
+				.send({ concept: conceptPrompt || statblock.name || 'D&D 5e creature', statBlock: statblock, provider: aiProvider === 'claude' ? 'claude' : undefined })
 				.timeout({ response: 180000 });
 
 			const flavor = res.body;
@@ -191,6 +193,11 @@ const StatblockEditorPage = (props)=>{
 						</Nav.item>
 					)}
 
+					{shareId && <ExportPdfNavItem
+						url={`/api/pdf/statblock/${shareId}`}
+						name={statblock.name || 'statblock-export'}
+					/>}
+
 					{error && <Nav.item color="red">{error}</Nav.item>}
 
 					<Nav.item
@@ -212,6 +219,8 @@ const StatblockEditorPage = (props)=>{
 							<AiGenerateButton
 								endpoint="/api/ai/generate/statblock"
 								onGenerated={handleAiGenerate}
+								provider={aiProvider}
+								onProviderChange={setAiProvider}
 							/>
 							{statblock.name && (
 								<button

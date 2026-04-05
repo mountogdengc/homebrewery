@@ -1,4 +1,6 @@
-// ── BRP Statblock Schema ──────────────────────────────────────────────
+// ── BRP Character / Statblock Schema ─────────────────────────────────
+// Unified schema for both creatures (stat blocks) and player characters.
+// Leave character-specific fields blank for creature stat blocks.
 
 export function createEmptyBrpStatblock() {
 	return {
@@ -9,6 +11,18 @@ export function createEmptyBrpStatblock() {
 		description : '',
 		source   : '',
 		tags     : [],
+
+		// Character type: 'creature' or 'character'
+		characterType : 'creature',
+
+		// ── Character-specific identity ───────────────────────────────
+		player      : '',
+		occupation  : '',
+		age         : '',
+		gender      : '',
+		nationality : '',
+		appearance  : '',
+		background  : '',
 
 		// Characteristics
 		characteristics : {
@@ -29,7 +43,13 @@ export function createEmptyBrpStatblock() {
 		armorPoints          : 0,
 		armorDescription     : '',
 
-		// Skills: array of { name, value, category }
+		// ── Sanity (optional, for horror settings) ────────────────────
+		sanity    : null,
+		sanityMax : null,
+
+		// Skills: array of { name, value, category, specialty, trained }
+		// For characters: trained skills stored here, defaults computed from defaultSkills.js
+		// For creatures: all listed skills (same as before)
 		skills : [],
 
 		// Weapons: array of { name, skill, damage, range, rate, parry, hp }
@@ -44,7 +64,31 @@ export function createEmptyBrpStatblock() {
 		// Hit locations (optional): array of { name, hpOverride, armorOverride }
 		hitLocations : [],
 
+		// ── Passions (BRP passions system) ────────────────────────────
+		passions : [],  // { name, value, category }
+
+		// ── Allegiances ───────────────────────────────────────────────
+		allegiances : [],  // { name, value }
+
+		// ── Equipment ─────────────────────────────────────────────────
+		equipment : [],  // { name, quantity, notes }
+
+		// ── Wealth ────────────────────────────────────────────────────
+		wealth : '',
+
+		// ── Experience ────────────────────────────────────────────────
+		experiencePoints : 0,
+		experienceChecks : [],  // skill names with experience checks
+
 		// Notes
 		notes : ''
 	};
+}
+
+// Create a new character (pre-configured for character mode)
+export function createEmptyBrpCharacter() {
+	const ch = createEmptyBrpStatblock();
+	ch.characterType = 'character';
+	ch.category = 'Human';
+	return ch;
 }

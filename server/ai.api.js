@@ -6,18 +6,35 @@ import config       from './config.js';
 const router = express.Router();
 
 const getLmStudioUrl = ()=>config.get('lm_studio_url') || 'http://localhost:1234';
+const getAnthropicKey = ()=>config.get('anthropic_api_key') || process.env.ANTHROPIC_API_KEY;
 
-// ── Health check — is LM Studio reachable? ───────────────────────────
+// ── Health check — are AI providers reachable? ───────────────────────
 router.get('/api/ai/status', asyncHandler(async (req, res)=>{
+	let lmStudioAvailable = false;
+	let lmStudioModels = [];
+	let claudeAvailable = false;
+
+	// Check LM Studio
 	try {
 		const response = await fetch(`${getLmStudioUrl()}/v1/models`, {
 			signal: AbortSignal.timeout(3000)
 		});
 		const data = await response.json();
-		res.status(200).send({ available: true, models: data.data?.map((m)=>m.id) || [] });
+		lmStudioAvailable = true;
+		lmStudioModels = data.data?.map((m)=>m.id) || [];
 	} catch (err) {
-		res.status(200).send({ available: false, error: err.message });
+		// LM Studio not reachable
 	}
+
+	// Check Claude
+	claudeAvailable = !!getAnthropicKey();
+
+	res.status(200).send({
+		available : lmStudioAvailable || claudeAvailable,
+		lmStudio  : { available: lmStudioAvailable, models: lmStudioModels },
+		claude    : { available: claudeAvailable },
+		models    : lmStudioModels
+	});
 }));
 
 // ── Shared request helper ────────────────────────────────────────────
@@ -50,6 +67,43 @@ async function callLmStudio(systemPrompt, userPrompt, opts = {}) {
 	const content = data.choices?.[0]?.message?.content;
 	if(!content) throw new Error('No content in response');
 	return JSON.parse(content);
+}
+
+// ── Claude API helper ───────────────────────────────────────────────
+async function callClaude(systemPrompt, userPrompt, opts = {}) {
+	const apiKey = getAnthropicKey();
+	if(!apiKey) throw new Error('No Anthropic API key configured');
+
+	const maxTokens   = opts.maxTokens ?? 8000;
+	const temperature = opts.temperature ?? 0.7;
+
+	const client = new Anthropic({ apiKey });
+
+	const message = await client.messages.create({
+		model      : 'claude-sonnet-4-20250514',
+		max_tokens : maxTokens,
+		temperature,
+		system     : systemPrompt,
+		messages   : [
+			{ role: 'user', content: userPrompt }
+		]
+	});
+
+	const content = message.content?.[0]?.text;
+	if(!content) throw new Error('No content in Claude response');
+
+	// Strip markdown code fences if present
+	const cleaned = content.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+	return JSON.parse(cleaned);
+}
+
+// ── Provider dispatcher ─────────────────────────────────────────────
+// Routes to LM Studio or Claude based on the provider parameter.
+async function callProvider(provider, systemPrompt, userPrompt, opts = {}) {
+	if(provider === 'claude') {
+		return callClaude(systemPrompt, userPrompt, opts);
+	}
+	return callLmStudio(systemPrompt, userPrompt, opts);
 }
 
 // ── SRD Reference Search ─────────────────────────────────────────────
@@ -173,7 +227,7 @@ Use these as reference for appropriate stat ranges at this CR level. Your creatu
 
 // ── Generate stat block (5e) ─────────────────────────────────────────
 router.post('/api/ai/generate/statblock', asyncHandler(async (req, res)=>{
-	const { prompt, system } = req.body;
+	const { prompt, system, provider } = req.body;
 	if(!prompt) return res.status(400).send({ error: 'prompt is required' });
 
 	const systemPrompt = system || `You are an expert D&D 5e (2024) monster designer. Return ONLY valid JSON, no markdown, no commentary. Design an original, creative creature.
@@ -311,7 +365,7 @@ JSON SCHEMA
 			? `${prompt}\n${references}`
 			: prompt;
 
-		const parsed = await callLmStudio(systemPrompt, enrichedPrompt);
+		const parsed = await callProvider(provider, systemPrompt, enrichedPrompt);
 		res.status(200).send(parsed);
 	} catch (err) {
 		console.error('AI generate error:', err);
@@ -319,12 +373,14 @@ JSON SCHEMA
 	}
 }));
 
-// ── Generate BRP stat block ──────────────────────────────────────────
+// ── Generate BRP stat block or character ─────────────────────────────
 router.post('/api/ai/generate/brp-statblock', asyncHandler(async (req, res)=>{
-	const { prompt, system } = req.body;
+	const { prompt, system, provider, characterType } = req.body;
 	if(!prompt) return res.status(400).send({ error: 'prompt is required' });
 
-	const systemPrompt = system || `You are a Chaosium BRP (Basic Roleplaying) creature/NPC designer. Return ONLY valid JSON, no markdown, no commentary.
+	const isCharacter = characterType === 'character';
+
+	const creaturePrompt = `You are a Chaosium BRP (Basic Roleplaying) creature/NPC designer. Return ONLY valid JSON, no markdown, no commentary.
 
 RULES:
 - Characteristics use 3d6 range (3-18) for humans. Larger creatures can exceed this.
@@ -336,6 +392,7 @@ RULES:
 JSON SCHEMA:
 {
   "name": "string",
+  "characterType": "creature",
   "category": "Human|Animal|Construct|Demon|Dragon|Elemental|Faerie|Giant|Monster|Spirit|Undead|Other",
   "subtype": "string or empty",
   "description": "short description",
@@ -351,8 +408,56 @@ JSON SCHEMA:
   "notes": ""
 }`;
 
+	const characterPrompt = `You are a Chaosium BRP (Basic Roleplaying) player character designer. Return ONLY valid JSON, no markdown, no commentary.
+
+RULES:
+- Characteristics use 3d6 range (3-18) for humans. Most PCs have 8-16 in any stat.
+- Skills are percentile-based. Only include TRAINED skills (those the character has invested points in beyond base values).
+  Standard BRP base skill values exist for all skills (e.g. Dodge=DEX×2, Climb=40%, First Aid=30%, Listen=25%, etc.)
+  Only list skills where the character has a value ABOVE the base. These are their trained/professional skills.
+- Weapons must include skill percentage, damage with dice notation (e.g. "1d8+1+db"), range, rate, parry %, and weapon HP.
+- Include an occupation that defines their role.
+- Passions are emotional drives rated as percentages (e.g. "Love (Family) 60%", "Loyalty (Crown) 70%").
+- Allegiances represent ties to factions, gods, or ideals, rated as a number.
+- Equipment should be practical items appropriate to the character's occupation and setting.
+- Background should be 2-3 sentences about who the character is and where they come from.
+
+JSON SCHEMA:
+{
+  "name": "string",
+  "characterType": "character",
+  "player": "",
+  "occupation": "string — the character's profession or role",
+  "category": "Human",
+  "subtype": "string or empty — culture/ethnicity if relevant",
+  "description": "one-line summary of the character",
+  "age": "string",
+  "gender": "string",
+  "nationality": "string — culture or homeland",
+  "appearance": "brief physical description",
+  "background": "2-3 sentence backstory",
+  "characteristics": { "str": number, "con": number, "siz": number, "int": number, "pow": number, "dex": number, "cha": number },
+  "moveRate": 8,
+  "armorPoints": number,
+  "armorDescription": "string or empty",
+  "skills": [{ "name": "string — must be a standard BRP skill name", "value": number, "category": "Combat|Communication|Manipulation|Mental|Perception|Physical", "trained": true }],
+  "weapons": [{ "name": "string", "skill": number, "damage": "string like 1d6+db", "range": "string", "rate": "string", "parry": number, "hp": number }],
+  "spells": [],
+  "traits": [],
+  "hitLocations": [],
+  "passions": [{ "name": "string like Love (Family)", "value": number }],
+  "allegiances": [{ "name": "string", "value": number }],
+  "equipment": [{ "name": "string", "quantity": 1, "notes": "" }],
+  "wealth": "string — description of financial status",
+  "notes": ""
+}`;
+
+	const systemPrompt = system || (isCharacter ? characterPrompt : creaturePrompt);
+
 	try {
-		const parsed = await callLmStudio(systemPrompt, prompt);
+		const parsed = await callProvider(provider, systemPrompt, prompt);
+		// Ensure characterType is set correctly on the result
+		if(isCharacter) parsed.characterType = 'character';
 		res.status(200).send(parsed);
 	} catch (err) {
 		console.error('AI generate error:', err);
@@ -362,7 +467,7 @@ JSON SCHEMA:
 
 // ── Generate Willowlight stat block ──────────────────────────────────
 router.post('/api/ai/generate/willowlight-statblock', asyncHandler(async (req, res)=>{
-	const { prompt, system } = req.body;
+	const { prompt, system, provider } = req.body;
 	if(!prompt) return res.status(400).send({ error: 'prompt is required' });
 
 	const systemPrompt = system || `You are a Willowlight Engine game designer. Return ONLY valid JSON, no markdown, no commentary.
@@ -397,7 +502,7 @@ JSON SCHEMA:
 }`;
 
 	try {
-		const parsed = await callLmStudio(systemPrompt, prompt);
+		const parsed = await callProvider(provider, systemPrompt, prompt);
 		res.status(200).send(parsed);
 	} catch (err) {
 		console.error('AI generate error:', err);
@@ -407,7 +512,7 @@ JSON SCHEMA:
 
 // ── Generate BESM character ──────────────────────────────────────────
 router.post('/api/ai/generate/besm-character', asyncHandler(async (req, res)=>{
-	const { prompt, system } = req.body;
+	const { prompt, system, provider } = req.body;
 	if(!prompt) return res.status(400).send({ error: 'prompt is required' });
 
 	const systemPrompt = system || `You are an expert BESM 4th Edition character designer. Return ONLY valid JSON, no markdown, no commentary.
@@ -505,7 +610,7 @@ JSON SCHEMA
 }`;
 
 	try {
-		const parsed = await callLmStudio(systemPrompt, prompt);
+		const parsed = await callProvider(provider, systemPrompt, prompt);
 		res.status(200).send(parsed);
 	} catch (err) {
 		console.error('AI generate error:', err);
@@ -515,7 +620,7 @@ JSON SCHEMA
 
 // ── Generate BESM character flavor (second pass) ─────────────────────
 router.post('/api/ai/generate/besm-flavor', asyncHandler(async (req, res)=>{
-	const { concept, statBlock, system } = req.body;
+	const { concept, statBlock, system, provider } = req.body;
 	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
 
 	const systemPrompt = system || `You are a character fiction writer for the BESM 4th Edition tabletop RPG. You will receive two inputs: the original concept prompt and the character's generated stat block in JSON. Your job is to write narrative flavor content that brings the character to life fictionally. You must follow every rule below exactly. Do not explain your output. Return only raw JSON — no markdown, no code fences, no commentary.
@@ -616,7 +721,7 @@ CONSTRAINTS
 stat_block: ${JSON.stringify(statBlock)}`;
 
 	try {
-		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		const parsed = await callProvider(provider, systemPrompt, userPrompt, { maxTokens: 8000 });
 		res.status(200).send(parsed);
 	} catch (err) {
 		console.error('AI flavor generate error:', err);
@@ -626,7 +731,7 @@ stat_block: ${JSON.stringify(statBlock)}`;
 
 // ── Generate 5e stat block flavor (second pass) ────────────────────
 router.post('/api/ai/generate/statblock-flavor', asyncHandler(async (req, res)=>{
-	const { concept, statBlock, system } = req.body;
+	const { concept, statBlock, system, provider } = req.body;
 	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
 
 	const systemPrompt = system || `You are a monster lore writer for D&D 5e. You will receive the original concept prompt and the creature's stat block in JSON. Your job is to write narrative flavor content that brings the creature to life. Return only raw JSON — no markdown, no code fences, no commentary.
@@ -688,7 +793,7 @@ CONSTRAINTS
 	const userPrompt = `concept: ${concept}\n\nstat_block: ${JSON.stringify(statBlock)}`;
 
 	try {
-		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		const parsed = await callProvider(provider, systemPrompt, userPrompt, { maxTokens: 8000 });
 		res.status(200).send(parsed);
 	} catch (err) {
 		console.error('AI flavor generate error:', err);
@@ -698,10 +803,12 @@ CONSTRAINTS
 
 // ── Generate BRP stat block flavor (second pass) ────────────────────
 router.post('/api/ai/generate/brp-flavor', asyncHandler(async (req, res)=>{
-	const { concept, statBlock, system } = req.body;
+	const { concept, statBlock, system, provider } = req.body;
 	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
 
-	const systemPrompt = system || `You are a creature/NPC lore writer for Chaosium's Basic Roleplaying (BRP) system. You will receive the original concept prompt and the creature's stat block in JSON. Write narrative flavor. Return only raw JSON — no markdown, no code fences, no commentary.
+	const isCharacter = statBlock.characterType === 'character';
+
+	const creatureFlavorPrompt = `You are a creature/NPC lore writer for Chaosium's Basic Roleplaying (BRP) system. You will receive the original concept prompt and the creature's stat block in JSON. Write narrative flavor. Return only raw JSON — no markdown, no code fences, no commentary.
 
 ══════════════════════════════════════
 REQUIRED OUTPUT SCHEMA
@@ -747,10 +854,66 @@ CONSTRAINTS
 - trait_flavor must have exactly as many entries as there are traits.
 - Tone: gritty, grounded, and slightly unsettling — matching BRP's horror/investigation roots.`;
 
+	const characterFlavorPrompt = `You are a character backstory and flavor writer for Chaosium's Basic Roleplaying (BRP) system. You will receive the original concept prompt and a player character's data in JSON. Write narrative flavor that brings this character to life. Return only raw JSON — no markdown, no code fences, no commentary.
+
+══════════════════════════════════════
+REQUIRED OUTPUT SCHEMA
+══════════════════════════════════════
+{
+  "description": string,
+  "appearance": string,
+  "personality": string,
+  "backstory": string,
+  "trait_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "plot_hooks": [
+    { "title": string, "description": string }
+  ]
+}
+
+══════════════════════════════════════
+FIELD INSTRUCTIONS
+══════════════════════════════════════
+
+DESCRIPTION
+  - A one-line evocative summary of who this character is at a glance.
+
+APPEARANCE
+  - Physical description: build, face, clothing, posture, distinguishing features.
+  - Should reflect their occupation, nationality, and characteristics (high STR = muscular, high CHA = striking, etc.).
+  - Length: one paragraph.
+
+PERSONALITY
+  - Temperament, mannerisms, speech patterns, motivations, fears.
+  - Should connect to their passions and allegiances if present.
+  - Length: one paragraph.
+
+BACKSTORY
+  - How they became who they are: upbringing, pivotal events, how they learned their occupation.
+  - Should reference their skills, background field, and any passions/allegiances.
+  - Length: 2-3 paragraphs.
+
+TRAIT_FLAVOR
+  - One entry for every trait/special ability in the stat block (may be empty if no traits).
+  - Describe the fictional manifestation of the ability.
+
+PLOT_HOOKS
+  - Write exactly 3 plot hooks a GM could use to involve this character in adventures.
+  - Should connect to their occupation, passions, allegiances, or backstory.
+  - title: 3-6 words. description: one paragraph.
+
+══════════════════════════════════════
+CONSTRAINTS
+══════════════════════════════════════
+- Never restate mechanical values (percentages, damage dice, characteristics) in flavor text.
+- Tone: grounded, human, and character-driven — these are real people in a dangerous world.`;
+
+	const systemPrompt = system || (isCharacter ? characterFlavorPrompt : creatureFlavorPrompt);
 	const userPrompt = `concept: ${concept}\n\nstat_block: ${JSON.stringify(statBlock)}`;
 
 	try {
-		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		const parsed = await callProvider(provider, systemPrompt, userPrompt, { maxTokens: 8000 });
 		res.status(200).send(parsed);
 	} catch (err) {
 		console.error('AI flavor generate error:', err);
@@ -760,7 +923,7 @@ CONSTRAINTS
 
 // ── Generate Willowlight stat block flavor (second pass) ────────────
 router.post('/api/ai/generate/willowlight-flavor', asyncHandler(async (req, res)=>{
-	const { concept, statBlock, system } = req.body;
+	const { concept, statBlock, system, provider } = req.body;
 	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
 
 	const systemPrompt = system || `You are a character/NPC writer for the Willowlight Engine tabletop RPG. You will receive the original concept prompt and the character's stat block in JSON. Write narrative flavor. Return only raw JSON — no markdown, no code fences, no commentary.
@@ -826,7 +989,7 @@ CONSTRAINTS
 	const userPrompt = `concept: ${concept}\n\nstat_block: ${JSON.stringify(statBlock)}`;
 
 	try {
-		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		const parsed = await callProvider(provider, systemPrompt, userPrompt, { maxTokens: 8000 });
 		res.status(200).send(parsed);
 	} catch (err) {
 		console.error('AI flavor generate error:', err);
@@ -836,7 +999,7 @@ CONSTRAINTS
 
 // ── Generate Willowlight character flavor (second pass) ─────────────
 router.post('/api/ai/generate/willowlight-character-flavor', asyncHandler(async (req, res)=>{
-	const { concept, statBlock, system } = req.body;
+	const { concept, statBlock, system, provider } = req.body;
 	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
 
 	const systemPrompt = system || `You are a character writer for the Willowlight Engine tabletop RPG. You will receive the original concept prompt and a full player character sheet in JSON. Write rich narrative flavor for the character. Return only raw JSON — no markdown, no code fences, no commentary.
@@ -902,7 +1065,7 @@ CONSTRAINTS
 	const userPrompt = `concept: ${concept}\n\nstat_block: ${JSON.stringify(statBlock)}`;
 
 	try {
-		const parsed = await callLmStudio(systemPrompt, userPrompt, { maxTokens: 8000 });
+		const parsed = await callProvider(provider, systemPrompt, userPrompt, { maxTokens: 8000 });
 		res.status(200).send(parsed);
 	} catch (err) {
 		console.error('AI flavor generate error:', err);
@@ -911,8 +1074,6 @@ CONSTRAINTS
 }));
 
 // ── Claude API: text editing ────────────────────────────────────────
-
-const getAnthropicKey = ()=>config.get('anthropic_api_key') || process.env.ANTHROPIC_API_KEY;
 
 router.get('/api/ai/claude/status', asyncHandler(async (req, res)=>{
 	res.status(200).send({ available: !!getAnthropicKey() });

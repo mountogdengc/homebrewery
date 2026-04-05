@@ -505,6 +505,17 @@ const Markdown = {
 				return `<div class="statblock-embed statblock-embed--wide" data-statblock-id="${id}" data-statblock-system="willowlight-sheet" data-statblock-page="${page}"${optsAttr}></div>`;
 			});
 
+		// BRP character sheet embeds (portrait, split across pages):
+		// {{brp-sheet:ID|p1}}, {{brp-sheet:ID|p2,bw}}
+		// Must run BEFORE the general statblock regex (which would match "brp" prefix)
+		rawBrewText = rawBrewText.replace(/\{\{brp-sheet:([a-zA-Z0-9_-]+)(?:\|([\w,]+))?\}\}/g,
+			(match, id, opts)=>{
+				const options = (opts || '').split(',').filter(Boolean);
+				const page = options.includes('p2') ? 'p2' : 'p1';
+				const optsAttr = opts ? ` data-statblock-opts="${opts}"` : '';
+				return `<div class="statblock-embed statblock-embed--wide" data-statblock-id="${id}" data-statblock-system="brp-sheet" data-statblock-page="${page}"${optsAttr}></div>`;
+			});
+
 		// Stat block embeds: {{statblock:ID}}, {{statblock:ID|wide}},
 		// {{willowlight:ID|bw}}, {{brp:ID}}, {{palladium:ID}}, etc.
 		rawBrewText = rawBrewText.replace(/\{\{(statblock|willowlight|brp|palladium):([a-zA-Z0-9_-]+)(?:\|([\w,]+))?\}\}/g,

@@ -27,6 +27,7 @@ import { render as render5eStatblock }         from '@shared/statblock/renderer.
 import { render as renderWillowlightStatblock } from '@shared/willowlight/statblockRenderer.js';
 import { renderPage1 as renderWlPortraitP1, renderPage2 as renderWlPortraitP2, BLANK_CHARACTER as WL_BLANK } from '@shared/willowlight/portraitSheetRenderer.js';
 import { render as renderBrpStatblock }         from '@shared/brpStatblock/renderer.js';
+import { renderPage1 as renderBrpPortraitP1, renderPage2 as renderBrpPortraitP2 } from '@shared/brpStatblock/portraitSheetRenderer.js';
 import { render as renderPalladiumStatblock }   from '@shared/palladiumStatblock/renderer.js';
 
 function renderStatblock(sb, layout, opts = {}) {
@@ -34,6 +35,7 @@ function renderStatblock(sb, layout, opts = {}) {
 		case 'willowlight':       return renderWillowlightStatblock(sb, layout, opts);
 		case 'willowlight-sheet': return (opts.page === 'p2' ? renderWlPortraitP2 : renderWlPortraitP1)(sb, layout, opts);
 		case 'brp':               return renderBrpStatblock(sb, layout);
+		case 'brp-sheet':         return (opts.page === 'p2' ? renderBrpPortraitP2 : renderBrpPortraitP1)(sb, layout, opts);
 		case 'palladium':         return renderPalladiumStatblock(sb, layout);
 		default:                  return render5eStatblock(sb, layout);
 	}

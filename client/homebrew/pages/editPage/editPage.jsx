@@ -22,6 +22,7 @@ import AccountNavItem            from '@navbar/account.navitem.jsx';
 import ErrorNavItem              from '@navbar/error-navitem.jsx';
 import VaultNavItem              from '@navbar/vault.navitem.jsx';
 import PrintNavItem              from '@navbar/print.navitem.jsx';
+import ExportPdfNavItem          from '@navbar/exportPdf.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
@@ -371,6 +372,10 @@ const EditPage = (props)=>{
 				</Nav.item>
 				<NewBrewItem />
 				<PrintNavItem />
+				{currentBrew.shareId && <ExportPdfNavItem
+					url={`/api/pdf/brew/${currentBrew.shareId}`}
+					name={currentBrew.title || 'brew-export'}
+				/>}
 				<VaultNavItem />
 				<CloneNavItem brew={currentBrew} />
 				<ShareNavItem brew={currentBrew} />

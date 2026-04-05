@@ -71,6 +71,52 @@
 	&:hover { color: #e0e0f0; }
 }
 
+// Provider toggle
+.aiModal-provider {
+	display: flex;
+	gap: 6px;
+	margin-bottom: 12px;
+}
+
+.aiModal-providerBtn {
+	flex: 1;
+	background: #252538;
+	color: #888;
+	border: 1px solid #3a3a54;
+	border-radius: 6px;
+	padding: 8px 12px;
+	font-size: 12px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.15s;
+
+	i { margin-right: 6px; }
+
+	&:hover:not(:disabled) {
+		color: #e0d0f0;
+		border-color: #555;
+	}
+
+	&.active {
+		background: linear-gradient(135deg, #4a1a7a, #3a1060);
+		color: #e0d0f0;
+		border-color: #7c3aed;
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+}
+
+.aiModal-providerNote {
+	color: #7c9aed;
+	font-size: 12px;
+	margin-bottom: 10px;
+
+	i { margin-right: 6px; }
+}
+
 .aiModal-hint {
 	color: #888;
 	font-size: 13px;
