@@ -1,0 +1,86 @@
+.searchPanel {
+	background: #1a1a2e;
+	border-bottom: 1px solid #3a3a54;
+	padding: 6px 8px;
+	font-size: 13px;
+}
+
+.searchRow, .replaceRow {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.replaceRow {
+	margin-top: 4px;
+}
+
+.searchInput {
+	flex: 1;
+	background: #252538;
+	border: 1px solid #3a3a54;
+	border-radius: 3px;
+	color: #e0e0f0;
+	padding: 4px 8px;
+	font-size: 12px;
+	font-family: 'Segoe UI', sans-serif;
+	min-width: 0;
+
+	&:focus {
+		outline: none;
+		border-color: #7c3aed;
+	}
+}
+
+.matchInfo {
+	font-size: 11px;
+	color: #888;
+	min-width: 45px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.searchBtn {
+	background: #2a2a3e;
+	border: 1px solid #3a3a54;
+	border-radius: 3px;
+	color: #aaa;
+	padding: 3px 8px;
+	font-size: 12px;
+	cursor: pointer;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 26px;
+
+	&:hover {
+		background: #3a3a54;
+		color: #e0e0f0;
+	}
+
+	&.toggle {
+		font-weight: 600;
+		min-width: 26px;
+		padding: 3px 5px;
+
+		&.active {
+			background: #4a1a7a;
+			border-color: #7c3aed;
+			color: #e0d0f0;
+		}
+	}
+
+	&.close {
+		color: #666;
+		&:hover { color: #ff6b6b; }
+	}
+
+	i { font-size: 11px; }
+}
+
+// Highlight matches in the editor
+.CodeMirror .cm-searching {
+	background: rgba(255, 213, 0, 0.3) !important;
+	border-bottom: 1px solid #ffd500;
+}

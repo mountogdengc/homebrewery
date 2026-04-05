@@ -154,8 +154,7 @@ const CodeEditor = createReactClass({
 				'Shift-Cmd-Enter'  : this.newColumn,
 				'Ctrl-Enter'       : this.newPage,
 				'Cmd-Enter'        : this.newPage,
-				'Ctrl-F'           : 'findPersistent',
-				'Cmd-F'            : 'findPersistent',
+				// Ctrl-F/Cmd-F overridden by editor's SearchPanel
 				'Shift-Enter'      : 'findPersistentPrevious',
 				'Ctrl-['           : this.foldAllCode,
 				'Cmd-['            : this.foldAllCode,

@@ -10,6 +10,7 @@ import CodeEditor from '../../components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
 import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 import AiEditModal from '../components/aiGenerate/aiEditModal.jsx';
+import SearchPanel from './searchPanel/searchPanel.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
 
@@ -62,6 +63,7 @@ const Editor = createReactClass({
 			snippetBarHeight : 26,
 			showAiEdit       : false,
 			aiEditSelection  : '',
+			showSearch       : false,
 		};
 	},
 
@@ -78,6 +80,19 @@ const Editor = createReactClass({
 		this.highlightCustomMarkdown();
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
+		document.addEventListener('keydown', this.handleSearchShortcut);
+
+		// Override CodeMirror's Ctrl+F to open our custom search panel
+		const cm = this.codeEditor.current?.codeMirror;
+		if(cm) {
+			cm.setOption('extraKeys', {
+				...cm.getOption('extraKeys'),
+				'Ctrl-F' : ()=>this.setState({ showSearch: true }),
+				'Cmd-F'  : ()=>this.setState({ showSearch: true }),
+				'Ctrl-H' : ()=>this.setState({ showSearch: true }),
+				'Cmd-H'  : ()=>this.setState({ showSearch: true })
+			});
+		}
 
 		this.codeEditor.current.codeMirror?.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
 		this.codeEditor.current.codeMirror?.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
@@ -121,6 +136,17 @@ const Editor = createReactClass({
 
 	componentWillUnmount() {
 		if(this.resizeObserver) this.resizeObserver.disconnect();
+		document.removeEventListener('keydown', this.handleSearchShortcut);
+	},
+
+	handleSearchShortcut : function(e) {
+		if((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'h')) {
+			// Only intercept if the editor panel is visible (not in other contexts)
+			if(this.editor.current?.contains(document.activeElement) || this.state.showSearch) {
+				e.preventDefault();
+				this.setState({ showSearch: true });
+			}
+		}
 	},
 
 	handleControlKeys : function(e){
@@ -633,6 +659,14 @@ const Editor = createReactClass({
 					selectedText={this.state.aiEditSelection}
 					onApply={this.handleAiEditApply}
 					onClose={()=>this.setState({ showAiEdit: false })}
+				/>}
+
+				{this.state.showSearch && <SearchPanel
+					codeMirror={this.codeEditor.current?.codeMirror}
+					onClose={()=>{
+						this.setState({ showSearch: false });
+						this.codeEditor.current?.codeMirror?.focus();
+					}}
 				/>}
 
 				{this.renderEditor()}
