@@ -465,6 +465,46 @@
 	background: #0a0a1a;
 }
 
+.willowlightPortraitPreview {
+	padding: 20px;
+	overflow-y: auto;
+	height: 100%;
+	background: #0a0a1a;
+
+	// Page guides — rendered on a wrapper around each sheet
+	.wlp-page-guide {
+		position: relative;
+		width: 8.5in;
+		margin: 0 auto;
+		min-height: 11.1in; // ensure page boundary line at 11in is always visible
+
+		// 0.5" margin guide (red dashed rectangle)
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0.5in;
+			left: 0.5in;
+			width: 7.5in;   // 8.5in - 0.5in * 2
+			height: 10in;   // 11in - 0.5in * 2
+			border: 1px dashed rgba(255, 0, 0, 0.35);
+			pointer-events: none;
+			z-index: 10;
+		}
+
+		// Page boundary line at 11in
+		&::after {
+			content: '';
+			position: absolute;
+			top: 11in;
+			left: 0;
+			width: 8.5in;
+			border-top: 3px dashed yellow;
+			pointer-events: none;
+			z-index: 10;
+		}
+	}
+}
+
 // ── Dot selector in form ──────────────────────────────────────────────
 .wlDotSelector {
 	display: flex;
@@ -493,6 +533,90 @@
 	}
 }
 
+// ── Print styles ──────────────────────────────────────────────────────
+
+// Page toggle buttons (screen only)
+.wl-page-toggle {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 12px;
+	justify-content: center;
+
+	button {
+		padding: 4px 12px;
+		background: #3a3a54;
+		color: #d4d4e8;
+		border: none;
+		border-radius: 3px;
+		cursor: pointer;
+		font-size: 12px;
+
+		&.active { background: #4a6fa5; }
+	}
+}
+
+@media print {
+	nav {
+		display: none !important;
+	}
+
+	.willowlightEditorPage {
+		height: auto !important;
+		display: block !important;
+	}
+
+	.willowlightPortraitPreview,
+	.willowlightLandscapePreview,
+	.willowlightCharacterPreview,
+	.willowlightStatblockPreview {
+		background: #fff !important;
+		padding: 0 !important;
+		overflow: visible !important;
+		height: auto !important;
+	}
+
+	// Hide page toggle buttons
+	.wl-page-toggle {
+		display: none !important;
+	}
+
+	// Show BOTH pages when printing (override the display:none toggle)
+	.wl-print-page {
+		display: block !important;
+	}
+
+	.wlp-page-guide::before, .wlp-page-guide::after {
+		display: none !important;
+	}
+
+	.wlp-sheet {
+		box-shadow: none !important;
+		margin: 0 !important;
+		width: 100% !important;
+		max-width: 8.5in;
+		min-height: auto !important;
+		height: auto !important;
+		padding: 0 !important;
+		page-break-after: always;
+	}
+
+	.wlp-page-guide {
+		width: auto !important;
+		min-height: auto !important;
+		margin: 0 !important;
+	}
+
+	.wll-sheet {
+		box-shadow: none !important;
+		margin: 0 !important;
+		width: 100% !important;
+		min-height: auto !important;
+		padding: 0.25in !important;
+		page-break-after: always;
+		page-break-inside: avoid;
+	}
+}
+
 // ── Portrait Character Sheet (wlp-) ──────────────────────────────────
 // Embedded portrait sheet styles — prefixed to avoid conflicts
 
@@ -502,7 +626,12 @@
 	line-height: 1.3;
 	color: #1a1a1a;
 	background: #fff;
-	padding: 0.15in;
+	width: 8.5in;
+	padding: 0.3in;
+	margin: 0 auto;
+	box-sizing: border-box;
+	box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+	position: relative;
 
 	// B&W mode
 	&.wlp-bw {
@@ -519,6 +648,8 @@
 	border-bottom: 2.5px solid #1a1a1a;
 	padding-bottom: 2px;
 	margin-bottom: 6px;
+	display: flex;
+	align-items: center;
 
 	span {
 		font-weight: 300;
@@ -526,7 +657,16 @@
 		letter-spacing: 0.04em;
 		margin-left: 8px;
 		text-transform: none;
+		flex: 1;
 	}
+}
+
+.wlp-logo {
+	width: 28px;
+	height: 28px;
+	object-fit: contain;
+	margin-left: auto;
+	flex-shrink: 0;
 }
 
 .wlp-section-label {
@@ -551,7 +691,7 @@
 
 // Layout
 .wlp-row { display: flex; gap: 6px; }
-.wlp-col { display: flex; flex-direction: column; gap: 4px; }
+.wlp-col { display: flex; flex-direction: column; gap: 4px; flex-shrink: 1; min-height: 0; }
 
 // Panels
 .wlp-panel {
@@ -764,3 +904,182 @@
 	align-items: center;
 	gap: 2px;
 }
+
+// ── Landscape Character Sheet (wll-) ─────────────────────────────────
+
+.willowlightLandscapePreview {
+	padding: 20px;
+	overflow-y: auto;
+	height: 100%;
+	background: #0a0a1a;
+}
+
+.wll-sheet {
+	font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	font-size: 8.5pt;
+	line-height: 1.3;
+	color: #1a1a1a;
+	background: #fff;
+	width: 11in;
+	min-height: 8.5in;
+	padding: 0.3in;
+	margin: 0 auto;
+	box-sizing: border-box;
+	box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+
+	&.wll-bw {
+		.wll-section-label { background: #444; }
+		.wll-dot.filled, .wll-dot-sm.filled { background: #444; border-color: #444; }
+	}
+}
+
+.wll-page-title {
+	font-size: 14pt;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	border-bottom: 2.5px solid #1a1a1a;
+	padding-bottom: 2px;
+	margin-bottom: 6px;
+	display: flex;
+	align-items: center;
+
+	span {
+		font-weight: 300;
+		font-size: 9pt;
+		letter-spacing: 0.04em;
+		margin-left: 8px;
+		text-transform: none;
+		flex: 1;
+	}
+}
+
+.wll-logo {
+	width: 28px;
+	height: 28px;
+	object-fit: contain;
+	margin-left: auto;
+	flex-shrink: 0;
+}
+
+.wll-section-label {
+	font-size: 8pt;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	background: #1a1a1a;
+	color: #fff;
+	padding: 1px 5px;
+	margin-bottom: 3px;
+	display: block;
+}
+
+.wll-sub-label {
+	font-size: 7pt;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: #555;
+}
+
+.wll-row { display: flex; gap: 6px; }
+.wll-col { display: flex; flex-direction: column; gap: 4px; }
+
+.wll-panel {
+	border: 1px solid #999;
+	padding: 4px 5px;
+	border-radius: 2px;
+}
+
+.wll-panel-light {
+	border: 1px solid #ccc;
+	padding: 3px 5px;
+	border-radius: 2px;
+	background: #fafafa;
+}
+
+.wll-field-row {
+	display: flex;
+	align-items: baseline;
+	gap: 4px;
+	margin-bottom: 2px;
+	flex: 1;
+}
+
+.wll-field-label {
+	font-size: 7pt;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	white-space: nowrap;
+	color: #444;
+}
+
+.wll-field-value {
+	flex: 1;
+	border-bottom: 1px solid #aaa;
+	min-width: 40px;
+	min-height: 14px;
+	font-size: 8.5pt;
+	padding: 0 2px;
+}
+
+.wll-field-value-short {
+	width: 50px;
+	border-bottom: 1px solid #aaa;
+	min-height: 14px;
+	font-size: 8.5pt;
+	padding: 0 2px;
+	text-align: center;
+}
+
+.wll-dots { display: inline-flex; gap: 3px; align-items: center; }
+
+.wll-dot {
+	width: 11px; height: 11px;
+	border: 1.5px solid #333; border-radius: 50%;
+	display: inline-block;
+	&.filled { background: #333; }
+}
+
+.wll-dot-sm {
+	width: 9px; height: 9px;
+	border: 1.2px solid #333; border-radius: 50%;
+	display: inline-block;
+	&.filled { background: #333; }
+}
+
+.wll-box {
+	width: 16px; height: 16px;
+	border: 1.5px solid #333;
+	display: inline-block; margin-right: 2px;
+	&.filled { background: rgba(0,0,0,0.15); }
+}
+
+.wll-box-sm {
+	width: 13px; height: 13px;
+	border: 1.2px solid #333;
+	display: inline-block; margin-right: 1px;
+	&.filled { background: rgba(0,0,0,0.15); }
+}
+
+.wll-attr-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
+.wll-attr-domain { text-align: center; padding: 2px 4px; border: 1px solid #999; border-radius: 2px; }
+.wll-attr-domain-title { font-size: 7.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; border-bottom: 1px solid #ccc; padding-bottom: 1px; }
+.wll-attr-row { display: flex; justify-content: space-between; align-items: center; padding: 1.5px 2px; }
+.wll-attr-name { font-size: 8pt; font-weight: 500; }
+.wll-attr-anchor { font-weight: 700; font-style: italic; }
+.wll-attr-note { font-size: 6pt; color: #777; }
+
+.wll-writein-row { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; min-height: 16px; }
+.wll-writein-value { flex: 1; border-bottom: 1px solid #aaa; min-height: 14px; font-size: 8pt; padding: 0 2px; }
+
+.wll-conn-card, .wll-secret-card { border: 1px solid #999; padding: 4px 5px; margin-bottom: 4px; border-radius: 2px; }
+.wll-conn-header { display: flex; align-items: baseline; gap: 6px; margin-bottom: 2px; }
+
+.wll-milestone-row { display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
+.wll-check-box { width: 10px; height: 10px; border: 1.2px solid #333; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; }
+
+.wll-note-line { border-bottom: 1px solid #ccc; height: 16px; width: 100%; }
+.wll-affliction-row { display: flex; gap: 6px; flex-wrap: wrap; font-size: 7pt; }
+.wll-affliction-item { display: inline-flex; align-items: center; gap: 2px; }

@@ -1,0 +1,89 @@
+{
+	"6": {
+		"inputs": {
+			"text": "",
+			"clip": ["193", 1]
+		},
+		"class_type": "CLIPTextEncode",
+		"_meta": {
+			"title": "CLIP Text Encode (Prompt)"
+		}
+	},
+	"162": {
+		"inputs": {
+			"width": 768,
+			"height": 1024,
+			"batch_size": 1
+		},
+		"class_type": "EmptySD3LatentImage",
+		"_meta": {
+			"title": "EmptySD3LatentImage"
+		}
+	},
+	"163": {
+		"inputs": {
+			"seed": 0,
+			"steps": 5,
+			"cfg": 1,
+			"sampler_name": "dpmpp_sde",
+			"scheduler": "beta",
+			"denoise": 1,
+			"model": ["191", 0],
+			"positive": ["6", 0],
+			"negative": ["190", 0],
+			"latent_image": ["162", 0]
+		},
+		"class_type": "KSampler",
+		"_meta": {
+			"title": "KSampler"
+		}
+	},
+	"164": {
+		"inputs": {
+			"samples": ["163", 0],
+			"vae": ["193", 2]
+		},
+		"class_type": "VAEDecode",
+		"_meta": {
+			"title": "VAE Decode"
+		}
+	},
+	"171": {
+		"inputs": {
+			"filename_prefix": "Homebrewery",
+			"images": ["164", 0]
+		},
+		"class_type": "SaveImage",
+		"_meta": {
+			"title": "Save Image"
+		}
+	},
+	"190": {
+		"inputs": {
+			"conditioning": ["6", 0]
+		},
+		"class_type": "ConditioningZeroOut",
+		"_meta": {
+			"title": "ConditioningZeroOut"
+		}
+	},
+	"191": {
+		"inputs": {
+			"shift": 3,
+			"model": ["193", 0]
+		},
+		"class_type": "ModelSamplingAuraFlow",
+		"_meta": {
+			"title": "ModelSamplingAuraFlow"
+		}
+	},
+	"193": {
+		"inputs": {
+			"ckpt_name": "z-image\\z-image-turbo-fp8-aio.safetensors"
+		},
+		"class_type": "CheckpointLoaderSimple",
+		"_meta": {
+			"title": "Load Checkpoint"
+		}
+	}
+}

@@ -12,6 +12,7 @@ export const BLANK_CHARACTER = {
 	interests: [], hobbies: [],
 	vitalityOverride: 8, willpowerOverride: 8, composureOverride: 8,
 	attacks: [], edges: [], aspects: [], burdens: [],
+	portrait: '',
 	luckRating: 1, luckTokens: 3, corruption: 0, hearthTrigger: '',
 	unspentXP: 0, totalXP: 0, xpSpent: 0, sessionXP: 0,
 	wealthPoints: 0, lifestyle: 0, downtime: '',
@@ -183,26 +184,26 @@ export function renderPage1(ch, layout = 'narrow', opts = {}) {
 			</div>
 		</div>`;
 
-	// Edges
-	const edgeRows = (ch.edges || []).map((e)=>
-		`<div class="wlp-writein-row"><div class="wlp-writein-value">${esc(e.name)}</div>${dots(e.dots || 0, 5, 'sm')}</div>`
-	).join('');
-	const edgeBlanks = Array(Math.max(0, 6 - (ch.edges || []).length)).fill(
-		`<div class="wlp-writein-row"><div class="wlp-writein-value"></div>${dots(0, 5, 'sm')}</div>`
-	).join('');
-
-	const edges = `
-		<div class="wlp-panel">
-			<div class="wlp-section-label">Edges</div>
-			<div style="font-size:6.5pt; color:#777; margin-bottom:3px;">7 dots at creation \u00b7 Fill dots to mark rating</div>
-			${edgeRows}${edgeBlanks}
-		</div>`;
-
-	// Aspects & Burdens
+	// Aspects (larger section — 6 slots)
 	const aspectRows = (ch.aspects || []).map((a)=>
 		`<div class="wlp-writein-row"><div class="wlp-writein-value">${esc(a.name)}</div>${dots(a.dots || 0, 5, 'sm')}</div>`
 	).join('');
-	const aspectBlanks = Array(Math.max(0, 4 - (ch.aspects || []).length)).fill(
+	const aspectBlanks = Array(Math.max(0, 5 - (ch.aspects || []).length)).fill(
+		`<div class="wlp-writein-row"><div class="wlp-writein-value"></div>${dots(0, 5, 'sm')}</div>`
+	).join('');
+
+	const aspects = `
+		<div class="wlp-panel">
+			<div class="wlp-section-label">Aspects</div>
+			<div style="font-size:6.5pt; color:#777; margin-bottom:3px;">3 dots at creation \u00b7 Fill dots to mark rating</div>
+			${aspectRows}${aspectBlanks}
+		</div>`;
+
+	// Edges & Burdens (side by side, smaller)
+	const edgeRows = (ch.edges || []).map((e)=>
+		`<div class="wlp-writein-row"><div class="wlp-writein-value">${esc(e.name)}</div>${dots(e.dots || 0, 5, 'sm')}</div>`
+	).join('');
+	const edgeBlanks = Array(Math.max(0, 4 - (ch.edges || []).length)).fill(
 		`<div class="wlp-writein-row"><div class="wlp-writein-value"></div>${dots(0, 5, 'sm')}</div>`
 	).join('');
 	const burdenRows = (ch.burdens || []).map((b)=>
@@ -212,31 +213,44 @@ export function renderPage1(ch, layout = 'narrow', opts = {}) {
 		`<div class="wlp-writein-row"><div class="wlp-writein-value"></div>${dots(0, 5, 'sm')}</div>`
 	).join('');
 
-	const aspectsBurdens = `
-		<div class="wlp-row" style="gap:6px;">
-			<div class="wlp-panel" style="flex:1;">
-				<div class="wlp-section-label">Aspects</div>
-				<div style="font-size:6.5pt; color:#777; margin-bottom:3px;">3 dots at creation</div>
-				${aspectRows}${aspectBlanks}
+	const portraitSrc = ch.portrait || '';
+	const edgesBurdens = `
+		<div class="wlp-row" style="gap:6px; align-items:start;">
+			<div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+				<div class="wlp-panel" style="flex:0 0 auto;">
+					<div class="wlp-section-label">Edges</div>
+					<div style="font-size:6.5pt; color:#777; margin-bottom:3px;">7 dots at creation</div>
+					${edgeRows}${edgeBlanks}
+				</div>
+				<div class="wlp-panel" style="flex:0 0 auto;">
+					<div class="wlp-section-label">Burdens</div>
+					<div style="font-size:6.5pt; color:#777; margin-bottom:3px;">3 dots at creation</div>
+					${burdenRows}${burdenBlanks}
+				</div>
 			</div>
-			<div class="wlp-panel" style="flex:1;">
-				<div class="wlp-section-label">Burdens</div>
-				<div style="font-size:6.5pt; color:#777; margin-bottom:3px;">3 dots at creation</div>
-				${burdenRows}${burdenBlanks}
+			<div class="wlp-panel" style="flex:1; max-height:243px; overflow:hidden;">
+				<div class="wlp-section-label">Portrait</div>
+				${portraitSrc
+					? `<img src="${esc(portraitSrc)}" alt="Character Portrait" style="width:100%; max-height:215px; display:block; object-fit:cover; object-position:top;" />`
+					: `<div style="height:120px; width:100%; border:1px dashed #ccc; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#bbb; font-size:8pt;">Portrait</div>`
+				}
 			</div>
 		</div>`;
 
 	return `<div class="wlp-sheet${bwClass}">
-		<div class="wlp-page-title">Willowlight Engine <span>${esc(ch.name || '')}</span></div>
-		<div class="wlp-col" style="gap:5px;">
+		<div class="wlp-page-title">
+			Cascade <span>${esc(ch.name || '')}</span>
+			<img src="/assets/lolgo_200x200_black.png" class="wlp-logo" alt="" />
+		</div>
+		<div class="wlp-col" style="gap:3px;">
 			${identity}
 			${attributes}
 			${skills}
 			${healthTracks}
-			${edges}
-			${aspectsBurdens}
+			${aspects}
+			${edgesBurdens}
+			<div style="text-align:right; font-size:6pt; color:#aaa;">Cascade \u00a9 Mount Ogden Gaming Company</div>
 		</div>
-		<div style="text-align:right; font-size:6pt; color:#aaa; margin-top:4px;">Willowlight Engine \u00a9 Mount Ogden Gaming Company</div>
 	</div>`;
 }
 
@@ -321,7 +335,7 @@ export function renderPage2(ch, layout = 'narrow', opts = {}) {
 			</div>
 		</div>
 	`).join('');
-	const blankContacts = Array(Math.max(0, 3 - (ch.contacts || []).length)).fill(`
+	const blankContacts = Array(Math.max(0, 4 - (ch.contacts || []).length)).fill(`
 		<div class="wlp-conn-card">
 			<div class="wlp-conn-header">
 				<span class="wlp-field-label">Name</span><div class="wlp-field-value" style="flex:2;"></div>
@@ -364,7 +378,7 @@ export function renderPage2(ch, layout = 'narrow', opts = {}) {
 				</div>
 			</div>`;
 	}).join('');
-	const blankSecrets = Array(Math.max(0, 2 - (ch.secrets || []).length)).fill(`
+	const blankSecrets = Array(Math.max(0, 3 - (ch.secrets || []).length)).fill(`
 		<div class="wlp-secret-card">
 			<div class="wlp-row" style="gap:8px; align-items:center;">
 				<div style="flex:2;">${fieldVal('Secret', '')}</div>
@@ -406,15 +420,18 @@ export function renderPage2(ch, layout = 'narrow', opts = {}) {
 
 	// Notes
 	const notesText = esc(ch.notes || '').replace(/\n/g, '<br>');
-	const noteLines = Array(6).fill('<div class="wlp-note-line"></div>').join('');
+	const noteLines = Array(4).fill('<div class="wlp-note-line"></div>').join('');
 	const notes = `
-		<div class="wlp-panel" style="flex:1;">
+		<div class="wlp-panel">
 			<div class="wlp-section-label">Notes</div>
 			${ch.notes ? `<div style="font-size:7.5pt; padding:2px;">${notesText}</div>` : noteLines}
 		</div>`;
 
 	return `<div class="wlp-sheet${bwClass}">
-		<div class="wlp-page-title">Willowlight Engine <span>${esc(ch.name || '')} \u2014 continued</span></div>
+		<div class="wlp-page-title">
+			Cascade <span>${esc(ch.name || '')}</span>
+			<img src="/assets/lolgo_200x200_black.png" class="wlp-logo" alt="" />
+		</div>
 		<div class="wlp-col" style="gap:5px;">
 			${luck}
 			${corruption}
@@ -423,7 +440,7 @@ export function renderPage2(ch, layout = 'narrow', opts = {}) {
 			${secrets}
 			${equipment}
 			${notes}
+			<div style="text-align:right; font-size:6pt; color:#aaa;">Cascade \u00a9 Mount Ogden Gaming Company</div>
 		</div>
-		<div style="text-align:right; font-size:6pt; color:#aaa; margin-top:4px;">Willowlight Engine \u00a9 Mount Ogden Gaming Company</div>
 	</div>`;
 }
