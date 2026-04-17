@@ -1,11 +1,43 @@
 import './landingPage.less';
-import React from 'react';
+import React, { useState, useRef } from 'react';
 
 import Nav            from '@navbar/nav.jsx';
 import Navbar         from '@navbar/navbar.jsx';
 import AccountNavItem from '@navbar/account.navitem.jsx';
 
 const LandingPage = ()=>{
+	const [converting, setConverting] = useState(false);
+	const docxInputRef = useRef(null);
+	const idttInputRef = useRef(null);
+
+	const handleConvert = async (file, format)=>{
+		if(converting || !file) return;
+		setConverting(true);
+		try {
+			const markdown = await file.text();
+			const basename = file.name.replace(/\.[^.]+$/, '');
+			const res = await fetch(`/api/convert/${format}`, {
+				method  : 'POST',
+				headers : { 'Content-Type': 'application/json' },
+				body    : JSON.stringify({ markdown, filename: basename })
+			});
+			if(!res.ok) throw new Error(`Conversion failed: ${res.status}`);
+			const blob = await res.blob();
+			const link = document.createElement('a');
+			link.href = URL.createObjectURL(blob);
+			link.download = `${basename}.${format === 'docx' ? 'docx' : 'txt'}`;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			URL.revokeObjectURL(link.href);
+		} catch (err) {
+			console.error('Conversion failed:', err);
+			alert(`Conversion failed: ${err.message}`);
+		} finally {
+			setConverting(false);
+		}
+	};
+
 	return (
 		<div className="landingPage">
 			<Navbar>
@@ -74,12 +106,12 @@ const LandingPage = ()=>{
 
 						<a className="toolCard" href="/willowlight/library">
 							<div className="toolIcon">
-								<i className="fas fa-moon" />
+								<img src="/assets/lolgo_200x200.png" alt="Cascade" style={{ width: '40px', height: '40px' }} />
 							</div>
-							<h3 className="toolName">Willowlight Engine</h3>
+							<h3 className="toolName">Cascade</h3>
 							<p className="toolDesc">
-								Build stat blocks and full character sheets for the
-								Willowlight Engine. Includes AI generation, playtest
+								Build stat blocks and full character sheets for
+								Cascade. Includes AI generation, playtest
 								table, and embeddable stat blocks.
 							</p>
 						</a>
@@ -114,6 +146,53 @@ const LandingPage = ()=>{
 							</p>
 						</a>
 
+						<div className="toolCard indesignCard">
+							<div className="toolIcon">
+								<i className="fas fa-file-export" />
+							</div>
+							<h3 className="toolName">InDesign Export</h3>
+							<p className="toolDesc">
+								Convert Markdown files to Word (.docx) or InDesign
+								Tagged Text for professional print layout.
+							</p>
+							<div className="convertButtons">
+								<button
+									className="convertBtn"
+									disabled={converting}
+									onClick={()=>docxInputRef.current?.click()}
+								>
+									<i className="fas fa-file-word" /> {converting ? 'Converting...' : 'Upload .docx'}
+								</button>
+								<button
+									className="convertBtn"
+									disabled={converting}
+									onClick={()=>idttInputRef.current?.click()}
+								>
+									<i className="fas fa-file-alt" /> {converting ? 'Converting...' : 'Upload IDTT'}
+								</button>
+							</div>
+							<input
+								ref={docxInputRef}
+								type="file"
+								accept=".md,.txt,.markdown"
+								style={{ display: 'none' }}
+								onChange={(e)=>{
+									handleConvert(e.target.files[0], 'docx');
+									e.target.value = '';
+								}}
+							/>
+							<input
+								ref={idttInputRef}
+								type="file"
+								accept=".md,.txt,.markdown"
+								style={{ display: 'none' }}
+								onChange={(e)=>{
+									handleConvert(e.target.files[0], 'idtt');
+									e.target.value = '';
+								}}
+							/>
+						</div>
+
 						<a className="toolCard" href="/mapgen">
 							<div className="toolIcon">
 								<i className="fas fa-mountain" />
@@ -132,7 +211,7 @@ const LandingPage = ()=>{
 							</div>
 							<h3 className="toolName">Playtest Table</h3>
 							<p className="toolDesc">
-								Run Willowlight Engine sessions with a GM dashboard.
+								Run Cascade sessions with a GM dashboard.
 								Track party health, roll dice against NPCs, manage
 								tides, taint, and encounters.
 							</p>

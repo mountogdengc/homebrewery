@@ -107,6 +107,48 @@
 			line-height: 1.5;
 			margin: 0;
 		}
+
+		&.indesignCard {
+			cursor: default;
+
+			&:hover {
+				transform: translateY(-4px);
+				border-color: #8B1A1A;
+				box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+			}
+		}
+
+		.convertButtons {
+			display: flex;
+			gap: 8px;
+			margin-top: 14px;
+			width: 100%;
+		}
+
+		.convertBtn {
+			flex: 1;
+			padding: 8px 12px;
+			background: #1a1a2e;
+			border: 1px solid #3a3a54;
+			border-radius: 6px;
+			color: #f5e6c8;
+			font-family: 'Segoe UI', sans-serif;
+			font-size: 12px;
+			cursor: pointer;
+			transition: background 0.2s, border-color 0.2s;
+
+			i { margin-right: 4px; }
+
+			&:hover {
+				background: #2a2a44;
+				border-color: #8B1A1A;
+			}
+
+			&:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+		}
 	}
 
 	.quickLinks {
