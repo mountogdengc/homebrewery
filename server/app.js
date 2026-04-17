@@ -28,7 +28,9 @@ import willowlightBestiaryApi      from './willowlight-bestiary.api.js';
 import playtestSessionApi          from './playtest-session.api.js';
 import aiApi                       from './ai.api.js';
 import proceduralImageApi          from './procedural-image.api.js';
+import comfyuiApi                  from './comfyui.api.js';
 import pdfApi                      from './pdf.api.js';
+import convertApi                  from './convert.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
@@ -72,17 +74,31 @@ export default async function createApp(vite) {
 	app.get('/besm/sheet/:id', (req, res)=>{
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/besm-character-sheet-dynamic.html'));
 	});
-	app.get('/willowlight/sheet', (req, res)=>{
-		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-dynamic.html'));
+	// Cascade blank character sheet
+	app.get('/willowlight/blank', (req, res, next)=>{
+		req.willowlightCharacter = null;
+		req.sheetView = true;
+		req.ogMeta = { ...defaultMetaTags,
+			title       : 'Cascade Blank Character Sheet',
+			description : 'Printable blank Cascade character sheet'
+		};
+		return next();
 	});
-	app.get('/willowlight/sheet/:id', (req, res)=>{
-		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-dynamic.html'));
-	});
-	app.get('/willowlight/sheet-portrait', (req, res)=>{
-		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-portrait.html'));
-	});
+
+	// Cascade character sheet (portrait view) — serves share page in sheet mode
+	app.get('/willowlight/sheet/:id', dbCheck, asyncHandler(async (req, res, next)=>{
+		const { model: WillowlightModel } = await import('./willowlight.model.js');
+		const ch = await WillowlightModel.get({ shareId: req.params.id });
+		req.willowlightCharacter = ch.toObject();
+		req.sheetView = true;
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `${req.willowlightCharacter.name || 'Cascade'} — Character Sheet`,
+			description : `Cascade character sheet for ${req.willowlightCharacter.name || 'character'}`
+		};
+		return next();
+	}));
 	app.get('/willowlight/sheet-portrait/:id', (req, res)=>{
-		res.sendFile(path.resolve(process.cwd(), 'prototypes/willowlight-character-sheet-portrait.html'));
+		res.redirect(`/willowlight/sheet/${req.params.id}`);
 	});
 
 	// Handout Generator — built Vite app served as static assets
@@ -171,7 +187,9 @@ export default async function createApp(vite) {
 	app.use(playtestSessionApi);
 	app.use(aiApi);
 	app.use(proceduralImageApi);
+	app.use(comfyuiApi);
 	app.use(pdfApi);
+	app.use(convertApi);
 
 	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 	const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
@@ -828,74 +846,74 @@ export default async function createApp(vite) {
 		return next();
 	});
 
-	//Willowlight Builder - New
+	//Cascade Character Builder - New
 	app.get('/willowlight/new', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Willowlight Character Builder',
-			description : 'Create a Willowlight Engine character'
+			title       : 'Cascade Character Builder',
+			description : 'Create a Cascade character'
 		};
 		return next();
 	});
 
-	//Willowlight Builder - Edit
+	//Cascade Character Builder - Edit
 	app.get('/willowlight/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
 		const { model: WillowlightModel } = await import('./willowlight.model.js');
 		const ch = await WillowlightModel.get({ editId: req.params.id });
 		req.willowlightCharacter = ch.toObject();
 		req.ogMeta = { ...defaultMetaTags,
-			title       : `Editing: ${req.willowlightCharacter.name || 'Willowlight Character'}`,
-			description : 'Edit a Willowlight Engine character'
+			title       : `Editing: ${req.willowlightCharacter.name || 'Cascade Character'}`,
+			description : 'Edit a Cascade character'
 		};
 		return next();
 	}));
 
-	//Willowlight Share
+	//Cascade Share
 	app.get('/willowlight/share/:id', dbCheck, asyncHandler(async (req, res, next)=>{
 		const { model: WillowlightModel } = await import('./willowlight.model.js');
 		const ch = await WillowlightModel.get({ shareId: req.params.id });
 		req.willowlightCharacter = ch.toObject();
 		req.ogMeta = { ...defaultMetaTags,
-			title       : req.willowlightCharacter.name || 'Willowlight Character',
-			description : 'Willowlight Engine character'
+			title       : req.willowlightCharacter.name || 'Cascade Character',
+			description : 'Cascade character'
 		};
 		return next();
 	}));
 
-	//Willowlight Library
+	//Cascade Library
 	app.get('/willowlight/library', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Willowlight Engine',
-			description : 'Browse your Willowlight Engine characters'
+			title       : 'Cascade',
+			description : 'Browse your Cascade characters'
 		};
 		return next();
 	});
 
-	//Willowlight Bestiary - New
+	//Cascade Bestiary - New
 	app.get('/willowlight/bestiary/new', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Willowlight Bestiary Editor',
-			description : 'Create a Willowlight Engine enemy'
+			title       : 'Cascade Bestiary Editor',
+			description : 'Create a Cascade enemy'
 		};
 		return next();
 	});
 
-	//Willowlight Bestiary - Edit
+	//Cascade Bestiary - Edit
 	app.get('/willowlight/bestiary/edit/:id', dbCheck, asyncHandler(async (req, res, next)=>{
 		const { model: BestiaryModel } = await import('./willowlight-bestiary.model.js');
 		const entry = await BestiaryModel.get({ editId: req.params.id });
 		req.willowlightBestiary = entry.toObject();
 		req.ogMeta = { ...defaultMetaTags,
-			title       : `Editing: ${req.willowlightBestiary.name || 'Willowlight Enemy'}`,
-			description : 'Edit a Willowlight Engine enemy'
+			title       : `Editing: ${req.willowlightBestiary.name || 'Cascade Enemy'}`,
+			description : 'Edit a Cascade enemy'
 		};
 		return next();
 	}));
 
-	//Willowlight Bestiary Library
+	//Cascade Bestiary Library
 	app.get('/willowlight/bestiary', (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Willowlight Bestiary',
-			description : 'Browse your Willowlight Engine enemies and creatures'
+			title       : 'Cascade Bestiary',
+			description : 'Browse your Cascade enemies and creatures'
 		};
 		return next();
 	});
