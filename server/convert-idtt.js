@@ -20,6 +20,16 @@ const RENDER_CALLOUTS = {
   example: { heading: 'Sidebars:SidebarHeading', body: 'Sidebars:SidebarBody', bullet: 'Sidebars:SidebarBodyBullets' },
 };
 
+// Tags whose content should be dropped entirely
+const DROP_BLOCKS = new Set(['footnote', 'toc', 'pagenumber']);
+
+// Inline-style tags: extract the text content and map to an IDTT style.
+// Handles both self-closing  {{Tag text }}  and multi-line  {{Tag\ntext\n}}
+const INLINE_STYLE_TAGS = {
+  tabletitle: 'Table:TABLE_TITLE',
+  epigraph:   'Body Text:CoreEpigraph',
+};
+
 // ─── Character encoding ──────────────────────────────────────────────────────
 //
 // InDesign Tagged Text files use latin1 (Windows-1252) encoding. Any Unicode
@@ -107,13 +117,41 @@ export function convertMarkdownToIdtt(markdown) {
     // ── Image lines
     if (/^!\[/.test(trimmed)) { i++; continue; }
 
+    // ── Colon spacers (Homebrewery layout)
+    if (/^:+$/.test(trimmed)) { i++; continue; }
+
     // ── Homebrewery block open  {{ ...
     if (/^\{\{/.test(trimmed) && !inCallout && !skipBlock) {
       const tagMatch = trimmed.match(/^\{\{(\w+)/);
       const tag      = tagMatch ? tagMatch[1].toLowerCase() : '';
-      if (tag === 'pagenumber') { i++; continue; }
-      if (RENDER_CALLOUTS[tag]) { inCallout = true; calloutStyle = RENDER_CALLOUTS[tag]; }
-      else                      { skipBlock = true; }
+      if (DROP_BLOCKS.has(tag)) {
+        // Self-closing on one line (e.g. {{pageNumber,auto}}) — just skip the line
+        if (/\}\}\s*$/.test(trimmed)) { i++; continue; }
+        skipBlock = true; i++; continue;
+      }
+      if (RENDER_CALLOUTS[tag])      { inCallout = true; calloutStyle = RENDER_CALLOUTS[tag]; i++; continue; }
+
+      // Inline-style tags (TableTitle, Epigraph, etc.) — extract text content
+      if (INLINE_STYLE_TAGS[tag]) {
+        const style = INLINE_STYLE_TAGS[tag];
+        // Check for self-closing:  {{Tag text here }}
+        const selfClose = trimmed.match(/^\{\{\w+\s+(.*?)\s*\}\}\s*$/);
+        if (selfClose) {
+          output.push(para(style, selfClose[1]));
+        } else {
+          // Multi-line: collect lines until }}
+          i++;
+          while (i < lines.length && lines[i].trim() !== '}}') {
+            const content = lines[i].trim();
+            if (content !== '') output.push(para(style, content));
+            i++;
+          }
+          // i now points at }} — will be advanced by the i++ at end
+        }
+        i++; continue;
+      }
+
+      // Layout-only tags (wide, tight, etc.) — strip the tag, content falls through normally
       i++; continue;
     }
 
@@ -133,8 +171,9 @@ export function convertMarkdownToIdtt(markdown) {
       if (trimmed.startsWith('|')) {
         if (!inTable) { inTable = true; firstRow = true; }
         if (/^\|[\|\-\s:]+\|$/.test(trimmed)) { firstRow = false; i++; continue; }
-        trimmed.split('|').map(c => c.trim()).filter(Boolean)
-          .forEach(cell => output.push(para(firstRow ? 'SidebarHeading' : 'SidebarBody', cell)));
+        const cells = trimmed.split('|').map(c => c.trim()).filter(Boolean);
+        const style = firstRow ? 'SidebarHeading' : 'SidebarBody';
+        output.push(`<ParaStyle:${style}>${cells.map(c => processInline(c)).join('\t')}`);
         i++; continue;
       } else { inTable = false; firstRow = true; }
       const hm = trimmed.match(/^(#+)\s+(.*)/);
@@ -154,12 +193,13 @@ export function convertMarkdownToIdtt(markdown) {
     // ── Horizontal rule
     if (/^[-*]{3,}$/.test(trimmed)) { i++; continue; }
 
-    // ── Tables
+    // ── Tables (tab-delimited: one row per paragraph, cells separated by tabs)
     if (trimmed.startsWith('|')) {
       if (!inTable) { inTable = true; firstRow = true; }
       if (/^\|[\|\-\s:]+\|$/.test(trimmed)) { firstRow = false; i++; continue; }
-      trimmed.split('|').map(c => c.trim()).filter(Boolean)
-        .forEach(cell => output.push(para(firstRow ? 'Table:TABLE_HEADER' : 'Table:TABLE_CELL', cell)));
+      const cells = trimmed.split('|').map(c => c.trim()).filter(Boolean);
+      const style = firstRow ? 'Table:TABLE_HEADER' : 'Table:TABLE_CELL';
+      output.push(`<ParaStyle:${style}>${cells.map(c => processInline(c)).join('\t')}`);
       i++; continue;
     } else { inTable = false; firstRow = true; }
 
