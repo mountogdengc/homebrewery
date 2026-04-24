@@ -159,6 +159,54 @@
 
   .left-rail .rail-spacer { flex-grow: 1; }
 
+  /* Pinned brews — compact tile section in the rail */
+  .pinned-brew {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'CodeBold', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    user-select: none;
+  }
+  .pinned-brew:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+  }
+  .pinned-brew .tooltip {
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #000;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    z-index: 100;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: normal;
+  }
+  .pinned-brew:hover .tooltip { opacity: 1; }
+
+  /* A few pre-set tile colors so pinned brews feel distinct */
+  .pinned-brew.c1 { background: #7a0000; }
+  .pinned-brew.c2 { background: #2d5a88; }
+  .pinned-brew.c3 { background: #4a6b2a; }
+  .pinned-brew.c4 { background: #7a4a1a; }
+  .pinned-brew.c5 { background: #5a2d7a; }
+
   /* ============================================
      TOP NAVBAR (keeps existing per-page toolbar)
      ============================================ */
@@ -344,7 +392,9 @@
     <li><strong>Left rail (48px):</strong> icon-only launcher, always visible, hover for tooltip. Provides global navigation.</li>
     <li><strong>Active-state indicator:</strong> orange bar on the left of the current-section icon, blue background fill.</li>
     <li><strong>Top toolbar:</strong> <em>unchanged</em> — each page keeps its existing save/export/share/etc. actions.</li>
-    <li><strong>Rail items (from top):</strong> Logo → Home · New Brew · My Brews · Statblock Library · Willowlight · BESM · BRP · Palladium · (spacer) · Account · Help</li>
+    <li><strong>Rail items (from top):</strong> Logo → Home · New Brew · My Brews · Statblock Library · Willowlight · BESM · BRP · Palladium · <em>(pinned brews)</em> · (spacer) · Account · Help</li>
+    <li><strong>Pinned brews:</strong> colored tiles with the brew's initials, placed below the feature links. Hover for the full title; click to jump straight into the editor.</li>
+    <li><strong>Account &amp; Help:</strong> live exclusively in the rail — removed from the top toolbars to cut duplication.</li>
   </ul>
 </div>
 
@@ -367,8 +417,12 @@
       <div class="rail-item"><i class="fa-solid fa-user-astronaut"></i><span class="tooltip">BESM</span></div>
       <div class="rail-item"><i class="fa-solid fa-dice-d20"></i><span class="tooltip">BRP</span></div>
       <div class="rail-item"><i class="fa-solid fa-hammer"></i><span class="tooltip">Palladium</span></div>
+      <div class="rail-divider"></div>
+      <div class="pinned-brew c1">TH<span class="tooltip">Tomb of Horrors — Revised</span></div>
+      <div class="pinned-brew c2">CS<span class="tooltip">Curse of Strahd Companion</span></div>
+      <div class="pinned-brew c3">WH<span class="tooltip">Waterdeep Heist Rules</span></div>
       <div class="rail-spacer"></div>
-      <div class="rail-item"><i class="fa-solid fa-circle-user"></i><span class="tooltip">Account</span></div>
+      <div class="rail-item"><i class="fa-solid fa-circle-user"></i><span class="tooltip">Account — @dm_alex</span></div>
       <div class="rail-item"><i class="fa-solid fa-circle-question"></i><span class="tooltip">Help</span></div>
     </div>
     <!-- PAGE COLUMN -->
@@ -388,7 +442,6 @@
           <div class="nav-item"><i class="fa-solid fa-vault"></i></div>
           <div class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Recent</div>
           <div class="nav-item patreon"><i class="fa-brands fa-patreon"></i></div>
-          <div class="nav-item"><i class="fa-solid fa-user"></i> @dm_alex</div>
         </div>
       </div>
       <div class="page-body">
@@ -439,8 +492,12 @@
       <div class="rail-item"><i class="fa-solid fa-user-astronaut"></i><span class="tooltip">BESM</span></div>
       <div class="rail-item"><i class="fa-solid fa-dice-d20"></i><span class="tooltip">BRP</span></div>
       <div class="rail-item"><i class="fa-solid fa-hammer"></i><span class="tooltip">Palladium</span></div>
+      <div class="rail-divider"></div>
+      <div class="pinned-brew c1">TH<span class="tooltip">Tomb of Horrors — Revised</span></div>
+      <div class="pinned-brew c2">CS<span class="tooltip">Curse of Strahd Companion</span></div>
+      <div class="pinned-brew c3">WH<span class="tooltip">Waterdeep Heist Rules</span></div>
       <div class="rail-spacer"></div>
-      <div class="rail-item"><i class="fa-solid fa-circle-user"></i><span class="tooltip">Account</span></div>
+      <div class="rail-item"><i class="fa-solid fa-circle-user"></i><span class="tooltip">Account — @dm_alex</span></div>
       <div class="rail-item"><i class="fa-solid fa-circle-question"></i><span class="tooltip">Help</span></div>
     </div>
     <div class="page-column">
@@ -455,7 +512,6 @@
           <div class="nav-item"><i class="fa-solid fa-share-nodes"></i> Share</div>
           <div class="nav-item"><i class="fa-solid fa-clone"></i></div>
           <div class="nav-item"><i class="fa-solid fa-book"></i> Library</div>
-          <div class="nav-item"><i class="fa-solid fa-user"></i> @dm_alex</div>
         </div>
       </div>
       <div class="page-body">
@@ -504,8 +560,12 @@
       <div class="rail-item"><i class="fa-solid fa-user-astronaut"></i><span class="tooltip">BESM</span></div>
       <div class="rail-item"><i class="fa-solid fa-dice-d20"></i><span class="tooltip">BRP</span></div>
       <div class="rail-item"><i class="fa-solid fa-hammer"></i><span class="tooltip">Palladium</span></div>
+      <div class="rail-divider"></div>
+      <div class="pinned-brew c1">TH<span class="tooltip">Tomb of Horrors — Revised</span></div>
+      <div class="pinned-brew c2">CS<span class="tooltip">Curse of Strahd Companion</span></div>
+      <div class="pinned-brew c3">WH<span class="tooltip">Waterdeep Heist Rules</span></div>
       <div class="rail-spacer"></div>
-      <div class="rail-item"><i class="fa-solid fa-circle-user"></i><span class="tooltip">Account</span></div>
+      <div class="rail-item"><i class="fa-solid fa-circle-user"></i><span class="tooltip">Account — @dm_alex</span></div>
       <div class="rail-item"><i class="fa-solid fa-circle-question"></i><span class="tooltip">Help</span></div>
     </div>
     <div class="page-column">
@@ -516,7 +576,6 @@
         <div class="nav-section right">
           <div class="nav-item"><i class="fa-solid fa-plus"></i> New Brew</div>
           <div class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Recent</div>
-          <div class="nav-item"><i class="fa-solid fa-user"></i> @dm_alex</div>
         </div>
       </div>
       <div class="page-body single">
@@ -538,11 +597,18 @@
 </div>
 
 <div class="legend">
-  <h3>Tradeoffs to consider</h3>
+  <h3>Design decisions</h3>
   <ul>
-    <li><strong>Pros:</strong> Zero change to existing per-page toolbars. Feature discovery improves immediately. Adding a new character-sheet system is a one-line rail entry. Active-state indicator tells the user where they are.</li>
-    <li><strong>Cons:</strong> 48px of permanent horizontal chrome on every page. Some redundancy with the NaturalCrit logo. Icon-only means newcomers must hover to learn labels (mitigated by tooltips).</li>
-    <li><strong>Open questions:</strong> Should the rail be collapsible? Should Help/Account live in the rail <em>and</em> the top navbar, or move entirely? Should the rail show a "pinned brews" section below the feature links?</li>
+    <li><strong>Account &amp; Help:</strong> live in the rail only (removed from top toolbars).</li>
+    <li><strong>Rail is always visible:</strong> no collapse behavior.</li>
+    <li><strong>Pinned brews:</strong> colored tiles with initials, click-to-open, hover for full title.</li>
+  </ul>
+  <h3>Still to decide (when we build it)</h3>
+  <ul>
+    <li>How does a user <em>pin</em> a brew? (context menu on the brew card, star button in the editor, drag-and-drop?)</li>
+    <li>Cap on pinned count? (suggest 5–8 before it starts crowding the rail)</li>
+    <li>Should pinned character sheets / statblocks be pinnable too, or only brews?</li>
+    <li>Tile color: auto-assigned from brew ID, or user-pickable?</li>
   </ul>
 </div>
 
