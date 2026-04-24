@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup — Left-Rail Navigation (Idea 3)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navbar-bg: #333333;
+    --navbar-border: #666666;
+    --navbar-border-light: #888888;
+    --rail-bg: #2a2a2a;
+    --rail-border: #444444;
+    --accent-orange: #d48c35;
+    --accent-blue: #3a90c3;
+    --accent-teal: #3a9c9c;
+    --text: #ffffff;
+    --text-muted: #bbbbbb;
+    --page-bg: #f3f1ec;
+    --editor-bg: #1e1e1e;
+  }
+
+  body {
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #222;
+    color: #ddd;
+    min-height: 100vh;
+  }
+
+  /* ============================================
+     PAGE CONTAINER (each mockup example)
+     ============================================ */
+  .mockup-section {
+    margin: 40px auto;
+    max-width: 1400px;
+    padding: 0 20px;
+  }
+  .mockup-section h2 {
+    font-size: 18px;
+    font-weight: 400;
+    color: #aaa;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #444;
+    margin-bottom: 16px;
+  }
+  .mockup-section h2 .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    margin-left: 8px;
+    background: #444;
+    border-radius: 3px;
+    color: #ddd;
+  }
+  .mockup-section .desc {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 12px;
+  }
+
+  .app-frame {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    height: 500px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--page-bg);
+  }
+
+  /* ============================================
+     THE LEFT RAIL — THE NEW PART
+     ============================================ */
+  .left-rail {
+    background: var(--rail-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    border-right: 1px solid var(--rail-border);
+    gap: 2px;
+  }
+
+  .left-rail .rail-logo {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .left-rail .rail-logo:hover { color: var(--accent-orange); cursor: pointer; }
+
+  .left-rail .rail-divider {
+    width: 28px;
+    height: 1px;
+    background: var(--rail-border);
+    margin: 6px 0;
+  }
+
+  .rail-item {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 15px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .rail-item:hover {
+    background: #444;
+    color: var(--text);
+  }
+  .rail-item.active {
+    background: var(--accent-blue);
+    color: var(--text);
+  }
+  .rail-item.active::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    background: var(--accent-orange);
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* Tooltip on hover */
+  .rail-item .tooltip {
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #000;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    z-index: 100;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: normal;
+  }
+  .rail-item:hover .tooltip { opacity: 1; }
+
+  .left-rail .rail-spacer { flex-grow: 1; }
+
+  /* ============================================
+     TOP NAVBAR (keeps existing per-page toolbar)
+     ============================================ */
+  .page-column {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .top-navbar {
+    height: 42px;
+    background: var(--navbar-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-shrink: 0;
+  }
+
+  .nav-section { display: flex; align-items: stretch; }
+  .nav-section.right .nav-item { border-left: 1px solid var(--navbar-border); }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    text-transform: uppercase;
+    cursor: pointer;
+    background: var(--navbar-bg);
+    transition: background 0.15s;
+    gap: 6px;
+  }
+  .nav-item:hover { background: #444; }
+  .nav-item i { font-size: 14px; }
+
+  .nav-item.brew-title {
+    flex-grow: 1;
+    justify-content: center;
+    font-size: 15px;
+    text-transform: none;
+    max-width: 500px;
+    color: white;
+  }
+  .nav-item.patreon i { color: pink; }
+  .nav-item.save i.saved { color: rgb(0, 182, 52); }
+  .nav-item.save i.unsaved { color: red; }
+  .nav-item.warning { background: var(--accent-orange); }
+
+  .nav-spacer { flex-grow: 1; }
+
+  /* ============================================
+     PAGE BODY (placeholder content)
+     ============================================ */
+  .page-body {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+  .page-body.single { grid-template-columns: 1fr; }
+
+  .editor-pane {
+    background: var(--editor-bg);
+    color: #888;
+    padding: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    overflow: hidden;
+    border-right: 1px solid #000;
+  }
+  .editor-pane .line { margin-bottom: 4px; white-space: nowrap; }
+  .editor-pane .line .num { color: #555; margin-right: 12px; display: inline-block; width: 24px; text-align: right; }
+  .editor-pane .line .hash { color: #d48c35; }
+  .editor-pane .line .text { color: #ddd; }
+
+  .preview-pane {
+    background: #faf6ed;
+    padding: 28px;
+    overflow: hidden;
+    color: #333;
+    font-family: 'Georgia', serif;
+  }
+  .preview-pane h1 {
+    font-size: 22px;
+    border-bottom: 2px solid #a00;
+    margin-bottom: 10px;
+    color: #7a0000;
+  }
+  .preview-pane h2 {
+    font-size: 16px;
+    color: #7a0000;
+    margin: 14px 0 6px;
+    border: none;
+    padding: 0;
+  }
+  .preview-pane p { font-size: 13px; line-height: 1.5; margin-bottom: 8px; }
+  .preview-pane .statblock {
+    background: #fdf1dc;
+    border: 1px solid #7a0000;
+    padding: 12px;
+    margin-top: 10px;
+  }
+
+  /* Share page variant */
+  .share-body {
+    background: #faf6ed;
+    padding: 40px 60px;
+    overflow: hidden;
+    color: #333;
+    font-family: 'Georgia', serif;
+  }
+
+  /* Library page variant */
+  .library-body {
+    background: #f3f1ec;
+    padding: 24px;
+    overflow: hidden;
+  }
+  .library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .library-card {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 14px;
+    color: #333;
+    font-family: 'Open Sans', sans-serif;
+  }
+  .library-card h3 { font-size: 14px; margin-bottom: 6px; color: #7a0000; }
+  .library-card p { font-size: 11px; color: #777; }
+
+  /* Interactive: click a rail icon to highlight it */
+  .rail-item { user-select: none; }
+
+  /* Legend / key */
+  .legend {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: #ddd;
+  }
+  .legend h3 { margin-bottom: 10px; font-size: 15px; color: white; }
+  .legend ul { list-style: none; padding: 0; }
+  .legend li { margin: 6px 0; font-size: 13px; color: #bbb; }
+  .legend li strong { color: var(--accent-orange); }
+
+  h1.title {
+    text-align: center;
+    padding: 30px 20px 10px;
+    font-size: 24px;
+    font-weight: 300;
+    color: #ddd;
+  }
+  h1.title .sub {
+    display: block;
+    font-size: 14px;
+    color: #888;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="title">
+  Homebrewery — Left-Rail Navigation Mockup
+  <span class="sub">Idea 3: a persistent left rail added alongside the existing per-page toolbar</span>
+</h1>
+
+<!-- ============================================
+     LEGEND
+     ============================================ -->
+<div class="legend">
+  <h3>What's new</h3>
+  <ul>
+    <li><strong>Left rail (48px):</strong> icon-only launcher, always visible, hover for tooltip. Provides global navigation.</li>
+    <li><strong>Active-state indicator:</strong> orange bar on the left of the current-section icon, blue background fill.</li>
+    <li><strong>Top toolbar:</strong> <em>unchanged</em> — each page keeps its existing save/export/share/etc. actions.</li>
+    <li><strong>Rail items (from top):</strong> Logo → Home · New Brew · My Brews · Statblock Library · Willowlight · BESM · BRP · Palladium · (spacer) · Account · Help</li>
+  </ul>
+</div>
+
+<!-- ============================================
+     MOCKUP 1: EDIT PAGE (rich toolbar)
+     ============================================ -->
+<div class="mockup-section">
+  <h2>1. Edit Page <span class="tag">editPage</span> <span class="tag">most feature-rich</span></h2>
+  <p class="desc">The D&amp;D brew editor. Existing save/export/share toolbar is preserved; left rail adds global nav.</p>
+  <div class="app-frame">
+    <!-- LEFT RAIL -->
+    <div class="left-rail">
+      <div class="rail-logo" title="NaturalCrit">NC</div>
+      <div class="rail-item"><i class="fa-solid fa-house"></i><span class="tooltip">Home</span></div>
+      <div class="rail-item"><i class="fa-solid fa-plus"></i><span class="tooltip">New Brew</span></div>
+      <div class="rail-item active"><i class="fa-solid fa-scroll"></i><span class="tooltip">My Brews</span></div>
+      <div class="rail-divider"></div>
+      <div class="rail-item"><i class="fa-solid fa-dragon"></i><span class="tooltip">Statblock Library</span></div>
+      <div class="rail-item"><i class="fa-solid fa-wand-sparkles"></i><span class="tooltip">Willowlight</span></div>
+      <div class="rail-item"><i class="fa-solid fa-user-astronaut"></i><span class="tooltip">BESM</span></div>
+      <div class="rail-item"><i class="fa-solid fa-dice-d20"></i><span class="tooltip">BRP</span></div>
+      <div class="rail-item"><i class="fa-solid fa-hammer"></i><span class="tooltip">Palladium</span></div>
+      <div class="rail-spacer"></div>
+      <div class="rail-item"><i class="fa-solid fa-circle-user"></i><span class="tooltip">Account</span></div>
+      <div class="rail-item"><i class="fa-solid fa-circle-question"></i><span class="tooltip">Help</span></div>
+    </div>
+    <!-- PAGE COLUMN -->
+    <div class="page-column">
+      <div class="top-navbar">
+        <div class="nav-section">
+          <div class="nav-item"><i class="fa-brands fa-google-drive"></i></div>
+          <div class="nav-item brew-title">The Tomb of Horrors — Revised</div>
+        </div>
+        <div class="nav-section right">
+          <div class="nav-item save"><i class="fa-solid fa-power-off saved"></i> Save</div>
+          <div class="nav-item"><i class="fa-solid fa-print"></i></div>
+          <div class="nav-item"><i class="fa-solid fa-file-pdf"></i> PDF</div>
+          <div class="nav-item"><i class="fa-solid fa-file-word"></i> Docx</div>
+          <div class="nav-item"><i class="fa-solid fa-share-nodes"></i> Share</div>
+          <div class="nav-item"><i class="fa-solid fa-clone"></i></div>
+          <div class="nav-item"><i class="fa-solid fa-vault"></i></div>
+          <div class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Recent</div>
+          <div class="nav-item patreon"><i class="fa-brands fa-patreon"></i></div>
+          <div class="nav-item"><i class="fa-solid fa-user"></i> @dm_alex</div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="editor-pane">
+          <div class="line"><span class="num">1</span><span class="hash"># </span><span class="text">The Tomb of Horrors</span></div>
+          <div class="line"><span class="num">2</span></div>
+          <div class="line"><span class="num">3</span><span class="hash">## </span><span class="text">Introduction</span></div>
+          <div class="line"><span class="num">4</span><span class="text">The demi-lich Acererak...</span></div>
+          <div class="line"><span class="num">5</span></div>
+          <div class="line"><span class="num">6</span><span class="hash">## </span><span class="text">The Entrance</span></div>
+          <div class="line"><span class="num">7</span><span class="text">A low hill of earth and rubble...</span></div>
+          <div class="line"><span class="num">8</span></div>
+          <div class="line"><span class="num">9</span><span class="hash">\statblock</span></div>
+          <div class="line"><span class="num">10</span><span class="text">name: Acererak</span></div>
+        </div>
+        <div class="preview-pane">
+          <h1>The Tomb of Horrors</h1>
+          <h2>Introduction</h2>
+          <p>The demi-lich Acererak guards the treasures of his dungeon with deadly traps and undead minions.</p>
+          <h2>The Entrance</h2>
+          <p>A low hill of earth and rubble marks the entrance. The air grows cold as you approach...</p>
+          <div class="statblock">
+            <strong>Acererak, the Demilich</strong><br>
+            <small>Tiny undead, neutral evil</small><br>
+            AC 20 · HP 80 · Legendary Resistance (3/day)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     MOCKUP 2: STATBLOCK EDITOR
+     ============================================ -->
+<div class="mockup-section">
+  <h2>2. Statblock Editor <span class="tag">statblockEditorPage</span> <span class="tag">simpler toolbar</span></h2>
+  <p class="desc">Same rail, different top toolbar — statblock editors show layout toggle + embed code, no PDF export.</p>
+  <div class="app-frame">
+    <div class="left-rail">
+      <div class="rail-logo" title="NaturalCrit">NC</div>
+      <div class="rail-item"><i class="fa-solid fa-house"></i><span class="tooltip">Home</span></div>
+      <div class="rail-item"><i class="fa-solid fa-plus"></i><span class="tooltip">New Brew</span></div>
+      <div class="rail-item"><i class="fa-solid fa-scroll"></i><span class="tooltip">My Brews</span></div>
+      <div class="rail-divider"></div>
+      <div class="rail-item active"><i class="fa-solid fa-dragon"></i><span class="tooltip">Statblock Library</span></div>
+      <div class="rail-item"><i class="fa-solid fa-wand-sparkles"></i><span class="tooltip">Willowlight</span></div>
+      <div class="rail-item"><i class="fa-solid fa-user-astronaut"></i><span class="tooltip">BESM</span></div>
+      <div class="rail-item"><i class="fa-solid fa-dice-d20"></i><span class="tooltip">BRP</span></div>
+      <div class="rail-item"><i class="fa-solid fa-hammer"></i><span class="tooltip">Palladium</span></div>
+      <div class="rail-spacer"></div>
+      <div class="rail-item"><i class="fa-solid fa-circle-user"></i><span class="tooltip">Account</span></div>
+      <div class="rail-item"><i class="fa-solid fa-circle-question"></i><span class="tooltip">Help</span></div>
+    </div>
+    <div class="page-column">
+      <div class="top-navbar">
+        <div class="nav-section">
+          <div class="nav-item brew-title">Young Red Dragon</div>
+        </div>
+        <div class="nav-section right">
+          <div class="nav-item save"><i class="fa-solid fa-power-off saved"></i> Save</div>
+          <div class="nav-item"><i class="fa-solid fa-columns"></i> Wide</div>
+          <div class="nav-item"><i class="fa-solid fa-code"></i> Embed</div>
+          <div class="nav-item"><i class="fa-solid fa-share-nodes"></i> Share</div>
+          <div class="nav-item"><i class="fa-solid fa-clone"></i></div>
+          <div class="nav-item"><i class="fa-solid fa-book"></i> Library</div>
+          <div class="nav-item"><i class="fa-solid fa-user"></i> @dm_alex</div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="editor-pane">
+          <div class="line"><span class="num">1</span><span class="text">name: Young Red Dragon</span></div>
+          <div class="line"><span class="num">2</span><span class="text">size: Large</span></div>
+          <div class="line"><span class="num">3</span><span class="text">type: dragon</span></div>
+          <div class="line"><span class="num">4</span><span class="text">ac: 18</span></div>
+          <div class="line"><span class="num">5</span><span class="text">hp: 178</span></div>
+          <div class="line"><span class="num">6</span><span class="text">speed: 40 ft., fly 80 ft.</span></div>
+          <div class="line"><span class="num">7</span><span class="text">str: 23</span></div>
+          <div class="line"><span class="num">8</span><span class="text">dex: 10</span></div>
+          <div class="line"><span class="num">9</span><span class="text">con: 21</span></div>
+        </div>
+        <div class="preview-pane">
+          <div class="statblock" style="font-family:'Georgia',serif;">
+            <strong style="font-size:18px;">Young Red Dragon</strong><br>
+            <em>Large dragon, chaotic evil</em><hr>
+            <small><strong>Armor Class</strong> 18 (natural armor)</small><br>
+            <small><strong>Hit Points</strong> 178 (17d10 + 85)</small><br>
+            <small><strong>Speed</strong> 40 ft., climb 40 ft., fly 80 ft.</small><hr>
+            <small>STR 23 · DEX 10 · CON 21 · INT 14 · WIS 11 · CHA 19</small><hr>
+            <p style="font-size:12px;"><strong>Fire Breath (Recharge 5-6).</strong> The dragon exhales fire in a 30-foot cone...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     MOCKUP 3: USER / LIBRARY PAGE
+     ============================================ -->
+<div class="mockup-section">
+  <h2>3. User / Library Page <span class="tag">userPage</span> <span class="tag">stripped-down navbar</span></h2>
+  <p class="desc">Simple info pages get huge discoverability boost from the rail — currently they have almost no navigation.</p>
+  <div class="app-frame">
+    <div class="left-rail">
+      <div class="rail-logo" title="NaturalCrit">NC</div>
+      <div class="rail-item active"><i class="fa-solid fa-house"></i><span class="tooltip">Home</span></div>
+      <div class="rail-item"><i class="fa-solid fa-plus"></i><span class="tooltip">New Brew</span></div>
+      <div class="rail-item"><i class="fa-solid fa-scroll"></i><span class="tooltip">My Brews</span></div>
+      <div class="rail-divider"></div>
+      <div class="rail-item"><i class="fa-solid fa-dragon"></i><span class="tooltip">Statblock Library</span></div>
+      <div class="rail-item"><i class="fa-solid fa-wand-sparkles"></i><span class="tooltip">Willowlight</span></div>
+      <div class="rail-item"><i class="fa-solid fa-user-astronaut"></i><span class="tooltip">BESM</span></div>
+      <div class="rail-item"><i class="fa-solid fa-dice-d20"></i><span class="tooltip">BRP</span></div>
+      <div class="rail-item"><i class="fa-solid fa-hammer"></i><span class="tooltip">Palladium</span></div>
+      <div class="rail-spacer"></div>
+      <div class="rail-item"><i class="fa-solid fa-circle-user"></i><span class="tooltip">Account</span></div>
+      <div class="rail-item"><i class="fa-solid fa-circle-question"></i><span class="tooltip">Help</span></div>
+    </div>
+    <div class="page-column">
+      <div class="top-navbar">
+        <div class="nav-section">
+          <div class="nav-item brew-title">@dm_alex's Brews</div>
+        </div>
+        <div class="nav-section right">
+          <div class="nav-item"><i class="fa-solid fa-plus"></i> New Brew</div>
+          <div class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Recent</div>
+          <div class="nav-item"><i class="fa-solid fa-user"></i> @dm_alex</div>
+        </div>
+      </div>
+      <div class="page-body single">
+        <div class="library-body">
+          <div class="library-grid">
+            <div class="library-card"><h3>Tomb of Horrors — Revised</h3><p>Updated 2 days ago</p></div>
+            <div class="library-card"><h3>Curse of Strahd Companion</h3><p>Updated 1 week ago</p></div>
+            <div class="library-card"><h3>Waterdeep Heist Rules</h3><p>Updated 2 weeks ago</p></div>
+            <div class="library-card"><h3>Homebrew Subclasses</h3><p>Updated 1 month ago</p></div>
+            <div class="library-card"><h3>Session Zero Handout</h3><p>Updated 1 month ago</p></div>
+            <div class="library-card"><h3>Dungeon of the Mad Mage</h3><p>Updated 2 months ago</p></div>
+            <div class="library-card"><h3>One-Shot: The Lost Mine</h3><p>Updated 3 months ago</p></div>
+            <div class="library-card"><h3>Monster Manual Expanded</h3><p>Updated 4 months ago</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <h3>Tradeoffs to consider</h3>
+  <ul>
+    <li><strong>Pros:</strong> Zero change to existing per-page toolbars. Feature discovery improves immediately. Adding a new character-sheet system is a one-line rail entry. Active-state indicator tells the user where they are.</li>
+    <li><strong>Cons:</strong> 48px of permanent horizontal chrome on every page. Some redundancy with the NaturalCrit logo. Icon-only means newcomers must hover to learn labels (mitigated by tooltips).</li>
+    <li><strong>Open questions:</strong> Should the rail be collapsible? Should Help/Account live in the rail <em>and</em> the top navbar, or move entirely? Should the rail show a "pinned brews" section below the feature links?</li>
+  </ul>
+</div>
+
+<script>
+  // Make rail items clickable to switch active state (demo-only)
+  document.querySelectorAll('.app-frame').forEach(frame => {
+    const items = frame.querySelectorAll('.rail-item');
+    items.forEach(item => {
+      item.addEventListener('click', () => {
+        items.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
