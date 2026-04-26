@@ -79,6 +79,9 @@ const WillowlightSchema = mongoose.Schema({
 		disarmed: false, dying: false, other: ''
 	}) },
 
+	// Portrait (base64 data URI from ComfyUI)
+	portrait : { type: String, default: '' },
+
 	// Notes
 	notes : { type: String, default: '' },
 

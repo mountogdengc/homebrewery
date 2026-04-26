@@ -78,18 +78,15 @@ const WillowlightLibraryPage = ()=>{
 		<div className="statblockLibraryPage">
 			<Navbar>
 				<Nav.section>
-					<Nav.item color="blue">Willowlight Engine</Nav.item>
+					<Nav.item color="blue">Cascade</Nav.item>
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/willowlight/new'; }}>
 						New Character
 					</Nav.item>
 					<Nav.item icon="fas fa-skull-crossbones" onClick={()=>{ window.location.href = '/willowlight/bestiary'; }}>
 						Bestiary
 					</Nav.item>
-					<Nav.item icon="fas fa-print" onClick={()=>{ window.open('/willowlight/sheet', '_blank'); }}>
+					<Nav.item icon="fas fa-file" onClick={()=>{ window.location.href = '/willowlight/blank'; }}>
 						Blank Sheet
-					</Nav.item>
-					<Nav.item icon="fas fa-file-alt" onClick={()=>{ window.open('/willowlight/sheet-portrait', '_blank'); }}>
-						Blank Portrait
 					</Nav.item>
 					<Nav.item icon="fas fa-paste" onClick={()=>setShowImportBox(!showImportBox)}>
 						Paste Import
@@ -106,7 +103,7 @@ const WillowlightLibraryPage = ()=>{
 
 			<div className="libraryContent">
 				<div className="libraryHeader">
-					<h1>Willowlight Engine <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
+					<h1>Cascade <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
 				</div>
 
 				<div className="filterBar">

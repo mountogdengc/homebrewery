@@ -107,6 +107,12 @@ export default async function createApp(vite) {
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/handout/index.html'));
 	});
 
+	// Adventure Generator — built Vite app served as static assets
+	app.use('/adventure', express.static(path.resolve(process.cwd(), 'prototypes/adventure')));
+	app.get('/adventure/{*path}', (req, res)=>{
+		res.sendFile(path.resolve(process.cwd(), 'prototypes/adventure/index.html'));
+	});
+
 	// Map Generator — built Vite app served as static assets
 	app.get('/mapgen', (req, res)=>{
 		res.sendFile(path.resolve(process.cwd(), 'prototypes/mapgen/index.html'));

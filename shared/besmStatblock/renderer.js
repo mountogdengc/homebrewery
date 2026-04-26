@@ -58,6 +58,23 @@ function computeDerived(ch) {
 	const fSoul = Math.max(0, soul + soulMods);
 
 	const cv = Math.floor((fBody + fMind + fSoul) / 3) + derivedMods.CV;
+
+	// Movement calculations
+	let sizeMultiplier = 1;
+	const speedMod = ch.size?.modifiers?.speedRangeMultiplier;
+	if(speedMod) {
+		const value = parseFloat(String(speedMod).replace(/[^\d.-]/g, ''));
+		if(!isNaN(value)) sizeMultiplier = String(speedMod).includes('÷') ? 1 / value : value;
+	}
+	let fastMultiplier = 1;
+	(ch.attributes || []).forEach((attr)=>{
+		if(attr.template?.key === 'special_movement' &&
+			(attr.notes?.toLowerCase().includes('fast') || attr.template.name?.toLowerCase().includes('fast'))) {
+			fastMultiplier *= 2;
+		}
+	});
+	const speed = (base)=>(fBody * base) * sizeMultiplier * fastMultiplier;
+
 	return {
 		attackCombatValue:  Math.floor((cv + derivedMods.ACV) * multipliers.ACV * multipliers.CV),
 		defenseCombatValue: Math.floor((cv + derivedMods.DCV) * multipliers.DCV * multipliers.CV),
@@ -68,6 +85,12 @@ function computeDerived(ch) {
 		sv:                 Math.floor((fBody * 2 + derivedMods.SV) * multipliers.SV),
 		scv:                Math.floor((Math.floor((fMind + fSoul) / 2) + derivedMods.SCV) * multipliers.SCV),
 		sanityPoints:       Math.floor((fMind + fSoul) * 2),
+		movement: {
+			walk:   speed(1),
+			jog:    speed(1.5),
+			run:    speed(2),
+			sprint: speed(4),
+		},
 	};
 }
 
@@ -125,12 +148,12 @@ function renderDerived(ch) {
 	const sv  = dv.shockValue ?? dv.sv ?? 0;
 	const scv = dv.scv ?? dv.socialCombatValue ?? 0;
 
-	// Movement (if available)
-	const mv = ch.movement || {};
-	const walk   = mv.walk   ?? '—';
-	const jog    = mv.jog    ?? '—';
-	const run    = mv.run    ?? '—';
-	const sprint = mv.sprint ?? '—';
+	// Movement – prefer computed dv.movement, fall back to ch.movement
+	const mv = dv.movement || ch.movement || {};
+	const walk   = mv.walk != null   ? Number(mv.walk).toFixed(1)   : '—';
+	const jog    = mv.jog != null    ? Number(mv.jog).toFixed(1)    : '—';
+	const run    = mv.run != null    ? Number(mv.run).toFixed(1)    : '—';
+	const sprint = mv.sprint != null ? Number(mv.sprint).toFixed(1) : '—';
 
 	return `<div class="besm-section-header">Derived Values</div>
 	<div class="besm-derived">
@@ -246,12 +269,16 @@ export function render(character, layout = 'narrow') {
 	if(identity) subtitle += ` — ${identity}`;
 
 	const wideClass = layout === 'wide' ? ' besm-statblock--wide' : '';
+	const portraitHtml = ch.portrait
+		? `<div class="besm-portrait"><img src="${ch.portrait}" alt="${name}" /></div>`
+		: '';
 
 	return `<div class="besm-statblock${wideClass}">
 		<div class="besm-title">
 			<div class="besm-name">${name}</div>
 			<div class="besm-subtitle">${subtitle}</div>
 		</div>
+		${portraitHtml}
 		${renderStats(ch)}
 		${renderDerived(ch)}
 		${renderAttributes(ch.attributes)}

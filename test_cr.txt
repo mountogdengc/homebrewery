@@ -1,0 +1,1 @@
+<ANSI-WIN><Version:8><FeatureSet:InDesign-Roman><ParaStyle:Heading1>Test Heading<ParaStyle:CoreBody>This is body text.<ParaStyle:CoreBulleted>A bullet item

@@ -86,7 +86,22 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:5e-bits.github.io)",
       "WebFetch(domain:www.dnd5eapi.co)",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Bash(grep -r \"pdf\\\\|PDF\\\\|export\\\\|print\" /d/Done/homebrewery-master/server/*.js)",
+      "Bash(node -e \"require\\('puppeteer'\\); console.log\\('puppeteer OK'\\)\")",
+      "Bash(ls d:/Done/homebrewery-master/build/*.css)",
+      "Bash(ls d:/Done/homebrewery-master/client/homebrew/brewRenderer/*.less)",
+      "Bash(node -e ':*)",
+      "Bash(ls d:/Done/homebrewery-master/prototypes/willowlight-character-sheet*)",
+      "Bash(ls d:/Done/homebrewery-master/build/assets/lolgo*)",
+      "Bash(ls -la /d/Done/homebrewery-master/server/*.model.js)",
+      "Bash(node md2idtt.cjs Markdown/The_Vault_Below_Thornhall.md output.txt)",
+      "Bash(xxd test_idtt.txt)",
+      "Bash(node -e \"const fs=require\\('fs'\\); const buf=fs.readFileSync\\('test_idtt.txt'\\); console.log\\(buf.slice\\(0,80\\).toString\\('hex'\\).match\\(/../g\\).join\\(' '\\)\\); console.log\\(buf.slice\\(0,80\\).toString\\('ascii'\\)\\);\")",
+      "Bash(node md2docx.cjs Markdown/The_Vault_Below_Thornhall.md)",
+      "Bash(ls d:/Done/homebrewery-master/*.config*)",
+      "Bash(ls d:/Done/homebrewery-master/.babelrc*)",
+      "Bash(ls d:/Done/homebrewery-master/vite*)"
     ],
     "additionalDirectories": [
       "\\tmp\\besm_source\\src\\utils",

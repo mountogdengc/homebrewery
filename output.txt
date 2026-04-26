@@ -1,0 +1,628 @@
+<ANSI-WIN>
+<Version:8><FeatureSet:InDesign-Roman>
+<ParaStyle:Headings:Heading1>THE VAULT BELOW THORNHALL
+<ParaStyle:Headings:Heading2>A Cascade Solo Adventure Arc
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Mount Ogden Gaming Company<CharStyle:>
+<ParaStyle:Headings:Heading2>About This Adventure
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The Vault Below Thornhall<CharStyle:> is a four-part solo adventure for the Cascade roleplaying game. You don't need a Storyguide. You don't need other players. You need a pencil, three six-sided dice (ideally one that's a different color from the other two) and a few pieces of paper.
+<ParaStyle:Body Text:CoreBody>This adventure teaches you how Cascade works by putting you in the middle of a story and asking you to act. Every part introduces one new piece of the game, and by the end, you'll know the core of how Cascade plays.
+<ParaStyle:Body Text:CoreBody>Start with Part One. You won't need any dice yet.
+<ParaStyle:Headings:Heading1>PART ONE: A SIMPLE JOB
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>In which you learn what kind of world this is.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Merchant Vesna Tholl is not a patient woman. She found you at the Cracked Antler, the only tavern in Thornhall still warm this late in the season, and made her offer in short, no-nonsense sentences.
+<ParaStyle:Body Text:CoreBody>Someone stole her ledger. Not coins. Not jewelry. A ledger: the kind with names in it that her business partners would prefer stay hidden.
+<ParaStyle:Body Text:CoreBody>The thief, a fence named Corvin Ash, has taken it into the vault beneath the old border wall. The one locals avoid talking about.
+<ParaStyle:Body Text:CoreBody>She'll pay well if you bring it back. She'll pay nothing if you don't.
+<ParaStyle:Body Text:CoreBody>That's how you end up in front of a rusted iron door set into the base of Thornhall's oldest wall, lantern in hand, cold autumn rain on your back.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Begin your adventure with section 1.<CharStyle:>
+<ParaStyle:Headings:Heading2>1.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The iron door stands half-open. Someone pried it recently; the hinges are raw with bright new scratches. Inside is a stone stair descending into darkness. A draft rises from below, carrying the smell of damp and something older. Someone is down there.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you go straight in, continue with <CharStyle:Bold>section 2<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you study the door and the ground first, continue with <CharStyle:Bold>section 3<CharStyle:>.
+<ParaStyle:Headings:Heading2>2.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You step through and descend. The stairs are slick with moss. After a dozen steps your lantern light reaches a landing where the stairs split: left into a corridor of old storage rooms, right toward the sound of dripping water.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you take the left corridor, continue with <CharStyle:Bold>section 4<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you follow the sound of water to the right, continue with <CharStyle:Bold>section 5<CharStyle:>.
+<ParaStyle:Headings:Heading2>3.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You crouch and examine the mud near the door. One set of boot prints going in, narrow and quick, heavy load. About an hour ago. You also notice the door can be barred from the inside.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Good to know.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 2<CharStyle:>.
+<ParaStyle:Headings:Heading2>4.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The storage rooms are picked over: old barrels, broken crates, a mouse-chewed rope dangling from a ceiling hook. At the far end, a door stands ajar. Lamplight flickers under it.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you call out before entering, continue with <CharStyle:Bold>section 6<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you push the door open carefully and look inside, continue with <CharStyle:Bold>section 7<CharStyle:>.
+<ParaStyle:Headings:Heading2>5.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The sound leads you to a cistern room, a wide, low chamber with a shallow pool at its center. Your lantern catches ripples. Something moved through here recently, and wet boot prints cross the floor to a door on the far side.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 8<CharStyle:>.
+<ParaStyle:Headings:Heading2>6.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Corvin Ash," you call. "Vesna Tholl sent me. She doesn't want you. She wants the ledger."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Silence. Then, through the door, a voice tight with nerves: "How do I know she's not sending you to put me in the ground?"<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you tell him that Vesna agreed to let him walk, continue with <CharStyle:Bold>section 9<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you admit you don't know what Vesna's plans are, continue with <CharStyle:Bold>section 10<CharStyle:>.
+<ParaStyle:Headings:Heading2>7.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You ease the door open with one finger. A thin, sharp-faced man sits at a battered table with a fat leather-bound ledger open in front of him, his face tight with something between fear and calculation. He hasn't heard you.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>He's also holding a small knife, though it's pointing at the ledger rather than anywhere useful.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you step into the room and announce yourself, continue with <CharStyle:Bold>section 11<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you wait a moment and watch, continue with <CharStyle:Bold>section 12<CharStyle:>.
+<ParaStyle:Headings:Heading2>8.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The door across the cistern is barred from this side, meaning Corvin went through and locked it behind him. He's ahead of you, and he knows you might follow.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Near the ceiling, almost hidden behind a water-stained beam, is a narrow maintenance passage. Tight and dark, but it might let you get ahead of him.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you try the maintenance passage, continue with <CharStyle:Bold>section 13<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you look for another way through, continue with <CharStyle:Bold>section 14<CharStyle:>.
+<ParaStyle:Headings:Heading2>9.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"She's not a merciful woman," the voice says. "But she's a practical one. I'll believe you."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>A pause.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"I wasn't even supposed to take it this far. A buyer offered good coin for the names inside. I got greedy. That's the whole story."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The door opens. Corvin Ash stands there, the ledger tucked under one arm. He holds it out.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 15<CharStyle:>.
+<ParaStyle:Headings:Heading2>10.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Another pause. Longer.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Well," Corvin says. "At least you're honest."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The door opens slowly. Corvin holds the ledger out with one hand; the other is empty and visible. He looks like a man who has decided that surrender is his best remaining move.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 15<CharStyle:>.
+<ParaStyle:Headings:Heading2>11.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>He nearly knocks over the lantern. The knife disappears into his pocket so fast it might never have existed.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Merchant's agent?" he asks, voice strained.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"That's right."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>He looks at the ledger, then at you, then at the ledger again before setting it on the table.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Take it. I haven't read enough of it to be worth killing. Tell her that."<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 15<CharStyle:>.
+<ParaStyle:Headings:Heading2>12.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You watch him turn pages, his face getting tighter with each one. After a moment he mutters, more to himself than anyone: "These people would pay anything to keep these names quiet." He looks up and sees you in the doorway.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"How long have you been standing there?"<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Long enough."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>He sets the ledger down slowly. He doesn't look like he's going to fight.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 15<CharStyle:>.
+<ParaStyle:Headings:Heading2>13.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The passage is exactly as unpleasant as it looks. You drag yourself and your lantern through twenty feet of near-darkness, emerging into a corridor on the far side of the barred door. In the distance, a light is moving.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Corvin. He's heading deeper.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 16<CharStyle:>.
+<ParaStyle:Headings:Heading2>14.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>A careful search of the cistern walls turns up a second way through: a service door half-hidden behind a collapsed shelf. Unlocked.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 16<CharStyle:>.
+<ParaStyle:Headings:Heading2>15.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Corvin Ash walked out of the vault behind you and didn't look back. You returned the ledger to Vesna Tholl, who paid you in silence and disappeared into her counting house.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>That might have been the end of it.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>But as you left her building, you found something: a page folded into your coin purse. Not yours. Corvin must have slipped it there during the handoff. At the top of the page, in careful small letters: "You might want to know what you just helped her do."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Below that: a column of names and numbers.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You stood in the rain and read it twice.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're going to need to go back to that vault.<CharStyle:>
+<ParaStyle:Headings:Heading2>16.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You catch up to Corvin in a long corridor where the stonework changes, older and more careful. He spins around when he hears you.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"You're not a guard," he says.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"No."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>He looks at you for a long moment, then reaches into his coat and pulls out a folded page. "Then you might want this," he says. "I've been trying to figure out who I could trust with it."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>On the page: a column of names and numbers. Officials. Guards. A magistrate. Two different seal marks beside the entries, one you recognize, one from further east than Thornhall usually does business.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"That's the real list," Corvin says. "The ledger is just the evidence."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're going to need to come back to this vault.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Congratulations.<CharStyle:> You've completed Part One of <CharStyle:Italic>The Vault Below Thornhall.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Part One was a read-along adventure. You made decisions and the story responded, with no rules required. This is the heart of Cascade: you describe what your character does, and the world responds. Dice only appear when the outcome is uncertain and the stakes matter.
+<ParaStyle:Body Text:CoreBody>In <CharStyle:Bold>Part Two<CharStyle:>, you'll create your character and make your first roll. You'll need a piece of paper and all three of your dice.
+<ParaStyle:Headings:Heading1>PART TWO: A NAME AND A NUMBER
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>In which you discover who you are, and what you're capable of.<CharStyle:>
+<ParaStyle:Headings:Heading3>Who Are You?
+<ParaStyle:Body Text:CoreBody>You've decided to go back. Before you do, let's figure out who exactly is walking into that vault.
+<ParaStyle:Body Text:CoreBody>Take a piece of paper. At the top, write a name. It can be your own, a name from a story you like, or something you invent right now. Any name works.
+<ParaStyle:Body Text:CoreBody>Below the name, write one sentence about their background: what they did before they ended up in Thornhall. A soldier between wars. A ship's surgeon far from any coast. A courier who noticed too many messages going missing. A hired blade looking for cleaner work. Write something that feels right.
+<ParaStyle:Body Text:CoreBody>Now let's find out how capable they are.
+<ParaStyle:Headings:Heading3>The Nine Attributes
+<ParaStyle:Body Text:CoreBody>Your character has nine attributes organized across three domains. Each attribute is a number from 1 to 5 that describes how good they are in that area. Most starting characters sit between 1 and 3.
+<ParaStyle:Body Text:CoreBody>Write these on your character sheet:
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Physical Domain<CharStyle:>
+<ParaStyle:Table:TABLE_HEADER>Attribute
+<ParaStyle:Table:TABLE_HEADER>What it governs
+<ParaStyle:Table:TABLE_CELL>Might
+<ParaStyle:Table:TABLE_CELL>Force, raw power, physical imposition
+<ParaStyle:Table:TABLE_CELL>Reflex
+<ParaStyle:Table:TABLE_CELL>Speed, precision, agility
+<ParaStyle:Table:TABLE_CELL>Endurance
+<ParaStyle:Table:TABLE_CELL>Resilience; also determines how much damage you can take
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Mental Domain<CharStyle:>
+<ParaStyle:Table:TABLE_HEADER>Attribute
+<ParaStyle:Table:TABLE_HEADER>What it governs
+<ParaStyle:Table:TABLE_CELL>Reason
+<ParaStyle:Table:TABLE_CELL>Analysis, knowledge, intellectual force
+<ParaStyle:Table:TABLE_CELL>Guile
+<ParaStyle:Table:TABLE_CELL>Cunning, deception, misdirection
+<ParaStyle:Table:TABLE_CELL>Resolve
+<ParaStyle:Table:TABLE_CELL>Mental fortitude; how much psychological pressure you can endure
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Social Domain<CharStyle:>
+<ParaStyle:Table:TABLE_HEADER>Attribute
+<ParaStyle:Table:TABLE_HEADER>What it governs
+<ParaStyle:Table:TABLE_CELL>Influence
+<ParaStyle:Table:TABLE_CELL>Presence, persuasion
+<ParaStyle:Table:TABLE_CELL>Poise
+<ParaStyle:Table:TABLE_CELL>Grace, adaptability
+<ParaStyle:Table:TABLE_CELL>Command
+<ParaStyle:Table:TABLE_CELL>Authority; also governs social staying power
+<ParaStyle:Headings:Heading3>Assigning Your Attributes
+<ParaStyle:Body Text:CoreBody>You have these nine scores to distribute: <CharStyle:Bold>3, 3, 2, 2, 2, 1, 1, 1, 1<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Assign one number to each attribute. Think about the character you described. A soldier will want high Might and Endurance. A former physician might want high Reason and Guile. A courier might want balanced Reflex and Reason. There's no wrong answer; match the numbers to the person.
+<ParaStyle:Body Text:CoreBody>Once you've assigned all nine scores, continue with <CharStyle:Bold>section 1<CharStyle:>.
+<ParaStyle:Headings:Heading2>1.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Three days after you returned the ledger, you slip back into the vault at dusk.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The list Corvin gave you has been sitting in your pocket like a coal. The names on it aren't merchants. They're officials: city watchmen, a district administrator, the magistrate himself. And the numbers aren't transactions. They're payments. Vesna Tholl built a network, and that ledger is the record of what she paid to protect it.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The vault is darker than before. Your lantern throws a small circle of yellow light. The storeroom where you found Corvin is empty, the table overturned, the lantern gone. Someone else has been through here.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you search the room carefully before moving on, continue with <CharStyle:Bold>section 2<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you move quickly through to the corridor beyond, continue with <CharStyle:Bold>section 3<CharStyle:>.
+<ParaStyle:Headings:Heading2>2.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You search methodically. This is exactly the moment to make your first roll in Cascade.<CharStyle:>
+<ParaStyle:Headings:Heading3>How to Make a Roll
+<ParaStyle:Body Text:CoreBody>Pick up all three dice. Before you roll, set one aside and make it visually distinct: turn it sideways, or use a different color if you have one. This is your <CharStyle:Bold>Luck Die<CharStyle:>. The other two are your <CharStyle:Bold>Result Dice<CharStyle:>.
+<ParaStyle:Body Text:CoreBody>Roll all three. Then:
+<ParaStyle:Body Text:CoreNumberedList>Add your two <CharStyle:Bold>Result Dice<CharStyle:> together.
+<ParaStyle:Body Text:CoreNumberedList>Add the relevant <CharStyle:Bold>attribute<CharStyle:> for what you're doing.
+<ParaStyle:Body Text:CoreNumberedList>Compare the total to a <CharStyle:Bold>Target Number (TN)<CharStyle:> set before the roll.
+<ParaStyle:Body Text:CoreBody>For this search, you're looking for patterns and things out of place; that's your <CharStyle:Bold>Reason<CharStyle:> attribute at work. The Target Number is <CharStyle:Bold>TN 10<CharStyle:>. Searching a dark, disturbed room takes real attention, making this a moderate challenge.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>After you roll<CharStyle:>, look at all three dice. Keep your Luck Die result in mind; you'll learn what it does in Part Three.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Compare your total (Result Dice + Reason) to TN 10:<CharStyle:>
+<ParaStyle:Table:TABLE_HEADER>Total
+<ParaStyle:Table:TABLE_HEADER>Outcome
+<ParaStyle:Table:TABLE_CELL>12 or higher
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Success Plus<CharStyle:> <0x2192> Continue with <CharStyle:Bold>section 4<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>10 or 11
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Clean Success<CharStyle:> <0x2192> Continue with <CharStyle:Bold>section 5<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>8 or 9
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Success at Cost<CharStyle:> <0x2192> Continue with <CharStyle:Bold>section 6<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>7 or lower
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Failure<CharStyle:> <0x2192> Continue with <CharStyle:Bold>section 7<CharStyle:>
+<ParaStyle:Headings:Heading2>3.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You move fast and quiet. Information is useful, but so is speed. The corridor beyond branches ahead.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 8<CharStyle:>.
+<ParaStyle:Headings:Heading2>4.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Total 12+: <CharStyle:><CharStyle:Italic>Success Plus.<CharStyle:><CharStyle:Bold><CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The room gives up more than you expected. Beneath the overturned table: a scuff of boot prints heading toward the far wall. In the far wall, half-hidden behind a rotting shelf: a door you missed before. Someone built this passage and wanted it hidden.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You also find something on the floor, a wax seal scraped off a document. The design is a merchant's mark, but not Vesna Tholl's.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Write down: <CharStyle:Bold>found the hidden door; found the foreign wax seal.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 9<CharStyle:>.
+<ParaStyle:Headings:Heading2>5.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Total 10<0x2013>11: <CharStyle:><CharStyle:Italic>Clean Success.<CharStyle:><CharStyle:Bold><CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You find what you were looking for. Beneath the overturned table, boot prints lead toward the far wall, and there, half-hidden behind a rotting shelf, is a door you didn't notice on your first visit.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 9<CharStyle:>.
+<ParaStyle:Headings:Heading2>6.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Total 8<0x2013>9: <CharStyle:><CharStyle:Italic>Success at Cost.<CharStyle:><CharStyle:Bold><CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You find the door, a rough outline in the far wall, but you've been moving things around and making noise. If anything is on the other side, it's heard you by now.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Write down: <CharStyle:Bold>they heard you coming.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 9<CharStyle:>.
+<ParaStyle:Headings:Heading2>7.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Total 7 or lower: <CharStyle:><CharStyle:Italic>Failure.<CharStyle:><CharStyle:Bold><CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The room gives up nothing useful. You've spent time you didn't have, and when you finally move on, you're doing so with less information and a nagging feeling you missed something.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Write down: <CharStyle:Bold>no useful information from the search.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 8<CharStyle:>.
+<ParaStyle:Headings:Heading3>Understanding the Tiers
+<ParaStyle:Body Text:CoreBody>You just learned how Cascade rolls work. Here's the pattern you'll use every time:
+<ParaStyle:Body Text:CoreBody>The TN is the threshold for <CharStyle:Bold>Clean Success<CharStyle:>: you got exactly what you set out to do.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>One tier above<CharStyle:> (TN + 2) is <CharStyle:Bold>Success Plus<CharStyle:>, meaning you got more than expected.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>One tier below<CharStyle:> (TN <0x2013> 2) is <CharStyle:Bold>Success at Cost<CharStyle:>. You got what you wanted, but something else went wrong. The SG introduces a complication.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>More than one tier below<CharStyle:> is <CharStyle:Bold>Failure<CharStyle:>: you didn't get it, and consequences follow.
+<ParaStyle:Body Text:CoreBody>The tiers are always spaced two apart. A TN 12 task succeeds on 12, has a cost on 10<0x2013>11, succeeds plus on 14+, and fails below 10.
+<ParaStyle:Headings:Heading2>8.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The corridor beyond the storeroom runs both directions: left toward the cistern from your first visit, right into a section you haven't explored.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you go right into new territory, continue with <CharStyle:Bold>section 10<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you check the cistern first, continue with <CharStyle:Bold>section 11<CharStyle:>.
+<ParaStyle:Headings:Heading2>9.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The hidden door opens onto a short passage leading down, steeper than the main stairs, the stones worn smooth from regular use. This isn't an emergency exit. Someone uses this route.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>At the bottom: light.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 10<CharStyle:>.
+<ParaStyle:Headings:Heading2>10.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The passage opens into a chamber that wasn't part of the original vault. The stonework is different here, older and more deliberate. At the center of the room: a table, a chair, a lantern. On the far wall, scratched into the stone, is a list of names.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The same names as on Corvin's page.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're reading the list when you hear someone behind you.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 12<CharStyle:>.
+<ParaStyle:Headings:Heading2>11.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The cistern is quiet. The boot prints from before are gone; the water level has risen, washing the floor. But scratched into the stone near the door, at ankle height, is a crude arrow pointing down and right.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Someone left this as a guide.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 10<CharStyle:>.
+<ParaStyle:Headings:Heading2>12.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You turn.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>A figure fills the doorway, not Corvin, not anyone you recognize. A man in a guard's uniform, one hand resting on his sword hilt. He looks at you, then at the list on the wall, then back at you.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"You'll want to come with me," he says. He doesn't draw the sword. He doesn't need to.<CharStyle:>
+<ParaStyle:Headings:Heading3>A Second Roll
+<ParaStyle:Body Text:CoreBody>Here you face a choice not just of action but of <CharStyle:Bold>approach<CharStyle:>. The same goal, getting past this guard, can be attempted different ways. The attribute you use shapes both the roll and the story.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Talking your way out<CharStyle:> uses <CharStyle:Bold>Influence<CharStyle:> or <CharStyle:Bold>Poise<CharStyle:>. You're trying to convince him this isn't worth his trouble, or that you have a good reason to be here.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Getting past him physically<CharStyle:> uses <CharStyle:Bold>Reflex<CharStyle:>. You're looking for the moment to slip past before he can react.
+<ParaStyle:Body Text:CoreBody>Choose your approach. The <CharStyle:Bold>Target Number is TN 12<CharStyle:>, a genuine challenge either way.
+<ParaStyle:Body Text:CoreBody>Roll 3d6. Add your Result Dice and your chosen attribute.
+<ParaStyle:Table:TABLE_HEADER>Total
+<ParaStyle:Table:TABLE_HEADER>Outcome
+<ParaStyle:Table:TABLE_CELL>14 or higher
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Success Plus<CharStyle:> <0x2192> Continue with <CharStyle:Bold>section 13<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>12 or 13
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Clean Success<CharStyle:> <0x2192> Continue with <CharStyle:Bold>section 14<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>10 or 11
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Success at Cost<CharStyle:> <0x2192> Continue with <CharStyle:Bold>section 15<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>9 or lower
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Failure<CharStyle:> <0x2192> Continue with <CharStyle:Bold>section 16<CharStyle:>
+<ParaStyle:Headings:Heading2>13.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Total 14+: <CharStyle:><CharStyle:Italic>Success Plus.<CharStyle:><CharStyle:Bold><CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>If you talked: Something you say makes him hesitate, and in that moment you learn something. He's not comfortable with any of this. He's being paid to keep people away from this room, nothing more, and he doesn't even know what the list means.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>If you moved: You slip past him like smoke. He shouts, but you're already in the corridor beyond.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Write down: <CharStyle:Bold>the guard is an uncertain man, not a true believer / you have the initiative.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 17<CharStyle:>.
+<ParaStyle:Headings:Heading2>14.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Total 12<0x2013>13: <CharStyle:><CharStyle:Italic>Clean Success.<CharStyle:><CharStyle:Bold><CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>If you talked: He lets you go. Not happily. "Don't come back." He won't report this, not yet.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>If you moved: You get past him cleanly, but he's seen your face. He'll remember it.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 17<CharStyle:>.
+<ParaStyle:Headings:Heading2>15.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Total 10<0x2013>11: <CharStyle:><CharStyle:Italic>Success at Cost.<CharStyle:><CharStyle:Bold><CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>If you talked: He lets you go, but follows you to the stairs to make sure you leave. You're out of the vault for tonight.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>If you moved: You get past, but he grabs your sleeve. You lose your lantern in the scramble. The vault is behind you, and ahead of you is darkness.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Write down your specific outcome.
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 18<CharStyle:>.
+<ParaStyle:Headings:Heading2>16.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Total 9 or lower: <CharStyle:><CharStyle:Italic>Failure.<CharStyle:><CharStyle:Bold><CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>He calls out before you can act. Two more guards appear within moments, and they escort you to the surface without violence but without conversation either. You're left in the rain.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're out. But alive, and no one has arrested you yet.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 19<CharStyle:>.
+<ParaStyle:Headings:Heading2>17.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You found what you came for. The chamber, the list, the pattern of it. Enough to act on, or enough to run from. You'll decide before dawn.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>As you climb back to the surface, you find yourself thinking about the dice. About the third die, the one you kept apart. You used two dice. What was the third one for?<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Congratulations.<CharStyle:> You've completed Part Two. Continue to Part Three to find out.
+<ParaStyle:Headings:Heading2>18.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You got out, but not clean. A guard has seen your face, and you lost a lantern. There's a cost coming, and you don't know when it will arrive.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>As you walk back to the Cracked Antler, you find yourself thinking about the third die, the one you kept separate. What was it for?<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Congratulations.<CharStyle:> You've completed Part Two. Continue to Part Three.
+<ParaStyle:Headings:Heading2>19.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Out. Empty-handed. But alive, and the vault is still there.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>As you wipe the rain off your face, you think about the dice. The one you kept apart. Why only two? What was the third for?<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Congratulations.<CharStyle:> You've completed Part Two. Continue to Part Three.
+<ParaStyle:Headings:Heading1>PART THREE: THE THIRD DIE
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>In which you learn what fortune costs, and what it's worth.<CharStyle:>
+<ParaStyle:Headings:Heading3>The Luck Die
+<ParaStyle:Body Text:CoreBody>Every Cascade roll uses three dice. Two are your <CharStyle:Bold>Result Dice<CharStyle:>, and their total, plus your attribute, determines your outcome. The third die is different.
+<ParaStyle:Body Text:CoreBody>Before every roll, set one die apart. Make it distinct: different color, different position, turned on its side. This is the <CharStyle:Bold>Luck Die.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>After the dice land, the Luck Die shows a number. You can see it. It might be high; it might be low. You have a choice about what to do with it.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Luck Tokens<CharStyle:> are a resource. Write <CharStyle:Bold>"Luck: 1"<CharStyle:> at the top of your character sheet. Most starting characters have 1 Luck token at the beginning of each session.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Spending a Luck Token:<CharStyle:> After rolling, you may spend 1 token to swap one of your Result Dice with the Luck Die. You choose which Result Die to replace. The Luck Die's number takes its place, and the old die's number is gone.
+<ParaStyle:Body Text:CoreBody>This is always an informed decision. You see all three numbers before you choose. If the Luck Die shows a 5 and one of your Result Dice shows a 1, the math speaks for itself. If the Luck Die shows a 2 and both Result Dice are decent, save your token.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>The other side of it:<CharStyle:> If you choose not to spend, or you've already spent your token, the Storyguide can spend from their own resource pool (called <CharStyle:Bold>Taint<CharStyle:>) to force a swap instead. The SG takes the die that makes your result <CharStyle:Italic>worse<CharStyle:>. In a normal game this is the adversarial edge of the mechanic. In this solo adventure, we'll call it out directly when it would happen.
+<ParaStyle:Body Text:CoreBody>Write down your Luck token. You'll use it before this part is over.
+<ParaStyle:Headings:Heading2>1.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Two nights later, you're back at the vault entrance.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>This time you're better prepared: an extra lantern, a folded cloth for silence, and a specific question you need answered. The guard from before isn't at his post. The hidden door is still where you found it. The passage beyond leads down to the lower chamber.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>At the bottom of the stairs, you stop.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Someone is in the chamber. Not a guard. A woman, middle-aged, dressed for travel, seated at the table and going through papers. She looks up when she hears you.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you announce yourself first, continue with <CharStyle:Bold>section 2<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you stay in the shadow of the passage and listen, continue with <CharStyle:Bold>section 3<CharStyle:>.
+<ParaStyle:Headings:Heading2>2.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"I've been waiting for you," she says, without surprise.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"From Corvin?"<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"From the guard you talked past. Or got past. Word travels either way." She gestures at the chair across from her. "Sit. I'll explain what this is, and you can decide what to do with it."<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you sit, continue with <CharStyle:Bold>section 4<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you stay standing and keep your distance, continue with <CharStyle:Bold>section 5<CharStyle:>.
+<ParaStyle:Headings:Heading2>3.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You watch her work for a long moment. She doesn't look up.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"You're welcome to observe," she says, "but I'll need to start talking at some point. We don't have all night."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>She knew you were there.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 4<CharStyle:>.
+<ParaStyle:Headings:Heading2>4.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Her name is Edra. She was a courier for three years before she noticed that some of the packages she carried went to addresses that didn't exist. She started asking questions. Now she's here.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"The ledger you returned to Vesna Tholl has forty-three names in it," she says. "The page Corvin gave you has seven. The ones on Corvin's page are the ones still alive."<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 6<CharStyle:>.
+<ParaStyle:Headings:Heading2>5.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You keep the table between you. Edra accepts this without comment.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"My name is Edra. I was a courier. I started noticing things I wasn't meant to notice. Now I know more about this vault than anyone still breathing, and I need help getting into the room behind that wall."<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 6<CharStyle:>.
+<ParaStyle:Headings:Heading2>6.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Vesna Tholl built something using this vault," Edra says. "A network. Payments, favors, pressure. The ledger is the proof, and the list on the wall is her insurance: it names the people who would be destroyed if the ledger became public."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"She paid me to bring it back," you say.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Yes. And now you understand why."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>She pushes a folded page across the table. "I need to get into the archive room, the one behind the far door. There's a specific document I need. If you help me get to it, we both leave here with something we can use."<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you agree to help her, continue with <CharStyle:Bold>section 7<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you ask what's in it for you before committing, continue with <CharStyle:Bold>section 8<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you refuse, continue with <CharStyle:Bold>section 9<CharStyle:>.
+<ParaStyle:Headings:Heading2>7.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Good," Edra says. She stands. "The archive room has a new lock, not the vault's original hardware. Someone added it. It's good work."<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 10<CharStyle:>.
+<ParaStyle:Headings:Heading2>8.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Edra considers this seriously.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Information," she says. "Enough to protect yourself, or enough to act. Whichever you'd prefer."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"That's vague."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"The document I need is a contract. If you see it, you'll understand everything."<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you decide that's enough and agree, continue with <CharStyle:Bold>section 7<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you press for more detail, continue with <CharStyle:Bold>section 11<CharStyle:>.
+<ParaStyle:Headings:Heading2>9.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Edra doesn't argue. She nods once, gathers her papers, picks up her lantern, and leaves through the far door. You hear a lock click.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're alone in the chamber. The papers she left behind are scattered, partial, frustrating: names without context, dates without events.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 12<CharStyle:>.
+<ParaStyle:Headings:Heading2>10.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The far door opens onto a short passage ending at a heavy iron door fitted with a new lock, recently oiled, good hardware. Someone spent serious coin on this. The old vault's own mechanisms are rough and ancient; this lock is a different generation entirely.<CharStyle:>
+<ParaStyle:Headings:Heading3>Using the Luck Die
+<ParaStyle:Body Text:CoreBody>This is your first chance to use the Luck Die deliberately. Here's how this roll works:
+<ParaStyle:Body Text:CoreBody>Pick up all three dice. Set your Luck Die aside visibly. Roll all three.
+<ParaStyle:Body Text:CoreBody>You can try to <CharStyle:Bold>pick the lock<CharStyle:> (using <CharStyle:Bold>Reflex<CharStyle:>, TN 12) or <CharStyle:Bold>find another way through<CharStyle:> (using <CharStyle:Bold>Reason<CharStyle:>, TN 10).
+<ParaStyle:Body Text:CoreBody>Decide first, then roll. Look at all three dice.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Before you compare your total:<CharStyle:> Look at the Luck Die. This is the moment. You have 1 Luck token.
+<ParaStyle:Body Text:CoreBulleted>If the Luck Die is <CharStyle:Bold>higher<CharStyle:> than one of your Result Dice, you might want to swap. Spend your token, replace the lower Result Die with the Luck Die, and your total improves.
+<ParaStyle:Body Text:CoreBulleted>If the Luck Die is <CharStyle:Bold>lower<CharStyle:> than both Result Dice, don't swap. Your token is still yours.
+<ParaStyle:Body Text:CoreBulleted>If you're unsure, think about how close you are to the TN. Even 1 point can change your tier.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Now finalize your total<CharStyle:> (with or without the swap) and compare:
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Picking the lock (Reflex, TN 12):<CharStyle:>
+<ParaStyle:Table:TABLE_HEADER>Total
+<ParaStyle:Table:TABLE_HEADER>Outcome
+<ParaStyle:Table:TABLE_CELL>14+
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Success Plus<CharStyle:> <0x2192> <CharStyle:Bold>Section 13<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>12<0x2013>13
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Clean Success<CharStyle:> <0x2192> <CharStyle:Bold>Section 14<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>10<0x2013>11
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Success at Cost<CharStyle:> <0x2192> <CharStyle:Bold>Section 15<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>9 or lower
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Failure<CharStyle:> <0x2192> <CharStyle:Bold>Section 16<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Finding another way (Reason, TN 10):<CharStyle:>
+<ParaStyle:Table:TABLE_HEADER>Total
+<ParaStyle:Table:TABLE_HEADER>Outcome
+<ParaStyle:Table:TABLE_CELL>12+
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Success Plus<CharStyle:> <0x2192> <CharStyle:Bold>Section 17<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>10<0x2013>11
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Clean Success<CharStyle:> <0x2192> <CharStyle:Bold>Section 14<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>8<0x2013>9
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Success at Cost<CharStyle:> <0x2192> <CharStyle:Bold>Section 15<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>7 or lower
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Failure<CharStyle:> <0x2192> <CharStyle:Bold>Section 16<CharStyle:>
+<ParaStyle:Headings:Heading2>11.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Edra pauses.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"The contract names a buyer for the entire ledger, not Vesna Tholl. Someone above her. If that document exists, this goes higher than a merchant's protection scheme."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>That's enough.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 7<CharStyle:>.
+<ParaStyle:Headings:Heading2>12.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The papers tell a partial story. Names, amounts, dates. Combined with the page Corvin gave you, there's a shape to it, but you're missing the keystone. You leave the vault with what you have.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>It isn't much. But it's a start.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>This path ends here for now. Move on to Part Four when you're ready; the story will continue there regardless of what you found tonight.
+<ParaStyle:Headings:Heading2>13.
+<ParaStyle:Body Text:CoreBody><CharStyle:BoldItalic>Success Plus<CharStyle:> <CharStyle:Italic>on the lock.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The lock opens, and as it does, you notice something. The back of the mechanism has been modified: a small notch, a thin wire running through a hole in the doorframe. A trigger mechanism. If you'd forced this rather than picked it, something would have fired.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Your technique bypassed the trap entirely, without knowing it was there.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Write down: <CharStyle:Bold>the lock was trapped; you bypassed it cleanly.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 18<CharStyle:>.
+<ParaStyle:Headings:Heading2>14.
+<ParaStyle:Body Text:CoreBody><CharStyle:BoldItalic>Clean Success.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The lock opens, or you find a workable alternate route. No complications. You're through.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 18<CharStyle:>.
+<ParaStyle:Headings:Heading2>15.
+<ParaStyle:Body Text:CoreBody><CharStyle:BoldItalic>Success at Cost.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You get through, but something went wrong.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Here's where the Luck Die matters differently:<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Did you spend your Luck token on this roll?
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>If yes:<CharStyle:> The cost is reduced. You made noise, a scrape, a grunt, but nothing decisive. Something distant heard you, though not close. Write down: <CharStyle:Bold>slight noise, no immediate consequence.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>If no<CharStyle:> (either you chose to save it or already spent it): <CharStyle:Italic>A Taint swap fires.<CharStyle:> In a Storyguided game, the SG would spend Taint to force the swap now. In this solo adventure, your roll's total drops by the result of your Luck Die. If this drops you to Failure, continue with <CharStyle:Bold>section 16<CharStyle:> instead. If your result is still a success, continue with <CharStyle:Bold>section 18<CharStyle:>, but write down: <CharStyle:Bold>something went visibly, audibly wrong. There are guards somewhere in this vault, and one of them heard it.<CharStyle:>
+<ParaStyle:Headings:Heading2>16.
+<ParaStyle:Body Text:CoreBody><CharStyle:BoldItalic>Failure.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The lock doesn't yield. Or the alternate route ends in a dead end. You're still on the wrong side of the door.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Edra appears at your shoulder.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"I was hoping you wouldn't need me for this part," she says. "But I know another way."<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 19<CharStyle:>.
+<ParaStyle:Headings:Heading2>17.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>(Reason approach, Success Plus)<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You find it: a ventilation grate near the base of the wall, barely large enough for a person. Generations of maintenance workers used it. On the other side, the archive.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>While examining the grate, you also notice that the main door has a trip mechanism built into the frame. Good thing you didn't try to force it.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Write down: <CharStyle:Bold>found the grate; the main door is trapped.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 18<CharStyle:>.
+<ParaStyle:Headings:Heading2>18.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The archive room is smaller than expected, a converted side chamber lined wall to wall with wooden shelves holding rolled documents and flat leather folios. Edra goes directly to one section, running her finger along the labels. You watch the door.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Here." She pulls a folio free and opens it.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You both read. The contract is exactly what she described: a buyer, a price, a timeline. And at the bottom, a seal.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You recognize the seal.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 20<CharStyle:>.
+<ParaStyle:Headings:Heading2>19.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Edra leads you to a service hatch in the passage ceiling, a maintenance shaft that drops directly into the archive from above. Tight, dark, and dusty. You squeeze through.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 18<CharStyle:>.
+<ParaStyle:Headings:Heading2>20.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The seal belongs to the Thornhall city magistrate.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Not a subordinate. Not a clerk. The magistrate himself, the person who controls every guard in the district, every court proceeding, every arrest.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"We need to leave," Edra says, folding the document into her coat.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Agreed," you say.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>That's when you hear boots on the stairs.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 21<CharStyle:>.
+<ParaStyle:Headings:Heading2>21.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You and Edra move fast: back through the passage, past the hidden door, up through the main vault and out into the cold street. You walk, don't run. Three blocks, then four.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Edra stops at a corner.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"There's going to be a fight," she says. "They know someone was in there. They'll come looking for whoever has that document."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"I know."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Can you handle yourself in a conflict?"<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You think about your attributes. About what you know of yourself.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"Yes," you say. "If it comes to that."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"It will," Edra says. "It always does."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Congratulations.<CharStyle:> You've completed Part Three of <CharStyle:Italic>The Vault Below Thornhall.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>You've learned the Luck Die: when to spend your token, and what happens when you don't. In <CharStyle:Bold>Part Four<CharStyle:>, that knowledge is going to matter.
+<ParaStyle:Headings:Heading1>PART FOUR: BLOOD ON THE STONE
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>In which you learn what it costs to fight, and what it wins.<CharStyle:>
+<ParaStyle:Headings:Heading3>Your Vitality Track
+<ParaStyle:Body Text:CoreBody>In Cascade, physical harm is tracked on your <CharStyle:Bold>Vitality track<CharStyle:>. Calculate yours now:
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Vitality = 3 + Endurance<CharStyle:>
+<ParaStyle:Body Text:CoreBody>If your Endurance is 2, your Vitality track has 5 boxes. Draw them in a row on your character sheet.
+<ParaStyle:Body Text:CoreBody>As you take damage, mark boxes from left to right. Three tiers:
+<ParaStyle:Table:TABLE_HEADER>When
+<ParaStyle:Table:TABLE_HEADER>Condition
+<ParaStyle:Table:TABLE_HEADER>Penalty to all rolls
+<ParaStyle:Table:TABLE_CELL>Half your boxes empty
+<ParaStyle:Table:TABLE_CELL>Injured
+<ParaStyle:Table:TABLE_CELL><0x2013>1
+<ParaStyle:Table:TABLE_CELL>Only 1<0x2013>2 boxes left
+<ParaStyle:Table:TABLE_CELL>Wounded
+<ParaStyle:Table:TABLE_CELL><0x2013>2
+<ParaStyle:Table:TABLE_CELL>Zero boxes
+<ParaStyle:Table:TABLE_CELL>Felled
+<ParaStyle:Table:TABLE_CELL><0x2013>3, and only 1 action per round
+<ParaStyle:Body Text:CoreBody>Being Felled is not death. It's a threshold, a significant story moment. The adventure continues.
+<ParaStyle:Body Text:CoreBody>Also note your <CharStyle:Bold>Physical Defense TN: 8 + Endurance.<CharStyle:> Enemies attack against this number. When they act, you'll roll to see if their attack succeeds against your Defense TN. (The adventure will explain each time.)
+<ParaStyle:Headings:Heading3>Conflict: The Basics
+<ParaStyle:Body Text:CoreBody>When a situation escalates into structured opposition, whether a fight or a standoff that turns physical, you enter <CharStyle:Bold>conflict<CharStyle:>. Conflict runs in <CharStyle:Bold>rounds<CharStyle:>. Each round, you act once. On your turn, you have <CharStyle:Bold>3 actions<CharStyle:>.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Common actions:<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>Attack<CharStyle:> <0x2014> Roll Might or Reflex + skill vs. the enemy's Physical Defense TN. On success, deal weapon damage. Unarmed attacks deal 1 damage.
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>Defend<CharStyle:> <0x2014> Raise your Physical Defense TN by 2 until your next turn.
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>Move<CharStyle:> <0x2014> Change your position. Usually free if uncontested.
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>Assess<CharStyle:> <0x2014> Ask one honest question about the scene: "Who's the biggest threat?" "Is there a way out?" The answer is always true.
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>Recover<CharStyle:> <0x2014> Clear one Tier 1 condition (Injured) if you have a genuine moment of rest.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>The Repeat Penalty:<CharStyle:> Using the same action type twice in a round costs <0x2013>2 on the second roll. A third use costs <0x2013>4.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>NPCs Never Roll.<CharStyle:> When an enemy attacks you, <CharStyle:Italic>you<CharStyle:> roll to defend. When you attack an enemy, <CharStyle:Italic>you<CharStyle:> roll against their Defense TN. The dice are always in your hands.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Mooks<CharStyle:> are minor opponents: common guards, hired muscle. A mook group has:
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>Threshold<CharStyle:> <0x2014> the damage needed to take one down
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>Size<CharStyle:> <0x2014> how many are in the group
+<ParaStyle:Body Text:CoreBody>Each time you deal damage equal to or exceeding the Threshold in a single hit, reduce Size by 1. When Size reaches 0, they're done.
+<ParaStyle:Body Text:CoreBody>When a mook group gets to act (if you haven't Defended), each remaining mook deals its listed damage to your Vitality.
+<ParaStyle:Headings:Heading2>1.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The night after your visit to the archive, a message appears under your door at the Cracked Antler:<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"We know what you found. Return the document or face consequences. You have until dawn."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>No signature. The seal is a rough copy of the magistrate's mark, made by someone who wanted you to understand who was behind this without creating a traceable original. Dawn is eight hours away.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you go to find Edra, continue with <CharStyle:Bold>section 2<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you try to leave Thornhall before dawn, continue with <CharStyle:Bold>section 3<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you go directly to the magistrate's residence, continue with <CharStyle:Bold>section 4<CharStyle:>.
+<ParaStyle:Headings:Heading2>2.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Edra is not at any inn. You find her in a stable yard three blocks from the vault, horse already saddled.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"I got the same message," she says. "Two of them. The second told me they know where you're staying."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"We can't both run," you say.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"No," she agrees. "We can't."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>She holds out a short sword. "Weapon Rating 3," she says, with the air of someone who knows you'll need to track that. "Deals 2 damage on a clean hit."<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Write down: <CharStyle:Bold>Short sword <0x2014> Rating 3, deals 2 damage on success.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 5<CharStyle:>.
+<ParaStyle:Headings:Heading2>3.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're packed and moving within twenty minutes. But the streets aren't empty. Two figures fall into step behind you as you cross the market square. Hired muscle. They're not trying to be subtle about it.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 6<CharStyle:>.
+<ParaStyle:Headings:Heading2>4.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Bold. The magistrate's residence. Servants' entrance.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>A clerk answers. Then a guard. Then three guards.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>They don't wait for an explanation.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 7<CharStyle:>.
+<ParaStyle:Headings:Heading2>5.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"The vault," Edra says. "They'll go back there tonight to recover what we found, or to destroy evidence. If we're there when they arrive, we can force this into the open. Public enough that it can't be buried quietly."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You go together to the vault entrance, arriving near midnight. Two hours pass.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Then: footsteps on stone.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 8<CharStyle:>.
+<ParaStyle:Headings:Heading2>6.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>They catch up with you in a narrow lane between a cooper's shop and a tanner's yard.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"The document," one says. "Now."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>CONFLICT <0x2014> Two Hired Mooks<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Mooks: Threshold 2, Size 2. Each deals 1 damage if they hit.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're unarmed (or armed, if you picked up the sword in section 2; adjust damage accordingly).<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Step A: Initiative<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Roll 1 die, just one, not the full three-die roll. This is only for initiative.
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>4, 5, or 6:<CharStyle:> You act first. Go to <CharStyle:Bold>Your Turn<CharStyle:> (section 9).
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>1, 2, or 3:<CharStyle:> They act first. Go to <CharStyle:Bold>Their Turn<CharStyle:> (section 10).
+<ParaStyle:Headings:Heading2>7.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Three guards in the magistrate's employ. Armed, ready, not interested in conversation.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>CONFLICT <0x2014> Three Guard Mooks<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Mooks: Threshold 2, Size 3. Each deals 1 damage if they hit.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Roll 1 die for initiative (as above), then go to <CharStyle:Bold>section 9<CharStyle:> (your turn) or <CharStyle:Bold>section 10<CharStyle:> (their turn).
+<ParaStyle:Headings:Heading2>8.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Three figures approach the entrance. One carries a lantern; the other two have their hands on their weapons. They haven't seen you yet. You have a moment.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you step out and challenge them openly before they reach the door, continue with <CharStyle:Bold>section 11<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you wait until they're inside the vault and move from cover, continue with <CharStyle:Bold>section 12<CharStyle:>.
+<ParaStyle:Headings:Heading2>9.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>(Your Turn First)<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You act before they can. You have 3 actions this round. Here are your options:<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Option: Attack, Attack, Defend<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>First Attack: Roll 3d6. Set Luck Die aside. Add Result Dice + Might or Reflex. Compare to mooks' Defense TN: <CharStyle:Bold>10<CharStyle:> (unarmored).
+<ParaStyle:Body Text:CoreBulleted>On success (10+): deal your weapon's damage. If it meets or exceeds the Threshold (2), reduce Size by 1.
+<ParaStyle:Body Text:CoreBulleted>Second Attack: Roll again, but at <CharStyle:Bold><0x2013>2<CharStyle:> (repeat penalty). Same process.
+<ParaStyle:Body Text:CoreBulleted>Defend: Raise your Physical Defense TN by 2 until your next turn.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Option: Attack, Defend, Assess<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Attack once (as above).
+<ParaStyle:Body Text:CoreBulleted>Defend: raise your Defense TN by 2.
+<ParaStyle:Body Text:CoreBulleted>Assess: Ask the adventure one question. The adventure answers honestly. Good questions: "Which of them is the most dangerous?" "Is there a way out of this lane?" "What do they actually want?"
+<ParaStyle:Body Text:CoreBody>After your turn, <CharStyle:Bold>they act<CharStyle:>. Go to section 10 to resolve their attacks, unless you've already reduced Size to 0.
+<ParaStyle:Body Text:CoreBulleted>When Size reaches 0, continue with <CharStyle:Bold>section 13<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If your Vitality hits 0, continue with <CharStyle:Bold>section 14<CharStyle:>.
+<ParaStyle:Headings:Heading2>10.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>(Their Turn)<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Each remaining mook attacks. For each mook in the group (equal to current Size):<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>If you Defended:<CharStyle:> Each mook needs to beat your raised Defense TN. Roll 1 die per mook and add 5 (mooks are not skilled). If the result meets or exceeds your Defense TN, that mook hits. Otherwise, it misses.
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>If you did not Defend:<CharStyle:> Each mook deals 1 damage to your Vitality automatically. Mark the boxes.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Check your Vitality tier after taking damage:<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Half empty: You're <CharStyle:Bold>Injured<CharStyle:> (<0x2013>1 to all rolls). Note this.
+<ParaStyle:Body Text:CoreBulleted>1<0x2013>2 boxes left: You're <CharStyle:Bold>Wounded<CharStyle:> (<0x2013>2 to all rolls). Note this.
+<ParaStyle:Body Text:CoreBulleted>Zero boxes: You're <CharStyle:Bold>Felled<CharStyle:>. Continue with section 14.
+<ParaStyle:Body Text:CoreBody>After their turn, it's <CharStyle:Bold>your turn<CharStyle:> again. Go to section 9.
+<ParaStyle:Body Text:CoreBody>Continue cycling between sections 9 and 10 until the fight ends.
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>When Size reaches 0:<CharStyle:> Continue with <CharStyle:Bold>section 13<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted><CharStyle:Bold>When your Vitality reaches 0:<CharStyle:> Continue with <CharStyle:Bold>section 14<CharStyle:>.
+<ParaStyle:Headings:Heading2>11.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You step into their path.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"We know who sent you," you say. "And we know what's in the vault. This ends poorly for all of us if it keeps going."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The three figures stop. The one with the lantern holds it up to see your face.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>CONFLICT <0x2014> Three Vault Mooks, but with leverage<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You've opened with words. Make a roll: <CharStyle:><CharStyle:Italic>Influence<CharStyle:><CharStyle:Italic> or <CharStyle:><CharStyle:Italic>Poise<CharStyle:><CharStyle:Italic>, TN 12.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>This is a social challenge, not a physical one, but if it fails, it becomes physical.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Roll 3d6. Set Luck Die aside. Add Result Dice + Influence or Poise. Consider spending your Luck token if it helps.
+<ParaStyle:Table:TABLE_HEADER>Total
+<ParaStyle:Table:TABLE_HEADER>Outcome
+<ParaStyle:Table:TABLE_CELL>14+
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Section 17<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>12<0x2013>13
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Section 18<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>10<0x2013>11
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Section 19<CharStyle:>
+<ParaStyle:Table:TABLE_CELL>9 or lower
+<ParaStyle:Table:TABLE_CELL><CharStyle:Bold>Section 20<CharStyle:>
+<ParaStyle:Headings:Heading2>12.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You wait. They enter the vault.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Moving from cover gives you the advantage of surprise. In the first round, you have initiative automatically, and your first Attack roll is made at +2.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 9<CharStyle:>, applying +2 to your first Attack roll this round only.
+<ParaStyle:Headings:Heading2>13.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The fight is over. The mooks are down, or fled, or surrendered, depending on how it went. You stand in the lane or the vault or the street, catching your breath.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Check your Vitality. If you're Injured or Wounded, note it. You'll carry that into whatever comes next.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 15<CharStyle:>.
+<ParaStyle:Headings:Heading2>14.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're Felled.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You wake up. It could be minutes later or hours; you're not sure. Someone is standing over you. It's Edra, or it's a guard, or it's one of the mooks you didn't finish before the lights went out.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>This is not the end. Cascade characters survive being Felled. They face consequences.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Write down what happened. It will matter in the next part of this arc.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 16<CharStyle:>.
+<ParaStyle:Headings:Heading2>15.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're upright. The conflict is over. And somewhere in the vault or in your hands is the document: the contract, the evidence, the thing the magistrate's people wanted back.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>What do you do with it?<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>If you take the document to the district's regional administrator, someone above the magistrate who might act on it, continue with <CharStyle:Bold>section 21<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you find Edra and decide together, continue with <CharStyle:Bold>section 22<CharStyle:>.
+<ParaStyle:Body Text:CoreBulleted>If you keep it hidden for now and wait to see what happens, continue with <CharStyle:Bold>section 23<CharStyle:>.
+<ParaStyle:Headings:Heading2>16.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Felled, but not finished. Someone made a choice about what to do with you, and that choice tells you something about what you're dealing with.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>If they left you in the street, they wanted you scared, not dead. There's room to maneuver.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>If they took you somewhere, you're in a room you didn't choose, with people who have plans for you. That's a harder position, but you know where you are now, and you know they need something from you.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 22<CharStyle:>.
+<ParaStyle:Headings:Heading2>17.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>They hesitate. Long enough for you to see that two of the three aren't sure about this. Whatever they were told, confronting someone who knows the magistrate's name is not what they signed up for.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"We're done here," you say.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>They step aside.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Write down: <CharStyle:Bold>three uncertain operatives; they know you know.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 15<CharStyle:>.
+<ParaStyle:Headings:Heading2>18.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>They let you pass. Unhappy, but they let you pass.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The document is still in Edra's coat. You're both still standing. For tonight, that's enough.<CharStyle:>
+<ParaStyle:Body Text:CoreBulleted>Continue with <CharStyle:Bold>section 15<CharStyle:>.
+<ParaStyle:Headings:Heading2>19.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>One of them steps forward. "I don't think so."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Words failed. The conflict continues physically.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Mooks: Threshold 2, Size 3. Each deals 1 damage. Continue with <CharStyle:Bold>section 9<CharStyle:> (initiative: roll 1 die, 4<0x2013>6 you go first, 1<0x2013>3 they go first).
+<ParaStyle:Headings:Heading2>20.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>They don't even hesitate. The fight begins.<CharStyle:>
+<ParaStyle:Body Text:CoreBody>Mooks: Threshold 2, Size 3. Each deals 1 damage. Initiative: roll 1 die, 4<0x2013>6 you go first, 1<0x2013>3 they go first. Go to <CharStyle:Bold>section 9<CharStyle:> or <CharStyle:Bold>section 10<CharStyle:> accordingly.
+<ParaStyle:Headings:Heading2>21.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You take the document, sealed copy with Edra's own hand for the provenance, and request an audience with the regional administrator. The meeting takes four days to arrange.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>When it happens, it's brief. The administrator reads the contract. Reads it again. Asks you two questions and dismisses you.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Three weeks later, you hear that the Thornhall magistrate has been recalled to the capital "for consultation." Vesna Tholl's counting house is shuttered. Edra has been offered a position with the administrator's own courier network.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You're given a sealed letter of thanks and a modest payment. No one mentions the vault.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Some endings come quietly.<CharStyle:>
+<ParaStyle:Headings:Heading2>22.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You and Edra sit across from each other in a back room of the Cracked Antler, the document between you on the table.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"We have options," she says.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>"We do."<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You talk through the night. By dawn, you've made a decision. What that decision is, that's yours.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>This is where the story becomes yours to tell.<CharStyle:>
+<ParaStyle:Headings:Heading2>23.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>You keep it. Folded, sealed, tucked somewhere safe.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Information held in reserve is a kind of power. You've learned that much from this vault, from Corvin, from Vesna Tholl. Knowing something, and being known to know it, changes a situation without a single blow being struck.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>The magistrate's people stop looking for you within a week. They don't know if you still have it or what you'll do.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Neither do you, yet.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>That's a different kind of story, and it starts the moment you decide to move.<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Congratulations.<CharStyle:> You've completed Part Four of <CharStyle:Italic>The Vault Below Thornhall<CharStyle:>, and the first arc of your Cascade solo campaign.
+<ParaStyle:Headings:Heading2>What You've Learned
+<ParaStyle:Body Text:CoreBody>Across this arc, you played through the core of how Cascade works:
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Part One<CharStyle:> showed you that the game lives in decision-making. The world responds to what you do, and no dice are required to tell a good story.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Part Two<CharStyle:> introduced the Roll: three dice, two for your result, one kept apart. Attributes define your approach, Target Numbers set the difficulty, and tiers (success plus, clean success, cost, failure) shape how outcomes land.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Part Three<CharStyle:> gave you the Luck Die as a real resource. Informed decisions, real tradeoffs. The Luck Die is always visible, always in play, always potentially yours or the SG's.
+<ParaStyle:Body Text:CoreBody><CharStyle:Bold>Part Four<CharStyle:> showed you conflict: structured rounds, 3 actions, the repeat penalty, NPCs that never roll, Vitality as a track rather than a number, and mooks that go down in groups.
+<ParaStyle:Body Text:CoreBody>You're ready for a full Cascade campaign.
+<ParaStyle:Body Text:CoreBody>If you want to continue this story with a Storyguide and other players, everything you built here (your character, your attributes, your Vitality track, the contacts you've made and the enemies you've earned) carries forward.
+<ParaStyle:Body Text:CoreBody>The vault is still down there. The magistrate is still somewhere. And Edra knows things she hasn't told you yet.
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Mount Ogden Gaming Company<CharStyle:>
+<ParaStyle:Body Text:CoreBody><CharStyle:Italic>Cascade and The Vault Below Thornhall are original works. All rights reserved.<CharStyle:>

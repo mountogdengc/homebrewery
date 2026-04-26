@@ -568,7 +568,8 @@
 	}
 
 	// Cover / title page styles
-	.adventureTitle {
+	.adventureTitle,
+	.title {
 		column-span          : all;
 		-webkit-column-span  : all;
 		display              : block;
@@ -582,7 +583,8 @@
 		}
 	}
 
-	.adventureSubtitle {
+	.adventureSubtitle,
+	.subtitle {
 		column-span          : all;
 		-webkit-column-span  : all;
 		display              : block;
@@ -733,6 +735,13 @@
 		color      : var(--HB_Color_Footnotes);
 		text-align : left;
 		p + p { margin-top : 0; }
+		// Allow color utility classes to override footnote color
+		&.white     { color : #FFFFFF; }
+		&.gold      { color : #C5A035; }
+		&.cream     { color : #F5F0E0; }
+		&.parchment { color : #D4C5A0; }
+		&.red       { color : #CC2222; }
+		&.black     { color : #000000; }
 	}
 
 	&:nth-child(even) {
@@ -746,6 +755,60 @@
 			right      : 80px;
 			text-align : right;
 		}
+	}
+}
+
+// ── Front Cover Page ────────────────────────────────────────────────────
+// Modeled after the PHB frontCover pattern.
+// Usage:  {{frontCover}}  on the first line of the page.
+
+.page:has(.frontCover) {
+	columns    : 1;
+	text-align : center;
+	&::after { display : none; }
+	.frontCover { position : absolute; }
+
+	h1 {
+		margin-top     : 1.2in;
+		margin-bottom  : 0;
+		font-family    : 'Baskerville Old Face', 'Baskerville', 'Georgia', serif;
+		font-size      : 42pt;
+		font-weight    : bold;
+		line-height    : 1.05;
+		letter-spacing : 1px;
+	}
+	h2 {
+		font-family    : 'Baskerville Old Face', 'Baskerville', 'Georgia', serif;
+		font-size      : 22pt;
+		font-weight    : bold;
+		letter-spacing : 2px;
+		margin-top     : 4pt;
+	}
+	hr {
+		display          : block;
+		visibility       : visible;
+		width            : 60%;
+		height           : 2px;
+		margin           : 12pt auto;
+		background-color : var(--HB_Color_Footnotes);
+		border           : none;
+	}
+	.footnote {
+		position   : absolute;
+		right      : 0;
+		bottom     : 1cm;
+		left       : 0;
+		width      : 70%;
+		max-width  : none;
+		margin     : 0 auto;
+		font-family: var(--DC_Font_Heading);
+		font-size  : 9pt;
+		color      : var(--HB_Color_Footnotes);
+		text-align : center;
+		&.white     { color : #FFFFFF; }
+		&.gold      { color : #C5A035; }
+		&.cream     { color : #F5F0E0; }
+		&.parchment { color : #D4C5A0; }
 	}
 }
 
@@ -797,6 +860,25 @@
 // ── Watermark ────────────────────────────────────────────────────────────
 
 .page .watermark { color : #999; }
+
+// ── Text Color Utilities ────────────────────────────────────────────────
+// Usage:  {{white  \n  Your text here \n  }}
+// Works on blocks — wraps content in a div with the color applied.
+// Also works on headings:  # Title {.white}
+
+.page {
+	.white         { color : #FFFFFF; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.black         { color : #000000; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.gold          { color : #C5A035; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.silver        { color : #B0B0B0; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.red           { color : #CC2222; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.blue          { color : #2244AA; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.green         { color : #1A7A3A; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.cream         { color : #F5F0E0; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.parchment     { color : #D4C5A0; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.darkred       { color : #8B0000; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.navy          { color : #1A1A4E; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+}
 
 // ── Table of Contents ────────────────────────────────────────────────────
 

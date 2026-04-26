@@ -15,6 +15,7 @@ const BrpStatblockSchema = mongoose.Schema({
 	category    : { type: String, default: 'Human', index: true },
 	subtype     : { type: String, default: '' },
 	description : { type: String, default: '' },
+	portrait    : { type: String, default: '' },
 	source      : { type: String, default: '' },
 	tags        : { type: [String], index: true },
 

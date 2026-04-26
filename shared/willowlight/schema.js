@@ -114,6 +114,9 @@ export function createEmptyWillowlightCharacter() {
 		// Secrets
 		secrets : [],  // { name, weight (1-3), spread: [false,false,false], containmentPlan, contacts }
 
+		// Portrait (base64 data URI from ComfyUI)
+		portrait : '',
+
 		// Notes
 		notes : ''
 	};

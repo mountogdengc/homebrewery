@@ -9,6 +9,7 @@ import StatblockForm   from '../../statblock/statblockForm.jsx';
 import StatblockPreview from '../../statblock/statblockPreview.jsx';
 
 import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
+import ComfyuiPortraitButton from '../../components/comfyuiPortrait/comfyuiPortrait.jsx';
 import Nav              from '@navbar/nav.jsx';
 import Navbar           from '@navbar/navbar.jsx';
 import AccountNavItem   from '@navbar/account.navitem.jsx';
@@ -99,7 +100,7 @@ const StatblockEditorPage = (props)=>{
 
 		try {
 			const res = await request.post('/api/ai/generate/statblock-flavor')
-				.send({ concept: conceptPrompt || statblock.name || 'D&D 5e creature', statBlock: statblock, provider: aiProvider === 'claude' ? 'claude' : undefined })
+				.send({ concept: conceptPrompt || statblock.name || 'D&D 5e creature', statBlock: statblock, provider: aiProvider !== 'lmstudio' ? aiProvider : undefined })
 				.timeout({ response: 180000 });
 
 			const flavor = res.body;
@@ -144,6 +145,20 @@ const StatblockEditorPage = (props)=>{
 			setIsGeneratingFlavor(false);
 		}
 	}, [statblock, conceptPrompt, isGeneratingFlavor, handleChange]);
+
+	const handlePortraitGenerated = useCallback((imageData)=>{
+		handleChange({ ...statblock, portrait: imageData });
+	}, [statblock, handleChange]);
+
+	const buildDndPrompt = useCallback((sb)=>{
+		const parts = ['fantasy monster illustration, dramatic lighting, detailed'];
+		if(sb.name) parts.push(sb.name);
+		if(sb.size && sb.type) parts.push(`${sb.size} ${sb.type}${sb.subtype ? ` (${sb.subtype})` : ''}`);
+		if(sb.description) parts.push(sb.description);
+		if(sb.alignment) parts.push(sb.alignment);
+		if(sb.habitat) parts.push(`habitat: ${sb.habitat}`);
+		return parts.filter(Boolean).join('. ');
+	}, []);
 
 	const [copied, setCopied] = useState(false);
 
@@ -222,19 +237,23 @@ const StatblockEditorPage = (props)=>{
 								provider={aiProvider}
 								onProviderChange={setAiProvider}
 							/>
-							{statblock.name && (
-								<button
-									className="aiGenerateBtn"
-									onClick={handleGenerateFlavor}
-									disabled={isGeneratingFlavor}
-									style={{ background: isGeneratingFlavor ? '#444' : undefined }}
-								>
-									{isGeneratingFlavor
-										? <><i className="fas fa-spinner fa-spin" /> Generating Flavor...</>
-										: <><i className="fas fa-feather-alt" /> Generate Flavor</>
-									}
-								</button>
-							)}
+							<button
+								className="aiGenerateBtn"
+								onClick={handleGenerateFlavor}
+								disabled={isGeneratingFlavor || !statblock.name}
+								title={statblock.name ? 'Generate flavor text' : 'Generate a creature first'}
+								style={{ background: isGeneratingFlavor ? '#444' : undefined }}
+							>
+								{isGeneratingFlavor
+									? <><i className="fas fa-spinner fa-spin" /> Generating Flavor...</>
+									: <><i className="fas fa-feather-alt" /> Generate Flavor</>
+								}
+							</button>
+							<ComfyuiPortraitButton
+								character={statblock}
+								onPortraitGenerated={handlePortraitGenerated}
+								buildPrompt={buildDndPrompt}
+							/>
 							{flavorError && <span style={{ color: '#ff6b6b', fontSize: '13px' }}>{flavorError}</span>}
 						</div>
 						<StatblockForm

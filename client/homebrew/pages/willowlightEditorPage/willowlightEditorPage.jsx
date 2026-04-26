@@ -8,8 +8,11 @@ import SplitPane                    from '../../../components/splitPane/splitPan
 import WillowlightForm             from '../../willowlight/willowlightForm.jsx';
 import WillowlightStatblockPreview from '../../willowlight/willowlightStatblockPreview.jsx';
 import WillowlightSheetPreview     from '../../willowlight/willowlightSheetPreview.jsx';
+import WillowlightPortraitPreview  from '../../willowlight/willowlightPortraitPreview.jsx';
+import WillowlightLandscapePreview from '../../willowlight/willowlightLandscapePreview.jsx';
 
 import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
+import ComfyuiPortraitButton from '../../components/comfyuiPortrait/comfyuiPortrait.jsx';
 import Nav              from '@navbar/nav.jsx';
 import Navbar           from '@navbar/navbar.jsx';
 import AccountNavItem   from '@navbar/account.navitem.jsx';
@@ -96,7 +99,7 @@ const WillowlightEditorPage = (props)=>{
 
 		try {
 			const res = await request.post('/api/ai/generate/willowlight-character-flavor')
-				.send({ concept: conceptPrompt || character.name || 'Willowlight character', statBlock: character, provider: aiProvider === 'claude' ? 'claude' : undefined })
+				.send({ concept: conceptPrompt || character.name || 'Willowlight character', statBlock: character, provider: aiProvider !== 'lmstudio' ? aiProvider : undefined })
 				.timeout({ response: 180000 });
 
 			const flavor = res.body;
@@ -139,6 +142,10 @@ const WillowlightEditorPage = (props)=>{
 			setIsGeneratingFlavor(false);
 		}
 	}, [character, conceptPrompt, isGeneratingFlavor, handleChange]);
+
+	const handlePortraitGenerated = useCallback((imageData)=>{
+		handleChange({ ...character, portrait: imageData });
+	}, [character, handleChange]);
 
 	const [copied, setCopied] = useState(false);
 	const [copiedSheet, setCopiedSheet] = useState(false);
@@ -190,14 +197,17 @@ const WillowlightEditorPage = (props)=>{
 		});
 	};
 
-	const PreviewComponent = previewMode === 'sheet' ? WillowlightSheetPreview : WillowlightStatblockPreview;
+	const PreviewComponent = previewMode === 'portrait' ? WillowlightPortraitPreview
+		: previewMode === 'landscape' ? WillowlightLandscapePreview
+			: previewMode === 'sheet' ? WillowlightSheetPreview
+				: WillowlightStatblockPreview;
 
 	return (
 		<div className="willowlightEditorPage">
 			<Navbar>
 				<Nav.section>
 					<Nav.item className="statblockTitle" color="blue">
-						{character.name || 'New Willowlight Character'}
+						{character.name || 'New Cascade Character'}
 					</Nav.item>
 					<Nav.item icon="fas fa-th-list" onClick={()=>{ window.location.href = '/willowlight/library'; }}>
 						Library
@@ -205,12 +215,23 @@ const WillowlightEditorPage = (props)=>{
 				</Nav.section>
 
 				<Nav.section>
-					<Nav.item
-						icon={previewMode === 'statblock' ? 'fas fa-id-card' : 'fas fa-file-alt'}
-						onClick={()=>setPreviewMode((m)=>m === 'statblock' ? 'sheet' : 'statblock')}
-					>
-						{previewMode === 'statblock' ? 'Sheet View' : 'Stat Block View'}
-					</Nav.item>
+					<Nav.dropdown>
+						<Nav.item icon='fas fa-eye'>
+							{previewMode === 'statblock' ? 'Stat Block' : previewMode === 'sheet' ? 'Sheet' : previewMode === 'portrait' ? 'Portrait' : 'Landscape'}
+						</Nav.item>
+						<Nav.item icon='fas fa-id-card' onClick={()=>setPreviewMode('statblock')}>
+							Stat Block
+						</Nav.item>
+						<Nav.item icon='fas fa-file-alt' onClick={()=>setPreviewMode('sheet')}>
+							Sheet
+						</Nav.item>
+						<Nav.item icon='fas fa-print' onClick={()=>setPreviewMode('portrait')}>
+							Portrait Sheet
+						</Nav.item>
+						<Nav.item icon='fas fa-expand' onClick={()=>setPreviewMode('landscape')}>
+							Landscape Sheet
+						</Nav.item>
+					</Nav.dropdown>
 
 					<Nav.item icon={layout === 'narrow' ? 'fas fa-columns' : 'fas fa-align-justify'}
 						onClick={()=>setLayout((l)=>l === 'narrow' ? 'wide' : 'narrow')}>
@@ -284,19 +305,22 @@ const WillowlightEditorPage = (props)=>{
 								provider={aiProvider}
 								onProviderChange={setAiProvider}
 							/>
-							{character.name && (
-								<button
-									className="aiGenerateBtn"
-									onClick={handleGenerateFlavor}
-									disabled={isGeneratingFlavor}
-									style={{ background: isGeneratingFlavor ? '#444' : undefined }}
-								>
-									{isGeneratingFlavor
-										? <><i className="fas fa-spinner fa-spin" /> Generating Flavor...</>
-										: <><i className="fas fa-feather-alt" /> Generate Flavor</>
-									}
-								</button>
-							)}
+							<button
+								className="aiGenerateBtn"
+								onClick={handleGenerateFlavor}
+								disabled={isGeneratingFlavor || !character.name}
+								title={character.name ? 'Generate flavor text for this character' : 'Generate a character first'}
+								style={{ background: isGeneratingFlavor ? '#444' : undefined }}
+							>
+								{isGeneratingFlavor
+									? <><i className="fas fa-spinner fa-spin" /> Generating Flavor...</>
+									: <><i className="fas fa-feather-alt" /> Generate Flavor</>
+								}
+							</button>
+							<ComfyuiPortraitButton
+								character={character}
+								onPortraitGenerated={handlePortraitGenerated}
+							/>
 							{flavorError && <span style={{ color: '#ff6b6b', fontSize: '13px' }}>{flavorError}</span>}
 						</div>
 						<WillowlightForm character={character} onChange={handleChange} />

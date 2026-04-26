@@ -134,6 +134,18 @@ const LandingPage = ()=>{
 							</p>
 						</a>
 
+						<a className="toolCard" href="/adventure">
+							<div className="toolIcon">
+								<i className="fas fa-rocket" />
+							</div>
+							<h3 className="toolName">Adventure Generator</h3>
+							<p className="toolDesc">
+								Generate complete starship adventures with deck plans,
+								factions, loot tables, and image prompts. Powered by AI
+								with sci-fi mission briefing styling.
+							</p>
+						</a>
+
 						<a className="toolCard" href="/handout">
 							<div className="toolIcon">
 								<i className="fas fa-envelope-open-text" />
@@ -226,6 +238,7 @@ const LandingPage = ()=>{
 					<a href="/palladium/library">Palladium</a>
 					<a href="/willowlight/library">Willowlight</a>
 					<a href="/new">Brew Editor</a>
+					<a href="/adventure">Adventure Generator</a>
 					<a href="/handout">Handout Generator</a>
 					<a href="/mapgen">Map Generator</a>
 					<a href="/playtest">Playtest Table</a>

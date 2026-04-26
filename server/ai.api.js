@@ -1,18 +1,24 @@
 import express      from 'express';
 import asyncHandler from 'express-async-handler';
 import Anthropic    from '@anthropic-ai/sdk';
+import OpenAI       from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import config       from './config.js';
 
 const router = express.Router();
 
 const getLmStudioUrl = ()=>config.get('lm_studio_url') || 'http://localhost:1234';
 const getAnthropicKey = ()=>config.get('anthropic_api_key') || process.env.ANTHROPIC_API_KEY;
+const getOpenaiKey = ()=>config.get('openai_api_key') || process.env.OPENAI_API_KEY;
+const getGeminiKey = ()=>config.get('gemini_api_key') || process.env.GEMINI_API_KEY;
+const getComfyuiUrl = ()=>config.get('comfyui_url') || process.env.COMFYUI_URL || 'http://localhost:8188';
 
 // ── Health check — are AI providers reachable? ───────────────────────
 router.get('/api/ai/status', asyncHandler(async (req, res)=>{
 	let lmStudioAvailable = false;
 	let lmStudioModels = [];
 	let claudeAvailable = false;
+	let openaiAvailable = false;
 
 	// Check LM Studio
 	try {
@@ -29,10 +35,18 @@ router.get('/api/ai/status', asyncHandler(async (req, res)=>{
 	// Check Claude
 	claudeAvailable = !!getAnthropicKey();
 
+	// Check OpenAI
+	openaiAvailable = !!getOpenaiKey();
+
+	// Check Gemini
+	const geminiAvailable = !!getGeminiKey();
+
 	res.status(200).send({
-		available : lmStudioAvailable || claudeAvailable,
+		available : lmStudioAvailable || claudeAvailable || openaiAvailable || geminiAvailable,
 		lmStudio  : { available: lmStudioAvailable, models: lmStudioModels },
 		claude    : { available: claudeAvailable },
+		openai    : { available: openaiAvailable },
+		gemini    : { available: geminiAvailable },
 		models    : lmStudioModels
 	});
 }));
@@ -97,11 +111,69 @@ async function callClaude(systemPrompt, userPrompt, opts = {}) {
 	return JSON.parse(cleaned);
 }
 
+// ── OpenAI API helper ───────────────────────────────────────────────
+async function callOpenai(systemPrompt, userPrompt, opts = {}) {
+	const apiKey = getOpenaiKey();
+	if(!apiKey) throw new Error('No OpenAI API key configured');
+
+	const maxTokens   = opts.maxTokens ?? 8000;
+	const temperature = opts.temperature ?? 0.7;
+
+	const client = new OpenAI({ apiKey });
+
+	const completion = await client.chat.completions.create({
+		model       : 'gpt-4o',
+		max_tokens  : maxTokens,
+		temperature,
+		messages    : [
+			{ role: 'system', content: systemPrompt },
+			{ role: 'user',   content: userPrompt }
+		]
+	});
+
+	const content = completion.choices?.[0]?.message?.content;
+	if(!content) throw new Error('No content in OpenAI response');
+
+	// Strip markdown code fences if present
+	const cleaned = content.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+	return JSON.parse(cleaned);
+}
+
+// ── Gemini API helper ───────────────────────────────────────────────
+async function callGemini(systemPrompt, userPrompt, opts = {}) {
+	const apiKey = getGeminiKey();
+	if(!apiKey) throw new Error('No Gemini API key configured');
+
+	const maxTokens   = opts.maxTokens ?? 8000;
+	const temperature = opts.temperature ?? 0.7;
+
+	const genAI = new GoogleGenerativeAI(apiKey);
+	const model = genAI.getGenerativeModel({
+		model            : 'gemini-2.5-flash',
+		systemInstruction: systemPrompt,
+		generationConfig : { maxOutputTokens: maxTokens, temperature }
+	});
+
+	const result = await model.generateContent(userPrompt);
+	const content = result.response.text();
+	if(!content) throw new Error('No content in Gemini response');
+
+	// Strip markdown code fences if present
+	const cleaned = content.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+	return JSON.parse(cleaned);
+}
+
 // ── Provider dispatcher ─────────────────────────────────────────────
-// Routes to LM Studio or Claude based on the provider parameter.
+// Routes to LM Studio, Claude, OpenAI, or Gemini based on the provider parameter.
 async function callProvider(provider, systemPrompt, userPrompt, opts = {}) {
 	if(provider === 'claude') {
 		return callClaude(systemPrompt, userPrompt, opts);
+	}
+	if(provider === 'openai') {
+		return callOpenai(systemPrompt, userPrompt, opts);
+	}
+	if(provider === 'gemini') {
+		return callGemini(systemPrompt, userPrompt, opts);
 	}
 	return callLmStudio(systemPrompt, userPrompt, opts);
 }
@@ -921,6 +993,172 @@ CONSTRAINTS
 	}
 }));
 
+// ── Generate Palladium stat block ───────────────────────────────────
+router.post('/api/ai/generate/palladium-statblock', asyncHandler(async (req, res)=>{
+	const { prompt, system, provider, game } = req.body;
+	if(!prompt) return res.status(400).send({ error: 'prompt is required' });
+
+	const gameName = game || 'Rifts';
+
+	const GAME_CONTEXT = {
+		'Rifts': `SETTING: Rifts Earth — post-apocalyptic Earth where dimensional Rifts have unleashed magic, monsters, and alien civilizations. Technology ranges from pre-Rifts relics to Glitter Boy power armor.
+DURABILITY: Use MDC (Mega-Damage Capacity) for power-armored, supernatural, or heavily armored beings. Use SDC/HP for ordinary humans and creatures. Most Rifts NPCs in combat use MDC.
+COMMON OCCs: Glitter Boy Pilot, Cyber-Knight, Ley Line Walker, Shifter, Juicer, Crazy, Coalition Soldier, Dog Boy, Rogue Scholar, Wilderness Scout, Headhunter, Techno-Wizard, Mind Melter`,
+		'Palladium Fantasy': `SETTING: Palladium Fantasy RPG — high fantasy world with magic, monsters, gods, and ancient civilizations.
+DURABILITY: Use SDC/HP. AR (Armor Rating) provides threshold-based protection — attacks rolling under AR hit armor, over AR hit the target.
+COMMON OCCs: Knight, Paladin, Wizard, Summoner, Warlock, Diabolist, Assassin, Thief, Ranger, Priest, Mind Mage, Psychic`,
+		'TMNT': `SETTING: TMNT & Other Strangeness / After the Bomb — mutant animals in modern/post-apocalyptic Earth.
+DURABILITY: Use SDC/HP. Mutant animals have Bio-E points spent on mutations.
+MUTATIONS: Include animal mutations (speech, hands, bipedal, size) and any special mutations. Track Bio-E spent.
+COMMON TYPES: Mutant animals of any species — cats, dogs, rats, turtles, birds, reptiles, insects, etc.`
+	};
+
+	const systemPrompt = system || `You are an expert ${gameName} character/NPC designer for the Palladium Megaversal system. Return ONLY valid JSON, no markdown, no commentary.
+
+══════════════════════════════════════
+${GAME_CONTEXT[gameName] || GAME_CONTEXT['Rifts']}
+══════════════════════════════════════
+
+PALLADIUM MEGAVERSAL ATTRIBUTE RULES:
+- 8 attributes: IQ, ME, MA, PS, PP, PE, PB, Spd
+- Human range: 3d6 (3-18). Exceptional = 16+. Supernatural beings can exceed 30.
+- IQ 16+ grants skill bonuses. ME 16+ grants save vs psionics/insanity bonuses.
+- MA 16+ grants trust/intimidate bonuses. PS determines damage bonus.
+- PP 16+ grants strike/parry/dodge bonuses. PE 16+ grants save vs magic/toxin bonuses.
+
+COMBAT RULES:
+- Attacks per melee round: typically 4-6 for experienced combatants.
+- Combat bonuses come from attributes (PP, PS) AND hand-to-hand training.
+- Strike, Parry, Dodge are separate bonuses. Initiative is separate.
+- Critical strike typically on natural 18-20.
+- Damage bonus from PS: 16-20=+1, 21-25=+6, 26-30=+11, 31+=+16
+
+SKILLS: Percentile-based (1-98%). Group into categories: Combat, Physical, Technical, Science, Medical, Rogue, Wilderness, Communication, Domestic, Pilot.
+
+JSON SCHEMA:
+{
+  "name": "string",
+  "game": "${gameName}",
+  "category": "string — race/species type",
+  "occ": "string — occupation/class",
+  "occType": "string — OCC/RCC/PCC",
+  "level": number,
+  "alignment": "Principled|Scrupulous|Unprincipled|Anarchist|Miscreant|Aberrant|Diabolic",
+  "race": "string",
+  "description": "2-3 sentence description",
+  "attributes": { "iq": number, "me": number, "ma": number, "ps": number, "pp": number, "pe": number, "pb": number, "spd": number },
+  "hp": number,
+  "sdc": number,${gameName === 'Rifts' ? '\n  "mdc": number,' : ''}
+  "ar": number,
+  "ppeMagic": number,
+  "isp": number,
+  "combat": {
+    "attacks": number,
+    "initiative": number,
+    "strike": number,
+    "parry": number,
+    "dodge": number,
+    "rollWithPunch": number,
+    "pull": number,
+    "damage": "string — damage bonus",
+    "criticalOn": "string — e.g. Natural 18-20"
+  },
+  "movement": { "run": "string", "fly": "string or empty", "swim": "string or empty", "leap": "string or empty" },
+  "skills": [{ "name": "string", "value": number, "category": "string" }],
+  "weapons": [{ "name": "string", "damage": "string", "range": "string", "notes": "" }],
+  "armor": [{ "name": "string", "ar": number, "sdc": number${gameName === 'Rifts' ? ', "mdc": number' : ''}, "notes": "" }],
+  "magic": [{ "name": "string", "cost": "string", "range": "string", "duration": "string", "description": "string" }],
+  "psionics": [{ "name": "string", "cost": "string", "range": "string", "duration": "string", "description": "string" }],
+  "abilities": [{ "name": "string", "description": "string" }],${gameName === 'TMNT' ? '\n  "animalType": "string",\n  "bioE": number,\n  "mutations": [{ "name": "string", "cost": number, "description": "string" }],\n  "animalSize": "string",' : ''}
+  "equipment": "string — notable gear",
+  "notes": ""
+}
+
+══════════════════════════════════════
+CONSTRAINTS
+══════════════════════════════════════
+- All attribute bonuses must be consistent with the Palladium rules above.
+- Combat attacks per melee should reflect level and hand-to-hand training.
+- Skills should be appropriate to the OCC and level.
+- Include 8-15 skills with realistic percentages for the character's level.
+- Include at least one weapon appropriate to the character.
+- Magic/Psionics only if appropriate to the OCC.`;
+
+	try {
+		const parsed = await callProvider(provider, systemPrompt, prompt);
+		parsed.game = gameName;
+		res.status(200).send(parsed);
+	} catch (err) {
+		console.error('AI generate error:', err);
+		res.status(502).send({ error: `AI generation failed: ${err.message}` });
+	}
+}));
+
+// ── Generate Palladium flavor (second pass) ─────────────────────────
+router.post('/api/ai/generate/palladium-flavor', asyncHandler(async (req, res)=>{
+	const { concept, statBlock, system, provider } = req.body;
+	if(!concept || !statBlock) return res.status(400).send({ error: 'concept and statBlock are required' });
+
+	const gameName = statBlock.game || 'Rifts';
+
+	const systemPrompt = system || `You are a character/NPC lore writer for ${gameName} (Palladium Megaversal system). You will receive the original concept prompt and the character's stat block in JSON. Write narrative flavor. Return only raw JSON — no markdown, no code fences, no commentary.
+
+══════════════════════════════════════
+REQUIRED OUTPUT SCHEMA
+══════════════════════════════════════
+{
+  "description": string,
+  "lore": string,
+  "ability_flavor": [
+    { "name": string, "flavor": string }
+  ],
+  "encounter_hooks": [
+    { "title": string, "description": string }
+  ]
+}
+
+══════════════════════════════════════
+FIELD INSTRUCTIONS
+══════════════════════════════════════
+
+DESCRIPTION
+  - Physical appearance: build, features, armor/gear, distinguishing marks, cybernetics, mutations.
+  - Reflect the game setting. Rifts characters look post-apocalyptic. Fantasy characters look medieval. TMNT characters are mutant animals.
+  - Length: one paragraph.
+
+LORE
+  - Who this character is in the world: their role, reputation, faction ties, and motivations.
+  - Reference their OCC, race, alignment, and abilities.
+  - Length: one paragraph.
+
+ABILITY_FLAVOR
+  - One entry for every special ability, magic spell, and psionic power in the stat block.
+  - Describe the fictional manifestation — what it looks like when used.
+  - Do not restate mechanical values.
+
+ENCOUNTER_HOOKS
+  - Write exactly 3 encounter hooks a GM could use.
+  - Each should fit the ${gameName} setting tone.
+  - title: 3-6 words. description: one paragraph.
+
+══════════════════════════════════════
+CONSTRAINTS
+══════════════════════════════════════
+- Never restate mechanical values in flavor text.
+- ability_flavor must cover all abilities, magic, and psionics.
+- Tone: ${gameName === 'Rifts' ? 'gritty post-apocalyptic sci-fi' : gameName === 'TMNT' ? 'street-level action with dark humor' : 'classic high fantasy with Palladium edge'}.`;
+
+	const userPrompt = `concept: ${concept}\n\nstat_block: ${JSON.stringify(statBlock)}`;
+
+	try {
+		const parsed = await callProvider(provider, systemPrompt, userPrompt, { maxTokens: 8000 });
+		res.status(200).send(parsed);
+	} catch (err) {
+		console.error('AI flavor generate error:', err);
+		res.status(502).send({ error: `AI flavor generation failed: ${err.message}` });
+	}
+}));
+
 // ── Generate Willowlight stat block flavor (second pass) ────────────
 router.post('/api/ai/generate/willowlight-flavor', asyncHandler(async (req, res)=>{
 	const { concept, statBlock, system, provider } = req.body;
@@ -1109,6 +1347,205 @@ router.post('/api/ai/claude/edit', asyncHandler(async (req, res)=>{
 	};
 
 	res.status(200).send({ result, usage });
+}));
+
+// ── Adventure Generator ─────────────────────────────────────────────
+router.post('/api/ai/adventure', asyncHandler(async (req, res)=>{
+	const { prompt, provider } = req.body;
+	if(!prompt) return res.status(400).send({ error: 'Missing prompt' });
+
+	let text;
+
+	if(provider === 'openai') {
+		const apiKey = getOpenaiKey();
+		if(!apiKey) return res.status(503).send({ error: 'No OpenAI API key configured' });
+
+		const client = new OpenAI({ apiKey });
+		const completion = await client.chat.completions.create({
+			model      : 'gpt-4o',
+			max_tokens : 4000,
+			messages   : [{ role: 'user', content: prompt }]
+		});
+		text = completion.choices?.[0]?.message?.content || '';
+	} else if(provider === 'gemini') {
+		const apiKey = getGeminiKey();
+		if(!apiKey) return res.status(503).send({ error: 'No Gemini API key configured' });
+
+		const genAI = new GoogleGenerativeAI(apiKey);
+		const model = genAI.getGenerativeModel({
+			model           : 'gemini-2.5-flash',
+			generationConfig: { maxOutputTokens: 4000 }
+		});
+		const result = await model.generateContent(prompt);
+		text = result.response.text() || '';
+	} else {
+		const apiKey = getAnthropicKey();
+		if(!apiKey) return res.status(503).send({ error: 'No Anthropic API key configured' });
+
+		const client = new Anthropic({ apiKey });
+		const message = await client.messages.create({
+			model      : 'claude-sonnet-4-20250514',
+			max_tokens : 4000,
+			messages   : [{ role: 'user', content: prompt }]
+		});
+		text = (message.content || []).map((b)=>b.text || '').join('');
+	}
+
+	if(!text) return res.status(502).send({ error: 'No content in response' });
+	res.status(200).send({ text });
+}));
+
+// ── Image Generation Status ─────────────────────────────────────────
+router.get('/api/ai/image-status', asyncHandler(async (req, res)=>{
+	let comfyuiAvailable = false;
+	try {
+		const comfyRes = await fetch(`${getComfyuiUrl()}/system_stats`, {
+			signal: AbortSignal.timeout(3000)
+		});
+		comfyuiAvailable = comfyRes.ok;
+	} catch (err) {
+		// ComfyUI not reachable
+	}
+
+	res.status(200).send({
+		openai   : { available: !!getOpenaiKey() },
+		gemini   : { available: !!getGeminiKey() },
+		comfyui  : { available: comfyuiAvailable }
+	});
+}));
+
+// ── Image Generation ────────────────────────────────────────────────
+router.post('/api/ai/generate-image', asyncHandler(async (req, res)=>{
+	const { prompt, provider } = req.body;
+	if(!prompt) return res.status(400).send({ error: 'Missing prompt' });
+	if(!provider) return res.status(400).send({ error: 'Missing provider' });
+
+	let image; // will be a data URL: "data:image/png;base64,..."
+
+	if(provider === 'openai') {
+		const apiKey = getOpenaiKey();
+		if(!apiKey) return res.status(503).send({ error: 'No OpenAI API key configured' });
+
+		const client = new OpenAI({ apiKey });
+		const response = await client.images.generate({
+			model           : 'dall-e-3',
+			prompt,
+			n               : 1,
+			size            : '1024x1024',
+			response_format : 'b64_json'
+		});
+		const b64 = response.data?.[0]?.b64_json;
+		if(!b64) return res.status(502).send({ error: 'No image data in OpenAI response' });
+		image = `data:image/png;base64,${b64}`;
+
+	} else if(provider === 'gemini') {
+		const apiKey = getGeminiKey();
+		if(!apiKey) return res.status(503).send({ error: 'No Gemini API key configured' });
+
+		const genAI = new GoogleGenerativeAI(apiKey);
+		const model = genAI.getGenerativeModel({
+			model            : 'gemini-2.0-flash-exp',
+			generationConfig : { responseModalities: ['image', 'text'] }
+		});
+		const result = await model.generateContent(prompt);
+		const parts = result.response.candidates?.[0]?.content?.parts || [];
+		const imgPart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
+		if(!imgPart) return res.status(502).send({ error: 'No image in Gemini response' });
+		const mime = imgPart.inlineData.mimeType;
+		image = `data:${mime};base64,${imgPart.inlineData.data}`;
+
+	} else if(provider === 'comfyui') {
+		const comfyUrl = getComfyuiUrl();
+
+		// Minimal txt2img workflow for Flux — user may need to customize this
+		const clientId = crypto.randomUUID();
+		const workflow = {
+			prompt: {
+				"1": {
+					class_type: "EmptyLatentImage",
+					inputs: { width: 1024, height: 1024, batch_size: 1 }
+				},
+				"2": {
+					class_type: "CLIPTextEncode",
+					inputs: { text: prompt, clip: ["4", 0] }
+				},
+				"3": {
+					class_type: "KSampler",
+					inputs: {
+						seed: Math.floor(Math.random() * 2**32),
+						steps: 20, cfg: 7, sampler_name: "euler",
+						scheduler: "normal", denoise: 1,
+						model: ["4", 0], positive: ["2", 0],
+						negative: ["5", 0], latent_image: ["1", 0]
+					}
+				},
+				"4": {
+					class_type: "CheckpointLoaderSimple",
+					inputs: { ckpt_name: "flux1-dev.safetensors" }
+				},
+				"5": {
+					class_type: "CLIPTextEncode",
+					inputs: { text: "", clip: ["4", 0] }
+				},
+				"6": {
+					class_type: "VAEDecode",
+					inputs: { samples: ["3", 0], vae: ["4", 2] }
+				},
+				"7": {
+					class_type: "SaveImage",
+					inputs: { filename_prefix: "adventure", images: ["6", 0] }
+				}
+			},
+			client_id: clientId
+		};
+
+		// Queue the prompt
+		const queueRes = await fetch(`${comfyUrl}/prompt`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(workflow),
+			signal: AbortSignal.timeout(10000)
+		});
+		if(!queueRes.ok) {
+			const errText = await queueRes.text();
+			return res.status(502).send({ error: `ComfyUI queue failed: ${errText}` });
+		}
+		const { prompt_id } = await queueRes.json();
+
+		// Poll for completion (up to 5 minutes)
+		let outputImages = null;
+		for(let attempt = 0; attempt < 300; attempt++) {
+			await new Promise(r => setTimeout(r, 1000));
+			const histRes = await fetch(`${comfyUrl}/history/${prompt_id}`, {
+				signal: AbortSignal.timeout(5000)
+			});
+			if(!histRes.ok) continue;
+			const hist = await histRes.json();
+			if(hist[prompt_id]?.outputs?.["7"]?.images?.length) {
+				outputImages = hist[prompt_id].outputs["7"].images;
+				break;
+			}
+		}
+		if(!outputImages?.length) {
+			return res.status(504).send({ error: 'ComfyUI generation timed out' });
+		}
+
+		// Fetch the image
+		const img = outputImages[0];
+		const imgRes = await fetch(
+			`${comfyUrl}/view?filename=${encodeURIComponent(img.filename)}&subfolder=${encodeURIComponent(img.subfolder || '')}&type=${encodeURIComponent(img.type || 'output')}`,
+			{ signal: AbortSignal.timeout(10000) }
+		);
+		if(!imgRes.ok) return res.status(502).send({ error: 'Failed to fetch ComfyUI output image' });
+		const arrBuf = await imgRes.arrayBuffer();
+		const b64 = Buffer.from(arrBuf).toString('base64');
+		image = `data:image/png;base64,${b64}`;
+
+	} else {
+		return res.status(400).send({ error: `Unknown image provider: ${provider}` });
+	}
+
+	res.status(200).send({ image });
 }));
 
 export default router;
