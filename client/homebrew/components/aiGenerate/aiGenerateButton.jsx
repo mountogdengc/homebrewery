@@ -21,9 +21,11 @@ const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate', 
 		request.get('/api/ai/status')
 			.then((res)=>{
 				setAiStatus(res.body);
-				// Default to claude if LM Studio isn't available but Claude is
-				if(!res.body.lmStudio?.available && res.body.claude?.available) {
-					setProvider('claude');
+				// Default to a cloud provider if LM Studio isn't available
+				if(!res.body.lmStudio?.available) {
+					if(res.body.claude?.available) setProvider('claude');
+					else if(res.body.openai?.available) setProvider('openai');
+					else if(res.body.gemini?.available) setProvider('gemini');
 				}
 			})
 			.catch(()=>setAiStatus({ available: false }));
@@ -33,7 +35,10 @@ const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate', 
 
 	const lmAvailable = aiStatus.lmStudio?.available;
 	const claudeAvailable = aiStatus.claude?.available;
-	const bothAvailable = lmAvailable && claudeAvailable;
+	const openaiAvailable = aiStatus.openai?.available;
+	const geminiAvailable = aiStatus.gemini?.available;
+	const providerCount = [lmAvailable, claudeAvailable, openaiAvailable, geminiAvailable].filter(Boolean).length;
+	const bothAvailable = providerCount >= 2;
 
 	const handleGenerate = async ()=>{
 		if(!prompt.trim() || isGenerating) return;
@@ -42,12 +47,14 @@ const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate', 
 
 		try {
 			const body = { prompt: prompt.trim(), ...extraData };
-			if(provider === 'claude') body.provider = 'claude';
+			if(provider && provider !== 'lmstudio') body.provider = provider;
 			const res = await request.post(endpoint)
 				.send(body)
 				.timeout({ response: 180000 });
-			res.body._conceptPrompt = prompt.trim();
-			onGenerated(res.body);
+			const result = res.body;
+			if(!result || typeof result !== 'object') throw new Error('AI returned an empty or invalid response');
+			result._conceptPrompt = prompt.trim();
+			onGenerated(result);
 			setShowModal(false);
 			setPrompt('');
 		} catch (err) {
@@ -83,25 +90,52 @@ const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate', 
 					{/* Provider toggle */}
 					{bothAvailable && (
 						<div className="aiModal-provider">
-							<button
-								className={`aiModal-providerBtn ${provider === 'lmstudio' ? 'active' : ''}`}
-								onClick={()=>setProvider('lmstudio')}
-								disabled={isGenerating}
-							>
-								<i className="fas fa-server" /> Local (LM Studio)
-							</button>
-							<button
-								className={`aiModal-providerBtn ${provider === 'claude' ? 'active' : ''}`}
-								onClick={()=>setProvider('claude')}
-								disabled={isGenerating}
-							>
-								<i className="fas fa-cloud" /> Claude API
-							</button>
+							{lmAvailable && (
+								<button
+									className={`aiModal-providerBtn ${provider === 'lmstudio' ? 'active' : ''}`}
+									onClick={()=>setProvider('lmstudio')}
+									disabled={isGenerating}
+								>
+									<i className="fas fa-server" /> Local (LM Studio)
+								</button>
+							)}
+							{claudeAvailable && (
+								<button
+									className={`aiModal-providerBtn ${provider === 'claude' ? 'active' : ''}`}
+									onClick={()=>setProvider('claude')}
+									disabled={isGenerating}
+								>
+									<i className="fas fa-cloud" /> Claude API
+								</button>
+							)}
+							{openaiAvailable && (
+								<button
+									className={`aiModal-providerBtn ${provider === 'openai' ? 'active' : ''}`}
+									onClick={()=>setProvider('openai')}
+									disabled={isGenerating}
+								>
+									<i className="fas fa-brain" /> OpenAI
+								</button>
+							)}
+							{geminiAvailable && (
+								<button
+									className={`aiModal-providerBtn ${provider === 'gemini' ? 'active' : ''}`}
+									onClick={()=>setProvider('gemini')}
+									disabled={isGenerating}
+								>
+									<i className="fas fa-gem" /> Gemini
+								</button>
+							)}
 						</div>
 					)}
-					{!bothAvailable && claudeAvailable && !lmAvailable && (
+					{!bothAvailable && claudeAvailable && !lmAvailable && !openaiAvailable && (
 						<div className="aiModal-providerNote">
 							<i className="fas fa-cloud" /> Using Claude API
+						</div>
+					)}
+					{!bothAvailable && openaiAvailable && !lmAvailable && !claudeAvailable && (
+						<div className="aiModal-providerNote">
+							<i className="fas fa-brain" /> Using OpenAI
 						</div>
 					)}
 
@@ -144,7 +178,11 @@ const AiGenerateButton = ({ endpoint, onGenerated, buttonLabel = 'AI Generate', 
 						<p className="aiModal-status">
 							{provider === 'claude'
 								? 'Generating with Claude API...'
-								: 'This may take a minute depending on your model...'}
+								: provider === 'openai'
+									? 'Generating with OpenAI...'
+									: provider === 'gemini'
+										? 'Generating with Gemini...'
+										: 'This may take a minute depending on your model...'}
 						</p>
 					)}
 				</div>

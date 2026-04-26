@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /d/Done/homebrewery-master/client/homebrew/pages/besmBuilder/besm/components -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" \\\\\\) -exec wc -l {} +)",
+      "Bash(find /d/Done/homebrewery-master/client/homebrew/pages/besmBuilder/besm/data -type f \\\\\\( -name \"*.ts\" \\\\\\) -exec wc -l {} +)",
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(npm config:*)",
+      "Bash(where mongosh:*)",
+      "Bash(where mongo:*)",
+      "Read(//c/Program Files/MongoDB/Server/**)",
+      "Read(//c/Program Files/MongoDB/**)",
+      "Read(//c/Users/david/AppData/Local/Programs/**)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/david/AppData/Local/**)",
+      "Bash(curl -s -X POST http://localhost:8000/api/ai/generate/palladium-statblock -H 'Content-Type: application/json' -d '{\"prompt\":\"A simple warrior, level 3\",\"provider\":\"claude\",\"game\":\"Palladium Fantasy\"}')"
+    ]
+  }
+}

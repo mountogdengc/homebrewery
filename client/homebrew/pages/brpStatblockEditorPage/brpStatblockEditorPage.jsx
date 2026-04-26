@@ -10,6 +10,7 @@ import BrpStatblockPreview from '../../brpStatblock/brpStatblockPreview.jsx';
 import BrpSheetPreview     from '../../brpStatblock/brpSheetPreview.jsx';
 
 import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
+import ComfyuiPortraitButton from '../../components/comfyuiPortrait/comfyuiPortrait.jsx';
 import Nav             from '@navbar/nav.jsx';
 import Navbar          from '@navbar/navbar.jsx';
 import AccountNavItem  from '@navbar/account.navitem.jsx';
@@ -102,7 +103,7 @@ const BrpStatblockEditorPage = (props)=>{
 
 		try {
 			const res = await request.post('/api/ai/generate/brp-flavor')
-				.send({ concept: conceptPrompt || statblock.name || (isCharacter ? 'BRP character' : 'BRP creature'), statBlock: statblock, provider: aiProvider === 'claude' ? 'claude' : undefined })
+				.send({ concept: conceptPrompt || statblock.name || (isCharacter ? 'BRP character' : 'BRP creature'), statBlock: statblock, provider: aiProvider !== 'lmstudio' ? aiProvider : undefined })
 				.timeout({ response: 180000 });
 
 			const flavor = res.body;
@@ -140,6 +141,30 @@ const BrpStatblockEditorPage = (props)=>{
 			setIsGeneratingFlavor(false);
 		}
 	}, [statblock, conceptPrompt, aiProvider, isCharacter, isGeneratingFlavor, handleChange]);
+
+	const handlePortraitGenerated = useCallback((imageData)=>{
+		handleChange({ ...statblock, portrait: imageData });
+	}, [statblock, handleChange]);
+
+	const buildBrpPrompt = useCallback((sb)=>{
+		const parts = [];
+		if(isCharacter) {
+			parts.push('fantasy character portrait, painterly style, dramatic lighting');
+			if(sb.name) parts.push(sb.name);
+			if(sb.appearance) parts.push(sb.appearance);
+			if(sb.gender) parts.push(sb.gender);
+			if(sb.age) parts.push(`${sb.age} years old`);
+			if(sb.occupation) parts.push(sb.occupation);
+			if(sb.nationality) parts.push(sb.nationality);
+		} else {
+			parts.push('fantasy creature illustration, dramatic lighting, detailed');
+			if(sb.name) parts.push(sb.name);
+			if(sb.category) parts.push(sb.category);
+			if(sb.subtype) parts.push(sb.subtype);
+		}
+		if(sb.description) parts.push(sb.description);
+		return parts.filter(Boolean).join('. ');
+	}, [isCharacter]);
 
 	const [copied, setCopied] = useState(false);
 	const [copiedSheet, setCopiedSheet] = useState(false);
@@ -246,19 +271,23 @@ const BrpStatblockEditorPage = (props)=>{
 								onProviderChange={setAiProvider}
 								extraData={{ characterType: statblock.characterType }}
 							/>
-							{statblock.name && (
-								<button
-									className="aiGenerateBtn"
-									onClick={handleGenerateFlavor}
-									disabled={isGeneratingFlavor}
-									style={{ background: isGeneratingFlavor ? '#444' : undefined }}
-								>
-									{isGeneratingFlavor
-										? <><i className="fas fa-spinner fa-spin" /> Generating Flavor...</>
-										: <><i className="fas fa-feather-alt" /> Generate Flavor</>
-									}
-								</button>
-							)}
+							<button
+								className="aiGenerateBtn"
+								onClick={handleGenerateFlavor}
+								disabled={isGeneratingFlavor || !statblock.name}
+								title={statblock.name ? 'Generate flavor text' : 'Generate a creature first'}
+								style={{ background: isGeneratingFlavor ? '#444' : undefined }}
+							>
+								{isGeneratingFlavor
+									? <><i className="fas fa-spinner fa-spin" /> Generating Flavor...</>
+									: <><i className="fas fa-feather-alt" /> Generate Flavor</>
+								}
+							</button>
+							<ComfyuiPortraitButton
+								character={statblock}
+								onPortraitGenerated={handlePortraitGenerated}
+								buildPrompt={buildBrpPrompt}
+							/>
 							{flavorError && <span style={{ color: '#ff6b6b', fontSize: '13px' }}>{flavorError}</span>}
 						</div>
 						<BrpStatblockForm statblock={statblock} onChange={handleChange} />

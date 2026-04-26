@@ -9,5 +9,8 @@
 	"hb_images" : null,
 	"hb_fonts" : null,
 	"lm_studio_url" : "http://localhost:1234",
-	"anthropic_api_key" : null
+	"anthropic_api_key" : null,
+	"openai_api_key" : null,
+	"gemini_api_key" : null,
+	"comfyui_url" : "http://localhost:8188"
 }

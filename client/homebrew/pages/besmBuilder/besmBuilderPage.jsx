@@ -5,6 +5,7 @@ import { ToastProvider } from './besm/contexts/ToastContext.tsx';
 import { PowProvider } from './besm/components/PowEffect.tsx';
 import { CharacterBuilder } from './besm/components/CharacterBuilder.tsx';
 import AiGenerateButton from '../../components/aiGenerate/aiGenerateButton.jsx';
+import BesmPortraitButton from '../../components/besmPortrait/besmPortrait.jsx';
 import { ATTRIBUTES_LIBRARY } from './besm/data/attributesLibrary.ts';
 import { DEFECTS_LIBRARY } from './besm/data/defectsLibrary.ts';
 
@@ -175,6 +176,12 @@ const BesmBuilderPage = (props)=>{
 		if(aiData._conceptPrompt) setConceptPrompt(aiData._conceptPrompt);
 	}, []);
 
+	const handlePortraitGenerated = useCallback((imageData)=>{
+		const updated = { ...character, portrait: imageData };
+		setCharacter(updated);
+		setHasChanges(true);
+	}, [character]);
+
 	const handleGenerateFlavor = useCallback(async ()=>{
 		if(!character || isGeneratingFlavor) return;
 		setIsGeneratingFlavor(true);
@@ -205,7 +212,7 @@ const BesmBuilderPage = (props)=>{
 
 		try {
 			const res = await request.post('/api/ai/generate/besm-flavor')
-				.send({ concept: conceptPrompt || character.name || 'BESM character', statBlock, provider: aiProvider === 'claude' ? 'claude' : undefined })
+				.send({ concept: conceptPrompt || character.name || 'BESM character', statBlock, provider: aiProvider !== 'lmstudio' ? aiProvider : undefined })
 				.timeout({ response: 180000 });
 
 			const flavor = res.body;
@@ -284,6 +291,10 @@ const BesmBuilderPage = (props)=>{
 						provider={aiProvider}
 						onProviderChange={setAiProvider}
 						buttonLabel="AI Generate"
+					/>
+					<BesmPortraitButton
+						character={character || {}}
+						onPortraitGenerated={handlePortraitGenerated}
 					/>
 					{character && character.attributes?.length > 0 && (
 						<button

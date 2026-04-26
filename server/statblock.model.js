@@ -57,6 +57,7 @@ const StatblockSchema = mongoose.Schema({
 	}) },
 
 	cr : { type: String, default: '1', index: true },
+	portrait : { type: String, default: '' },
 
 	// Defenses / senses
 	gear                  : { type: String, default: '' },

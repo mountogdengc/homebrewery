@@ -54,6 +54,7 @@ const BesmCharacterSchema = mongoose.Schema({
 	background       : { type: String, default: '' },
 	personality      : { type: String, default: '' },
 	notes            : { type: String, default: '' },
+	portrait         : { type: String, default: '' },
 
 	// Timestamps
 	createdAt : { type: Date, default: Date.now, index: true },

@@ -87,7 +87,7 @@ const WillowlightBestiaryLibraryPage = ()=>{
 		<div className="statblockLibraryPage">
 			<Navbar>
 				<Nav.section>
-					<Nav.item color="blue">Willowlight Bestiary</Nav.item>
+					<Nav.item color="blue">Cascade Bestiary</Nav.item>
 					<Nav.item icon="fas fa-plus" onClick={()=>{ window.location.href = '/willowlight/bestiary/new'; }}>
 						New Enemy
 					</Nav.item>
@@ -109,7 +109,7 @@ const WillowlightBestiaryLibraryPage = ()=>{
 
 			<div className="libraryContent">
 				<div className="libraryHeader">
-					<h1>Willowlight Bestiary <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
+					<h1>Cascade Bestiary <span style={{ color: '#666', fontSize: '16px', fontWeight: 400 }}>({total})</span></h1>
 				</div>
 
 				<div className="filterBar">

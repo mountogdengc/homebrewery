@@ -126,6 +126,8 @@ const Homebrew = (props)=>{
 					<Route path='/willowlight/new' element={<WithRoute el={WillowlightEditorPage} />} />
 					<Route path='/willowlight/edit/:id' element={<WithRoute el={WillowlightEditorPage} willowlightCharacter={props.willowlightCharacter} />} />
 					<Route path='/willowlight/share/:id' element={<WithRoute el={WillowlightSharePage} willowlightCharacter={props.willowlightCharacter} />} />
+					<Route path='/willowlight/blank' element={<WithRoute el={WillowlightSharePage} willowlightCharacter={null} sheetView={true} />} />
+					<Route path='/willowlight/sheet/:id' element={<WithRoute el={WillowlightSharePage} willowlightCharacter={props.willowlightCharacter} sheetView={true} />} />
 					<Route path='/willowlight/library' element={<WithRoute el={WillowlightLibraryPage} />} />
 					<Route path='/willowlight/bestiary/new' element={<WithRoute el={WillowlightBestiaryEditorPage} />} />
 					<Route path='/willowlight/bestiary/edit/:id' element={<WithRoute el={WillowlightBestiaryEditorPage} willowlightBestiary={props.willowlightBestiary} />} />

@@ -17,6 +17,7 @@ const PalladiumStatblockSchema = mongoose.Schema({
 	alignment   : { type: String, default: '' },
 	race        : { type: String, default: '' },
 	description : { type: String, default: '' },
+	portrait    : { type: String, default: '' },
 	source      : { type: String, default: '' },
 	tags        : { type: [String], index: true },
 

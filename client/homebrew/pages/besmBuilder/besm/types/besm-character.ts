@@ -80,6 +80,7 @@ export interface BesmCharacter {
   background?: string;
   personality?: string;
   notes?: string;
+  portrait?: string; // Base64 data URL from AI portrait generator
 }
 
 export interface AppliedTemplate {

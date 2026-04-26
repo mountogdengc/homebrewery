@@ -1,0 +1,120 @@
+.comfyPortraitBtn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: linear-gradient(135deg, #1a6b4a, #0d4a32);
+	color: #d0f0e0;
+	border: 1px solid #2ed87a;
+	border-radius: 6px;
+	padding: 8px 14px;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s;
+	margin-bottom: 12px;
+
+	&:hover {
+		background: linear-gradient(135deg, #2ed87a, #1a8a5a);
+		box-shadow: 0 2px 12px rgba(46,216,122,0.3);
+		transform: translateY(-1px);
+	}
+
+	i { font-size: 12px; }
+}
+
+.comfyPortraitModal {
+	background: #1e1e2e;
+	border: 1px solid #3a3a54;
+	border-radius: 12px;
+	padding: 24px;
+	width: 600px;
+	max-width: 90vw;
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.comfyPortrait-workflow {
+	margin-top: 8px;
+}
+
+.comfyPortrait-workflowToggle {
+	background: none;
+	border: none;
+	color: #666;
+	font-size: 12px;
+	cursor: pointer;
+	padding: 4px 0;
+
+	&:hover { color: #aaa; }
+	i { margin-right: 4px; }
+}
+
+.comfyPortrait-workflowPanel {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin-top: 6px;
+	padding: 8px;
+	background: #252538;
+	border: 1px solid #3a3a54;
+	border-radius: 6px;
+}
+
+.comfyPortrait-uploadLabel {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: #888;
+	font-size: 12px;
+	cursor: pointer;
+	padding: 4px 10px;
+	border: 1px dashed #3a3a54;
+	border-radius: 4px;
+
+	&:hover {
+		color: #e0e0f0;
+		border-color: #2ed87a;
+	}
+}
+
+.comfyPortrait-resetWorkflow {
+	background: none;
+	border: 1px solid #3a3a54;
+	color: #888;
+	font-size: 12px;
+	border-radius: 4px;
+	padding: 4px 10px;
+	cursor: pointer;
+
+	&:hover { color: #e0e0f0; border-color: #555; }
+}
+
+.comfyPortrait-preview {
+	margin-top: 12px;
+	text-align: center;
+
+	img {
+		max-width: 100%;
+		max-height: 400px;
+		border-radius: 8px;
+		border: 1px solid #3a3a54;
+	}
+}
+
+.comfyPortrait-accept {
+	background: linear-gradient(135deg, #1a6b4a, #0d4a32);
+	color: #d0f0e0;
+	border: 1px solid #2ed87a;
+	border-radius: 6px;
+	padding: 10px 16px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+
+	&:hover {
+		background: linear-gradient(135deg, #2ed87a, #1a8a5a);
+	}
+
+	i { margin-right: 6px; }
+}
