@@ -120,7 +120,7 @@
     "less": "^4.5.1",
     "lodash": "^4.17.21",
     "lucide-react": "^1.7.0",
-    "marked": "15.0.12",
+    "marked": "18.0.2",
     "marked-alignment-paragraphs": "^1.0.0",
     "marked-definition-lists": "^1.0.1",
     "marked-emoji": "^2.0.2",
