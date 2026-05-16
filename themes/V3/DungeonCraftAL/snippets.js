@@ -365,6 +365,47 @@ export default [
 					}}
 					\n`
 			},
+			{
+				name        : 'Symbols',
+				icon        : 'fas fa-at',
+				subsnippets : [
+					{
+						name : '© Copyright',
+						icon : 'far fa-copyright',
+						gen  : '©',
+					},
+					{
+						name : '® Registered',
+						icon : 'fas fa-registered',
+						gen  : '®',
+					},
+					{
+						name : '™ Trademark',
+						icon : 'fas fa-trademark',
+						gen  : '™',
+					},
+					{
+						name : '§ Section Sign',
+						icon : 'fas fa-paragraph',
+						gen  : '§',
+					},
+					{
+						name : '° Degree',
+						icon : 'fas fa-circle',
+						gen  : '°',
+					},
+					{
+						name : '× Multiply',
+						icon : 'fas fa-times',
+						gen  : '×',
+					},
+					{
+						name : '÷ Divide',
+						icon : 'fas fa-divide',
+						gen  : '÷',
+					},
+				],
+			},
 		]
 	},
 	{
