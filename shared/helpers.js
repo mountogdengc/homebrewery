@@ -168,10 +168,64 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
 	}
 };
 
+const convertToMarkdown = (brewText)=>{
+	let markdown = brewText;
+
+	// Remove homebrewery inline spans: {{ [styles] text }}
+	// Pattern: {{ optional-classes,optional-ids style:value,style:value text content }}
+	// Match single-line mustache spans and extract just the text content
+	markdown = markdown.replace(/\{\{([^}\n]*?)\s+([^}]+?)\s*\}\}(?!\})/g, (match, styles, content)=>{
+		// Extract just the text content from the span
+		return content.trim();
+	});
+
+	// Handle block-level mustache divs: {{ [styles] \n content \n }}
+	// Match opening {{ with optional styles, capture content, match closing }}
+	markdown = markdown.replace(/^\s*\{\{\s*([^\n}]*?)\s*\n([\s\S]*?)\n\s*\}\}\s*$/gm, (match, openTag, content)=>{
+		// If the opening tag only has styles/classes, just return the content
+		// Otherwise include a markdown comment with the class info for reference
+		const styleInfo = openTag.trim();
+		if(!styleInfo || styleInfo === '') {
+			return content;
+		}
+		return `<!-- Block: ${styleInfo} -->\n${content}`;
+	});
+
+	// Convert statblock/character embeds to HTML comments for preservation
+	markdown = markdown.replace(/\{\{(statblock|besm-statblock|willowlight-statblock|brp-statblock|palladium-statblock):([^}]*)\}\}/gi,
+		(match, type, id)=>{
+			return `<!-- Embed: ${type}:${id} -->`;
+		});
+
+	// Convert other embed types (e.g., {{tableofcontents}}, {{youtube:id}}, etc.)
+	markdown = markdown.replace(/\{\{([a-z-]+):?([^}]*)\}\}/gi, (match, type, param)=>{
+		if(param && param.trim()) {
+			return `<!-- Embed: ${type}:${param} -->`;
+		}
+		return `<!-- Embed: ${type} -->`;
+	});
+
+	// Remove any remaining double-brace syntax (fallback for unmatched braces)
+	markdown = markdown.replace(/\{\{([^}]*)\}\}/g, (match, content)=>{
+		const text = content.trim();
+		return text || '';
+	});
+
+	// Remove HTML div wrappers but preserve content
+	markdown = markdown.replace(/<div[^>]*>/gi, '');
+	markdown = markdown.replace(/<\/div>/gi, '');
+
+	// Convert HTML span wrappers but preserve content (for inline elements)
+	markdown = markdown.replace(/<span[^>]*>([^]*?)<\/span>/gi, '$1');
+
+	return markdown;
+};
+
 export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	convertToMarkdown
 };
