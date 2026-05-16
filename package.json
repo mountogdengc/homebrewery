@@ -146,7 +146,7 @@
     "sanitize-filename": "1.6.4",
     "simplex-noise": "^4.0.3",
     "superagent": "^10.2.1",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^5.1.0",
