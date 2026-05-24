@@ -328,6 +328,85 @@ const forcedParagraphBreaks = {
 	}
 };
 
+let artBlockIndex = 0;
+
+const artBlock = {
+	name  : 'artBlock',
+	level : 'block',
+	start(src) { return src.match(/^ *{{art *\r?\n/m)?.index; },
+	tokenizer(src, tokens) {
+		const regex = /^( *{{art *\r?\n([\s\S]*?)\r?\n *}})/;
+		const match = regex.exec(src);
+		if(match) {
+			const raw = match[1];
+			const body = match[2];
+			const props = {};
+
+			for(const line of body.split('\n')) {
+				const trimmed = line.trim();
+				if(!trimmed) continue;
+				const colonIndex = trimmed.indexOf(':');
+				if(colonIndex === -1) continue;
+				const key = trimmed.substring(0, colonIndex).trim();
+				const value = trimmed.substring(colonIndex + 1).trim();
+				props[key] = value;
+			}
+
+			// Calculate source line number
+			const precedingText = src.substring(0, match.index);
+			const sourceLine = precedingText.split('\n').length - 1;
+
+			const parseUnit = (val)=>{
+				if(!val) return '';
+				const match = val.match(/(%|in|cm|px)$/);
+				return match ? match[1] : '';
+			};
+
+			return {
+				type       : 'artBlock',
+				raw        : raw,
+				src        : props.src || null,
+				x          : props.x || '0in',
+				y          : props.y || '0in',
+				w          : props.w || '100%',
+				h          : props.h || null,
+				anchor     : props.anchor || 'page',
+				z          : props.z || 'front',
+				sourceLine : sourceLine,
+				unitX      : parseUnit(props.x || '0in'),
+				unitY      : parseUnit(props.y || '0in'),
+				unitW      : parseUnit(props.w || '100%'),
+				unitH      : props.h ? parseUnit(props.h) : null
+			};
+		}
+	},
+	renderer(token) {
+		if(!token.src) {
+			console.warn('Art block missing required "src" property');
+			return '';
+		}
+
+		const index = artBlockIndex++;
+		const zIndex = token.z === 'behind' ? '-1' : '1000';
+
+		let style = `position:absolute; left:${token.x}; top:${token.y}; width:${token.w}; z-index:${zIndex};`;
+		if(token.h) {
+			style += ` height:${token.h};`;
+		}
+
+		const escapedSrc = escape(token.src);
+
+		let attrs = `class="art-block" src="${escapedSrc}" data-art-index="${index}"`;
+		attrs += ` data-art-unit-x="${token.unitX}" data-art-unit-y="${token.unitY}" data-art-unit-w="${token.unitW}"`;
+		if(token.unitH !== null) {
+			attrs += ` data-art-unit-h="${token.unitH}"`;
+		}
+		attrs += ` style="${style}"`;
+
+		return `<img ${attrs}>`;
+	}
+};
+
 // Emoji options
 // To add more icon fonts, need to do these things
 // 1) Add the font file as .woff2 to themes/fonts/iconFonts folder
@@ -357,6 +436,7 @@ Marked.use(markedVariables());
 Marked.use(MarkedDefinitionLists());
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use({ extensions: [artBlock] }); // Registered after mustacheDivs — marked.js prepends later registrations, so artBlock runs first
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
 Marked.use(MarkedNonbreakingSpaces());
@@ -491,6 +571,7 @@ const Markdown = {
 			pageNumber);
 
 		if(pageNumber==0) MarkedGFMResetHeadingIDs();
+	if(pageNumber==0) artBlockIndex = 0;
 
 		rawBrewText = rawBrewText.replace(/^\\column(?:break)?$/gm, `\n<div class='columnSplit'></div>\n`);
 
