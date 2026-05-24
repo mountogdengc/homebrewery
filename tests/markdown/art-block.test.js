@@ -155,7 +155,7 @@ describe('Art Block: {{art}} syntax', ()=>{
 
 				Some paragraph text.`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered).toContain('<h2');
+			expect(rendered).toContain('<h1');
 			expect(rendered).toContain('<img');
 			expect(rendered).toContain('class="art-block"');
 			expect(rendered).toContain('<p>Some paragraph text.</p>');

@@ -328,6 +328,65 @@ const forcedParagraphBreaks = {
 	}
 };
 
+const artBlock = {
+	name  : 'artBlock',
+	level : 'block',
+	start(src) { return src.match(/^ *{{art\n/m)?.index; },
+	tokenizer(src, tokens) {
+		const regex = /^( *{{art\n([\s\S]*?)\n *}})/;
+		const match = regex.exec(src);
+		if(match) {
+			const raw = match[1];
+			const body = match[2];
+			const props = {};
+
+			for(const line of body.split('\n')) {
+				const trimmed = line.trim();
+				if(!trimmed) continue;
+				const colonIndex = trimmed.indexOf(':');
+				if(colonIndex === -1) continue;
+				const key = trimmed.substring(0, colonIndex).trim();
+				const value = trimmed.substring(colonIndex + 1).trim();
+				props[key] = value;
+			}
+
+			// Calculate source line number
+			const precedingText = src.substring(0, match.index);
+			const sourceLine = precedingText.split('\n').length - 1;
+
+			return {
+				type       : 'artBlock',
+				raw        : raw,
+				src        : props.src || null,
+				x          : props.x || '0in',
+				y          : props.y || '0in',
+				w          : props.w || '100%',
+				h          : props.h || null,
+				anchor     : props.anchor || 'page',
+				z          : props.z || 'front',
+				sourceLine : sourceLine
+			};
+		}
+	},
+	renderer(token) {
+		if(!token.src) {
+			console.warn('Art block missing required "src" property');
+			return '';
+		}
+
+		const zIndex = token.z === 'behind' ? '-1' : '1000';
+
+		let style = `position:absolute; left:${token.x}; top:${token.y}; width:${token.w}; z-index:${zIndex}; pointer-events:none;`;
+		if(token.h) {
+			style += ` height:${token.h};`;
+		}
+
+		const escapedSrc = escape(token.src);
+
+		return `<img class="art-block" src="${escapedSrc}" data-source-line="${token.sourceLine}" style="${style}">`;
+	}
+};
+
 // Emoji options
 // To add more icon fonts, need to do these things
 // 1) Add the font file as .woff2 to themes/fonts/iconFonts folder
@@ -357,6 +416,7 @@ Marked.use(markedVariables());
 Marked.use(MarkedDefinitionLists());
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use({ extensions: [artBlock] });
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
 Marked.use(MarkedNonbreakingSpaces());
