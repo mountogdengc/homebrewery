@@ -331,9 +331,9 @@ const forcedParagraphBreaks = {
 const artBlock = {
 	name  : 'artBlock',
 	level : 'block',
-	start(src) { return src.match(/^ *{{art\r?\n/m)?.index; },
+	start(src) { return src.match(/^ *{{art *\r?\n/m)?.index; },
 	tokenizer(src, tokens) {
-		const regex = /^( *{{art\r?\n([\s\S]*?)\r?\n *}})/;
+		const regex = /^( *{{art *\r?\n([\s\S]*?)\r?\n *}})/;
 		const match = regex.exec(src);
 		if(match) {
 			const raw = match[1];
