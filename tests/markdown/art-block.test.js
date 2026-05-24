@@ -126,12 +126,12 @@ describe('Art Block: {{art}} syntax', ()=>{
 			expect(rendered).toContain('{{art');
 		});
 
-		it('Includes data-source-line attribute', function() {
+		it('Includes data-art-index attribute', function() {
 			const source = dedent`{{art
 				src: /images/map.png
 				}}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered).toMatch(/data-source-line="\d+"/);
+			expect(rendered).toMatch(/data-art-index="\d+"/);
 		});
 
 		it('Does not interfere with regular mustache divs', function() {
@@ -177,6 +177,64 @@ describe('Art Block: {{art}} syntax', ()=>{
 				}}`;
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered).toContain('src="https://example.com/image.png?w=400&amp;h=300"');
+		});
+
+		it('Assigns sequential data-art-index to multiple art blocks', function() {
+			const source = dedent`{{art
+				src: /images/a.png
+				x: 0in
+				}}
+
+				{{art
+				src: /images/b.png
+				x: 1in
+				}}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered).toContain('data-art-index="0"');
+			expect(rendered).toContain('data-art-index="1"');
+		});
+
+		it('Stores original units in data attributes', function() {
+			const source = dedent`{{art
+				src: /images/map.png
+				x: 0.45in
+				y: 20%
+				w: 3.25in
+				h: 2cm
+				}}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered).toContain('data-art-unit-x="in"');
+			expect(rendered).toContain('data-art-unit-y="%"');
+			expect(rendered).toContain('data-art-unit-w="in"');
+			expect(rendered).toContain('data-art-unit-h="cm"');
+		});
+
+		it('Stores empty unit for properties using defaults', function() {
+			const source = dedent`{{art
+				src: /images/map.png
+				}}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered).toContain('data-art-unit-x="in"');
+			expect(rendered).toContain('data-art-unit-y="in"');
+			expect(rendered).toContain('data-art-unit-w="%"');
+			expect(rendered).not.toContain('data-art-unit-h');
+		});
+
+		it('Resets art-index counter on page 0', function() {
+			// First render at page 0
+			const source1 = dedent`{{art
+				src: /images/a.png
+				}}`;
+			Markdown.render(source1, 0);
+			// Second render at page 1
+			const source2 = dedent`{{art
+				src: /images/b.png
+				}}`;
+			const rendered2 = Markdown.render(source2, 1);
+			expect(rendered2).toContain('data-art-index="1"');
+			// Third render at page 0 again — should reset
+			const rendered3 = Markdown.render(source1, 0);
+			expect(rendered3).toContain('data-art-index="0"');
 		});
 	});
 });

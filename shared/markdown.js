@@ -328,6 +328,8 @@ const forcedParagraphBreaks = {
 	}
 };
 
+let artBlockIndex = 0;
+
 const artBlock = {
 	name  : 'artBlock',
 	level : 'block',
@@ -354,6 +356,12 @@ const artBlock = {
 			const precedingText = src.substring(0, match.index);
 			const sourceLine = precedingText.split('\n').length - 1;
 
+			const parseUnit = (val)=>{
+				if(!val) return '';
+				const match = val.match(/(%|in|cm|px)$/);
+				return match ? match[1] : '';
+			};
+
 			return {
 				type       : 'artBlock',
 				raw        : raw,
@@ -364,7 +372,11 @@ const artBlock = {
 				h          : props.h || null,
 				anchor     : props.anchor || 'page',
 				z          : props.z || 'front',
-				sourceLine : sourceLine
+				sourceLine : sourceLine,
+				unitX      : parseUnit(props.x || '0in'),
+				unitY      : parseUnit(props.y || '0in'),
+				unitW      : parseUnit(props.w || '100%'),
+				unitH      : props.h ? parseUnit(props.h) : null
 			};
 		}
 	},
@@ -374,16 +386,24 @@ const artBlock = {
 			return '';
 		}
 
+		const index = artBlockIndex++;
 		const zIndex = token.z === 'behind' ? '-1' : '1000';
 
-		let style = `position:absolute; left:${token.x}; top:${token.y}; width:${token.w}; z-index:${zIndex}; pointer-events:none;`;
+		let style = `position:absolute; left:${token.x}; top:${token.y}; width:${token.w}; z-index:${zIndex};`;
 		if(token.h) {
 			style += ` height:${token.h};`;
 		}
 
 		const escapedSrc = escape(token.src);
 
-		return `<img class="art-block" src="${escapedSrc}" data-source-line="${token.sourceLine}" style="${style}">`;
+		let attrs = `class="art-block" src="${escapedSrc}" data-art-index="${index}"`;
+		attrs += ` data-art-unit-x="${token.unitX}" data-art-unit-y="${token.unitY}" data-art-unit-w="${token.unitW}"`;
+		if(token.unitH !== null) {
+			attrs += ` data-art-unit-h="${token.unitH}"`;
+		}
+		attrs += ` style="${style}"`;
+
+		return `<img ${attrs}>`;
 	}
 };
 
@@ -551,6 +571,7 @@ const Markdown = {
 			pageNumber);
 
 		if(pageNumber==0) MarkedGFMResetHeadingIDs();
+	if(pageNumber==0) artBlockIndex = 0;
 
 		rawBrewText = rawBrewText.replace(/^\\column(?:break)?$/gm, `\n<div class='columnSplit'></div>\n`);
 
