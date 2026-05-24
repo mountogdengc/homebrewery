@@ -25,6 +25,7 @@ import PrintNavItem              from '@navbar/print.navitem.jsx';
 import ExportMarkdownNavItem     from '@navbar/exportMarkdown.navitem.jsx';
 import ExportDocxNavItem         from '@navbar/exportDocx.navitem.jsx';
 import ExportIdttNavItem         from '@navbar/exportIdtt.navitem.jsx';
+import InjectFootersNavItem      from '@navbar/injectFooters.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
@@ -385,6 +386,11 @@ const EditPage = (props)=>{
 				<ExportIdttNavItem
 					markdown={currentBrew.text}
 					name={currentBrew.title || 'brew-export'}
+				/>
+				<InjectFootersNavItem
+					markdown={currentBrew.text}
+					metadata={currentBrew}
+					onTextChange={handleBrewChange('text')}
 				/>
 				<VaultNavItem />
 				<CloneNavItem brew={currentBrew} />
