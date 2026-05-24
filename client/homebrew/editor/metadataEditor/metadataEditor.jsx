@@ -352,6 +352,20 @@ const MetadataEditor = createReactClass({
 				</div>
 			</div>
 
+			<div className='field adventureCode'>
+				<label>adventure code</label>
+				<input type='text' className='value'
+					defaultValue={this.props.metadata.adventureCode}
+					placeholder='FR-DC-XXX-XX'
+					onChange={(e)=>this.handleFieldChange('adventureCode', e)} />
+			</div>
+			<div className='field adventureVersion'>
+				<label>adventure version</label>
+				<input type='text' className='value'
+					defaultValue={this.props.metadata.adventureVersion}
+					placeholder='v1.0'
+					onChange={(e)=>this.handleFieldChange('adventureVersion', e)} />
+			</div>
 
 			{this.renderLanguageDropdown()}
 
