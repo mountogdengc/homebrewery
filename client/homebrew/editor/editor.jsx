@@ -534,6 +534,48 @@ const Editor = createReactClass({
 		cm.addLineClass(bestLine, 'wrap', 'sourceMoveFlash');
 	},
 
+	patchArtBlock : function(artIndex, newProps) {
+		const cm = this.codeEditor.current?.codeMirror;
+		if(!cm) return;
+
+		const fullText = cm.getValue();
+		const artRegex = /{{art *\r?\n/g;
+		let match;
+		let count = 0;
+
+		while ((match = artRegex.exec(fullText)) !== null) {
+			if(count === artIndex) {
+				// Find the closing }}
+				const blockStart = match.index;
+				const closingIdx = fullText.indexOf('\n}}', blockStart);
+				if(closingIdx === -1) return;
+				const blockEnd = closingIdx + 3;
+				const blockText = fullText.substring(blockStart, blockEnd);
+
+				let newBlockText = blockText;
+
+				for(const [key, value] of Object.entries(newProps)) {
+					const propRegex = new RegExp(`^(\\s*${key}:\\s*).*$`, 'm');
+					if(propRegex.test(newBlockText)) {
+						newBlockText = newBlockText.replace(propRegex, `$1${value}`);
+					} else {
+						// Insert new property before closing }}
+						newBlockText = newBlockText.replace(/\n\s*}}$/, `\n${key}: ${value}\n}}`);
+					}
+				}
+
+				if(newBlockText !== blockText) {
+					// Convert string offsets to CodeMirror {line, ch} positions
+					const startPos = cm.posFromIndex(blockStart);
+					const endPos = cm.posFromIndex(blockEnd);
+					cm.replaceRange(newBlockText, startPos, endPos);
+				}
+				return;
+			}
+			count++;
+		}
+	},
+
 	//Called when there are changes to the editor's dimensions
 	update : function(){},
 

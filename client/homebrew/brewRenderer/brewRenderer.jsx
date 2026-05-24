@@ -29,6 +29,7 @@ import { renderPage1 as renderWlPortraitP1, renderPage2 as renderWlPortraitP2, B
 import { render as renderBrpStatblock }         from '@shared/brpStatblock/renderer.js';
 import { renderPage1 as renderBrpPortraitP1, renderPage2 as renderBrpPortraitP2 } from '@shared/brpStatblock/portraitSheetRenderer.js';
 import { render as renderPalladiumStatblock }   from '@shared/palladiumStatblock/renderer.js';
+import { initArtBlockInteraction } from './artBlockInteraction.js';
 
 function renderStatblock(sb, layout, opts = {}) {
 	switch (sb._system) {
@@ -132,6 +133,7 @@ const BrewRenderer = (props)=>{
 		themeBundle                : {},
 		onPageChange               : ()=>{},
 		onPreviewClick             : null,
+		onArtBlockUpdate           : null,
 		...props
 	};
 
@@ -499,6 +501,32 @@ const BrewRenderer = (props)=>{
 			observer.disconnect();
 		};
 	}, [renderedPages, state.isMounted, processStatblockEmbeds, processProceduralImageEmbeds]);
+
+	// Initialize art block interaction after content renders
+	const artCleanupRef = useRef(null);
+	useEffect(()=>{
+		if(!state.isMounted || !props.onArtBlockUpdate) return;
+
+		const iframeDoc = document.getElementById('BrewRenderer')?.contentDocument;
+		if(!iframeDoc) return;
+
+		// Delay slightly to ensure DOM is fully rendered after React updates
+		const timer = setTimeout(()=>{
+			// Clean up previous interaction handlers before rebinding
+			if(artCleanupRef.current) artCleanupRef.current();
+			artCleanupRef.current = initArtBlockInteraction(iframeDoc, ({ artIndex, props: newProps })=>{
+				props.onArtBlockUpdate(artIndex, newProps);
+			});
+		}, 300);
+
+		return ()=>{
+			clearTimeout(timer);
+			if(artCleanupRef.current) {
+				artCleanupRef.current();
+				artCleanupRef.current = null;
+			}
+		};
+	}, [props.text, state.isMounted]);
 
 	return (
 		<>
