@@ -526,7 +526,7 @@ const BrewRenderer = (props)=>{
 				artCleanupRef.current = null;
 			}
 		};
-	}, [renderedPages, state.isMounted]);
+	}, [props.text, state.isMounted]);
 
 	return (
 		<>
