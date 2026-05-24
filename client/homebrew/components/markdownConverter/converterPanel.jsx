@@ -1,6 +1,7 @@
 import './converterPanel.less';
 import React, { useState, useRef } from 'react';
 import { convert } from './browserConverter.js';
+import { docxToMarkdown } from './docxToMarkdown.js';
 
 const FORMAT_OPTIONS = [
 	{ value: '5ePHB',          label: '5e PHB' },
@@ -28,16 +29,25 @@ const ConverterPanel = ({ onConvert, onClose })=>{
 		onClose();
 	};
 
-	const handleFileLoad = (e)=>{
+	const handleFileLoad = async (e)=>{
 		const file = e.target.files[0];
 		if(!file) return;
-		const reader = new FileReader();
-		reader.onload = (ev)=>{
-			setInput(ev.target.result);
+
+		if(file.name.endsWith('.docx')) {
+			const arrayBuffer = await file.arrayBuffer();
+			const md = await docxToMarkdown(arrayBuffer);
+			setInput(md);
 			setMode('input');
 			setPreview('');
-		};
-		reader.readAsText(file);
+		} else {
+			const reader = new FileReader();
+			reader.onload = (ev)=>{
+				setInput(ev.target.result);
+				setMode('input');
+				setPreview('');
+			};
+			reader.readAsText(file);
+		}
 	};
 
 	const handleBack = ()=>{
@@ -71,14 +81,14 @@ const ConverterPanel = ({ onConvert, onClose })=>{
 						<input
 							ref={fileInputRef}
 							type="file"
-							accept=".md,.txt,.markdown"
+							accept=".md,.txt,.markdown,.docx"
 							style={{ display: 'none' }}
 							onChange={handleFileLoad}
 						/>
 					</div>
 
 					<p className="converter-hint">
-						Paste standard markdown below, or load a .md file. The converter will transform it to Homebrewery format.
+						Paste standard markdown below, or load a .md or .docx file. The converter will transform it to Homebrewery format.
 					</p>
 
 					<textarea
