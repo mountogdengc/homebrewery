@@ -446,6 +446,7 @@ const EditPage = (props)=>{
 							currentBrewRendererPageNum={currentBrewRendererPageNum}
 							allowPrint={true}
 							onPreviewClick={(text, pageNum)=>{editorRef.current?.jumpToText(text, pageNum);}}
+							onArtBlockUpdate={(artIndex, newProps)=>{editorRef.current?.patchArtBlock(artIndex, newProps);}}
 						/>
 					)}
 				</SplitPane>
