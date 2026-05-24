@@ -416,7 +416,7 @@ Marked.use(markedVariables());
 Marked.use(MarkedDefinitionLists());
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
-Marked.use({ extensions: [artBlock] });
+Marked.use({ extensions: [artBlock] }); // Registered after mustacheDivs — marked.js prepends later registrations, so artBlock runs first
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
 Marked.use(MarkedNonbreakingSpaces());
