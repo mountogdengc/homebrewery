@@ -120,6 +120,7 @@
     "less": "^4.6.4",
     "lodash": "^4.18.1",
     "lucide-react": "^1.16.0",
+    "mammoth": "^1.12.0",
     "marked": "15.0.12",
     "marked-alignment-paragraphs": "^1.0.0",
     "marked-definition-lists": "^1.0.1",
