@@ -1,3 +1,4 @@
+import CoverPageGen        from './snippets/coverPage.gen.js';
 import EncounterGen        from './snippets/encounter.gen.js';
 import AdventureIntroGen   from './snippets/adventureIntro.gen.js';
 import MonsterBlock2024Gen from './snippets/monsterblock2024.gen.js';
@@ -10,6 +11,11 @@ export default [
 		icon      : 'fas fa-book-open',
 		view      : 'text',
 		snippets  : [
+			{
+				name : 'Cover Page',
+				icon : 'fas fa-image',
+				gen  : CoverPageGen,
+			},
 			{
 				name : 'Adventure Intro',
 				icon : 'fas fa-scroll',

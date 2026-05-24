@@ -102,6 +102,91 @@ are from the Player's Handbook, you will find it in the
 If you are developing locally and would like to generate your own, follow the
 above steps and then run `npm run phb`.
 
+## Adventurers League Publishing Workflow
+
+This fork includes a complete pipeline for writing and exporting D&D Adventurers League adventures as styled Word documents.
+
+### Overview
+
+```
+Raw content  -->  Homebrewery editor  -->  DOCX export  -->  (optional) InDesign
+(notes, draft,    (DungeonCraftAL         (styled Word       (place .docx, map
+ Word doc, etc.)   theme, live preview)    paragraph styles)   Word → ID styles)
+```
+
+### Step 1 — Write or Convert Content
+
+**Starting from scratch:** Create a new brew and select the **DungeonCraftAL** theme. Write your adventure using AL markdown blocks (`{{CoreBody}}`, `{{CoreHanging}}`, `{{BoxedText}}`, `{{note}}`, etc.).
+
+**Converting existing content:** Use the built-in Markdown Converter in the editor toolbar:
+1. Open the converter panel
+2. Paste standard markdown or load a `.md` file
+3. Select **DungeonCraft AL** as the target format
+4. Click **Convert**, review the output, then **Insert into Editor**
+
+The converter automatically wraps body text in `{{CoreBody}}`, definitions in `{{CoreHanging}}`, lists in `{{CoreBulleted}}` or `{{HangingBullet}}`, and blockquotes in `{{BoxedText}}` (read-aloud) or `{{note}}` (sidebars).
+
+**Using AI assistance:** Feed `documents/AL_Homebrewery_Formatting_Instructions.md` to an LLM along with your raw adventure content. It will produce correctly formatted Homebrewery markdown for the DungeonCraftAL theme.
+
+### Step 2 — Preview and Edit
+
+The editor shows a live two-column preview styled to match the final output. Use `\page` for page breaks and `\column` for column breaks.
+
+### Step 3 — Export to DOCX
+
+Three export paths are available:
+
+| Method | How | When to use |
+|---|---|---|
+| **UI button** | Click **Export DOCX** in the navbar | Interactive editing |
+| **API** | `POST /api/convert/docx` with `{ markdown, filename }` | Automation / scripting |
+| **CLI** | `node md2docx.cjs input.md [output.docx]` | Batch / offline conversion |
+
+The exported `.docx` uses named Word paragraph styles (Heading 1–5, Normal, List Bullet, List Number, Sidebar Heading/Body/Bullets, Table Header/Cell).
+
+### Step 4 (Optional) — InDesign Layout
+
+1. File > Place the `.docx` into your InDesign document
+2. Map Word styles to InDesign styles in the import dialog
+3. The mapping saves with the document for future imports
+
+### AL Formatting Reference
+
+See `documents/AL_Homebrewery_Formatting_Instructions.md` for the complete reference covering:
+- All paragraph style blocks (`{{CoreBody}}`, `{{CoreHanging}}`, `{{BoxedText}}`, `{{Epigraph}}`, etc.)
+- Standard AL adventure structure (cover, credits/TOC, primer, encounters, conclusion, rewards, creatures)
+- Skill check formatting, encounter adjustments, skill challenges
+- NPC summaries and creature stat blocks
+
+### Available Themes
+
+| Theme | Description |
+|---|---|
+| **5ePHB** | Player's Handbook style (default) |
+| **5eDMG** | Dungeon Master's Guide style |
+| **DungeonCraftAL** | Adventurers League official format |
+| **Journal** | Handwritten journal style |
+| **UnearthedArcana** | Unearthed Arcana style |
+| **Blank** | No styling |
+
+### Other Export Formats
+
+- **IDTT** — InDesign Tagged Text via `POST /api/convert/idtt` (direct InDesign import without the Word intermediary)
+
+### Key Files
+
+| Path | Purpose |
+|---|---|
+| `documents/AL_Homebrewery_Formatting_Instructions.md` | Complete AL formatting reference / AI prompt |
+| `server/convert-docx.js` | Markdown to DOCX engine (ES module) |
+| `server/convert-idtt.js` | Markdown to IDTT engine |
+| `server/convert.api.js` | Express routes for `/api/convert/*` |
+| `md2docx.cjs` | CLI tool for offline DOCX conversion |
+| `tools/converter/formats/dungeonCraftAL.js` | AL format transform definitions |
+| `themes/V3/DungeonCraftAL/` | AL theme stylesheets and settings |
+| `client/homebrew/navbar/exportDocx.navitem.jsx` | Export DOCX button component |
+| `client/homebrew/components/markdownConverter/` | Format converter UI |
+
 ## Troubleshooting
 
 Running into problems during local development? See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for common issues (route ordering with Vite middleware, `NODE_ENV` configuration, etc.).

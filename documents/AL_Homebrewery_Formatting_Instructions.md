@@ -94,7 +94,7 @@ The party arrives at the stable to find the doors standing open. A faint smell o
 
 ### Sidebars (Notes)
 
-Sidebars use the `{{note ... }}` wrapper. Use `#####` for the sidebar heading, and regular text or `{{SidebarBody}}` / `{{SidebarBulleted}}` for content inside.
+Sidebars use the `{{note ... }}` wrapper. Use `#####` for the sidebar heading, and regular text for content inside.
 
 ```
 {{note

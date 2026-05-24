@@ -22,6 +22,28 @@ const RENDER_CALLOUTS = {
   example: { heading: 'Sidebar Heading', body: 'Sidebar Body', bullet: 'Sidebar Bullets' },
 };
 
+// AL paragraph-style blocks — render their content as the mapped Word style
+const AL_BLOCK_STYLES = {
+  corebody:        'Normal',
+  corehanging:     'Normal',
+  hangingcontinue: 'Normal',
+  corebulleted:    'List Bullet',
+  hangingbullet:   'List Bullet',
+  coremetadata:    'Normal',
+  boxedtext:       'Normal',
+  epigraph:        'Normal',
+  epigraphauthor:  'Normal',
+  listheading:     'Normal',
+  listitem:        'Normal',
+  creditlegal:     'Normal',
+  tabletitle:      'Normal',
+  sidebarheading:  'Sidebar Heading',
+  sidebarbody:     'Sidebar Body',
+  sidebarbulleted: 'Sidebar Bullets',
+  pagefooter:      'Normal',
+  footnote:        'Normal',
+};
+
 // ─── Inline markdown → TextRun[] ────────────────────────────────────────────
 
 function parseInline(rawText) {
@@ -65,6 +87,7 @@ export async function convertMarkdownToDocx(markdown) {
 
   let inCallout    = false;
   let calloutStyle = null;
+  let alBlockStyle = null;
   let skipBlock    = false;
   let inTable      = false;
   let firstRow     = true;
@@ -93,24 +116,34 @@ export async function convertMarkdownToDocx(markdown) {
     if (/^!\[/.test(trimmed)) { i++; continue; }
 
     // ── Homebrewery block open  {{ ...
-    if (/^\{\{/.test(trimmed) && !inCallout && !skipBlock) {
+    if (/^\{\{/.test(trimmed) && !inCallout && !skipBlock && !alBlockStyle) {
       const tagMatch = trimmed.match(/^\{\{(\w+)/);
       const tag      = tagMatch ? tagMatch[1].toLowerCase() : '';
       if (tag === 'pagenumber') { i++; continue; }
-      if (RENDER_CALLOUTS[tag]) { inCallout = true; calloutStyle = RENDER_CALLOUTS[tag]; }
-      else                      { skipBlock = true; }
+      if (RENDER_CALLOUTS[tag])  { inCallout = true; calloutStyle = RENDER_CALLOUTS[tag]; }
+      else if (AL_BLOCK_STYLES[tag]) { alBlockStyle = AL_BLOCK_STYLES[tag]; }
+      else                       { skipBlock = true; }
       i++; continue;
     }
 
     // ── Block close
     if (trimmed === '}}') {
-      if (inCallout) { inCallout = false; calloutStyle = null; }
-      if (skipBlock) { skipBlock = false; }
+      if (inCallout)    { inCallout = false; calloutStyle = null; }
+      if (alBlockStyle) { alBlockStyle = null; }
+      if (skipBlock)    { skipBlock = false; }
       i++; continue;
     }
 
     // ── Inside a skip block
     if (skipBlock) { i++; continue; }
+
+    // ── Inside an AL paragraph-style block
+    if (alBlockStyle) {
+      if (trimmed === '') { i++; continue; }
+      if (/^[-*]\s/.test(trimmed)) paragraphs.push(styledPara(alBlockStyle === 'Normal' ? 'List Bullet' : alBlockStyle, trimmed.slice(2)));
+      else                         paragraphs.push(styledPara(alBlockStyle, trimmed));
+      i++; continue;
+    }
 
     // ── Inside a render callout
     if (inCallout) {
