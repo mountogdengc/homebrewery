@@ -503,6 +503,7 @@ const BrewRenderer = (props)=>{
 	}, [renderedPages, state.isMounted, processStatblockEmbeds, processProceduralImageEmbeds]);
 
 	// Initialize art block interaction after content renders
+	const artCleanupRef = useRef(null);
 	useEffect(()=>{
 		if(!state.isMounted || !props.onArtBlockUpdate) return;
 
@@ -511,12 +512,20 @@ const BrewRenderer = (props)=>{
 
 		// Delay slightly to ensure DOM is fully rendered after React updates
 		const timer = setTimeout(()=>{
-			const cleanup = initArtBlockInteraction(iframeDoc, ({ artIndex, props: newProps })=>{
+			// Clean up previous interaction handlers before rebinding
+			if(artCleanupRef.current) artCleanupRef.current();
+			artCleanupRef.current = initArtBlockInteraction(iframeDoc, ({ artIndex, props: newProps })=>{
 				props.onArtBlockUpdate(artIndex, newProps);
 			});
 		}, 300);
 
-		return ()=>clearTimeout(timer);
+		return ()=>{
+			clearTimeout(timer);
+			if(artCleanupRef.current) {
+				artCleanupRef.current();
+				artCleanupRef.current = null;
+			}
+		};
 	}, [renderedPages, state.isMounted]);
 
 	return (
