@@ -4,10 +4,13 @@
 
 import {
 	AlignmentType,
+	BorderStyle,
 	Document,
+	Footer,
 	Packer,
 	PageBreak,
 	Paragraph,
+	ShadingType,
 	TextRun,
 } from 'docx';
 
@@ -43,15 +46,18 @@ const BLOCK_STYLES = {
 	sidebarheading  : 'Sidebar Heading',
 	sidebarbody     : 'Sidebar Body',
 	sidebarbulleted : 'Sidebar Body Bullets',
-	footnote        : 'Footnote',
 	legal           : 'CreditLegal',
-	pagefooter      : 'Footnote',
 };
 
 const DROP_BLOCKS = new Set([
 	'pagenumber',
 	'toc',
 	'tableofcontents',
+]);
+
+const FOOTER_BLOCKS = new Set([
+	'footnote',
+	'pagefooter',
 ]);
 
 const BULLET_STYLES = new Set([
@@ -177,46 +183,60 @@ function pushCalloutContent(paragraphs, callout, trimmed, tableState) {
 		paragraphs.push(styledPara(callout.body, trimmed));
 }
 
-function createDocument(paragraphs) {
+function createDocument(paragraphs, footerLines) {
+	const footerChildren = footerLines.map((line)=>
+		new Paragraph({ children: parseInline(line), style: 'Footnote', alignment: AlignmentType.LEFT })
+	);
+
+	const sectionProps = { children: paragraphs };
+	if(footerChildren.length) {
+		sectionProps.footers = {
+			default: new Footer({ children: footerChildren }),
+		};
+	}
+
 	return new Document({
 		styles : {
 			paragraphStyles : [
-				{ id: 'Normal', name: 'Normal', run: { font: 'Aptos', size: 22 }, paragraph: { spacing: { after: 120 } } },
-				{ id: 'CoreBody', name: 'CoreBody', basedOn: 'Normal', paragraph: { spacing: { after: 120 } } },
-				{ id: 'CoreHanging', name: 'CoreHanging', basedOn: 'CoreBody', paragraph: { indent: { left: 360, hanging: 360 }, spacing: { after: 120 } } },
-				{ id: 'HangingContinue', name: 'HangingContinue', basedOn: 'CoreBody', paragraph: { indent: { left: 360 }, spacing: { after: 120 } } },
-				{ id: 'CoreBulleted', name: 'CoreBulleted', basedOn: 'CoreBody', paragraph: { indent: { left: 360, hanging: 180 }, spacing: { after: 60 } } },
-				{ id: 'HangingBullet', name: 'HangingBullet', basedOn: 'CoreBulleted', paragraph: { indent: { left: 540, hanging: 180 }, spacing: { after: 60 } } },
-				{ id: 'CoreNumberedList', name: 'CoreNumberedList', basedOn: 'CoreBody', paragraph: { indent: { left: 360, hanging: 180 }, spacing: { after: 60 } } },
-				{ id: 'CoreMetadata', name: 'CoreMetadata', basedOn: 'CoreBody', run: { italics: true }, paragraph: { spacing: { after: 80 } } },
-				{ id: 'Boxed Text', name: 'Boxed Text', basedOn: 'CoreBody', run: { italics: true }, paragraph: { indent: { left: 240, right: 240 }, spacing: { before: 120, after: 120 } } },
-				{ id: 'CoreEpigraph', name: 'CoreEpigraph', basedOn: 'CoreBody', run: { italics: true }, paragraph: { indent: { left: 360, right: 360 }, spacing: { before: 120, after: 60 } } },
-				{ id: 'EpigraphAuthor', name: 'EpigraphAuthor', basedOn: 'CoreBody', run: { italics: true }, paragraph: { alignment: AlignmentType.RIGHT, indent: { right: 360 }, spacing: { after: 120 } } },
-				{ id: 'List Header', name: 'List Header', basedOn: 'List Item', run: { bold: true }, paragraph: { spacing: { before: 120, after: 60 } } },
-				{ id: 'List Heading', name: 'List Heading', basedOn: 'Normal', run: { bold: true, smallCaps: true }, paragraph: { spacing: { before: 120, after: 60 } } },
-				{ id: 'List Item', name: 'List Item', basedOn: 'CoreHanging' },
+				// Fonts and sizes from ALStyles.txt (InDesign AL template)
+				// docx size = half-points (9pt = 18), indent/spacing in twips (1440/inch)
+				{ id: 'Normal', name: 'Normal', run: { font: 'Times New Roman', size: 18 }, paragraph: { spacing: { after: 90 } } },
+				{ id: 'CoreBody', name: 'CoreBody', basedOn: 'Normal', paragraph: { spacing: { after: 90 } } },
+				{ id: 'CoreHanging', name: 'CoreHanging', run: { font: 'Times New Roman', size: 18 }, paragraph: { indent: { left: 180, hanging: 180 }, spacing: { after: 0 } } },
+				{ id: 'HangingContinue', name: 'HangingContinue', basedOn: 'CoreBody', paragraph: { indent: { left: 180 }, spacing: { after: 90 } } },
+				{ id: 'CoreBulleted', name: 'CoreBulleted', basedOn: 'CoreBody', paragraph: { indent: { left: 360, hanging: 180 }, spacing: { after: 90 } } },
+				{ id: 'HangingBullet', name: 'HangingBullet', basedOn: 'CoreBulleted', paragraph: { indent: { left: 540, hanging: 180 }, spacing: { after: 90 } } },
+				{ id: 'CoreNumberedList', name: 'CoreNumberedList', basedOn: 'CoreBody', paragraph: { indent: { left: 360, hanging: 180 }, spacing: { after: 90 } } },
+				{ id: 'CoreMetadata', name: 'CoreMetadata', basedOn: 'CoreBody', run: { italics: true }, paragraph: { spacing: { after: 90 } } },
+				{ id: 'Boxed Text', name: 'Boxed Text', basedOn: 'CoreBody', paragraph: { indent: { left: 180 }, spacing: { before: 90, after: 90 }, border: { top: { style: BorderStyle.SINGLE, size: 1, space: 4 }, bottom: { style: BorderStyle.SINGLE, size: 1, space: 4 }, left: { style: BorderStyle.SINGLE, size: 1, space: 4 }, right: { style: BorderStyle.SINGLE, size: 1, space: 4 } } } },
+				{ id: 'CoreEpigraph', name: 'CoreEpigraph', basedOn: 'CoreBody', run: { italics: true }, paragraph: { indent: { left: 180, right: 180 }, spacing: { before: 90, after: 90 } } },
+				{ id: 'EpigraphAuthor', name: 'EpigraphAuthor', basedOn: 'CoreBody', run: { italics: true }, paragraph: { alignment: AlignmentType.RIGHT, indent: { right: 180 }, spacing: { after: 90 } } },
+				{ id: 'List Heading', name: 'List Heading', run: { font: 'Cambria', size: 24 }, paragraph: { spacing: { after: 0 } } },
+				{ id: 'List Header', name: 'List Header', basedOn: 'List Item', run: { bold: true }, paragraph: { spacing: { before: 90, after: 90 } } },
+				{ id: 'List Item', name: 'List Item', run: { font: 'Cambria', size: 20 }, paragraph: { indent: { left: 187, firstLine: 180 }, spacing: { after: 240 } } },
 				{ id: 'CreditLegal', name: 'CreditLegal', basedOn: 'Normal', run: { size: 12 }, paragraph: { spacing: { after: 40 } } },
 				{ id: 'Footnote', name: 'Footnote', basedOn: 'Normal', run: { size: 14 }, paragraph: { spacing: { after: 40 } } },
-				{ id: 'TableTitle', name: 'TableTitle', basedOn: 'CoreBody', run: { bold: true, smallCaps: true }, paragraph: { spacing: { before: 120, after: 40 } } },
+				{ id: 'TableTitle', name: 'TableTitle', basedOn: 'CoreBody', run: { bold: true, smallCaps: true }, paragraph: { spacing: { before: 90, after: 40 } } },
 				{ id: 'TABLE HEADER', name: 'TABLE HEADER', basedOn: 'TABLE CELL', run: { bold: true }, paragraph: { spacing: { after: 40 } } },
 				{ id: 'TABLE CELL', name: 'TABLE CELL', basedOn: 'CoreBody', paragraph: { spacing: { after: 40 } } },
-				{ id: 'Sidebar Heading', name: 'Sidebar Heading', basedOn: 'Normal', run: { bold: true, smallCaps: true }, paragraph: { spacing: { before: 80, after: 40 } } },
-				{ id: 'Sidebar Body', name: 'Sidebar Body', basedOn: 'Normal', paragraph: { indent: { left: 240, right: 240 }, spacing: { after: 80 } } },
-				{ id: 'Sidebar Body Bullets', name: 'Sidebar Body Bullets', basedOn: 'Normal', paragraph: { indent: { left: 540, hanging: 180 }, spacing: { after: 40 } } },
-				{ id: 'Heading1', name: 'Heading1', basedOn: 'Normal', next: 'CoreBody', run: { bold: true, size: 36, smallCaps: true }, paragraph: { spacing: { before: 240, after: 120 } } },
-				{ id: 'Heading2', name: 'Heading2', basedOn: 'Heading1', next: 'CoreBody', run: { bold: true, size: 30, smallCaps: true }, paragraph: { spacing: { before: 200, after: 100 } } },
-				{ id: 'Heading3', name: 'Heading3', basedOn: 'Heading1', next: 'CoreBody', run: { bold: true, size: 26, smallCaps: true }, paragraph: { spacing: { before: 160, after: 80 } } },
-				{ id: 'Heading4', name: 'Heading4', basedOn: 'Heading2', next: 'CoreBody', run: { bold: true, italics: true, size: 24 }, paragraph: { spacing: { before: 120, after: 60 } } },
-				{ id: 'Heading5', name: 'Heading5', basedOn: 'Heading3', next: 'CoreBody', run: { bold: true, smallCaps: true, size: 22 }, paragraph: { spacing: { before: 80, after: 40 } } },
+				{ id: 'Sidebar Heading', name: 'Sidebar Heading', run: { font: 'Times New Roman', size: 24 }, paragraph: { spacing: { before: 90, after: 0 }, shading: { type: ShadingType.CLEAR, fill: 'E8D9B0' } } },
+				{ id: 'Sidebar Body', name: 'Sidebar Body', run: { font: 'Times New Roman', size: 18 }, paragraph: { spacing: { after: 90 }, shading: { type: ShadingType.CLEAR, fill: 'E8D9B0' } } },
+				{ id: 'Sidebar Body Bullets', name: 'Sidebar Body Bullets', run: { font: 'Times New Roman', size: 18 }, paragraph: { indent: { left: 90 }, spacing: { after: 90 }, shading: { type: ShadingType.CLEAR, fill: 'E8D9B0' } } },
+				{ id: 'Heading1', name: 'Heading1', next: 'CoreBody', run: { font: 'Montserrat', size: 36 }, paragraph: { spacing: { before: 90, after: 90 } } },
+				{ id: 'Heading2', name: 'Heading2', basedOn: 'Heading1', next: 'CoreBody', run: { font: 'Montserrat', size: 28 }, paragraph: { spacing: { before: 90, after: 180 } } },
+				{ id: 'Heading3', name: 'Heading3', basedOn: 'Heading1', next: 'CoreBody', run: { font: 'Times New Roman', size: 24 }, paragraph: { spacing: { before: 90, after: 90 } } },
+				{ id: 'Heading4', name: 'Heading4', basedOn: 'Heading1', next: 'CoreBody', run: { font: 'Times New Roman', size: 22, bold: true, italics: true }, paragraph: { spacing: { before: 90, after: 90 } } },
+				{ id: 'Heading5', name: 'Heading5', basedOn: 'Heading1', next: 'CoreBody', run: { font: 'Times New Roman', size: 20, bold: true, smallCaps: true }, paragraph: { spacing: { before: 90, after: 40 } } },
 			],
 		},
-		sections : [{ children: paragraphs }],
+		sections : [sectionProps],
 	});
 }
 
 export async function convertMarkdownToDocx(markdown) {
 	const lines = markdown.split('\n');
 	const paragraphs = [];
+	const footerLines = [];
 	const stack = [];
 	const tableState = { inTable: false, firstRow: true };
 
@@ -230,6 +250,11 @@ export async function convertMarkdownToDocx(markdown) {
 
 		if(topActive(stack, 'drop'))
 			continue;
+
+		if(topActive(stack, 'footer')) {
+			if(trimmed !== '') footerLines.push(trimmed);
+			continue;
+		}
 
 		if(/^\\page\b/.test(trimmed) || /^\\column\b/.test(trimmed)) {
 			paragraphs.push(new Paragraph({ children: [new PageBreak()] }));
@@ -247,6 +272,14 @@ export async function convertMarkdownToDocx(markdown) {
 			if(DROP_BLOCKS.has(blockOpen.tag)) {
 				if(!blockOpen.isClosed)
 					stack.push({ type: 'drop' });
+				continue;
+			}
+
+			if(FOOTER_BLOCKS.has(blockOpen.tag)) {
+				if(blockOpen.content)
+					footerLines.push(blockOpen.content);
+				if(!blockOpen.isClosed)
+					stack.push({ type: 'footer' });
 				continue;
 			}
 
@@ -326,5 +359,5 @@ export async function convertMarkdownToDocx(markdown) {
 		paragraphs.push(styledPara('CoreBody', trimmed));
 	}
 
-	return Packer.toBuffer(createDocument(paragraphs));
+	return Packer.toBuffer(createDocument(paragraphs, footerLines));
 }

@@ -106,7 +106,7 @@ const LandingPage = ()=>{
 
 						<a className="toolCard" href="/willowlight/library">
 							<div className="toolIcon">
-								<img src="/assets/lolgo_200x200.png" alt="Cascade" style={{ width: '40px', height: '40px' }} />
+								<img src="/assets/lolgo_200x200.webp" alt="Cascade" style={{ width: '40px', height: '40px' }} />
 							</div>
 							<h3 className="toolName">Cascade</h3>
 							<p className="toolDesc">

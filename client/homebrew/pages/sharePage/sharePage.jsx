@@ -82,6 +82,7 @@ const SharePage = (props)=>{
 								<ExportPdfNavItem
 									url={`/api/pdf/brew/${processShareId()}`}
 									name={brew.title || 'brew-export'}
+									showFlatten={true}
 								/>
 							<Nav.dropdown>
 								<Nav.item color='red' icon='fas fa-code'>
