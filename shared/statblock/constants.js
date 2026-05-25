@@ -73,7 +73,7 @@ export const SIZES = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
 
 export const ALIGNMENTS = [
 	'Lawful Good', 'Neutral Good', 'Chaotic Good',
-	'Lawful Neutral', 'True Neutral', 'Chaotic Neutral',
+	'Lawful Neutral', 'Neutral', 'Chaotic Neutral',
 	'Lawful Evil', 'Neutral Evil', 'Chaotic Evil',
 	'Unaligned', 'Any Alignment', 'Any Non-Good Alignment',
 	'Any Non-Lawful Alignment', 'Any Chaotic Alignment', 'Any Evil Alignment'

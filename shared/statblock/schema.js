@@ -12,7 +12,7 @@ export function createEmptyStatblock() {
 		size      : 'Medium',
 		type      : 'Humanoid',
 		subtype   : '',
-		alignment : 'True Neutral',
+		alignment : 'Neutral',
 		isHomebrew: false,
 		source    : '',
 		tags      : [],

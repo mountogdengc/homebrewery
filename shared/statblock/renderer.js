@@ -117,6 +117,9 @@ function renderTraits(items) {
 		const spellRe1 = new RegExp('(<br>)\\s*(' + SPELL_HDR + '\\s*:)', 'gi');
 		const spellRe2 = new RegExp('(</p><p class="sb-trait">)\\s*(' + SPELL_HDR + '\\s*:)', 'gi');
 		const descHtml = esc(desc)
+			// Italicize 2024-format attack rolls and saving throws
+			.replace(/\b((?:Melee|Ranged|Melee or Ranged)\s+Attack\s+Roll)\b/gi,  '<em>$1</em>')
+			.replace(/\b((?:Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)\s+Saving\s+Throw)\b/gi, '<em>$1</em>')
 			.replace(/\n\n+/g, '</p><p class="sb-trait">')
 			.replace(/\n/g, '<br>')
 			// Convert spell headers from <br> to indented paragraphs, and bold them
@@ -182,8 +185,12 @@ function computeProps(sb) {
 		skills       : buildSkills(sb),
 		sensesStr    : (()=>{
 			const passivePerc = calcPassivePerception(sb);
-			return sb.senses
-				? `${esc(sb.senses)}; Passive Perception ${passivePerc}`
+			const cleaned = (sb.senses || '')
+				.replace(/;?\s*passive\s+perception\s+\d+/gi, '')
+				.replace(/^\s*;\s*/, '')
+				.trim();
+			return cleaned
+				? `${esc(cleaned)}; Passive Perception ${passivePerc}`
 				: `Passive Perception ${passivePerc}`;
 		})(),
 		crStr : sb.cr ? `${displayCR(sb.cr)} (XP ${fmtXP(xp)}; PB ${fmtMod(pb)})` : '',

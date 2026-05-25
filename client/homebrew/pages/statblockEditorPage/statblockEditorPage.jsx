@@ -161,6 +161,9 @@ const StatblockEditorPage = (props)=>{
 	}, []);
 
 	const [copied, setCopied] = useState(false);
+	const [showImportModal, setShowImportModal] = useState(false);
+	const [importJson, setImportJson] = useState('');
+	const [importError, setImportError] = useState(null);
 
 	const toggleLayout = ()=>{
 		setLayout((l)=>l === 'narrow' ? 'wide' : 'narrow');
@@ -174,6 +177,29 @@ const StatblockEditorPage = (props)=>{
 			setTimeout(()=>setCopied(false), 2000);
 		});
 	};
+
+	const handlePasteImport = useCallback(()=>{
+		setImportError(null);
+		let parsed;
+		try {
+			parsed = JSON.parse(importJson);
+		} catch (e) {
+			setImportError('Invalid JSON');
+			return;
+		}
+		// Strip metadata fields — keep only statblock data
+		delete parsed.editId;
+		delete parsed.shareId;
+		delete parsed._id;
+		delete parsed.authors;
+		delete parsed.createdAt;
+		delete parsed.updatedAt;
+		delete parsed.views;
+		delete parsed.published;
+		handleChange({ ...statblock, ...parsed });
+		setShowImportModal(false);
+		setImportJson('');
+	}, [importJson, statblock, handleChange]);
 
 	return (
 		<div className="statblockEditorPage">
@@ -191,6 +217,13 @@ const StatblockEditorPage = (props)=>{
 				</Nav.section>
 
 				<Nav.section>
+					<Nav.item
+						icon="fas fa-file-import"
+						onClick={()=>setShowImportModal(true)}
+					>
+						Paste Import
+					</Nav.item>
+
 					<Nav.item
 						className="layoutToggle"
 						icon={layout === 'narrow' ? 'fas fa-columns' : 'fas fa-align-justify'}
@@ -267,6 +300,28 @@ const StatblockEditorPage = (props)=>{
 					/>
 				</SplitPane>
 			</div>
+
+			{showImportModal && (
+				<div className="importModal-overlay" onClick={()=>setShowImportModal(false)}>
+					<div className="importModal" onClick={(e)=>e.stopPropagation()}>
+						<h3>Paste Updated JSON</h3>
+						<p>Paste statblock JSON to update this creature. IDs and embed codes will stay the same.</p>
+						<textarea
+							value={importJson}
+							onChange={(e)=>setImportJson(e.target.value)}
+							placeholder='Paste JSON from bookmarklet or export...'
+							rows={12}
+						/>
+						{importError && <p className="importModal-error">{importError}</p>}
+						<div className="importModal-buttons">
+							<button onClick={()=>setShowImportModal(false)}>Cancel</button>
+							<button className="primary" onClick={handlePasteImport} disabled={!importJson.trim()}>
+								Update Statblock
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

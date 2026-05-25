@@ -137,6 +137,7 @@
 
   var cr = '1', skillRaw = '', senses = '', languages = '\u2014';
   var dVuln = '', dRes = '', dImm = '', cImm = '';
+  var gearRaw = '';
   var savesRaw = '';
 
   root.querySelectorAll('.' + P + 'tidbit, .' + P + 'tidbits .mon-stat-block__tidbit').forEach(function (t) {
@@ -153,6 +154,7 @@
     else if (/^damage\s*res/i.test(lbl))             dRes      = v;
     else if (/^damage\s*imm/i.test(lbl))             dImm      = v;
     else if (/^condition\s*imm/i.test(lbl))          cImm      = v;
+    else if (/^gear$/i.test(lbl))                    gearRaw   = v;
   });
 
   // ── Saving throws ──────────────────────────────────────────────────────
@@ -372,7 +374,7 @@
     hp: { average: hpA, formula: hpF },
     initiativeOverride: null, speed: speed,
     abilities: abilities, savingThrows: savingThrows, skills: skills, cr: cr,
-    gear: '', damageVulnerabilities: dVuln, damageResistances: dRes,
+    gear: gearRaw, damageVulnerabilities: dVuln, damageResistances: dRes,
     damageImmunities: dImm, conditionImmunities: cImm,
     senses: senses, languages: languages,
     traits: traits, actions: actions, bonusActions: bonusActions, reactions: reactions,
