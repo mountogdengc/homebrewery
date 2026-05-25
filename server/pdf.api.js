@@ -7,7 +7,7 @@ import asyncHandler   from 'express-async-handler';
 import config         from './config.js';
 import Markdown       from '../shared/markdown.js';
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
-import { urlToPdf } from './pdf.service.js';
+import { urlToPdf, urlToFlatPdf } from './pdf.service.js';
 
 // Statblock renderers (shared code, works server-side)
 import { render as render5eStatblock }         from '../shared/statblock/renderer.js';
@@ -257,7 +257,8 @@ router.get('/api/pdf/brew-render/:id', asyncHandler(async (req, res)=>{
 router.get('/api/pdf/brew/:id', asyncHandler(async (req, res)=>{
 	const base = getBaseUrl();
 	const renderUrl = `${base}/api/pdf/brew-render/${req.params.id}`;
-	const buffer = await urlToPdf(renderUrl);
+	const flatten = req.query.flatten === 'true';
+	const buffer = flatten ? await urlToFlatPdf(renderUrl) : await urlToPdf(renderUrl);
 
 	// Fetch brew name for the filename
 	let name = `brew-${req.params.id}`;
