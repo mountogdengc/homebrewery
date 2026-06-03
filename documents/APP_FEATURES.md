@@ -69,7 +69,7 @@ This document compiles all implemented and planned features of the Homebrewery a
 
 ---
 
-## Beginner's Essential Spell-Master (BESM) System
+## Big Eyes Small Mouth (BESM) System
 
 ### BESM Character Builder
 - Comprehensive character creation form
