@@ -698,6 +698,26 @@ brew`);
 			});
 		});
 
+		it('should return Theme Bundle for the Far From Sol static theme', async ()=>{
+			const req = { params: { renderer: 'V3', id: 'FarFromSol' }, get: ()=>{ return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+				name   : 'FarFromSol',
+				author : undefined,
+				styles : [
+					`/* From Theme Blank */\n\n@import url("/themes/V3/Blank/style.css");`,
+					`/* From Theme FarFromSol */\n\n@import url("/themes/V3/FarFromSol/style.css");`
+				],
+				snippets : [
+					'V3_Blank',
+					'V3_FarFromSol'
+				]
+			});
+		});
+
 		it('should return Theme Bundle for nested User and Static Themes together', async ()=>{
 			const brews = {
 				userThemeAID : { title: 'User Theme A', renderer: 'V3', theme: 'userThemeBID', shareId: 'userThemeAID', style: 'User Theme A Style', tags: ['meta:theme'], authors: ['authorName'] },

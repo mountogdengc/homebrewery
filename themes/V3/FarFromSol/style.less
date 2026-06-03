@@ -1,0 +1,998 @@
+// Dungeoncraft Adventurers League Theme
+// Matches the Dungeoncraft AL adventure document layout.
+// Extends Blank theme. Uses system fonts (Cambria/Calibri) for v1.
+
+:root {
+	// HB standard color variables
+	--HB_Color_Background            : #FFFFFF;
+	--HB_Color_Accent                : #D9D9D9; // Sidebar grey
+	--HB_Color_HeaderUnderline       : #000000;
+	--HB_Color_HorizontalRule        : #000000;
+	--HB_Color_HeaderText            : #000000;
+	--HB_Color_MonsterStatBackground : #F5F0E8;
+	--HB_Color_CaptionText           : #555555;
+	--HB_Color_WatercolorStain       : #888888;
+	--HB_Color_Footnotes             : #555555;
+	--TOC                            : 'include';
+
+	// Dungeoncraft AL custom variables
+	--DC_Font_Body    : 'Cambria', 'Georgia', serif;
+	--DC_Font_Heading : 'Calibri', 'Segoe UI', sans-serif;
+	--DC_Font_Boxed   : 'Calibri', 'Segoe UI', sans-serif;
+	--DC_Color_H4     : #000000; // Encounter/area headings
+}
+
+// ── Mixins ───────────────────────────────────────────────────────────────
+
+.useHeadingFont() {
+	font-family : var(--DC_Font_Heading);
+}
+
+.useColumns(@multiplier : 1, @fillMode: auto) {
+	column-count : 2;
+	column-fill  : @fillMode;
+	column-gap   : 0.61in;
+}
+
+// ── Page Base ────────────────────────────────────────────────────────────
+
+.page {
+	.useColumns();
+	font-family      : var(--DC_Font_Body);
+	font-size        : 9pt;
+	line-height      : 1.4;
+	padding          : 0.58in 0.81in 0.79in;
+	background-color : var(--HB_Color_Background);
+}
+
+// ── Base Elements ────────────────────────────────────────────────────────
+
+.page {
+	p {
+		line-height    : 1.4;
+		margin-top     : 0;
+		margin-bottom  : 0;
+	}
+	p + p {
+		margin-top : 6pt;
+	}
+	ul {
+		padding-left  : 18px;
+		margin-bottom : 6pt;
+		line-height   : 1.4;
+		list-style    : disc;
+	}
+	ol {
+		padding-left  : 18px;
+		margin-bottom : 6pt;
+		line-height   : 1.4;
+	}
+	img { z-index : -1; }
+	strong { font-weight : bold; }
+
+	// ── Headings ─────────────────────────────────────────────────────────
+
+	// Strip top margin when element is first in a column or after a column-spanning element
+	.columnWrapper > :first-child,
+	.columnWrapper > h1 + *,
+	.columnWrapper > .wide + *,
+	.columnSplit + *,
+	.note > :first-child,
+	.descriptive > :first-child,
+	blockquote > :first-child {
+		margin-top : 0 !important;
+	}
+
+	// H1: Chapter title — 20pt small-caps, spans both columns
+	h1 {
+		.useHeadingFont();
+		font-size           : 20pt;
+		font-weight         : normal;
+		font-variant        : small-caps;
+		letter-spacing      : 0.35px;
+		color               : var(--HB_Color_HeaderText);
+		line-height         : 1.15;
+		margin              : 16pt 0 5pt;
+		column-span         : all;
+		-webkit-column-span : all;
+	}
+
+	// H2: Section heading — 15pt small-caps, underlined
+	h2 {
+		font-family   : var(--DC_Font_Body);
+		font-size     : 15pt;
+		font-weight   : normal;
+		font-variant  : small-caps;
+		color         : var(--HB_Color_HeaderText);
+		line-height   : 1.2;
+		margin        : 8pt 0 5pt;
+		border-bottom : 1px solid var(--HB_Color_HeaderUnderline);
+		padding-bottom: 1pt;
+	}
+
+	// H3: Subsection heading — 12pt small-caps
+	h3 {
+		font-family  : var(--DC_Font_Body);
+		font-size    : 12pt;
+		font-weight  : normal;
+		font-variant : small-caps;
+		color        : var(--HB_Color_HeaderText);
+		line-height  : 1.2;
+		margin       : 10pt 0 5pt;
+	}
+
+	// H4: Encounter/area heading — bold italic, blue
+	h4 {
+		.useHeadingFont();
+		font-size   : 11pt;
+		font-weight : bold;
+		font-style  : italic;
+		color       : var(--DC_Color_H4);
+		line-height : 1.3;
+		margin      : 8pt 0 4pt;
+	}
+
+	// H5: List/minor heading — bold small-caps
+	h5 {
+		.useHeadingFont();
+		font-size    : 10pt;
+		font-weight  : bold;
+		font-variant : small-caps;
+		color        : var(--HB_Color_HeaderText);
+		line-height  : 1.3;
+		margin       : 10pt 0 4pt;
+	}
+
+	// Tighten gap when a table immediately follows a heading
+	:is(h1, h2, h3, h4, h5) + table { margin-top : 2pt; }
+
+	// Utility: pull element up to compensate for font intrinsic spacing
+	// Usage: {{tight\n ### Heading \n}}
+	.tight {
+		margin-top : -4pt !important;
+		> :first-child { margin-top : 0 !important; }
+	}
+
+	// ── Tables ───────────────────────────────────────────────────────────
+
+	table {
+		.useHeadingFont();
+		width           : 100%;
+		font-size       : 8.5pt;
+		border-collapse : collapse;
+		margin          : 4pt 0 4pt;
+		break-inside    : avoid;
+		& + * { margin-top : 4pt; }
+		& + h1, & + h2, & + h3, & + h4, & + h5 { margin-top : 2pt; }
+		& + blockquote { margin-top : 4pt; }
+		thead {
+			display     : table-row-group;
+			font-weight : bold;
+			th {
+				text-align     : left;
+				border-bottom  : 1px solid #999;
+				padding        : 3pt 6pt;
+			}
+		}
+		tbody {
+			tr {
+				td {
+					text-align    : left;
+					padding       : 3pt 6pt;
+					border-bottom : 1px solid #ddd;
+				}
+			}
+		}
+	}
+
+	// ── Blockquote → Read-Aloud / Boxed Text ─────────────────────────────
+
+	blockquote {
+		font-family  : var(--DC_Font_Boxed);
+		font-size    : 9pt;
+		line-height  : 1.4;
+		border       : none;
+		border-left  : 2pt solid #000;
+		padding      : 0 0 0 8pt;
+		margin       : 13pt 0;
+		break-inside : avoid;
+		p {
+			margin    : 0 0 6pt;
+			font-size : 9pt;
+		}
+		p:last-child { margin-bottom : 0; }
+		& + * { margin-top : 13pt; }
+	}
+
+	// ── Note → Sidebar (grey background) ─────────────────────────────────
+
+	.note {
+		.useHeadingFont();
+		font-size    : 8.5pt;
+		line-height  : 1.4;
+		background   : var(--HB_Color_Accent);
+		padding      : 8pt;
+		margin       : 4pt 0;
+		break-inside : avoid;
+		border       : none;
+		border-image : none;
+		box-shadow   : none;
+		.page :where(&) { margin-top : 4pt; }
+		& + * { margin-top : 4pt; }
+		h5 {
+			.useHeadingFont();
+			font-size    : 10pt;
+			font-weight  : bold;
+			font-variant : small-caps;
+			color        : var(--HB_Color_HeaderText);
+			margin       : 0 0 4pt;
+		}
+		p {
+			display        : block;
+			padding-bottom : 0px;
+			margin         : 0 0 8pt;
+		}
+		p:last-child { margin-bottom : 0; }
+		ul {
+			.useHeadingFont();
+			font-size    : 8.5pt;
+			padding-left : 16px;
+			margin       : 0 0 6pt;
+		}
+		ul:last-child { margin-bottom : 0; }
+		:last-child { margin-bottom : 0; }
+	}
+
+	// ── Descriptive → Epigraph / Callout ─────────────────────────────────
+
+	.descriptive {
+		font-family  : var(--DC_Font_Body);
+		font-size    : 10pt;
+		font-style   : italic;
+		line-height  : 1.4;
+		padding      : 0.1em 0;
+		margin       : 0 0 8pt;
+		border       : none;
+		border-image : none;
+		box-shadow   : none;
+		background   : transparent;
+		.page :where(&) { margin-top : 0; }
+		& + * { margin-top : 8pt; }
+		h5 { font-size : 10pt; }
+		p {
+			display        : block;
+			padding-bottom : 0px;
+			line-height    : 1.4;
+		}
+		// Attribution line (last paragraph in an epigraph)
+		p:last-child:not(:first-child) {
+			font-style : normal;
+			text-align : right;
+			margin-top : 0;
+		}
+		:last-child { margin-bottom : 0; }
+	}
+
+	// ── Horizontal Rule ──────────────────────────────────────────────────
+
+	hr {
+		visibility    : visible;
+		border        : none;
+		border-top    : 1px solid #000;
+		margin        : 8pt 0;
+	}
+
+	// ── Hanging Indent (block) ───────────────────────────────────────────
+	// Usage: {{hanging\n paragraph text \n}}
+
+	.hanging p {
+		margin       : 0 0 4pt;
+		padding-left : 1em;
+		text-indent  : -1em;
+	}
+
+	// Continuation paragraphs under a hanging block — flush indent, no negative
+	// Usage: {{hangingContinue\n continuation text \n}}
+	.hangingContinue p {
+		margin       : 0 0 4pt;
+		padding-left : 1em;
+		text-indent  : 0;
+	}
+
+	// Bullets under a hanging block — indented to match hanging text
+	// Usage: {{hangingBullets\n - bullet \n}}
+	.hangingBullets ul {
+		padding-left : 2em;
+	}
+
+	// ── Hanging Indent (definition lists) ────────────────────────────────
+
+	dl {
+		font-size    : 9pt;
+		line-height  : 1.4;
+		padding-left : 13px;
+		white-space  : pre-line;
+		& + * { margin-top : 8pt; }
+	}
+	dt {
+		display      : inline;
+		font-weight  : bold;
+		margin-right : 0.5ch;
+		margin-left  : -13px;
+	}
+	dd {
+		display     : inline;
+		margin-left : 0;
+		text-indent : 0;
+	}
+
+	// ── Monster Stat Block (2024 style) ─────────────────────────────────
+
+	.monster {
+		font-family  : 'Times New Roman', Times, serif;
+		font-size    : 9pt;
+		line-height  : 1.4;
+		color        : #1a1a1a;
+		position     : relative;
+		padding      : 6pt 10pt 8pt;
+		margin       : 13pt 0;
+		break-inside : avoid;
+		background-color : #f9f0df;
+		border       : 1px solid #c9a96e;
+
+		&.frame {
+			background-color : #f9f0df;
+			border           : 1px solid #c9a96e;
+			border-image     : none;
+			box-shadow       : 1px 2px 6px rgba(0,0,0,0.25);
+		}
+
+		// Monster name
+		h2 {
+			font-family    : 'Times New Roman', Times, serif;
+			font-size      : 15pt;
+			font-weight    : bold;
+			font-variant   : normal;
+			font-style     : normal;
+			color          : #8B1A1A;
+			text-transform : uppercase;
+			letter-spacing : 0.04em;
+			border-bottom  : none;
+			padding-bottom : 0;
+			margin         : 0 0 1pt;
+			line-height    : 1.15;
+			& + p {
+				font-size     : 8.5pt;
+				font-style    : italic;
+				color         : #555;
+				margin-bottom : 2pt;
+			}
+		}
+
+		// Section headers within stat block (Actions, Reactions, etc.)
+		h3 {
+			font-family    : 'Times New Roman', Times, serif;
+			font-size      : 11pt;
+			font-weight    : bold;
+			font-variant   : normal;
+			color          : #8B1A1A;
+			border-bottom  : none;
+			padding-bottom : 0;
+			margin         : 6pt 0 0;
+			line-height    : 1.2;
+			& + * { margin-top : 0; }
+		}
+
+		// Section rule (thin, appears after h3)
+		h3 + * { border-top : 1px solid #8B1A1A; padding-top : 2pt; }
+
+		// Stat block dividers (thick double-rule)
+		hr {
+			visibility       : visible;
+			height           : 0;
+			margin           : 3pt 0;
+			background-image : none;
+			background-color : transparent;
+			border           : none;
+			border-top       : 4pt solid #8B1A1A;
+			border-bottom    : 1pt solid #8B1A1A;
+			padding-top      : 1pt;
+		}
+
+		// Properties between HRs (AC, HP, Speed, etc.)
+		hr ~ :is(dl,p) {
+			color     : inherit;
+			font-size : 9pt;
+			margin    : 1pt 0;
+		}
+		hr:last-of-type {
+			& ~ :is(dl,p) { color : inherit; }
+			& + * { margin-top : 4pt; }
+		}
+
+		// Ability table (2024 format: 8 columns — label, score, mod, save × 2)
+		hr + table:first-of-type {
+			margin           : 4pt 0 3pt;
+			column-span      : none;
+			color            : #1a1a1a;
+			background-color : transparent;
+			border-style     : none;
+			border-image     : none;
+			border-top       : 1px solid #c9a96e;
+			border-bottom    : 1px solid #c9a96e;
+			padding          : 3pt 0;
+			tr { background-color : transparent; }
+			th {
+				font-size      : 7.5pt;
+				font-weight    : 700;
+				text-align     : center;
+				text-transform : uppercase;
+				color          : #666;
+				padding        : 1pt 3pt;
+			}
+			td {
+				font-size   : 9pt;
+				text-align  : center;
+				padding     : 1pt 3pt;
+			}
+			// Row labels (STR, DEX, etc.)
+			td:first-child, td:nth-child(5) {
+				font-weight    : 700;
+				font-size      : 7.5pt;
+				text-transform : uppercase;
+				color          : #555;
+				text-align     : left;
+			}
+			// Score columns
+			td:nth-child(2), td:nth-child(6) {
+				font-weight : 700;
+			}
+			// Empty corners
+			th:first-child, th:nth-child(5) {
+				text-align : left;
+			}
+			th:nth-child(2), th:nth-child(6) {
+				min-width : 20pt;
+			}
+		}
+
+		// Trait/action text
+		p {
+			font-family : 'Times New Roman', Times, serif;
+			font-size   : 9pt;
+			margin      : 2pt 0;
+			line-height : 1.35;
+		}
+
+		:is(ul,ol) + p { text-indent : 0; }
+		:last-child { margin-bottom : 0; }
+	}
+
+	.monster.wide {
+		.useColumns(0.96, @fillMode: balance);
+	}
+
+	// ── Code Blocks ──────────────────────────────────────────────────────
+
+	code {
+		padding          : 0px 4px;
+		font-size        : 8.5pt;
+		background-color : #f5f5f5;
+		border-radius    : 3px;
+	}
+
+	pre code {
+		display    : inline-block;
+		width      : 100%;
+		padding    : 8pt;
+		border     : 1px solid #ddd;
+		background : #f9f9f9;
+		& + * { margin-top : 13pt; }
+	}
+
+	// ── Extras ───────────────────────────────────────────────────────────
+
+	// No paragraph indent in AL style
+	p + p { text-indent : 0; }
+	ul + p, ol + p { text-indent : 0; }
+	table + p { text-indent : 0; }
+
+	// Nested lists
+	ul ul, ol ol, ul ol, ol ul {
+		margin-bottom : 0px;
+		margin-left   : 1.5em;
+	}
+
+	// ── AL Paragraph Styles ─────────────────────────────────────────────
+	// Usage: {{CoreBody\n text \n}} — matches AL Word template spacing
+
+	.CoreBody p {
+		margin      : 0 0 6pt;
+		line-height : 1.4;
+	}
+
+	.CoreHanging p {
+		margin       : 0 0 4pt;
+		padding-left : 13px;
+		text-indent  : -13px;
+		line-height  : 1.4;
+	}
+
+	.CoreBulleted {
+		margin       : 0 0 6pt;
+		padding-left : 18px;
+		li { margin-bottom : 6pt; }
+	}
+
+	.HangingBullet {
+		margin       : 0 0 6pt;
+		padding-left : 2em;
+		li { margin-bottom : 4pt; }
+	}
+
+	.CoreMetadata p {
+		font-style   : italic;
+		margin       : 0 0 8pt;
+		line-height  : 1.4;
+	}
+
+	.Epigraph p {
+		font-size    : 10pt;
+		font-style   : italic;
+		margin       : 0 0 8pt;
+		line-height  : 1.4;
+	}
+
+	.EpigraphAuthor p {
+		font-size    : 10pt;
+		text-align   : right;
+		margin       : 0 0 18pt;
+		line-height  : 1.4;
+	}
+
+	.ListHeading p {
+		.useHeadingFont();
+		font-size    : 10pt;
+		font-weight  : bold;
+		font-variant : small-caps;
+		margin       : 10pt 0 4pt;
+		line-height  : 1.3;
+	}
+
+	.ListItem p {
+		.useHeadingFont();
+		font-size    : 8.5pt;
+		margin       : 0 0 4pt;
+		padding-left : 13px;
+		text-indent  : -13px;
+		line-height  : 1.4;
+	}
+
+	// Cover / title page styles
+	.adventureTitle,
+	.title {
+		column-span          : all;
+		-webkit-column-span  : all;
+		display              : block;
+		text-align           : center;
+		p {
+			font-family  : 'Baskerville Old Face', 'Baskerville', 'Georgia', serif;
+			font-size    : 36pt;
+			font-weight  : bold;
+			margin       : 0 0 4pt;
+			line-height  : 1.1;
+		}
+	}
+
+	.adventureSubtitle,
+	.subtitle {
+		column-span          : all;
+		-webkit-column-span  : all;
+		display              : block;
+		text-align           : center;
+		p {
+			font-family  : 'Baskerville Old Face', 'Baskerville', 'Georgia', serif;
+			font-size    : 24pt;
+			font-weight  : bold;
+			margin       : 0 0 8pt;
+			line-height  : 1.15;
+		}
+	}
+
+	// Cover page logo positioning
+	// Use the same pattern as .footnote/.pageNumber which are absolute-positioned
+	// and work correctly — they're direct children of .page via the markdown
+	.coverLogoTopRight {
+		position    : absolute;
+		top         : 20px;
+		right       : 20px;
+		z-index     : 100;
+		text-align  : right;
+		img { max-height : 1.5in; }
+	}
+
+	.coverLogoBottomRight {
+		position    : absolute;
+		bottom      : 20px;
+		right       : 20px;
+		z-index     : 100;
+		text-align  : right;
+		img { max-height : 1.5in; }
+	}
+
+	.adventureCode p {
+		.useHeadingFont();
+		font-size    : 14pt;
+		font-weight  : bold;
+		margin       : 0 0 4pt;
+		line-height  : 1.3;
+	}
+
+	.introBody {
+		column-span          : all;
+		-webkit-column-span  : all;
+		display              : block;
+		text-align           : center;
+		p {
+			font-size    : 12pt;
+			margin       : 0 0 8pt;
+			line-height  : 1.4;
+		}
+	}
+
+	.CreditLegal p {
+		font-size    : 6pt;
+		margin       : 0;
+		line-height  : 1.3;
+	}
+
+	// BoxedText — read-aloud box with border
+	.BoxedText {
+		border       : 1px solid #000;
+		padding      : 6pt;
+		margin       : 6pt 0;
+		break-inside : avoid;
+		p {
+			.useHeadingFont();
+			font-size    : 9pt;
+			margin       : 0 0 6pt;
+			line-height  : 1.4;
+			&:last-child { margin-bottom : 0; }
+		}
+	}
+
+	// SidebarHeading — heading inside a note/sidebar
+	.SidebarHeading p {
+		.useHeadingFont();
+		font-size    : 10pt;
+		font-weight  : bold;
+		font-variant : small-caps;
+		margin       : 0 0 4pt;
+		line-height  : 1.3;
+	}
+
+	// SidebarBody — body text inside a sidebar
+	.SidebarBody p {
+		.useHeadingFont();
+		font-size    : 8.5pt;
+		margin       : 0 0 4pt;
+		line-height  : 1.4;
+	}
+
+	// SidebarBulleted — bullets inside a sidebar
+	.SidebarBulleted {
+		.useHeadingFont();
+		font-size    : 8.5pt;
+		padding-left : 16px;
+		li {
+			margin-bottom : 4pt;
+			line-height   : 1.4;
+			&:last-child { margin-bottom : 0; }
+		}
+	}
+
+	// TableTitle — heading above a table
+	.TableTitle p {
+		.useHeadingFont();
+		font-size    : 11pt;
+		font-weight  : bold;
+		font-variant : small-caps;
+		margin       : 6pt 0 4pt;
+		line-height  : 1.3;
+	}
+
+	// PageFooter — pins content to bottom of page
+	.PageFooter {
+		position : absolute;
+		left     : 0.81in;
+		right    : 0.81in;
+		bottom   : 0.79in;
+	}
+
+	// ── Footer / Page Number ─────────────────────────────────────────────
+
+	// No decorative footer — simple page number only
+	&::after {
+		display : none;
+	}
+
+	.pageNumber {
+		font-family : var(--DC_Font_Heading);
+		font-size   : 9pt;
+		color       : var(--HB_Color_Footnotes);
+		right       : 80px;
+		bottom      : 22px;
+		text-align  : right;
+	}
+
+	.footnote {
+		position   : absolute;
+		left       : 80px;
+		bottom     : 22px;
+		z-index    : 150;
+		max-width  : 60%;
+		font-family: var(--DC_Font_Heading);
+		font-size  : 8pt;
+		color      : var(--HB_Color_Footnotes);
+		text-align : left;
+		p + p { margin-top : 0; }
+		// Allow color utility classes to override footnote color
+		&.white     { color : #FFFFFF; }
+		&.gold      { color : #C5A035; }
+		&.cream     { color : #F5F0E0; }
+		&.parchment { color : #D4C5A0; }
+		&.red       { color : #CC2222; }
+		&.black     { color : #000000; }
+	}
+
+	&:nth-child(even) {
+		.pageNumber {
+			left       : 80px;
+			right      : auto;
+			text-align : left;
+		}
+		.footnote {
+			left       : auto;
+			right      : 80px;
+			text-align : right;
+		}
+	}
+}
+
+// ── Front Cover Page ────────────────────────────────────────────────────
+// Modeled after the PHB frontCover pattern.
+// Usage:  {{frontCover}}  on the first line of the page.
+
+.page:has(.frontCover) {
+	columns    : 1;
+	text-align : center;
+	&::after { display : none; }
+	.frontCover { position : absolute; }
+
+	h1 {
+		margin-top     : 1.2in;
+		margin-bottom  : 0;
+		font-family    : 'Baskerville Old Face', 'Baskerville', 'Georgia', serif;
+		font-size      : 42pt;
+		font-weight    : bold;
+		line-height    : 1.05;
+		letter-spacing : 1px;
+	}
+	h2 {
+		font-family    : 'Baskerville Old Face', 'Baskerville', 'Georgia', serif;
+		font-size      : 22pt;
+		font-weight    : bold;
+		letter-spacing : 2px;
+		margin-top     : 4pt;
+	}
+	hr {
+		display          : block;
+		visibility       : visible;
+		width            : 60%;
+		height           : 2px;
+		margin           : 12pt auto;
+		background-color : var(--HB_Color_Footnotes);
+		border           : none;
+	}
+	.footnote {
+		position   : absolute;
+		right      : 0;
+		bottom     : 1cm;
+		left       : 0;
+		width      : 70%;
+		max-width  : none;
+		margin     : 0 auto;
+		font-family: var(--DC_Font_Heading);
+		font-size  : 9pt;
+		color      : var(--HB_Color_Footnotes);
+		text-align : center;
+		&.white     { color : #FFFFFF; }
+		&.gold      { color : #C5A035; }
+		&.cream     { color : #F5F0E0; }
+		&.parchment { color : #D4C5A0; }
+	}
+}
+
+// ── Wide Elements ────────────────────────────────────────────────────────
+
+.page .wide { margin-bottom : 4pt; }
+
+// ── Legal Block ─────────────────────────────────────────────────────────
+// Positioned at the bottom of the page spanning full width, without using
+// column-span so it does not trigger column balancing issues.
+
+// Absolute-positioned children of .page sit relative to the border box.
+// .page padding is 0.58in top, 0.81in sides, 0.79in bottom.
+// To align with content area, use the same values.
+.page .legal {
+	position      : absolute;
+	left          : 0.81in;
+	right         : 0.81in;
+	bottom        : 0.79in;
+	font-family   : var(--DC_Font_Body);
+	font-size     : 7.5pt;
+	line-height   : 1.4;
+	color         : #000;
+	overflow-wrap : break-word;
+	max-width     : calc(8.5in - 2 * 0.81in);
+}
+
+// ── Artist Credit ────────────────────────────────────────────────────────
+
+.page .artist {
+	position   : absolute;
+	width      : auto;
+	font-family: var(--DC_Font_Heading);
+	font-size  : 8pt;
+	color      : var(--HB_Color_CaptionText);
+	text-align : center;
+	p, p + p {
+		margin      : unset;
+		line-height : 1em;
+		text-indent : unset;
+	}
+	a {
+		color           : inherit;
+		text-decoration : unset;
+		&:hover { text-decoration : underline; }
+	}
+}
+
+// ── Watermark ────────────────────────────────────────────────────────────
+
+.page .watermark { color : #999; }
+
+// ── Text Color Utilities ────────────────────────────────────────────────
+// Usage:  {{white  \n  Your text here \n  }}
+// Works on blocks — wraps content in a div with the color applied.
+// Also works on headings:  # Title {.white}
+
+.page {
+	.white         { color : #FFFFFF; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.black         { color : #000000; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.gold          { color : #C5A035; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.silver        { color : #B0B0B0; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.red           { color : #CC2222; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.blue          { color : #2244AA; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.green         { color : #1A7A3A; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.cream         { color : #F5F0E0; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.parchment     { color : #D4C5A0; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.darkred       { color : #8B0000; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+	.navy          { color : #1A1A4E; h1, h2, h3, h4, h5, h6, p { color : inherit; } }
+}
+
+// ── Table of Contents ────────────────────────────────────────────────────
+
+.monster { --TOC : exclude; }
+
+.page {
+	&:has(.toc)::after { display : none; }
+	.toc {
+		h1 {
+			margin-bottom : 8pt;
+			text-align    : center;
+		}
+		a {
+			display         : inline;
+			color           : inherit;
+			text-decoration : none;
+			&:hover { text-decoration : underline; }
+		}
+		h4 {
+			margin-top  : 6pt;
+			line-height : 1.3;
+			& + ul li { line-height : 1.4; }
+		}
+		ul {
+			padding-left    : 0;
+			margin-top      : 0;
+			list-style-type : none;
+			a {
+				display         : flex;
+				flex-flow       : row nowrap;
+				justify-content : space-between;
+				width           : 100%;
+			}
+			li + li h3 {
+				margin-top  : 6pt;
+				line-height : 1em;
+			}
+			h3 span:first-child::after { border : none; }
+			span {
+				display : contents;
+				&:first-child::after {
+					flex          : 1;
+					margin-right  : 4pt;
+					margin-bottom : 2pt;
+					margin-left   : 4pt;
+					content       : '';
+					border-bottom : 1px dotted #000;
+				}
+				&:last-child {
+					display     : inline-block;
+					align-self  : flex-end;
+					font-family : var(--DC_Font_Body);
+					font-size   : 9pt;
+					font-weight : normal;
+					color       : #000;
+				}
+			}
+			ul { margin-left : 1em; }
+		}
+		&.wide {
+			.useColumns(0.96, @fillMode: balance);
+		}
+	}
+	.toc.wide li { break-inside : auto; }
+}
+
+// ── Definition Lists ─────────────────────────────────────────────────────
+
+.page {
+	p + dl { margin-top : 8pt; }
+}
+
+// ── Spell List ───────────────────────────────────────────────────────────
+
+.page .spellList {
+	.useHeadingFont();
+	font-size    : 8.5pt;
+	column-count : 2;
+	ul + h5 { margin-top : 10pt; }
+	p, ul {
+		font-size   : 8.5pt;
+		line-height : 1.4;
+	}
+	ul {
+		padding-left    : 1em;
+		margin-bottom   : 4pt;
+		text-indent     : -1em;
+		list-style-type : none;
+	}
+	&.wide { column-count : 4; }
+}
+
+// ── Index ────────────────────────────────────────────────────────────────
+
+.page .index {
+	font-size : 8pt;
+	ul ul { margin : 0; }
+	ul {
+		padding-left    : 0;
+		text-indent     : 0;
+		list-style-type : none;
+	}
+	& > ul > li {
+		padding-left : 1.5em;
+		text-indent  : -1.5em;
+	}
+}
+
+// ── Print ────────────────────────────────────────────────────────────────
+
+@media print {
+	@page {
+		size   : letter;
+		margin : 0;
+	}
+}

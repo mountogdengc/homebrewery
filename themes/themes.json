@@ -36,6 +36,13 @@
       "baseSnippets": "5ePHB",
       "path": "DungeonCraftAL"
     },
+    "FarFromSol": {
+      "name": "Far From Sol",
+      "renderer": "V3",
+      "baseTheme": "Blank",
+      "baseSnippets": "5ePHB",
+      "path": "FarFromSol"
+    },
     "Journal": {
       "name": "Journal",
       "renderer": "V3",

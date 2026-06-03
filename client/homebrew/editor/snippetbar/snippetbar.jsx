@@ -15,6 +15,7 @@ import V3_5eDMG         from '@themes/V3/5eDMG/snippets.js';
 import V3_Journal       from '@themes/V3/Journal/snippets.js';
 import V3_Blank         from '@themes/V3/Blank/snippets.js';
 import V3_DungeonCraftAL from '@themes/V3/DungeonCraftAL/snippets.js';
+import V3_FarFromSol    from '@themes/V3/FarFromSol/snippets.js';
 
 import ConverterPanel from '../../components/markdownConverter/converterPanel.jsx';
 
@@ -25,6 +26,7 @@ const ThemeSnippets = {
 	V3_Journal       : V3_Journal,
 	V3_Blank         : V3_Blank,
 	V3_DungeonCraftAL : V3_DungeonCraftAL,
+	V3_FarFromSol    : V3_FarFromSol,
 };
 
 import EditorThemes from '../../../../build/homebrew/codeMirror/editorThemes.json';
